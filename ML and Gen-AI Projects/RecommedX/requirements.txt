@@ -1,0 +1,28 @@
+# RecommedX - Recommendation Engine Dependencies
+
+# Core ML Libraries
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+
+# Optional: Deep Learning (for Neural Collaborative Filtering)
+# torch>=2.0.0
+# tensorflow>=2.13.0
+
+# Optional: Advanced Recommendation Libraries
+# lightfm>=1.17
+# surprise>=1.1.3
+
+# Optional: Feature Store & Serving
+# feast>=0.32.0
+# fastapi>=0.100.0
+# redis>=4.6.0
+
+# Optional: Monitoring & Tracking
+# mlflow>=2.5.0
+# prometheus-client>=0.17.0
+
+# Development
+jupyter>=1.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
