@@ -1,6 +1,6 @@
-# Machine Learning System Design (MLSD) Masterclass
+# Machine Learning System Design (MLSD)
 
-Welcome to the MLSD study hub! Designing production-grade Machine Learning systems requires a deep understanding of scale, latency, data engineering, model training, and operations. This repository contains structured system design templates and frameworks to help you master real-world AI applications.
+A structured collection of real-world Machine Learning System Design questions, templates, and frameworks.
 
 ---
 
