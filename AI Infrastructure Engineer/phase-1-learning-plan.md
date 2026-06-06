@@ -26,7 +26,7 @@ Begin by mastering the foundation. Work through these structured module director
 
 | Module | Focus Area | Path |
 | :--- | :--- | :--- |
-| **Mod 01** | Python Fundamentals for ML | [Python Fundamentals](lessons/mod-001-python-fundamentals/) |
+| **Mod 01** | Python Fundamentals for AI Infrastructure | [Python Fundamentals](lessons/mod-001-python-fundamentals/) |
 | **Mod 02** | Linux Essentials for DevOps | [Linux Essentials](lessons/mod-002-linux-essentials/) |
 | **Mod 03** | Git Version Control & Collaboration | [Git Version Control](lessons/mod-003-git-version-control/) |
 | **Mod 04** | Machine Learning Basics | [ML Basics](lessons/mod-004-ml-basics/) |
