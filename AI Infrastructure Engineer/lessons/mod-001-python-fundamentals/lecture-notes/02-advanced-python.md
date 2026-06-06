@@ -38,16 +38,6 @@ This lecture covers three pillars of production-grade Python:
 
 **Configuration**: Training hyperparameters, model paths, API endpoints—all differ between dev, staging, and production. Configuration management keeps this maintainable.
 
-### Learning Objectives
-
-By the end of this lecture, you will:
-- Write comprehensively type-hinted Python code
-- Use mypy for static type checking
-- Implement structured logging for production systems
-- Design configuration systems for multiple environments
-- Handle different data formats (JSON, YAML, TOML)
-- Apply error handling patterns for infrastructure code
-
 ---
 
 ## Type Hints and Static Typing
@@ -1163,31 +1153,31 @@ data = retry(fetch_data, max_attempts=5, delay=2.0)
 
 ### Type Hints Checklist
 
-✅ Annotate all function signatures
-✅ Use type aliases for complex types
-✅ Enable mypy in CI/CD
-✅ Use `Optional[T]` for nullable values
-✅ Leverage `Protocol` for flexible interfaces
-✅ Use `Literal` for fixed string choices
+- Annotate all function signatures
+- Use type aliases for complex types
+- Enable mypy in CI/CD
+- Use `Optional[T]` for nullable values
+- Leverage `Protocol` for flexible interfaces
+- Use `Literal` for fixed string choices
 
 ### Logging Checklist
 
-✅ Configure logging at application startup
-✅ Use appropriate log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-✅ Include context in log messages
-✅ Use structured logging (JSON) for production
-✅ Implement log rotation for file handlers
-✅ Never log sensitive data (passwords, tokens)
+- Configure logging at application startup
+- Use appropriate log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- Include context in log messages
+- Use structured logging (JSON) for production
+- Implement log rotation for file handlers
+- Never log sensitive data (passwords, tokens)
 
 ### Configuration Checklist
 
-✅ Never hardcode configuration
-✅ Use environment variables for deployment-specific config
-✅ Use `.env` files for development
-✅ Validate configuration on startup
-✅ Document all configuration options
-✅ Provide sensible defaults
-✅ Use configuration hierarchies (base + overrides)
+- Never hardcode configuration
+- Use environment variables for deployment-specific config
+- Use `.env` files for development
+- Validate configuration on startup
+- Document all configuration options
+- Provide sensible defaults
+- Use configuration hierarchies (base + overrides)
 
 ---
 
