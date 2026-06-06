@@ -24,9 +24,9 @@ The curriculum is structured into two distinct phases to build your expertise sy
 
 *   **Phase 1: Core AI Infrastructure & Foundations (Kickstarter Level):** Master ML model deployment, containerization, cluster orchestration, robust data pipelines, and CI/CD.
 
-<p align="center">
-  <font size="5">⬇</font>
-</p>
+$$
+\Large\Downarrow
+$$
 
 *   **Phase 2: Advanced AI Infrastructure:** Deep-dive into advanced cloud provisioning, multi-GPU configurations, and distributed training architectures.
 
@@ -36,7 +36,7 @@ The curriculum is structured into two distinct phases to build your expertise sy
 
 Master the tools and workflows required to bring models to production, from containerization to orchestration and automated deployment pipelines.
 
-👉 **[Start Learning: Phase 1 Learning Plan](phase-1-learning-plan.md)**
+**[Start Learning: Phase 1 Learning Plan](phase-1-learning-plan.md)**
 
 *   **Learn**: Study structured modules covering Python, Linux, Docker, Kubernetes, Web APIs, and Observability.
 *   **Build**: Apply knowledge in end-to-end projects including REST API containerization, Kubernetes scaling, and CI/CD pipelines.

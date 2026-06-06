@@ -14,7 +14,7 @@ $$
 \downarrow \\
 \boxed{\text{Self Final Assessment}} \\
 \downarrow \\
-\boxed{\text{Continuous Learning \& Resources}}
+\boxed{\text{Continuous Learning and Resources}}
 \end{array}
 $$
 
