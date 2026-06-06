@@ -601,6 +601,100 @@ git add requirements.in requirements.txt
 git commit -m "Update dependencies"
 ```
 
+### Advanced: Modern Dependency Management with pyproject.toml
+
+Modern Python projects use `pyproject.toml` (standardized under PEP 621) to declare dependencies and metadata, replacing `requirements.in`.
+
+#### Option A: Pip-tools with pyproject.toml
+
+You can use `pip-tools` to compile dependencies declared directly in your `pyproject.toml`.
+
+**pyproject.toml**:
+```toml
+[project]
+name = "my-ml-project"
+version = "0.1.0"
+dependencies = [
+    "tensorflow>=2.13.0,<3.0.0",
+    "numpy",
+    "pandas",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "black>=23.7.0",
+]
+```
+
+**Generate locked requirements.txt**:
+```bash
+# Compile production dependencies
+pip-compile pyproject.toml
+
+# Compile dev dependencies
+pip-compile pyproject.toml --extra dev --output-file=requirements-dev.txt
+```
+
+**Install or Synchronize**:
+```bash
+pip-sync requirements.txt requirements-dev.txt
+```
+
+#### Option B: Dependency Management with Poetry
+
+Poetry is a dependency manager that handles environment creation, dependency resolution, and packaging using a single `pyproject.toml` file.
+
+**Initialize Poetry**:
+```bash
+poetry init
+```
+
+**Add dependencies**:
+```bash
+# Adds to main dependencies
+poetry add tensorflow numpy pandas
+
+# Adds to development group
+poetry add --group dev pytest black
+```
+
+**Resulting pyproject.toml structure**:
+```toml
+[tool.poetry.dependencies]
+python = "^3.11"
+tensorflow = "^2.13.0"
+numpy = "*"
+pandas = "*"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.7.0"
+```
+
+**Install and Lock**:
+```bash
+# Installs dependencies and generates poetry.lock
+poetry install
+```
+
+The `poetry.lock` file acts as the pinned lock file. You commit both `pyproject.toml` and `poetry.lock` to git.
+
+#### Option C: Ultra-fast Management with uv
+
+`uv` is an extremely fast Python package installer and resolver written in Rust, designed as a drop-in replacement for `pip`, `pip-tools`, and `virtualenv`.
+
+```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Compile pyproject.toml using uv
+uv pip compile pyproject.toml -o requirements.txt
+
+# Sync environment using uv
+uv pip sync requirements.txt
+```
+
 ---
 
 ## Python Version Management
