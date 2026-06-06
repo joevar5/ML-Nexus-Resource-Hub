@@ -10,9 +10,9 @@ $$
 \begin{array}{c}
 \boxed{\text{Core Foundation Lessons}} \\
 \downarrow \\
-\boxed{\text{Hands-on MLOps Projects}} \\
+\boxed{\text{Hands-on AI Infrastructure Projects}} \\
 \downarrow \\
-\boxed{\text{Assessments \& Rubrics}} \\
+\boxed{\text{Self Final Assessment}} \\
 \downarrow \\
 \boxed{\text{Continuous Learning \& Resources}}
 \end{array}
