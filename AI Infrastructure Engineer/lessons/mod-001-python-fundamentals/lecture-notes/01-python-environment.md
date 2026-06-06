@@ -8,9 +8,6 @@
 5. [Requirements Files](#requirements-files)
 6. [Python Version Management](#python-version-management)
 7. [Best Practices for AI Infrastructure](#best-practices-for-ai-infrastructure)
-8. [Common Issues and Troubleshooting](#common-issues-and-troubleshooting)
-9. [Summary and Key Takeaways](#summary-and-key-takeaways)
-
 ---
 
 ## Introduction
@@ -24,18 +21,6 @@ What happened? **Environment mismatch**.
 In AI infrastructure engineering, environment management isn't just best practice—it's survival. The ML ecosystem involves hundreds of dependencies, many with complex version requirements. PyTorch needs specific CUDA versions. TensorFlow has strict numpy version requirements. One mismatched package can cascade into system-wide failures.
 
 This lecture teaches you to prevent these disasters through rigorous environment and dependency management.
-
-### Learning Objectives
-
-By the end of this lecture, you will:
-
-- Understand how Python finds and loads packages
-- Create isolated virtual environments using multiple tools
-- Manage dependencies with pip effectively
-- Write bulletproof requirements files
-- Handle multiple Python versions on one system
-- Apply environment management to AI/ML workflows
-- Troubleshoot common environment issues
 
 ### The AI Infrastructure Context
 
@@ -1011,26 +996,16 @@ pyenv local 3.11.5
 
 ### Best Practices Checklist
 
-✅ Always use virtual environments for projects
-✅ Pin exact versions in requirements.txt for production
-✅ Separate dev dependencies from production
-✅ Never commit virtual environments to git
-✅ Use .env files for configuration
-✅ Document setup process in README
-✅ Test dependency installation on clean environment
-✅ Use pip-tools or Poetry for complex projects
-✅ Consider Docker for full environment reproducibility
-✅ Keep requirements.txt updated as dependencies change
-
-### What You've Learned
-
-1. **Python's import system** and how it finds packages
-2. **Virtual environments** for dependency isolation
-3. **pip package management** and version specifiers
-4. **Requirements files** for reproducible installations
-5. **Python version management** with pyenv
-6. **Best practices** for AI/ML infrastructure projects
-7. **Troubleshooting** common environment issues
+- Always use virtual environments for projects
+- Pin exact versions in requirements.txt for production
+- Separate dev dependencies from production
+- Never commit virtual environments to git
+- Use .env files for configuration
+- Document setup process in README
+- Test dependency installation on clean environment
+- Use pip-tools or Poetry for complex projects
+- Consider Docker for full environment reproducibility
+- Keep requirements.txt updated as dependencies change
 
 ### Next Steps
 
@@ -1049,11 +1024,5 @@ You now understand Python environment management—the foundation for all AI inf
 - [pip-tools documentation](https://pip-tools.readthedocs.io/)
 - [PEP 405 - Python Virtual Environments](https://peps.python.org/pep-0405/)
 
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Word Count**: ~3,800 words
-**Estimated Reading Time**: 45-60 minutes
 
 **Ready for more?** Continue to `02-advanced-python.md` for type hints, logging, and configuration management.
