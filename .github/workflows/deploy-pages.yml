@@ -1,0 +1,67 @@
+name: Deploy and Verify GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Compile Resource Index
+        run: node scripts/build-index.js
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Verify Live Deployment Status
+        run: |
+          URL="${{ steps.deployment.outputs.page_url }}"
+          echo "====================================================="
+          echo "Target URL: $URL"
+          echo "Verifying live status. Retrying for up to 2 minutes..."
+          echo "====================================================="
+          
+          # Ping the URL with a retry loop to account for DNS/CDN updates
+          for i in {1..12}; do
+            STATUS=$(curl -o /dev/null -s -w "%{http_code}" -L "$URL")
+            if [ "$STATUS" -eq 200 ]; then
+              echo "SUCCESS: Page is LIVE and responding with HTTP 200!"
+              exit 0
+            fi
+            echo "Attempt $i/12: Received HTTP $STATUS. Retrying in 10 seconds..."
+            sleep 10
+          done
+          
+          echo "ERROR: Deployment verification timed out. Page did not return HTTP 200."
+          exit 1

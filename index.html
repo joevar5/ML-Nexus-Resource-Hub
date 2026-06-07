@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML-Nexus Resource Hub</title>
+    <meta name="description" content="A premium interactive index and resource hub for machine learning systems, project scaffolds, and infrastructure engineering modules.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Marked for Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Prism.js for Code Syntax Highlighting -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <!-- KaTeX for LaTeX Math Equation Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        /* Custom Premium CSS System */
+        :root {
+            --bg-primary: #080c14;
+            --bg-secondary: rgba(13, 20, 35, 0.7);
+            --bg-sidebar: #0b111e;
+            --accent: hsl(250, 85%, 65%);
+            --accent-hover: hsl(250, 85%, 72%);
+            --accent-gradient: linear-gradient(135deg, hsl(250, 85%, 65%), hsl(280, 85%, 55%));
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --hover-bg: rgba(255, 255, 255, 0.04);
+            --active-bg: rgba(255, 255, 255, 0.08);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            
+            /* Alerts color palette */
+            --color-note: #3b82f6;
+            --color-tip: #10b981;
+            --color-important: #8b5cf6;
+            --color-warning: #f59e0b;
+            --color-caution: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+        }
+
+        /* Scrollbar styles */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* App Container */
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 340px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex-shrink: 0;
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        /* Sidebar Header */
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-gradient);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .brand-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #ffffff 60%, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px 10px 38px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            fill: var(--text-muted);
+            width: 14px;
+            height: 14px;
+            pointer-events: none;
+        }
+
+        /* Sidebar Navigation Area */
+        .sidebar-menu {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 16px 12px;
+        }
+
+        /* Tree Menu Styles */
+        .tree-node {
+            margin-bottom: 4px;
+        }
+
+        .tree-folder {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            gap: 8px;
+        }
+
+        .tree-folder:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-main);
+        }
+
+        .tree-folder-icon {
+            width: 16px;
+            height: 16px;
+            fill: var(--text-muted);
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .tree-node.expanded > .tree-folder > .tree-folder-icon {
+            transform: rotate(90deg);
+        }
+
+        .tree-children {
+            display: none;
+            padding-left: 18px;
+            margin-top: 2px;
+            border-left: 1px dashed rgba(255, 255, 255, 0.1);
+            margin-left: 18px;
+        }
+
+        .tree-node.expanded > .tree-children {
+            display: block;
+        }
+
+        .tree-file {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .tree-file:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-main);
+        }
+
+        .tree-file.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: #fff;
+            font-weight: 500;
+            border-left: 3px solid var(--accent);
+            padding-left: 9px;
+        }
+
+        .tree-file-icon {
+            width: 14px;
+            height: 14px;
+            fill: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .tree-file.active > .tree-file-icon {
+            fill: #a5b4fc;
+        }
+
+        /* Main Workspace Container */
+        .workspace {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            height: 64px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            background-color: rgba(8, 12, 20, 0.5);
+            backdrop-filter: blur(10px);
+            z-index: 5;
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .breadcrumbs {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .breadcrumb-separator {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .breadcrumb-active {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .github-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .github-btn:hover {
+            background-color: var(--hover-bg);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Progress Bar */
+        .reading-progress-container {
+            width: 100%;
+            height: 2px;
+            background-color: transparent;
+            position: absolute;
+            top: 64px;
+            left: 0;
+            z-index: 6;
+        }
+
+        .reading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-gradient);
+            transition: width 0.1s ease;
+        }
+
+        /* Main View Panels */
+        .content-panel {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            scroll-behavior: smooth;
+        }
+
+        /* Dashboard/Welcome View */
+        .dashboard {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .hero {
+            padding: 60px 40px;
+            background: radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.15), transparent 60%),
+                        rgba(13, 20, 35, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff, #a5b4fc, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 32px auto;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stat-lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .category-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 28px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 12px 20px -8px rgba(99, 102, 241, 0.2);
+            background-color: rgba(13, 20, 35, 0.85);
+        }
+
+        .category-card-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .category-card-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #818cf8;
+        }
+
+        .category-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .category-card-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Document Reader Panel */
+        .reader-container {
+            max-width: 860px;
+            width: 100%;
+            display: none;
+            grid-template-columns: 1fr 240px;
+            gap: 40px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .reader-main {
+            min-width: 0; /* Prevents overflow in flex layouts */
+        }
+
+        /* Side Table of Contents (TOC) */
+        .toc-aside {
+            position: sticky;
+            top: 0;
+            height: fit-content;
+            padding: 8px 0;
+            border-left: 1px solid var(--border-color);
+            padding-left: 20px;
+        }
+
+        .toc-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .toc-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toc-link {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.15s ease;
+            display: block;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        .toc-link:hover {
+            color: var(--text-main);
+        }
+
+        .toc-link.active {
+            color: #818cf8;
+            font-weight: 500;
+        }
+
+        .toc-link.indent-2 {
+            padding-left: 12px;
+        }
+
+        /* Premium Markdown Rendering Styles */
+        .markdown-body {
+            line-height: 1.625;
+            font-size: 0.975rem;
+            color: #d1d5db;
+        }
+
+        .markdown-body h1, 
+        .markdown-body h2, 
+        .markdown-body h3, 
+        .markdown-body h4 {
+            font-family: 'Outfit', sans-serif;
+            color: #fff;
+            margin-top: 1.8em;
+            margin-bottom: 0.6em;
+            font-weight: 700;
+            scroll-margin-top: 80px; /* Offset for anchor links */
+        }
+
+        .markdown-body h1 {
+            font-size: 2.1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .markdown-body h2 {
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .markdown-body h3 {
+            font-size: 1.2rem;
+        }
+
+        .markdown-body p {
+            margin-bottom: 1.25em;
+        }
+
+        .markdown-body a {
+            color: #818cf8;
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(129, 140, 248, 0.4);
+            transition: all 0.15s ease;
+        }
+
+        .markdown-body a:hover {
+            color: var(--accent-hover);
+            border-bottom-color: var(--accent-hover);
+        }
+
+        .markdown-body ul, 
+        .markdown-body ol {
+            margin-bottom: 1.25em;
+            padding-left: 20px;
+        }
+
+        .markdown-body li {
+            margin-bottom: 0.5em;
+        }
+
+        /* Code and Pre Blocks */
+        .markdown-body code {
+            font-family: 'Fira Code', monospace;
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #f3f4f6;
+        }
+
+        .markdown-body pre {
+            background-color: #0b101c !important;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 1.5em;
+            overflow-x: auto;
+        }
+
+        .markdown-body pre code {
+            background-color: transparent;
+            padding: 0;
+            font-size: 0.85rem;
+            color: #f3f4f6;
+        }
+
+        /* Horizontal rule */
+        .markdown-body hr {
+            border: 0;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 2.5em 0;
+        }
+
+        /* Blockquotes and Custom GitHub Alerts */
+        .markdown-body blockquote {
+            border-left: 4px solid var(--border-color);
+            padding: 0 0 0 16px;
+            color: var(--text-muted);
+            margin-bottom: 1.5em;
+        }
+
+        .alert-box {
+            border-left: 4px solid var(--border-color);
+            padding: 14px 16px;
+            border-radius: 0 8px 8px 0;
+            background-color: rgba(255, 255, 255, 0.02);
+            margin-bottom: 1.5em;
+        }
+
+        .alert-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .alert-box.note { border-left-color: var(--color-note); }
+        .alert-box.note .alert-title { color: var(--color-note); }
+
+        .alert-box.tip { border-left-color: var(--color-tip); }
+        .alert-box.tip .alert-title { color: var(--color-tip); }
+
+        .alert-box.important { border-left-color: var(--color-important); }
+        .alert-box.important .alert-title { color: var(--color-important); }
+
+        .alert-box.warning { border-left-color: var(--color-warning); }
+        .alert-box.warning .alert-title { color: var(--color-warning); }
+
+        .alert-box.caution { border-left-color: var(--color-caution); }
+        .alert-box.caution .alert-title { color: var(--color-caution); }
+
+        /* Tables */
+        .markdown-body table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1.5em;
+            font-size: 0.9rem;
+        }
+
+        .markdown-body th, 
+        .markdown-body td {
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        .markdown-body th {
+            background-color: rgba(255, 255, 255, 0.03);
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .markdown-body tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.01);
+        }
+
+        /* Search Results Panel */
+        .search-results-panel {
+            display: none;
+            max-width: 860px;
+            width: 100%;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .search-results-header {
+            margin-bottom: 24px;
+        }
+
+        .search-results-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .search-results-count {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .search-results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .search-result-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .search-result-item:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateX(4px);
+            background-color: rgba(13, 20, 35, 0.85);
+        }
+
+        .search-result-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .search-result-path {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Error/NotFound Screen */
+        .error-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            height: 100%;
+        }
+
+        .error-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .error-desc {
+            color: var(--text-muted);
+            max-width: 400px;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .error-btn {
+            padding: 10px 20px;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .error-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Layout Overrides */
+        @media (max-width: 1024px) {
+            .reader-container {
+                grid-template-columns: 1fr; /* Stack TOC */
+            }
+            .toc-aside {
+                display: none; /* Hide floating TOC on medium screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block; /* Show hamburger button */
+            }
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                transform: translateX(-100%);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .content-panel {
+                padding: 24px;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .top-bar {
+                padding: 0 16px;
+            }
+            .github-btn span {
+                display: none; /* Icon only on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand" onclick="goHome()">
+                    <div class="brand-logo">N</div>
+                    <span class="brand-name">ML-Nexus Hub</span>
+                </div>
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search resources..." autocomplete="off">
+                </div>
+            </div>
+            <nav class="sidebar-menu" id="sidebar-menu">
+                <!-- Built dynamically from structure.json -->
+                <div class="tree-loading" style="padding: 16px; color: var(--text-muted); font-size: 0.85rem;">Loading resources...</div>
+            </nav>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="workspace">
+            <!-- Top bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div class="breadcrumbs" id="breadcrumbs">
+                        <span class="breadcrumb-active">Home</span>
+                    </div>
+                </div>
+                <div class="top-bar-right">
+                    <a href="https://github.com/joevar5/ML-Nexus-Resource-Hub" target="_blank" rel="noopener noreferrer" class="github-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        <span>GitHub</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Scroll progress indicator -->
+            <div class="reading-progress-container">
+                <div id="progress-bar" class="reading-progress-bar"></div>
+            </div>
+
+            <!-- Content Panel -->
+            <div class="content-panel" id="content-panel">
+                <!-- Welcome/Dashboard -->
+                <div id="welcome-view" class="dashboard">
+                    <section class="hero">
+                        <h1 class="hero-title">ML-Nexus Resource Hub</h1>
+                        <p class="hero-subtitle">Explore a premium index of ML system designs, AI infrastructure lessons, production scaffolds, and academic research analysis.</p>
+                        
+                        <div class="hero-stats">
+                            <div class="stat-card">
+                                <span class="stat-val" id="stat-lessons">-</span>
+                                <span class="stat-lbl">Lessons</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-val" id="stat-designs">-</span>
+                                <span class="stat-lbl">System Designs</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-val" id="stat-projects">-</span>
+                                <span class="stat-lbl">Projects</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="dashboard-grid">
+                        <div class="category-card" onclick="expandAndSelect('AI Infrastructure Engineer')">
+                            <div class="category-card-icon">
+                                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/></svg>
+                            </div>
+                            <h2 class="category-card-title">AI Infrastructure</h2>
+                            <p class="category-card-desc">Advanced modules detailing environment design, orchestration, caching, serving, pipelines, and cloud platform infrastructure.</p>
+                        </div>
+                        <div class="category-card" onclick="expandAndSelect('ML and GenAI System Design')">
+                            <div class="category-card-icon">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                            </div>
+                            <h2 class="category-card-title">System Design</h2>
+                            <p class="category-card-desc">Detailed templates and breakdowns for Recommendation Engines, Search, CTR prediction, Fraud detection, CV systems, and Forecasting.</p>
+                        </div>
+                        <div class="category-card" onclick="expandAndSelect('ML and GenAI Projects')">
+                            <div class="category-card-icon">
+                                <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+                            </div>
+                            <h2 class="category-card-title">Production Scaffolds</h2>
+                            <p class="category-card-desc">Complete end-to-end projects containing deployable templates, monitoring metrics, dvc pipelines, and chart deployments.</p>
+                        </div>
+                        <div class="category-card" onclick="expandAndSelect('Research Paper Analysis')">
+                            <div class="category-card-icon">
+                                <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5.89 12.5L12 15.83l6.11-3.33L12 9.17l-6.11 3.33z"/></svg>
+                            </div>
+                            <h2 class="category-card-title">Research Analysis</h2>
+                            <p class="category-card-desc">Rigorous reviews and deep-dives on milestone papers, core algorithms, theoretical frameworks, and performance evaluations.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Reader Container -->
+                <div id="reader-view" class="reader-container">
+                    <article class="reader-main">
+                        <div id="markdown-content" class="markdown-body">
+                            <!-- Renders content dynamically -->
+                        </div>
+                    </article>
+                    <aside class="toc-aside">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav id="toc-nav">
+                            <ul class="toc-list" id="toc-list">
+                                <!-- Generated dynamically -->
+                            </ul>
+                        </nav>
+                    </aside>
+                </div>
+
+                <!-- Search Results panel -->
+                <div id="search-view" class="search-results-panel">
+                    <div class="search-results-header">
+                        <h2 class="search-results-title">Search Results</h2>
+                        <div class="search-results-count" id="search-results-count">Found 0 matches</div>
+                    </div>
+                    <div class="search-results-list" id="search-results-list">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Error/Not Found screen -->
+                <div id="error-view" class="error-screen" style="display: none;">
+                    <h2 class="error-title">Resource Not Found</h2>
+                    <p class="error-desc">The file you are looking for does not exist, or could not be loaded at this path.</p>
+                    <button class="error-btn" onclick="goHome()">Go Back Home</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- UI Logic and Rendering Script -->
+    <script>
+        let filesTree = [];
+        let flattenedFiles = [];
+        let currentFilePath = '';
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            loadStructure();
+        });
+
+        // Set up Event Listeners
+        function setupEventListeners() {
+            // Mobile Menu Toggle
+            const menuToggle = document.getElementById('menu-toggle-btn');
+            const sidebar = document.getElementById('sidebar');
+            menuToggle.addEventListener('click', (e) => {
+                sidebar.classList.toggle('mobile-open');
+                e.stopPropagation();
+            });
+
+            // Close mobile menu on clicking content
+            document.getElementById('content-panel').addEventListener('click', () => {
+                sidebar.classList.remove('mobile-open');
+            });
+
+            // Handle browser navigation (back/forward)
+            window.addEventListener('hashchange', handleRouting);
+
+            // Handle Live Search
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', (e) => {
+                handleSearch(e.target.value);
+            });
+
+            // Handle progress bar tracking
+            const contentPanel = document.getElementById('content-panel');
+            contentPanel.addEventListener('scroll', () => {
+                const totalHeight = contentPanel.scrollHeight - contentPanel.clientHeight;
+                if (totalHeight > 0) {
+                    const progress = (contentPanel.scrollTop / totalHeight) * 100;
+                    document.getElementById('progress-bar').style.width = `${progress}%`;
+                } else {
+                    document.getElementById('progress-bar').style.width = '0%';
+                }
+            });
+        }
+
+        // Fetch structure.json and initialize tree
+        async function loadStructure() {
+            try {
+                const response = await fetch('structure.json');
+                if (!response.ok) throw new Error('Failed to fetch structure index');
+                filesTree = await response.json();
+                
+                // Flatten the structure to support easy searches & stats calculation
+                flattenTree(filesTree);
+                
+                // Set home screen stats
+                calculateStats();
+                
+                // Build sidebar HTML
+                renderSidebar(filesTree, document.getElementById('sidebar-menu'));
+                
+                // Handle initial routing (if url has hash)
+                handleRouting();
+            } catch (err) {
+                console.error('Error initializing structure:', err);
+                document.getElementById('sidebar-menu').innerHTML = `
+                    <div style="padding: 16px; color: var(--color-caution); font-size: 0.85rem;">
+                        Failed to build resource navigation. Ensure you run the build-index script.
+                    </div>
+                `;
+            }
+        }
+
+        // Flatten tree node helper
+        function flattenTree(nodes, currentPathPrefix = '') {
+            for (const node of nodes) {
+                if (node.type === 'file') {
+                    flattenedFiles.push(node);
+                } else if (node.type === 'directory' && node.children) {
+                    flattenTree(node.children, currentPathPrefix + node.name + ' / ');
+                }
+            }
+        }
+
+        // Calculate statistics for home screen
+        function calculateStats() {
+            let lessonsCount = 0;
+            let designsCount = 0;
+            let projectsCount = 0;
+
+            flattenedFiles.forEach(f => {
+                const lowerPath = f.path.toLowerCase();
+                if (lowerPath.includes('lesson') || lowerPath.includes('lecture')) lessonsCount++;
+                else if (lowerPath.includes('system design') || lowerPath.includes('mlsd')) designsCount++;
+                else if (lowerPath.includes('project')) projectsCount++;
+            });
+
+            // Add fallbacks if specific keywords don't match cleanly
+            document.getElementById('stat-lessons').innerText = lessonsCount || '15+';
+            document.getElementById('stat-designs').innerText = designsCount || '50+';
+            document.getElementById('stat-projects').innerText = projectsCount || '5+';
+        }
+
+        // Render Sidebar HTML Tree
+        function renderSidebar(nodes, container, parentPath = '') {
+            container.innerHTML = '';
+            
+            const ul = document.createElement('div');
+            nodes.forEach(node => {
+                const item = document.createElement('div');
+                item.className = 'tree-node';
+                
+                if (node.type === 'directory') {
+                    const folderDiv = document.createElement('div');
+                    folderDiv.className = 'tree-folder';
+                    
+                    // Folder SVG Icon
+                    folderDiv.innerHTML = `
+                        <svg class="tree-folder-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                        <span>${node.name}</span>
+                    `;
+                    
+                    const childrenDiv = document.createElement('div');
+                    childrenDiv.className = 'tree-children';
+                    
+                    folderDiv.addEventListener('click', (e) => {
+                        item.classList.toggle('expanded');
+                        e.stopPropagation();
+                    });
+                    
+                    item.appendChild(folderDiv);
+                    item.appendChild(childrenDiv);
+                    
+                    // Recursively render children
+                    renderSidebar(node.children, childrenDiv, parentPath + node.name + ' / ');
+                } else {
+                    const fileLink = document.createElement('a');
+                    fileLink.className = 'tree-file';
+                    fileLink.href = `#${encodeURIComponent(node.path)}`;
+                    fileLink.dataset.filepath = node.path;
+                    
+                    // File SVG Icon
+                    fileLink.innerHTML = `
+                        <svg class="tree-file-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        <span>${node.name}</span>
+                    `;
+                    
+                    fileLink.addEventListener('click', (e) => {
+                        document.querySelectorAll('.tree-file').forEach(el => el.classList.remove('active'));
+                        fileLink.classList.add('active');
+                        document.getElementById('sidebar').classList.remove('mobile-open');
+                    });
+                    
+                    item.appendChild(fileLink);
+                }
+                ul.appendChild(item);
+            });
+            container.appendChild(ul);
+        }
+
+        // Routing Handler (reads hash and displays correct panel)
+        function handleRouting() {
+            const hash = window.location.hash.substring(1);
+            const searchInput = document.getElementById('search-input');
+            
+            // If search has value, clear it when routing to specific files
+            if (hash && searchInput.value) {
+                searchInput.value = '';
+            }
+
+            if (!hash) {
+                goHome();
+                return;
+            }
+
+            const decodedPath = decodeURIComponent(hash);
+            loadFile(decodedPath);
+        }
+
+        // Go back to home dashboard
+        function goHome() {
+            window.location.hash = '';
+            currentFilePath = '';
+            
+            document.getElementById('welcome-view').style.display = 'flex';
+            document.getElementById('reader-view').style.display = 'none';
+            document.getElementById('search-view').style.display = 'none';
+            document.getElementById('error-view').style.display = 'none';
+            
+            // Clear active highlights in sidebar
+            document.querySelectorAll('.tree-file').forEach(el => el.classList.remove('active'));
+            
+            // Reset Breadcrumbs
+            document.getElementById('breadcrumbs').innerHTML = '<span class="breadcrumb-active">Home</span>';
+            document.getElementById('progress-bar').style.width = '0%';
+        }
+
+        // Helper to expand and load a main category from dashboard cards
+        function expandAndSelect(categoryName) {
+            const sidebarMenu = document.getElementById('sidebar-menu');
+            const folderNodes = sidebarMenu.querySelectorAll('.tree-node');
+            
+            for (const node of folderNodes) {
+                const folderTitle = node.querySelector('.tree-folder > span');
+                if (folderTitle && folderTitle.innerText === categoryName) {
+                    node.classList.add('expanded');
+                    // Find first file inside it and navigate
+                    const firstFileLink = node.querySelector('.tree-file');
+                    if (firstFileLink) {
+                        firstFileLink.click();
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Parse alert boxes in GitHub style markdown (e.g. > [!NOTE])
+        function parseAlertBlocks(markdown) {
+            const alertRegex = /^>\s*\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*\n((?:^>.*\n?)*)/gim;
+            return markdown.replace(alertRegex, (match, type, content) => {
+                const cleanContent = content.replace(/^>\s?/gm, '').trim();
+                const cleanType = type.toLowerCase();
+                
+                // Dynamic icons for alert banners
+                let icon = '';
+                if (cleanType === 'note') icon = 'ℹ️';
+                else if (cleanType === 'tip') icon = '💡';
+                else if (cleanType === 'important') icon = '🔔';
+                else if (cleanType === 'warning') icon = '⚠️';
+                else if (cleanType === 'caution') icon = '🚨';
+                
+                return `
+<div class="alert-box ${cleanType}">
+    <div class="alert-title">${icon} ${type}</div>
+    <div class="alert-body">${marked.parse(cleanContent)}</div>
+</div>`;
+            });
+        }
+
+        // Load and Render Markdown File
+        async function loadFile(filePath) {
+            currentFilePath = filePath;
+            
+            document.getElementById('welcome-view').style.display = 'none';
+            document.getElementById('reader-view').style.display = 'none';
+            document.getElementById('search-view').style.display = 'none';
+            document.getElementById('error-view').style.display = 'none';
+            
+            // Highlight active sidebar file link
+            document.querySelectorAll('.tree-file').forEach(el => {
+                if (el.dataset.filepath === filePath) {
+                    el.classList.add('active');
+                    
+                    // Auto-expand all parent folders to keep current file visible
+                    let parent = el.closest('.tree-children');
+                    while (parent) {
+                        const parentNode = parent.closest('.tree-node');
+                        if (parentNode) parentNode.classList.add('expanded');
+                        parent = parentNode ? parentNode.parentElement.closest('.tree-children') : null;
+                    }
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+
+            // Setup Breadcrumbs
+            const parts = filePath.split('/');
+            const breadcrumbHTML = parts.map((part, index) => {
+                const cleanPart = part.endsWith('.md') ? part.substring(0, part.length - 3) : part;
+                // Humanize filename capitalization
+                const humanized = cleanPart.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                
+                if (index === parts.length - 1) {
+                    return `<span class="breadcrumb-active">${humanized}</span>`;
+                }
+                return `
+                    <span>${humanized}</span>
+                    <span class="breadcrumb-separator">/</span>
+                `;
+            }).join('');
+            document.getElementById('breadcrumbs').innerHTML = `
+                <span style="cursor:pointer;" onclick="goHome()">Home</span>
+                <span class="breadcrumb-separator">/</span>
+                ${breadcrumbHTML}
+            `;
+
+            try {
+                const response = await fetch(filePath);
+                if (!response.ok) throw new Error('File not found');
+                let markdown = await response.text();
+                
+                // 1. Process custom GitHub alerts first before passing to marked
+                markdown = parseAlertBlocks(markdown);
+                
+                // 2. Render Markdown content to HTML
+                const markdownContentDiv = document.getElementById('markdown-content');
+                markdownContentDiv.innerHTML = marked.parse(markdown);
+                
+                // 3. Highlight code snippets using Prism.js
+                Prism.highlightAllUnder(markdownContentDiv);
+                
+                // 4. Render LaTeX math formulas
+                renderMathInElement(markdownContentDiv, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+
+                // 5. Generate floating Table of Contents
+                buildTOC();
+                
+                // Display the reader panel
+                document.getElementById('reader-view').style.display = 'grid';
+                document.getElementById('content-panel').scrollTop = 0;
+                document.getElementById('progress-bar').style.width = '0%';
+            } catch (err) {
+                console.error(`Error loading markdown file ${filePath}:`, err);
+                document.getElementById('error-view').style.display = 'flex';
+            }
+        }
+
+        // Dynamic Table of Contents builder
+        function buildTOC() {
+            const container = document.getElementById('markdown-content');
+            const tocList = document.getElementById('toc-list');
+            tocList.innerHTML = '';
+            
+            // Select h2 and h3 headers
+            const headings = container.querySelectorAll('h2, h3');
+            
+            if (headings.length === 0) {
+                document.querySelector('.toc-aside').style.display = 'none';
+                return;
+            } else {
+                document.querySelector('.toc-aside').style.display = 'block';
+            }
+
+            headings.forEach((heading, index) => {
+                const id = `toc-heading-${index}`;
+                heading.setAttribute('id', id);
+                
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.className = `toc-link ${heading.tagName.toLowerCase() === 'h3' ? 'indent-2' : ''}`;
+                a.innerText = heading.innerText;
+                
+                a.addEventListener('click', () => {
+                    heading.scrollIntoView({ behavior: 'smooth' });
+                });
+                
+                li.appendChild(a);
+                tocList.appendChild(li);
+            });
+
+            // Set up scroll spying to highlight current section in TOC
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        document.querySelectorAll('.toc-link').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        const activeLink = Array.from(document.querySelectorAll('.toc-link')).find(link => {
+                            // Link mapping search based on scroll spy heading text
+                            return link.innerText === entry.target.innerText;
+                        });
+                        if (activeLink) activeLink.classList.add('active');
+                    }
+                });
+            }, {
+                root: document.getElementById('content-panel'),
+                rootMargin: '0px 0px -60% 0px', // Trigger activation on top half screen
+                threshold: 0.1
+            });
+
+            headings.forEach(h => observer.observe(h));
+        }
+
+        // Live Search Handler
+        function handleSearch(query) {
+            query = query.trim().toLowerCase();
+            
+            const welcomeView = document.getElementById('welcome-view');
+            const readerView = document.getElementById('reader-view');
+            const searchView = document.getElementById('search-view');
+            const errorView = document.getElementById('error-view');
+
+            if (!query) {
+                if (currentFilePath) {
+                    welcomeView.style.display = 'none';
+                    readerView.style.display = 'grid';
+                    searchView.style.display = 'none';
+                } else {
+                    welcomeView.style.display = 'flex';
+                    readerView.style.display = 'none';
+                    searchView.style.display = 'none';
+                }
+                errorView.style.display = 'none';
+                return;
+            }
+
+            welcomeView.style.display = 'none';
+            readerView.style.display = 'none';
+            errorView.style.display = 'none';
+            searchView.style.display = 'block';
+
+            // Filter results from flattened tree list
+            const results = flattenedFiles.filter(item => {
+                return item.name.toLowerCase().includes(query) || 
+                       item.path.toLowerCase().includes(query);
+            });
+
+            document.getElementById('search-results-count').innerText = `Found ${results.length} result(s) matching "${query}"`;
+            
+            const resultsList = document.getElementById('search-results-list');
+            resultsList.innerHTML = '';
+
+            if (results.length === 0) {
+                resultsList.innerHTML = `
+                    <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.95rem;">
+                        No resources matched your search query. Try another keyword.
+                    </div>
+                `;
+                return;
+            }
+
+            results.forEach(result => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                
+                // Parse file folder path details
+                const folderPath = result.path.substring(0, result.path.lastIndexOf('/')) || 'Root';
+                
+                item.innerHTML = `
+                    <h3 class="search-result-name">${result.name}</h3>
+                    <div class="search-result-path">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                        <span>${folderPath}</span>
+                    </div>
+                `;
+                
+                item.addEventListener('click', () => {
+                    window.location.hash = encodeURIComponent(result.path);
+                });
+                
+                resultsList.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html>

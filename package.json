@@ -1,0 +1,13 @@
+{
+  "name": "ml-nexus-resource-hub",
+  "version": "1.0.0",
+  "description": "Interactive web interface for ML-Nexus-Resource-Hub",
+  "main": "index.html",
+  "scripts": {
+    "build-index": "node scripts/build-index.js",
+    "dev": "node scripts/build-index.js && npx -y http-server -p 3000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
