@@ -1329,6 +1329,39 @@
             });
         }
 
+        // Parse markdown with math blocks protected from marked mangling
+        function parseMarkdownWithMath(markdown) {
+            const mathBlocks = [];
+            
+            // 1. Hide display math blocks ($$ ... $$)
+            let processed = markdown.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
+                const id = `__DISPLAY_MATH_PLACEHOLDER_${mathBlocks.length}__`;
+                mathBlocks.push({ id, type: 'display', math });
+                return id;
+            });
+            
+            // 2. Hide inline math blocks ($ ... $)
+            processed = processed.replace(/\$(?!\s)([^\$]+?)(?<!\s)\$/g, (match, math) => {
+                const id = `__INLINE_MATH_PLACEHOLDER_${mathBlocks.length}__`;
+                mathBlocks.push({ id, type: 'inline', math });
+                return id;
+            });
+            
+            // 3. Parse with marked
+            let html = marked.parse(processed);
+            
+            // 4. Restore math blocks
+            mathBlocks.forEach(item => {
+                if (item.type === 'display') {
+                    html = html.replace(item.id, `$$${item.math}$$`);
+                } else {
+                    html = html.replace(item.id, `$${item.math}$`);
+                }
+            });
+            
+            return html;
+        }
+
         // Add copy buttons to rendered code blocks
         function addCopyButtons() {
             const preBlocks = document.querySelectorAll('.markdown-body pre');
@@ -1352,6 +1385,24 @@
                     });
                 });
                 wrapper.appendChild(button);
+            });
+        }
+
+        // Resolve relative image src paths so they load correctly from their folders
+        function fixRelativeImages() {
+            const images = document.querySelectorAll('#markdown-content img');
+            images.forEach(img => {
+                const src = img.getAttribute('src');
+                if (!src) return;
+
+                // Skip absolute, base64 data, or anchor links
+                if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) {
+                    return;
+                }
+
+                // Resolve relative path relative to currentFilePath
+                const resolvedSrc = resolveRelativePath(currentFilePath, src);
+                img.setAttribute('src', resolvedSrc);
             });
         }
 
@@ -1430,39 +1481,16 @@
                 
                 // Render Markdown to HTML
                 const markdownContentDiv = document.getElementById('markdown-content');
-                
-                let prependHeroHTML = '';
-                // Prepend hero section only for main landing README.md
-                if (filePath === 'README.md') {
-                    prependHeroHTML = `
-                        <div class="readme-hero">
-                            <h1 class="readme-hero-title">ML-Nexus Resource Hub</h1>
-                            <p class="readme-hero-subtitle">Interactive index of MLOps, System Design, and Infrastructure resources</p>
-                            <div class="hero-stats" style="margin-top: 28px;">
-                                <div class="stat-card">
-                                    <span class="stat-val">${stats.lessons}</span>
-                                    <span class="stat-lbl">Lessons</span>
-                                </div>
-                                <div class="stat-card">
-                                    <span class="stat-val">${stats.designs}</span>
-                                    <span class="stat-lbl">System Designs</span>
-                                </div>
-                                <div class="stat-card">
-                                    <span class="stat-val">${stats.projects}</span>
-                                    <span class="stat-lbl">Projects</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                markdownContentDiv.innerHTML = prependHeroHTML + marked.parse(markdown);
+                markdownContentDiv.innerHTML = parseMarkdownWithMath(markdown);
                 
                 // Highlight syntax
                 Prism.highlightAllUnder(markdownContentDiv);
                 
                 // Inject code block copy buttons
                 addCopyButtons();
+                
+                // Fix relative image sources relative to the current file
+                fixRelativeImages();
                 
                 // Render LaTeX equations
                 renderMathInElement(markdownContentDiv, {
