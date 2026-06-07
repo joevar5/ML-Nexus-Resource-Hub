@@ -28,7 +28,7 @@
         /* Custom Premium CSS System */
         :root {
             --bg-primary: #080c14;
-            --bg-secondary: rgba(13, 20, 35, 0.7);
+            --bg-secondary: rgba(13, 20, 35, 0.65);
             --bg-sidebar: #0b111e;
             --accent: hsl(250, 85%, 65%);
             --accent-hover: hsl(250, 85%, 72%);
@@ -38,7 +38,7 @@
             --border-color: rgba(255, 255, 255, 0.08);
             --hover-bg: rgba(255, 255, 255, 0.04);
             --active-bg: rgba(255, 255, 255, 0.08);
-            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
             
             /* Alerts color palette */
             --color-note: #3b82f6;
@@ -92,7 +92,7 @@
 
         /* Sidebar Navigation */
         .sidebar {
-            width: 340px;
+            width: 320px;
             background-color: var(--bg-sidebar);
             border-right: 1px solid var(--border-color);
             display: flex;
@@ -100,12 +100,12 @@
             height: 100%;
             flex-shrink: 0;
             z-index: 10;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Sidebar Header */
         .sidebar-header {
-            padding: 24px;
+            padding: 24px 20px;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -181,12 +181,12 @@
         .sidebar-menu {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 16px 12px;
+            padding: 16px 8px;
         }
 
         /* Tree Menu Styles */
         .tree-node {
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .tree-folder {
@@ -195,10 +195,10 @@
             padding: 8px 12px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             font-weight: 500;
             color: var(--text-muted);
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             gap: 8px;
         }
 
@@ -221,10 +221,10 @@
 
         .tree-children {
             display: none;
-            padding-left: 18px;
+            padding-left: 14px;
             margin-top: 2px;
-            border-left: 1px dashed rgba(255, 255, 255, 0.1);
-            margin-left: 18px;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            margin-left: 19px;
         }
 
         .tree-node.expanded > .tree-children {
@@ -239,7 +239,7 @@
             cursor: pointer;
             font-size: 0.85rem;
             color: var(--text-muted);
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             gap: 8px;
             text-decoration: none;
         }
@@ -250,11 +250,12 @@
         }
 
         .tree-file.active {
-            background: rgba(99, 102, 241, 0.15);
+            background: rgba(99, 102, 241, 0.12);
             color: #fff;
             font-weight: 500;
             border-left: 3px solid var(--accent);
             padding-left: 9px;
+            border-radius: 0 6px 6px 0;
         }
 
         .tree-file-icon {
@@ -276,6 +277,7 @@
             height: 100%;
             overflow: hidden;
             position: relative;
+            background: radial-gradient(circle at 50% 0%, #0e1628, #080c14 80%);
         }
 
         /* Top Bar */
@@ -286,8 +288,8 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 32px;
-            background-color: rgba(8, 12, 20, 0.5);
-            backdrop-filter: blur(10px);
+            background-color: rgba(8, 12, 20, 0.4);
+            backdrop-filter: blur(12px);
             z-index: 5;
         }
 
@@ -295,6 +297,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            min-width: 0;
         }
 
         /* Mobile Menu Toggle */
@@ -313,21 +316,38 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .breadcrumbs span {
+            transition: color 0.15s ease;
+        }
+
+        .breadcrumbs span[style*="cursor:pointer"]:hover {
+            color: #fff;
+            text-decoration: underline;
         }
 
         .breadcrumb-separator {
             color: rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
         }
 
         .breadcrumb-active {
             color: var(--text-main);
             font-weight: 500;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
         }
 
         .top-bar-right {
             display: flex;
             align-items: center;
             gap: 16px;
+            flex-shrink: 0;
         }
 
         .github-btn {
@@ -368,7 +388,7 @@
             transition: width 0.1s ease;
         }
 
-        /* Main View Panels */
+        /* Main Content View Panel */
         .content-panel {
             flex-grow: 1;
             overflow-y: auto;
@@ -378,51 +398,57 @@
             scroll-behavior: smooth;
         }
 
-        /* Dashboard/Welcome View */
-        .dashboard {
-            max-width: 900px;
+        /* Document Reader Panel */
+        .reader-container {
+            max-width: 960px;
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            animation: fadeIn 0.4s ease;
+            display: grid;
+            grid-template-columns: 1fr 240px;
+            gap: 48px;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .hero {
-            padding: 60px 40px;
-            background: radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.15), transparent 60%),
-                        rgba(13, 20, 35, 0.4);
+        .reader-main {
+            min-width: 0;
+        }
+
+        /* Welcome/Readme Hero decoration block */
+        .readme-hero {
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.03)),
+                        var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             text-align: center;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(16px);
             box-shadow: var(--shadow-lg);
+            margin-bottom: 40px;
         }
 
-        .hero-title {
+        .readme-hero-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
+            font-size: 2.75rem;
             font-weight: 800;
             letter-spacing: -0.03em;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, #ffffff, #a5b4fc, #818cf8);
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff, #c7d2fe, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .hero-subtitle {
-            font-size: 1.15rem;
+        .readme-hero-subtitle {
+            font-size: 1.05rem;
             color: var(--text-muted);
             max-width: 600px;
-            margin: 0 auto 32px auto;
-            line-height: 1.6;
+            margin: 0 auto;
+            line-height: 1.5;
         }
 
+        /* Stats counters */
         .hero-stats {
             display: flex;
             justify-content: center;
             gap: 48px;
-            margin-top: 16px;
         }
 
         .stat-card {
@@ -433,86 +459,17 @@
 
         .stat-val {
             font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: #fff;
         }
 
         .stat-lbl {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-top: 4px;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
-
-        .category-card {
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 28px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(8px);
-        }
-
-        .category-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(99, 102, 241, 0.4);
-            box-shadow: 0 12px 20px -8px rgba(99, 102, 241, 0.2);
-            background-color: rgba(13, 20, 35, 0.85);
-        }
-
-        .category-card-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-        }
-
-        .category-card-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: #818cf8;
-        }
-
-        .category-card-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-
-        .category-card-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        /* Document Reader Panel */
-        .reader-container {
-            max-width: 860px;
-            width: 100%;
-            display: none;
-            grid-template-columns: 1fr 240px;
-            gap: 40px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .reader-main {
-            min-width: 0; /* Prevents overflow in flex layouts */
+            margin-top: 2px;
         }
 
         /* Side Table of Contents (TOC) */
@@ -550,6 +507,9 @@
             display: block;
             line-height: 1.4;
             cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .toc-link:hover {
@@ -581,7 +541,7 @@
             margin-top: 1.8em;
             margin-bottom: 0.6em;
             font-weight: 700;
-            scroll-margin-top: 80px; /* Offset for anchor links */
+            scroll-margin-top: 80px;
         }
 
         .markdown-body h1 {
@@ -640,7 +600,7 @@
         }
 
         .markdown-body pre {
-            background-color: #0b101c !important;
+            background-color: #090e1a !important;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 16px;
@@ -653,6 +613,41 @@
             padding: 0;
             font-size: 0.85rem;
             color: #f3f4f6;
+        }
+
+        /* Code Block Copy Button Container */
+        .code-wrapper {
+            position: relative;
+            margin-bottom: 1.5em;
+        }
+
+        .code-wrapper pre {
+            margin-bottom: 0;
+        }
+
+        .copy-code-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            color: #9ca3af;
+            font-size: 0.725rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, background 0.2s, color 0.2s;
+            font-family: inherit;
+        }
+
+        .code-wrapper:hover .copy-code-btn {
+            opacity: 1;
+        }
+
+        .copy-code-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
         }
 
         /* Horizontal rule */
@@ -675,8 +670,9 @@
             border-left: 4px solid var(--border-color);
             padding: 14px 16px;
             border-radius: 0 8px 8px 0;
-            background-color: rgba(255, 255, 255, 0.02);
+            background-color: rgba(255, 255, 255, 0.015);
             margin-bottom: 1.5em;
+            backdrop-filter: blur(4px);
         }
 
         .alert-title {
@@ -685,25 +681,29 @@
             gap: 8px;
             font-family: 'Outfit', sans-serif;
             font-weight: 600;
-            font-size: 0.875rem;
-            margin-bottom: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
-        .alert-box.note { border-left-color: var(--color-note); }
+        .alert-title svg {
+            flex-shrink: 0;
+        }
+
+        .alert-box.note { border-left-color: var(--color-note); background-color: rgba(59, 130, 246, 0.02); }
         .alert-box.note .alert-title { color: var(--color-note); }
 
-        .alert-box.tip { border-left-color: var(--color-tip); }
+        .alert-box.tip { border-left-color: var(--color-tip); background-color: rgba(16, 185, 129, 0.02); }
         .alert-box.tip .alert-title { color: var(--color-tip); }
 
-        .alert-box.important { border-left-color: var(--color-important); }
+        .alert-box.important { border-left-color: var(--color-important); background-color: rgba(139, 92, 246, 0.02); }
         .alert-box.important .alert-title { color: var(--color-important); }
 
-        .alert-box.warning { border-left-color: var(--color-warning); }
+        .alert-box.warning { border-left-color: var(--color-warning); background-color: rgba(245, 158, 173, 0.02); }
         .alert-box.warning .alert-title { color: var(--color-warning); }
 
-        .alert-box.caution { border-left-color: var(--color-caution); }
+        .alert-box.caution { border-left-color: var(--color-caution); background-color: rgba(239, 68, 68, 0.02); }
         .alert-box.caution .alert-title { color: var(--color-caution); }
 
         /* Tables */
@@ -769,6 +769,7 @@
             padding: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
         }
 
         .search-result-item:hover {
@@ -793,7 +794,7 @@
             gap: 6px;
         }
 
-        /* Error/NotFound Screen */
+        /* Error Screen */
         .error-screen {
             display: flex;
             flex-direction: column;
@@ -833,9 +834,39 @@
             opacity: 0.9;
         }
 
+        /* Floating Scroll to Top button */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, background-color 0.2s;
+            z-index: 10;
+        }
+
+        .scroll-top-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .scroll-top-btn:hover {
+            background-color: rgba(99, 102, 241, 0.4);
+        }
+
         /* Fade-in Animation */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -859,19 +890,13 @@
                 top: 0;
                 bottom: 0;
                 transform: translateX(-100%);
-                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.6);
             }
             .sidebar.mobile-open {
                 transform: translateX(0);
             }
             .content-panel {
-                padding: 24px;
-            }
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            .hero-title {
-                font-size: 2.2rem;
+                padding: 24px 16px;
             }
             .top-bar {
                 padding: 0 16px;
@@ -900,7 +925,6 @@
                 </div>
             </div>
             <nav class="sidebar-menu" id="sidebar-menu">
-                <!-- Built dynamically from structure.json -->
                 <div class="tree-loading" style="padding: 16px; color: var(--text-muted); font-size: 0.85rem;">Loading resources...</div>
             </nav>
         </aside>
@@ -938,62 +962,8 @@
 
             <!-- Content Panel -->
             <div class="content-panel" id="content-panel">
-                <!-- Welcome/Dashboard -->
-                <div id="welcome-view" class="dashboard">
-                    <section class="hero">
-                        <h1 class="hero-title">ML-Nexus Resource Hub</h1>
-                        <p class="hero-subtitle">Explore a premium index of ML system designs, AI infrastructure lessons, production scaffolds, and academic research analysis.</p>
-                        
-                        <div class="hero-stats">
-                            <div class="stat-card">
-                                <span class="stat-val" id="stat-lessons">-</span>
-                                <span class="stat-lbl">Lessons</span>
-                            </div>
-                            <div class="stat-card">
-                                <span class="stat-val" id="stat-designs">-</span>
-                                <span class="stat-lbl">System Designs</span>
-                            </div>
-                            <div class="stat-card">
-                                <span class="stat-val" id="stat-projects">-</span>
-                                <span class="stat-lbl">Projects</span>
-                            </div>
-                        </div>
-                    </section>
-
-                    <div class="dashboard-grid">
-                        <div class="category-card" onclick="expandAndSelect('AI Infrastructure Engineer')">
-                            <div class="category-card-icon">
-                                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/></svg>
-                            </div>
-                            <h2 class="category-card-title">AI Infrastructure</h2>
-                            <p class="category-card-desc">Advanced modules detailing environment design, orchestration, caching, serving, pipelines, and cloud platform infrastructure.</p>
-                        </div>
-                        <div class="category-card" onclick="expandAndSelect('ML and GenAI System Design')">
-                            <div class="category-card-icon">
-                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                            </div>
-                            <h2 class="category-card-title">System Design</h2>
-                            <p class="category-card-desc">Detailed templates and breakdowns for Recommendation Engines, Search, CTR prediction, Fraud detection, CV systems, and Forecasting.</p>
-                        </div>
-                        <div class="category-card" onclick="expandAndSelect('ML and GenAI Projects')">
-                            <div class="category-card-icon">
-                                <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
-                            </div>
-                            <h2 class="category-card-title">Production Scaffolds</h2>
-                            <p class="category-card-desc">Complete end-to-end projects containing deployable templates, monitoring metrics, dvc pipelines, and chart deployments.</p>
-                        </div>
-                        <div class="category-card" onclick="expandAndSelect('Research Paper Analysis')">
-                            <div class="category-card-icon">
-                                <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5.89 12.5L12 15.83l6.11-3.33L12 9.17l-6.11 3.33z"/></svg>
-                            </div>
-                            <h2 class="category-card-title">Research Analysis</h2>
-                            <p class="category-card-desc">Rigorous reviews and deep-dives on milestone papers, core algorithms, theoretical frameworks, and performance evaluations.</p>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Document Reader Container -->
-                <div id="reader-view" class="reader-container">
+                <div id="reader-view" class="reader-container" style="display: none;">
                     <article class="reader-main">
                         <div id="markdown-content" class="markdown-body">
                             <!-- Renders content dynamically -->
@@ -1030,11 +1000,19 @@
         </main>
     </div>
 
+    <!-- Scroll to Top floating button -->
+    <button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to Top">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
     <!-- UI Logic and Rendering Script -->
     <script>
         let filesTree = [];
         let flattenedFiles = [];
         let currentFilePath = '';
+        let stats = { lessons: '0', designs: '0', projects: '0' };
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
@@ -1066,9 +1044,11 @@
                 handleSearch(e.target.value);
             });
 
-            // Handle progress bar tracking
+            // Handle progress bar and scroll-to-top button
             const contentPanel = document.getElementById('content-panel');
+            const scrollTopBtn = document.getElementById('scroll-top-btn');
             contentPanel.addEventListener('scroll', () => {
+                // Progress Bar
                 const totalHeight = contentPanel.scrollHeight - contentPanel.clientHeight;
                 if (totalHeight > 0) {
                     const progress = (contentPanel.scrollTop / totalHeight) * 100;
@@ -1076,7 +1056,99 @@
                 } else {
                     document.getElementById('progress-bar').style.width = '0%';
                 }
+
+                // Scroll to top visibility
+                if (contentPanel.scrollTop > 300) {
+                    scrollTopBtn.classList.add('visible');
+                } else {
+                    scrollTopBtn.classList.remove('visible');
+                }
             });
+
+            scrollTopBtn.addEventListener('click', () => {
+                contentPanel.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Intercept relative markdown link clicks to navigate within the SPA
+            document.getElementById('markdown-content').addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (!link) return;
+
+                const href = link.getAttribute('href');
+                if (!href) return;
+
+                // Skip external, mailto, or local page anchor links
+                if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:') || href.startsWith('#')) {
+                    return;
+                }
+
+                // Prevent default normal page navigation
+                e.preventDefault();
+
+                // Resolve relative path against current file
+                const resolved = resolveRelativePath(currentFilePath, href);
+                navigateToResolvedPath(resolved);
+            });
+        }
+
+        // Resolve relative file paths
+        function resolveRelativePath(basePath, relativePath) {
+            // Decode url components
+            relativePath = decodeURIComponent(relativePath);
+            
+            // Extract base folder
+            const parts = basePath.split('/');
+            parts.pop(); // Remove filename to get base directory
+            
+            const relParts = relativePath.split('/');
+            for (const part of relParts) {
+                if (part === '.' || part === '') {
+                    continue;
+                } else if (part === '..') {
+                    parts.pop();
+                } else {
+                    parts.push(part);
+                }
+            }
+            return parts.join('/');
+        }
+
+        // Navigate to a resolved path inside the SPA
+        function navigateToResolvedPath(resolvedPath) {
+            // 1. Exact file match check
+            const exactFile = flattenedFiles.find(f => f.path === resolvedPath);
+            if (exactFile) {
+                window.location.hash = encodeURIComponent(resolvedPath);
+                return;
+            }
+
+            // 2. Folder readme search
+            const readmeAlternatives = [
+                resolvedPath + '/readme.md',
+                resolvedPath + '/README.md',
+                resolvedPath + '/Readme.md',
+                resolvedPath + '/index.html' // in case of index.html links
+            ];
+
+            for (const rPath of readmeAlternatives) {
+                const readmeFile = flattenedFiles.find(f => f.path === rPath);
+                if (readmeFile) {
+                    window.location.hash = encodeURIComponent(rPath);
+                    return;
+                }
+            }
+
+            // 3. Fallback: navigate to first file matching directory path prefix
+            const dirPrefix = resolvedPath.endsWith('/') ? resolvedPath : resolvedPath + '/';
+            const childFile = flattenedFiles.find(f => f.path.startsWith(dirPrefix));
+            if (childFile) {
+                window.location.hash = encodeURIComponent(childFile.path);
+                return;
+            }
+
+            console.warn(`Could not resolve dynamic route for path: ${resolvedPath}`);
+            // Force hash change as fallback so error state displays
+            window.location.hash = encodeURIComponent(resolvedPath);
         }
 
         // Fetch structure.json and initialize tree
@@ -1086,16 +1158,16 @@
                 if (!response.ok) throw new Error('Failed to fetch structure index');
                 filesTree = await response.json();
                 
-                // Flatten the structure to support easy searches & stats calculation
+                // Flatten tree nodes
                 flattenTree(filesTree);
                 
-                // Set home screen stats
+                // Calculate repo stats
                 calculateStats();
                 
-                // Build sidebar HTML
+                // Build sidebar
                 renderSidebar(filesTree, document.getElementById('sidebar-menu'));
                 
-                // Handle initial routing (if url has hash)
+                // Handle routing
                 handleRouting();
             } catch (err) {
                 console.error('Error initializing structure:', err);
@@ -1108,12 +1180,12 @@
         }
 
         // Flatten tree node helper
-        function flattenTree(nodes, currentPathPrefix = '') {
+        function flattenTree(nodes) {
             for (const node of nodes) {
                 if (node.type === 'file') {
                     flattenedFiles.push(node);
                 } else if (node.type === 'directory' && node.children) {
-                    flattenTree(node.children, currentPathPrefix + node.name + ' / ');
+                    flattenTree(node.children);
                 }
             }
         }
@@ -1131,17 +1203,16 @@
                 else if (lowerPath.includes('project')) projectsCount++;
             });
 
-            // Add fallbacks if specific keywords don't match cleanly
-            document.getElementById('stat-lessons').innerText = lessonsCount || '15+';
-            document.getElementById('stat-designs').innerText = designsCount || '50+';
-            document.getElementById('stat-projects').innerText = projectsCount || '5+';
+            stats.lessons = lessonsCount || '15+';
+            stats.designs = designsCount || '50+';
+            stats.projects = projectsCount || '5+';
         }
 
         // Render Sidebar HTML Tree
-        function renderSidebar(nodes, container, parentPath = '') {
+        function renderSidebar(nodes, container) {
             container.innerHTML = '';
-            
             const ul = document.createElement('div');
+            
             nodes.forEach(node => {
                 const item = document.createElement('div');
                 item.className = 'tree-node';
@@ -1167,8 +1238,7 @@
                     item.appendChild(folderDiv);
                     item.appendChild(childrenDiv);
                     
-                    // Recursively render children
-                    renderSidebar(node.children, childrenDiv, parentPath + node.name + ' / ');
+                    renderSidebar(node.children, childrenDiv);
                 } else {
                     const fileLink = document.createElement('a');
                     fileLink.className = 'tree-file';
@@ -1181,7 +1251,7 @@
                         <span>${node.name}</span>
                     `;
                     
-                    fileLink.addEventListener('click', (e) => {
+                    fileLink.addEventListener('click', () => {
                         document.querySelectorAll('.tree-file').forEach(el => el.classList.remove('active'));
                         fileLink.classList.add('active');
                         document.getElementById('sidebar').classList.remove('mobile-open');
@@ -1199,7 +1269,7 @@
             const hash = window.location.hash.substring(1);
             const searchInput = document.getElementById('search-input');
             
-            // If search has value, clear it when routing to specific files
+            // Clear search when navigating to files
             if (hash && searchInput.value) {
                 searchInput.value = '';
             }
@@ -1213,13 +1283,11 @@
             loadFile(decodedPath);
         }
 
-        // Go back to home dashboard
+        // Go back to home dashboard (shows root README.md)
         function goHome() {
             window.location.hash = '';
-            currentFilePath = '';
+            currentFilePath = 'README.md';
             
-            document.getElementById('welcome-view').style.display = 'flex';
-            document.getElementById('reader-view').style.display = 'none';
             document.getElementById('search-view').style.display = 'none';
             document.getElementById('error-view').style.display = 'none';
             
@@ -1229,47 +1297,61 @@
             // Reset Breadcrumbs
             document.getElementById('breadcrumbs').innerHTML = '<span class="breadcrumb-active">Home</span>';
             document.getElementById('progress-bar').style.width = '0%';
+
+            loadFile('README.md');
         }
 
-        // Helper to expand and load a main category from dashboard cards
-        function expandAndSelect(categoryName) {
-            const sidebarMenu = document.getElementById('sidebar-menu');
-            const folderNodes = sidebarMenu.querySelectorAll('.tree-node');
-            
-            for (const node of folderNodes) {
-                const folderTitle = node.querySelector('.tree-folder > span');
-                if (folderTitle && folderTitle.innerText === categoryName) {
-                    node.classList.add('expanded');
-                    // Find first file inside it and navigate
-                    const firstFileLink = node.querySelector('.tree-file');
-                    if (firstFileLink) {
-                        firstFileLink.click();
-                    }
-                    break;
-                }
-            }
-        }
-
-        // Parse alert boxes in GitHub style markdown (e.g. > [!NOTE])
+        // Parse custom SVG-styled GitHub Alerts
         function parseAlertBlocks(markdown) {
             const alertRegex = /^>\s*\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*\n((?:^>.*\n?)*)/gim;
             return markdown.replace(alertRegex, (match, type, content) => {
                 const cleanContent = content.replace(/^>\s?/gm, '').trim();
                 const cleanType = type.toLowerCase();
                 
-                // Dynamic icons for alert banners
-                let icon = '';
-                if (cleanType === 'note') icon = 'ℹ️';
-                else if (cleanType === 'tip') icon = '💡';
-                else if (cleanType === 'important') icon = '🔔';
-                else if (cleanType === 'warning') icon = '⚠️';
-                else if (cleanType === 'caution') icon = '🚨';
+                let iconSvg = '';
+                if (cleanType === 'note') {
+                    iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+                } else if (cleanType === 'tip') {
+                    iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line></svg>`;
+                } else if (cleanType === 'important') {
+                    iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+                } else if (cleanType === 'warning') {
+                    iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+                } else if (cleanType === 'caution') {
+                    iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+                }
                 
                 return `
 <div class="alert-box ${cleanType}">
-    <div class="alert-title">${icon} ${type}</div>
+    <div class="alert-title">${iconSvg}<span>${type}</span></div>
     <div class="alert-body">${marked.parse(cleanContent)}</div>
 </div>`;
+            });
+        }
+
+        // Add copy buttons to rendered code blocks
+        function addCopyButtons() {
+            const preBlocks = document.querySelectorAll('.markdown-body pre');
+            preBlocks.forEach(pre => {
+                if (pre.parentNode.classList.contains('code-wrapper')) return;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-wrapper';
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(pre);
+
+                const button = document.createElement('button');
+                button.className = 'copy-code-btn';
+                button.innerText = 'Copy';
+                button.addEventListener('click', () => {
+                    const code = pre.querySelector('code');
+                    navigator.clipboard.writeText(code.innerText).then(() => {
+                        button.innerText = 'Copied!';
+                        setTimeout(() => { button.innerText = 'Copy'; }, 2000);
+                    });
+                });
+                wrapper.appendChild(button);
             });
         }
 
@@ -1277,7 +1359,6 @@
         async function loadFile(filePath) {
             currentFilePath = filePath;
             
-            document.getElementById('welcome-view').style.display = 'none';
             document.getElementById('reader-view').style.display = 'none';
             document.getElementById('search-view').style.display = 'none';
             document.getElementById('error-view').style.display = 'none';
@@ -1287,7 +1368,7 @@
                 if (el.dataset.filepath === filePath) {
                     el.classList.add('active');
                     
-                    // Auto-expand all parent folders to keep current file visible
+                    // Auto-expand parent folders
                     let parent = el.closest('.tree-children');
                     while (parent) {
                         const parentNode = parent.closest('.tree-node');
@@ -1299,43 +1380,91 @@
                 }
             });
 
-            // Setup Breadcrumbs
-            const parts = filePath.split('/');
-            const breadcrumbHTML = parts.map((part, index) => {
-                const cleanPart = part.endsWith('.md') ? part.substring(0, part.length - 3) : part;
-                // Humanize filename capitalization
-                const humanized = cleanPart.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            // Set up interactive Breadcrumbs
+            const breadcrumbsContainer = document.getElementById('breadcrumbs');
+            breadcrumbsContainer.innerHTML = '';
+            
+            // Back-to-home indicator
+            const homeSpan = document.createElement('span');
+            homeSpan.innerText = 'Home';
+            homeSpan.style.cursor = 'pointer';
+            homeSpan.addEventListener('click', goHome);
+            breadcrumbsContainer.appendChild(homeSpan);
+
+            if (filePath !== 'README.md') {
+                const parts = filePath.split('/');
+                let accumulatedPath = '';
                 
-                if (index === parts.length - 1) {
-                    return `<span class="breadcrumb-active">${humanized}</span>`;
-                }
-                return `
-                    <span>${humanized}</span>
-                    <span class="breadcrumb-separator">/</span>
-                `;
-            }).join('');
-            document.getElementById('breadcrumbs').innerHTML = `
-                <span style="cursor:pointer;" onclick="goHome()">Home</span>
-                <span class="breadcrumb-separator">/</span>
-                ${breadcrumbHTML}
-            `;
+                parts.forEach((part, index) => {
+                    const sep = document.createElement('span');
+                    sep.className = 'breadcrumb-separator';
+                    sep.innerText = '/';
+                    breadcrumbsContainer.appendChild(sep);
+
+                    accumulatedPath = accumulatedPath ? accumulatedPath + '/' + part : part;
+                    const pathClosure = accumulatedPath;
+
+                    const span = document.createElement('span');
+                    const cleanPart = part.endsWith('.md') ? part.substring(0, part.length - 3) : part;
+                    span.innerText = cleanPart.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+                    if (index === parts.length - 1) {
+                        span.className = 'breadcrumb-active';
+                    } else {
+                        span.style.cursor = 'pointer';
+                        span.addEventListener('click', () => {
+                            navigateToResolvedPath(pathClosure);
+                        });
+                    }
+                    breadcrumbsContainer.appendChild(span);
+                });
+            }
 
             try {
                 const response = await fetch(filePath);
                 if (!response.ok) throw new Error('File not found');
                 let markdown = await response.text();
                 
-                // 1. Process custom GitHub alerts first before passing to marked
+                // Pre-process custom alerts
                 markdown = parseAlertBlocks(markdown);
                 
-                // 2. Render Markdown content to HTML
+                // Render Markdown to HTML
                 const markdownContentDiv = document.getElementById('markdown-content');
-                markdownContentDiv.innerHTML = marked.parse(markdown);
                 
-                // 3. Highlight code snippets using Prism.js
+                let prependHeroHTML = '';
+                // Prepend hero section only for main landing README.md
+                if (filePath === 'README.md') {
+                    prependHeroHTML = `
+                        <div class="readme-hero">
+                            <h1 class="readme-hero-title">ML-Nexus Resource Hub</h1>
+                            <p class="readme-hero-subtitle">Interactive index of MLOps, System Design, and Infrastructure resources</p>
+                            <div class="hero-stats" style="margin-top: 28px;">
+                                <div class="stat-card">
+                                    <span class="stat-val">${stats.lessons}</span>
+                                    <span class="stat-lbl">Lessons</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-val">${stats.designs}</span>
+                                    <span class="stat-lbl">System Designs</span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-val">${stats.projects}</span>
+                                    <span class="stat-lbl">Projects</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                markdownContentDiv.innerHTML = prependHeroHTML + marked.parse(markdown);
+                
+                // Highlight syntax
                 Prism.highlightAllUnder(markdownContentDiv);
                 
-                // 4. Render LaTeX math formulas
+                // Inject code block copy buttons
+                addCopyButtons();
+                
+                // Render LaTeX equations
                 renderMathInElement(markdownContentDiv, {
                     delimiters: [
                         {left: '$$', right: '$$', display: true},
@@ -1346,10 +1475,9 @@
                     throwOnError: false
                 });
 
-                // 5. Generate floating Table of Contents
+                // Generate TOC
                 buildTOC();
                 
-                // Display the reader panel
                 document.getElementById('reader-view').style.display = 'grid';
                 document.getElementById('content-panel').scrollTop = 0;
                 document.getElementById('progress-bar').style.width = '0%';
@@ -1365,8 +1493,9 @@
             const tocList = document.getElementById('toc-list');
             tocList.innerHTML = '';
             
-            // Select h2 and h3 headers
-            const headings = container.querySelectorAll('h2, h3');
+            // Exclude headers in the custom readme hero section
+            const headings = Array.from(container.querySelectorAll('h2, h3'))
+                .filter(h => !h.closest('.readme-hero'));
             
             if (headings.length === 0) {
                 document.querySelector('.toc-aside').style.display = 'none';
@@ -1392,7 +1521,7 @@
                 tocList.appendChild(li);
             });
 
-            // Set up scroll spying to highlight current section in TOC
+            // Set up scroll spying
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1401,7 +1530,6 @@
                             link.classList.remove('active');
                         });
                         const activeLink = Array.from(document.querySelectorAll('.toc-link')).find(link => {
-                            // Link mapping search based on scroll spy heading text
                             return link.innerText === entry.target.innerText;
                         });
                         if (activeLink) activeLink.classList.add('active');
@@ -1409,7 +1537,7 @@
                 });
             }, {
                 root: document.getElementById('content-panel'),
-                rootMargin: '0px 0px -60% 0px', // Trigger activation on top half screen
+                rootMargin: '0px 0px -60% 0px',
                 threshold: 0.1
             });
 
@@ -1420,31 +1548,21 @@
         function handleSearch(query) {
             query = query.trim().toLowerCase();
             
-            const welcomeView = document.getElementById('welcome-view');
             const readerView = document.getElementById('reader-view');
             const searchView = document.getElementById('search-view');
             const errorView = document.getElementById('error-view');
 
             if (!query) {
-                if (currentFilePath) {
-                    welcomeView.style.display = 'none';
-                    readerView.style.display = 'grid';
-                    searchView.style.display = 'none';
-                } else {
-                    welcomeView.style.display = 'flex';
-                    readerView.style.display = 'none';
-                    searchView.style.display = 'none';
-                }
+                readerView.style.display = 'grid';
+                searchView.style.display = 'none';
                 errorView.style.display = 'none';
                 return;
             }
 
-            welcomeView.style.display = 'none';
             readerView.style.display = 'none';
             errorView.style.display = 'none';
             searchView.style.display = 'block';
 
-            // Filter results from flattened tree list
             const results = flattenedFiles.filter(item => {
                 return item.name.toLowerCase().includes(query) || 
                        item.path.toLowerCase().includes(query);
@@ -1467,8 +1585,6 @@
             results.forEach(result => {
                 const item = document.createElement('div');
                 item.className = 'search-result-item';
-                
-                // Parse file folder path details
                 const folderPath = result.path.substring(0, result.path.lastIndexOf('/')) || 'Root';
                 
                 item.innerHTML = `
