@@ -8,12 +8,12 @@ Welcome to the **Phase 1 Learning Plan**. This document serves as your structure
 
 $$
 \begin{array}{c}
-\boxed{\text{Core Foundation Lessons}} \\
-\downarrow \\
-\boxed{\text{Hands-on AI Infrastructure Projects}} \\
-\downarrow \\
-\boxed{\text{Self Final Assessment}} \\
-\downarrow \\
+\boxed{\text{Core Foundation Lessons}} \cr
+\downarrow \cr
+\boxed{\text{Hands-on AI Infrastructure Projects}} \cr
+\downarrow \cr
+\boxed{\text{Self Final Assessment}} \cr
+\downarrow \cr
 \boxed{\text{Continuous Learning and Resources}}
 \end{array}
 $$

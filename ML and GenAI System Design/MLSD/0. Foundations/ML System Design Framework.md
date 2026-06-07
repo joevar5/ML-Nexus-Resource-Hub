@@ -8,14 +8,21 @@
 Designing a production-grade machine learning system requires an end-to-end pipeline. The system architecture should be structured into seven distinct steps:
 
 $$
-\begin{aligned}
-\text{1. Clarify Requirements} &\longrightarrow \text{2. Frame the Problem as an ML Task} \\
-&\longrightarrow \text{3. Data Preparation} \\
-&\longrightarrow \text{4. Model Development} \\
-&\longrightarrow \text{5. System Evaluation} \\
-&\longrightarrow \text{6. Deployment \& Serving} \\
-&\longrightarrow \text{7. Monitoring \& Infrastructure}
-\end{aligned}
+\begin{gathered}
+\text{1. Clarify Requirements} \cr
+\downarrow \cr
+\text{2. Frame the Problem as an ML Task} \cr
+\downarrow \cr
+\text{3. Data Preparation} \cr
+\downarrow \cr
+\text{4. Model Development} \cr
+\downarrow \cr
+\text{5. System Evaluation} \cr
+\downarrow \cr
+\text{6. Deployment and Serving} \cr
+\downarrow \cr
+\text{7. Monitoring and Infrastructure}
+\end{gathered}
 $$
 
 ---
@@ -96,7 +103,17 @@ Identify where the problem fits within standard machine learning paradigms:
 ## Step 4: Model Development
 System modeling should progress systematically from simple baselines to highly complex architectures.
 
-$$\text{Simple Baseline} \longrightarrow \text{Simple Models} \longrightarrow \text{Complex Neural Networks} \longrightarrow \text{Ensemble Methods}$$
+$$
+\begin{gathered}
+\text{Simple Baseline} \cr
+\downarrow \cr
+\text{Simple Models} \cr
+\downarrow \cr
+\text{Complex Neural Networks} \cr
+\downarrow \cr
+\text{Ensemble Methods}
+\end{gathered}
+$$
 
 ### 1. Model Selection Strategy
 1.  **Baseline First:** Implement a simple heuristic to establish a lower bound of performance (e.g., recommending the most popular video).
@@ -107,7 +124,15 @@ $$\text{Simple Baseline} \longrightarrow \text{Simple Models} \longrightarrow \t
 ### 2. Dataset Construction Flow
 To construct a training pipeline, follow this dataset transition split:
 
-$$\text{Raw Data} \xrightarrow{\text{Labeling}} \text{Labeled Dataset} \xrightarrow{\text{Sampling}} \text{Splits (Train, Val, Test)}$$
+$$
+\begin{gathered}
+\text{Raw Data} \cr
+\downarrow \text{ (Labeling)} \cr
+\text{Labeled Dataset} \cr
+\downarrow \text{ (Sampling)} \cr
+\text{Splits (Train, Val, Test)}
+\end{gathered}
+$$
 
 *   **Labeling Types:**
     *   *Hand Labeling:* High accuracy, but low scalability and high cost.

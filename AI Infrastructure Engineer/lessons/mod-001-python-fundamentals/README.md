@@ -10,16 +10,26 @@ Unlike general Python courses, this curriculum focuses on the intersection of Py
 ## Learning Path
 
 $$
-\begin{array}{ccc}
-\boxed{\text{Lecture 01: Environments}} & \longrightarrow & \boxed{\text{Exercise 01: Setup and Automation}} \\
-& & \downarrow \\
-\boxed{\text{Lecture 02: Advanced Patterns}} & \longrightarrow & \boxed{\text{Exercises 02-03: Data Structures and Modules}} \\
-& & \downarrow \\
-\boxed{\text{Lecture 03: DevOps Scripting}} & \longrightarrow & \boxed{\text{Exercises 04-05: File I/O and Error Handling}} \\
-& & \downarrow \\
-\boxed{\text{Lecture 04: Asynchronous Operations}} & \longrightarrow & \boxed{\text{Exercise 06: Async Pipelines}} \\
-& & \downarrow \\
-\boxed{\text{Lecture 05: Code Quality and Testing}} & \longrightarrow & \boxed{\text{Exercise 07: Unit Testing}}
+\begin{array}{c}
+\boxed{\text{Lecture 01: Environments}} \cr
+\downarrow \cr
+\boxed{\text{Exercise 01: Setup and Automation}} \cr
+\downarrow \cr
+\boxed{\text{Lecture 02: Advanced Patterns}} \cr
+\downarrow \cr
+\boxed{\text{Exercises 02-03: Data Structures and Modules}} \cr
+\downarrow \cr
+\boxed{\text{Lecture 03: DevOps Scripting}} \cr
+\downarrow \cr
+\boxed{\text{Exercises 04-05: File I/O and Error Handling}} \cr
+\downarrow \cr
+\boxed{\text{Lecture 04: Asynchronous Operations}} \cr
+\downarrow \cr
+\boxed{\text{Exercise 06: Async Pipelines}} \cr
+\downarrow \cr
+\boxed{\text{Lecture 05: Code Quality and Testing}} \cr
+\downarrow \cr
+\boxed{\text{Exercise 07: Unit Testing}}
 \end{array}
 $$
 

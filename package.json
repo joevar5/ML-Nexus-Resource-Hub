@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "build-index": "node scripts/build-index.js",
-    "dev": "node scripts/build-index.js && npx -y http-server -p 3000"
+    "dev": "node scripts/build-index.js && npx -y http-server -c-1 -p 3000"
   },
   "keywords": [],
   "author": "",
