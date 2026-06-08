@@ -684,6 +684,48 @@
         @media (pointer: coarse) {
             #cursor-dot, #cursor-ring { display: none !important; }
         }
+
+        /* ── Ask ChatGPT Tooltip ── */
+        #chatgpt-tooltip {
+            position: fixed;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 9999px;
+            border: 1px solid var(--color-outline-variant);
+            background: rgba(250, 249, 250, 0.95);
+            backdrop-filter: blur(12px);
+            color: var(--color-on-surface);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            font-family: 'Public Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            pointer-events: none;
+            user-select: none;
+            opacity: 0;
+            transform: translate(-50%, 10px) scale(0.95);
+            transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+        html.dark #chatgpt-tooltip {
+            background: rgba(24, 28, 35, 0.95);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        #chatgpt-tooltip.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, 0) scale(1);
+        }
+        #chatgpt-tooltip:hover {
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+            border-color: var(--color-primary);
+        }
+        #chatgpt-tooltip .sparkle-icon {
+            font-size: 16px;
+        }
     </style>
 </head>
 <body class="bg-background text-on-surface overflow-x-hidden min-h-screen flex flex-col pt-16 animate-fade-in">
@@ -703,6 +745,12 @@
     <!-- Custom Cursor Elements -->
     <div id="cursor-dot"></div>
     <div id="cursor-ring"></div>
+
+    <!-- Ask ChatGPT Tooltip -->
+    <button id="chatgpt-tooltip">
+        <span class="material-symbols-outlined sparkle-icon">auto_awesome</span>
+        <span>Ask ChatGPT</span>
+    </button>
 
 
     <!-- TopNavBar -->
@@ -1330,6 +1378,95 @@
                 // Resolve relative path against current file
                 const resolved = resolveRelativePath(currentFilePath, href);
                 navigateToResolvedPath(resolved);
+            });
+
+            // Selection Handling for ChatGPT Tooltip
+            const chatgptTooltip = document.getElementById('chatgpt-tooltip');
+            let selectedText = '';
+
+            function handleTextSelection() {
+                const selection = window.getSelection();
+                const text = selection.toString().trim();
+
+                if (!text) {
+                    chatgptTooltip.classList.remove('visible');
+                    selectedText = '';
+                    return;
+                }
+
+                // Only show tooltip in content pages (within markdown-content)
+                const markdownContent = document.getElementById('markdown-content');
+                if (!markdownContent || !selection.anchorNode || !markdownContent.contains(selection.anchorNode)) {
+                    chatgptTooltip.classList.remove('visible');
+                    selectedText = '';
+                    return;
+                }
+
+                selectedText = text;
+
+                // Position the tooltip above the selected text
+                try {
+                    const range = selection.getRangeAt(0);
+                    const rect = range.getBoundingClientRect();
+                    
+                    // Check if selection bounding box is valid
+                    if (rect.width > 0 && rect.height > 0) {
+                        chatgptTooltip.style.left = `${rect.left + rect.width / 2}px`;
+                        chatgptTooltip.style.top = `${rect.top - 48}px`; // 48px above top of selection
+                        chatgptTooltip.classList.add('visible');
+                    } else {
+                        chatgptTooltip.classList.remove('visible');
+                    }
+                } catch (e) {
+                    chatgptTooltip.classList.remove('visible');
+                }
+            }
+
+            document.addEventListener('mouseup', () => {
+                // Delay slightly to ensure selection state is fully updated
+                setTimeout(handleTextSelection, 10);
+            });
+
+            document.addEventListener('keyup', (e) => {
+                // Update selection on arrow keys navigation
+                if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Shift'].includes(e.key)) {
+                    handleTextSelection();
+                } else if (e.key === 'Escape') {
+                    chatgptTooltip.classList.remove('visible');
+                    window.getSelection().removeAllRanges();
+                }
+            });
+
+            // Prevent clearing selection immediately when clicking the tooltip itself
+            chatgptTooltip.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+            });
+
+            chatgptTooltip.addEventListener('click', () => {
+                if (!selectedText) return;
+
+                const structuredPrompt = `Help me learn the following topic in a structured way:
+
+${selectedText}
+
+Please:
+1. Explain it in simple English.
+2. Break it down step by step.
+3. Explain how it works internally.
+4. Clear common doubts and misconceptions.
+5. Provide practical examples.
+6. Highlight important concepts and key takeaways.
+7. Ask me a few questions to test my understanding.
+8. Suggest what I should learn next.
+
+Assume I am learning this for practical use and interview preparation.`;
+
+                const chatgptUrl = `https://chatgpt.com/?q=${encodeURIComponent(structuredPrompt)}`;
+                window.open(chatgptUrl, '_blank');
+                
+                // Clear selection and hide tooltip
+                window.getSelection().removeAllRanges();
+                chatgptTooltip.classList.remove('visible');
             });
         }
 
