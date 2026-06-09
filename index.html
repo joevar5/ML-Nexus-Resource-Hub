@@ -1677,7 +1677,7 @@ Assume I am learning this for practical use and interview preparation.`;
                     folderDiv.innerHTML = `
                         <div class="flex items-center gap-2 overflow-hidden">
                             <span class="material-symbols-outlined text-md text-on-surface-variant/80 flex-shrink-0">folder</span>
-                            <span class="truncate">${node.name}</span>
+                            <span class="whitespace-normal break-words text-left leading-tight">${node.name}</span>
                         </div>
                         <span class="material-symbols-outlined text-xs tree-folder-chevron transition-transform flex-shrink-0">chevron_right</span>
                     `;
@@ -1698,20 +1698,20 @@ Assume I am learning this for practical use and interview preparation.`;
                     renderSidebar(node.children, childrenDiv);
                 } else {
                     const fileLink = document.createElement('a');
-                    fileLink.className = 'tree-file flex items-center gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+                    fileLink.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
                     fileLink.href = `#${encodeURIComponent(node.path)}`;
                     fileLink.dataset.filepath = node.path;
                     
                     fileLink.innerHTML = `
-                        <span class="material-symbols-outlined text-md text-on-surface-variant/70 flex-shrink-0">description</span>
-                        <span class="truncate">${node.name}</span>
+                        <span class="material-symbols-outlined text-md text-on-surface-variant/70 flex-shrink-0 mt-0.5">description</span>
+                        <span class="whitespace-normal break-words text-left leading-tight">${node.name}</span>
                     `;
                     
                     fileLink.addEventListener('click', () => {
                         document.querySelectorAll('.tree-file').forEach(el => {
-                            el.className = 'tree-file flex items-center gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+                            el.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
                         });
-                        fileLink.className = 'tree-file active flex items-center gap-2 p-2 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all cursor-pointer text-sm font-label';
+                        fileLink.className = 'tree-file active flex items-start gap-2 p-2 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all cursor-pointer text-sm font-label';
                     });
                     
                     item.appendChild(fileLink);
@@ -1758,7 +1758,7 @@ Assume I am learning this for practical use and interview preparation.`;
             document.getElementById('sidebar-tree-container').style.display = 'none';
             
             document.querySelectorAll('.tree-file').forEach(el => {
-                el.className = 'tree-file flex items-center gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+                el.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
             });
             
             // Reset About the Author link styles
@@ -1780,7 +1780,7 @@ Assume I am learning this for practical use and interview preparation.`;
             
             // Reset files highlights
             document.querySelectorAll('.tree-file').forEach(el => {
-                el.className = 'tree-file flex items-center gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+                el.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
             });
             
             // Highlight active category tab in sidebar
@@ -1867,7 +1867,7 @@ Assume I am learning this for practical use and interview preparation.`;
         function highlightActiveFileInSidebar(filePath) {
             document.querySelectorAll('.tree-file').forEach(el => {
                 if (el.dataset.filepath === filePath) {
-                    el.className = "tree-file active flex items-center gap-2 p-2 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all cursor-pointer text-sm font-label";
+                    el.className = "tree-file active flex items-start gap-2 p-2 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all cursor-pointer text-sm font-label";
                     
                     let parent = el.closest('.tree-children');
                     while (parent) {
@@ -1880,7 +1880,7 @@ Assume I am learning this for practical use and interview preparation.`;
                         parent = parentNode ? parentNode.parentElement.closest('.tree-children') : null;
                     }
                 } else {
-                    el.className = "tree-file flex items-center gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label";
+                    el.className = "tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label";
                 }
             });
         }
