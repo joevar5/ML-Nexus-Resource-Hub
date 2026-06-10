@@ -816,7 +816,14 @@
         
         <!-- Dynamic Tree Navigation (Filtered by Active Category) -->
         <div class="mt-md pt-md border-t border-outline-variant flex-1 overflow-y-auto" id="sidebar-tree-container" style="display: none;">
-            <h4 class="font-label text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-2">Files & Chapters</h4>
+            <div class="flex items-center justify-between mb-2">
+                <h4 class="font-label text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Files & Chapters</h4>
+                <span id="category-progress-text" class="font-label text-[10px] font-semibold text-primary">0% (0/0)</span>
+            </div>
+            <!-- Progress bar container -->
+            <div class="w-full bg-surface-container-high dark:bg-surface-variant rounded-full h-1.5 mb-4 overflow-hidden">
+                <div id="category-progress-bar" class="bg-primary h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
             <div id="sidebar-menu">
                 <div class="tree-loading p-2 text-on-surface-variant/60 text-xs">Loading resources...</div>
             </div>
@@ -1063,6 +1070,14 @@
                 <div id="markdown-content" class="markdown-body">
                     <!-- Loaded dynamically -->
                 </div>
+
+                <!-- Lesson Navigation & Done actions -->
+                <div class="mt-12 pt-6 border-t border-outline-variant/60 flex items-center justify-between flex-wrap gap-4" id="reader-done-actions">
+                    <button id="mark-done-page-btn" class="flex items-center gap-2 px-6 py-3 bg-surface-container-high hover:bg-primary hover:text-white text-on-surface font-bold rounded-lg transition-all font-label text-sm uppercase tracking-wide border border-outline-variant">
+                        <span class="material-symbols-outlined text-md" id="mark-done-page-icon">check_box_outline_blank</span>
+                        <span id="mark-done-page-text">Mark as Done</span>
+                    </button>
+                </div>
             </article>
             
             <!-- Table of Contents aside -->
@@ -1243,6 +1258,86 @@
         let currentFilePath = '';
         let activeCategory = null;
         let stats = { lessons: '0', designs: '0', projects: '0' };
+        let completedFiles = new Set(JSON.parse(localStorage.getItem('completed_files') || '[]'));
+
+        function saveCompletedFiles() {
+            localStorage.setItem('completed_files', JSON.stringify(Array.from(completedFiles)));
+        }
+
+        function toggleFileCompletion(filePath) {
+            if (completedFiles.has(filePath)) {
+                completedFiles.delete(filePath);
+            } else {
+                completedFiles.add(filePath);
+            }
+            saveCompletedFiles();
+            updateCategoryProgress();
+            updateSidebarCompletionUI();
+            updateReaderDoneBtn();
+        }
+
+        function updateCategoryProgress() {
+            if (!activeCategory) return;
+            const categoryDir = categories.find(c => c.name === activeCategory)?.dir;
+            if (!categoryDir) return;
+            
+            const totalFiles = flattenedFiles.filter(f => f.path.startsWith(categoryDir) && f.type === 'file');
+            const totalCount = totalFiles.length;
+            const completedCount = totalFiles.filter(f => completedFiles.has(f.path)).length;
+            
+            const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+            
+            document.getElementById('category-progress-text').innerText = `${progressPercent}% (${completedCount}/${totalCount})`;
+            document.getElementById('category-progress-bar').style.width = `${progressPercent}%`;
+        }
+
+        function updateSidebarCompletionUI() {
+            document.querySelectorAll('.tree-file').forEach(el => {
+                const path = el.dataset.filepath;
+                if (!path) return;
+                
+                const isCompleted = completedFiles.has(path);
+                const markDoneBtn = el.querySelector('.mark-done-btn');
+                const labelSpan = el.querySelector('.file-label');
+                
+                if (markDoneBtn) {
+                    markDoneBtn.innerText = isCompleted ? 'check_box' : 'check_box_outline_blank';
+                    if (isCompleted) {
+                        markDoneBtn.classList.remove('text-on-surface-variant/40');
+                        markDoneBtn.classList.add('text-primary');
+                    } else {
+                        markDoneBtn.classList.add('text-on-surface-variant/40');
+                        markDoneBtn.classList.remove('text-primary');
+                    }
+                }
+                
+                if (labelSpan) {
+                    if (isCompleted) {
+                        labelSpan.classList.add('line-through', 'opacity-60');
+                    } else {
+                        labelSpan.classList.remove('line-through', 'opacity-60');
+                    }
+                }
+            });
+        }
+
+        function updateReaderDoneBtn() {
+            const btn = document.getElementById('mark-done-page-btn');
+            const icon = document.getElementById('mark-done-page-icon');
+            const text = document.getElementById('mark-done-page-text');
+            if (!btn || !icon || !text || !currentFilePath) return;
+
+            const isCompleted = completedFiles.has(currentFilePath);
+            if (isCompleted) {
+                icon.innerText = 'check_box';
+                text.innerText = 'Done';
+                btn.className = "flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-lg transition-all font-label text-sm uppercase tracking-wide border border-primary";
+            } else {
+                icon.innerText = 'check_box_outline_blank';
+                text.innerText = 'Mark as Done';
+                btn.className = "flex items-center gap-2 px-6 py-3 bg-surface-container-high hover:bg-primary hover:text-white text-on-surface font-bold rounded-lg transition-all font-label text-sm uppercase tracking-wide border border-outline-variant";
+            }
+        }
 
         const categories = [
             { name: 'Infrastructure', dir: 'AI Infrastructure Engineer', icon: 'memory' },
@@ -1457,6 +1552,16 @@ Assume I am learning this for practical use and interview preparation.`;
                 window.getSelection().removeAllRanges();
                 chatgptTooltip.classList.remove('visible');
             });
+
+            // Handle page completion toggle button
+            const donePageBtn = document.getElementById('mark-done-page-btn');
+            if (donePageBtn) {
+                donePageBtn.addEventListener('click', () => {
+                    if (currentFilePath) {
+                        toggleFileCompletion(currentFilePath);
+                    }
+                });
+            }
         }
 
         // Select learning path category in sidebar
@@ -1490,6 +1595,7 @@ Assume I am learning this for practical use and interview preparation.`;
                     </div>
                 `;
             }
+            updateCategoryProgress();
         }
 
         // Navigate dynamically to the first file of a category via URL hash
@@ -1698,14 +1804,26 @@ Assume I am learning this for practical use and interview preparation.`;
                     renderSidebar(node.children, childrenDiv);
                 } else {
                     const fileLink = document.createElement('a');
+                    const isCompleted = completedFiles.has(node.path);
+                    
                     fileLink.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
                     fileLink.href = `#${encodeURIComponent(node.path)}`;
                     fileLink.dataset.filepath = node.path;
                     
+                    const checkColor = isCompleted ? 'text-primary' : 'text-on-surface-variant/40';
+                    const labelStyle = isCompleted ? 'line-through opacity-60' : '';
+                    
                     fileLink.innerHTML = `
-                        <span class="material-symbols-outlined text-md text-on-surface-variant/70 flex-shrink-0 mt-0.5">description</span>
-                        <span class="whitespace-normal break-words text-left leading-tight">${node.name}</span>
+                        <span class="mark-done-btn material-symbols-outlined text-md flex-shrink-0 mt-0.5 hover:text-primary transition-colors ${checkColor}">${isCompleted ? 'check_box' : 'check_box_outline_blank'}</span>
+                        <span class="file-label whitespace-normal break-words text-left leading-tight ${labelStyle}">${node.name}</span>
                     `;
+                    
+                    const checkBtn = fileLink.querySelector('.mark-done-btn');
+                    checkBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleFileCompletion(node.path);
+                    });
                     
                     fileLink.addEventListener('click', () => {
                         document.querySelectorAll('.tree-file').forEach(el => {
@@ -1969,6 +2087,7 @@ Assume I am learning this for practical use and interview preparation.`;
                 });
 
                 buildTOC();
+                updateReaderDoneBtn();
                 
                 document.getElementById('reader-view').style.display = 'grid';
                 window.scrollTo({ top: 0 });
