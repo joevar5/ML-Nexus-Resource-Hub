@@ -401,10 +401,4 @@ async def data_pipeline():
 - [HTTPX Documentation](https://www.python-httpx.org/)
 - [AsyncIO Cheat Sheet](https://github.com/crazyguitar/pysheeet/blob/master/docs/notes/python-asyncio.rst)
 
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Duration**: 6-8 hours
-
 **Ready to continue?** Move on to `lecture-notes/05-testing-code-quality.md`

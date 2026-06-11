@@ -5,9 +5,8 @@
 2. [Subprocess Management](#subprocess-management)
 3. [File and Directory Operations](#file-and-directory-operations)
 4. [Building CLI Tools](#building-cli-tools)
-5. [Environment Variables and System Interaction](#environment-variables-and-system-interaction)
-6. [Practical Examples for AI Infrastructure](#practical-examples-for-ai-infrastructure)
-7. [Summary and Best Practices](#summary-and-best-practices)
+5. [Practical Examples for AI Infrastructure](#practical-examples-for-ai-infrastructure)
+6. [Summary and Best Practices](#summary-and-best-practices)
 
 ---
 
@@ -34,7 +33,6 @@ By the end of this lecture, you will:
 - Execute external commands safely using subprocess
 - Perform file and directory operations with pathlib
 - Build professional CLI tools with argparse
-- Work effectively with environment variables
 - Implement common infrastructure automation patterns
 - Handle errors gracefully in operational scripts
 
@@ -992,71 +990,21 @@ if __name__ == "__main__":
 
 ---
 
-## Environment Variables and System Interaction
-
-### Reading Environment Variables
-
-```python
-import os
-
-# Read with default
-model_path = os.getenv("MODEL_PATH", "/default/model.pt")
-
-# Required variable (raises KeyError if missing)
-api_key = os.environ["API_KEY"]
-
-# Check if variable exists
-if "CUDA_VISIBLE_DEVICES" in os.environ:
-    print(f"CUDA devices: {os.environ['CUDA_VISIBLE_DEVICES']}")
-```
-
-### Setting Environment Variables
-
-```python
-import os
-
-# Set for current process and children
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
-
-# Launch subprocess with custom environment
-import subprocess
-
-custom_env = os.environ.copy()
-custom_env["CUDA_VISIBLE_DEVICES"] = "2,3"
-custom_env["OMP_NUM_THREADS"] = "8"
-
-subprocess.run(
-    ["python", "train.py"],
-    env=custom_env
-)
-```
-
-### System Information
-
-```python
-import os
-import platform
-import sys
-
-print(f"Operating System: {platform.system()}")
-print(f"Platform: {platform.platform()}")
-print(f"Python Version: {sys.version}")
-print(f"CPU Count: {os.cpu_count()}")
-print(f"Current User: {os.getlogin()}")
-print(f"Current Directory: {os.getcwd()}")
-```
-
----
-
 ## Practical Examples for AI Infrastructure
 
 ### Kubernetes Job Launcher
+
+In AI infrastructure, machine learning training workloads are typically managed dynamically on Kubernetes clusters. Programmatic job launching allows orchestrators to generate job specifications on the fly and deploy them immediately.
+
+This example demonstrates how to:
+- Programmatically construct a Kubernetes `Job` specification with GPU resource limits.
+- Stream the generated YAML configuration directly to `kubectl` via `stdin` using `subprocess.run()`, keeping the file system clean.
+
 
 ```python
 #!/usr/bin/env python3
 import subprocess
 import yaml
-from pathlib import Path
 from typing import Dict, Any
 
 def create_training_job(
@@ -1067,8 +1015,7 @@ def create_training_job(
     namespace: str = "ml-training"
 ) -> Dict[str, Any]:
     """Generate Kubernetes job manifest"""
-
-    job_manifest = {
+    return {
         "apiVersion": "batch/v1",
         "kind": "Job",
         "metadata": {
@@ -1094,29 +1041,23 @@ def create_training_job(
         }
     }
 
-    return job_manifest
-
 def submit_job(manifest: Dict[str, Any]) -> bool:
-    """Submit job to Kubernetes"""
-    manifest_file = Path("/tmp/job-manifest.yaml")
-
-    # Write manifest
-    with open(manifest_file, 'w') as f:
-        yaml.dump(manifest, f)
-
-    # Apply with kubectl
+    """Submit job to Kubernetes using stdin piping"""
+    yaml_manifest = yaml.dump(manifest)
+    
     try:
+        # Pipe the YAML content directly to kubectl via stdin instead of writing a temp file
         subprocess.run(
-            ["kubectl", "apply", "-f", str(manifest_file)],
+            ["kubectl", "apply", "-f", "-"],
+            input=yaml_manifest,
+            text=True,
             check=True
         )
-        print(f"Job submitted: {manifest['metadata']['name']}")
+        print(f"Job submitted successfully: {manifest['metadata']['name']}")
         return True
     except subprocess.CalledProcessError:
         print("Failed to submit job")
         return False
-    finally:
-        manifest_file.unlink()
 
 # Usage
 manifest = create_training_job(
@@ -1134,32 +1075,32 @@ submit_job(manifest)
 
 ### Subprocess Best Practices
 
-✅ Use `subprocess.run()` for simple commands
-✅ Always use `check=True` to catch errors
-✅ Use `timeout` for long-running commands
-✅ Avoid `shell=True` unless absolutely necessary
-✅ Use list format for commands: `["cmd", "arg1", "arg2"]`
-✅ Capture and log output for debugging
-✅ Handle `CalledProcessError` and `TimeoutExpired`
+- Use `subprocess.run()` for simple commands
+- Always use `check=True` to catch errors
+- Use `timeout` for long-running commands
+- Avoid `shell=True` unless absolutely necessary
+- Use list format for commands: `["cmd", "arg1", "arg2"]`
+- Capture and log output for debugging
+- Handle `CalledProcessError` and `TimeoutExpired`
 
 ### File Operations Best Practices
 
-✅ Use `pathlib.Path` instead of string paths
-✅ Use context managers (`with`) for file operations
-✅ Use `exist_ok=True` and `parents=True` when creating directories
-✅ Implement file locking for concurrent access
-✅ Validate file existence before operations
-✅ Handle permissions errors gracefully
+- Use `pathlib.Path` instead of string paths
+- Use context managers (`with`) for file operations
+- Use `exist_ok=True` and `parents=True` when creating directories
+- Implement file locking for concurrent access
+- Validate file existence before operations
+- Handle permissions errors gracefully
 
 ### CLI Development Best Practices
 
-✅ Use descriptive help messages
-✅ Provide sensible defaults
-✅ Validate inputs early
-✅ Use subcommands for complex tools
-✅ Implement `--verbose` and `--quiet` flags
-✅ Return appropriate exit codes
-✅ Add examples in help text
+- Use descriptive help messages
+- Provide sensible defaults
+- Validate inputs early
+- Use subcommands for complex tools
+- Implement `--verbose` and `--quiet` flags
+- Return appropriate exit codes
+- Add examples in help text
 
 ---
 
@@ -1188,11 +1129,5 @@ Practice the skills from Lectures 1-3:
 - Write subprocess wrappers for external tools
 - Implement file processing utilities
 - Create configuration management scripts
-
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Word Count**: ~3,800 words
 
 **Next**: Continue to `04-async-programming.md`

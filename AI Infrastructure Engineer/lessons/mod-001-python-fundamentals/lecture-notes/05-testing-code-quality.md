@@ -617,7 +617,6 @@ Congratulations! You've completed all five lectures in Module 001: Python Fundam
 - Complete **Exercise 07: Testing** - Write comprehensive test suites
 - Practice using code quality tools in your projects
 - Set up pre-commit hooks in all your repositories
-- Move on to **Module 002: Linux Essentials for AI Infrastructure**
 
 ### Additional Resources
 
@@ -630,16 +629,6 @@ Congratulations! You've completed all five lectures in Module 001: Python Fundam
 
 ---
 
-**Module 001, Lecture 05 Complete!**
+**Ready to continue?** Move on to `Module 002: Linux Essentials for AI Infrastructure.md`
 
-You now have the skills to:
-- Write efficient async code for concurrent operations
-- Build comprehensive test suites with pytest
-- Maintain professional code quality standards
-- Use modern Python tooling effectively
 
-These skills form the foundation for professional AI infrastructure development.
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Duration**: 8-10 hours
