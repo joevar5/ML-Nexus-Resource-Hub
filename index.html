@@ -462,8 +462,13 @@
             border-bottom-style: solid;
             opacity: 0.8;
         }
-        .markdown-body ul, 
+        .markdown-body ul {
+            list-style-type: disc;
+            margin-bottom: 1.25em;
+            padding-left: 24px;
+        }
         .markdown-body ol {
+            list-style-type: decimal;
             margin-bottom: 1.25em;
             padding-left: 24px;
         }
@@ -1451,8 +1456,19 @@
                 const href = link.getAttribute('href');
                 if (!href) return;
 
-                // Skip external, mailto, or local page anchor links
-                if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:') || href.startsWith('#')) {
+                // Handle local page anchor links (prevent changing SPA route hash)
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = decodeURIComponent(href.substring(1));
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    return;
+                }
+
+                // Skip external or mailto links
+                if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:')) {
                     return;
                 }
 
@@ -2115,8 +2131,27 @@ Assume I am learning this for practical use and interview preparation.`;
                 if (asideElement) asideElement.style.display = 'block';
             }
 
+            const seenSlugs = {};
             headings.forEach((heading, index) => {
-                const id = `toc-heading-${index}`;
+                let slugId = heading.innerText
+                    .toLowerCase()
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^\w\-]+/g, '')
+                    .replace(/\-\-+/g, '-')
+                    .replace(/^-+/, '')
+                    .replace(/-+$/, '');
+                
+                if (slugId) {
+                    if (seenSlugs[slugId]) {
+                        seenSlugs[slugId]++;
+                        slugId = `${slugId}-${seenSlugs[slugId]}`;
+                    } else {
+                        seenSlugs[slugId] = 1;
+                    }
+                }
+                
+                const id = heading.getAttribute('id') || slugId || `toc-heading-${index}`;
                 heading.setAttribute('id', id);
                 
                 const a = document.createElement('a');
