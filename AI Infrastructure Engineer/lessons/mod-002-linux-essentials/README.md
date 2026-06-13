@@ -11,19 +11,19 @@ Unlike general Linux administration courses, this curriculum focuses on the inte
 
 $$
 \begin{array}{c}
-\boxed{\text{Lecture 01: Intro to Linux \& Command Line}} \cr
+\boxed{\text{Lecture 01: Intro to Linux and Command Line}} \cr
 \downarrow \cr
-\boxed{\text{Lecture 02: File System \& Navigation}} \cr
+\boxed{\text{Lecture 02: File System and Navigation}} \cr
 \downarrow \cr
-\boxed{\text{Exercise 01: Navigation \& File System Mastery}} \cr
+\boxed{\text{Exercise 01: Navigation and File System Mastery}} \cr
 \downarrow \cr
-\boxed{\text{Lecture 03: Permissions \& Security}} \cr
+\boxed{\text{Lecture 03: Permissions and Security}} \cr
 \downarrow \cr
-\boxed{\text{Exercise 02: Permissions \& Access Control}} \cr
+\boxed{\text{Exercise 02: Permissions and Access Control}} \cr
 \downarrow \cr
 \boxed{\text{Lecture 04: System Administration Basics}} \cr
 \downarrow \cr
-\boxed{\text{Exercises 03 \& 05: Processes \& Package Management}} \cr
+\boxed{\text{Exercises 03 and 05: Processes and Package Management}} \cr
 \downarrow \cr
 \boxed{\text{Lecture 05: Intro to Shell Scripting}} \cr
 \downarrow \cr
@@ -37,7 +37,7 @@ $$
 \downarrow \cr
 \boxed{\text{Lecture 08: Networking Fundamentals}} \cr
 \downarrow \cr
-\boxed{\text{Exercises 07 \& 08: Troubleshooting \& System Automation}}
+\boxed{\text{Exercises 07 and 08: Troubleshooting and System Automation}}
 \end{array}
 $$
 
