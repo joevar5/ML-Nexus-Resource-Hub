@@ -731,6 +731,37 @@
         #chatgpt-tooltip .sparkle-icon {
             font-size: 16px;
         }
+
+        /* ── Premium Flip Cards ── */
+        .flip-card-container {
+            perspective: 1000px;
+            height: 440px !important;
+            min-height: 440px !important;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100% !important;
+            min-height: 440px !important;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card-container:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100% !important;
+            min-height: 440px !important;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 12px;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
     </style>
 </head>
 <body class="bg-background text-on-surface overflow-x-hidden min-h-screen flex flex-col pt-16 animate-fade-in">
@@ -1122,10 +1153,10 @@
                 <section class="mb-20">
                     <div class="grid md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <span class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">Software & Machine Learning Engineer</span>
+                            <span class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">Machine Learning Engineer & Security Focal</span>
                             <h1 class="text-6xl md:text-7xl font-headline font-bold text-on-background leading-tight mb-6">Joel Varghese</h1>
                             <p class="text-xl font-body text-on-surface-variant leading-relaxed mb-8 border-l-4 border-primary pl-6">
-                                Engineering high-throughput, enterprise-grade systems at the intersection of backend engineering and generative intelligence. Proven track record of scaling REST APIs, RAG pipelines, and optimized LLM agentic workflows at IBM.
+                                I build and secure high-scale AI systems. Focused on scaling APIs, optimizing RAG pipelines, and leading security as the Security Focal for IBM watsonx.governance.
                             </p>
                             <div class="flex gap-4">
                                 <button onclick="document.getElementById('narrative-section').scrollIntoView({ behavior: 'smooth' })" class="px-8 py-4 bg-surface-container-high text-on-surface rounded-full font-bold hover:bg-surface-dim transition-colors">Read Narrative</button>
@@ -1148,14 +1179,99 @@
                     </div>
                     <div class="md:col-span-2 space-y-8 font-body text-lg text-on-surface leading-relaxed">
                         <p>
-                            Joel Varghese is a <span class="text-primary font-semibold">Software & Machine Learning Engineer</span> with 3+ years of experience building and operating production-grade AI/ML and generative AI systems at scale.
+                            Joel Varghese is a <span class="text-primary font-semibold">Machine Learning Engineer & Security Focal</span> with 3+ years of experience building, securing, and operating production-grade AI/ML and generative AI systems at scale.
                         </p>
-                        <p>
-                            During his tenure as a <strong>Software Engineer - Machine Learning at IBM</strong>, Joel designed and deployed scalable REST APIs using Python and FastAPI, serving machine learning models supporting 10K+ daily requests with 99.9% uptime and low latencies (&lt; 120ms). He has integrated RAG pipelines using FAISS and Chroma DB, engineered A/B testing and canary deployments for model rollouts, and optimized experimental data pipelines to improve accuracy.
-                        </p>
-                        <p>
-                            Prior to that, as an AI/ML Software Engineer Intern at IBM, he focused on distilling and optimizing LLMs for deployment on AWS SageMaker, achieving 2.4x faster inference and 35% lower compute costs, while setting up robust CI/CD pipelines using Docker and Kubernetes.
-                        </p>
+
+                        <!-- Interactive Focus Cards -->
+                        <div class="grid sm:grid-cols-2 gap-6 mt-8 pt-4">
+                            <!-- ML Card -->
+                            <div class="flip-card-container w-full group cursor-default" style="height: 460px; min-height: 460px;">
+                                <div class="flip-card-inner" style="height: 460px; min-height: 460px;">
+                                    <!-- Front Face -->
+                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center" style="height: 460px; min-height: 460px;">
+                                        <div class="flex flex-col items-center justify-center flex-1">
+                                            <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
+                                                <span class="material-symbols-outlined text-4xl">neurology</span>
+                                            </div>
+                                            <h3 class="text-3xl font-headline font-bold text-on-surface leading-tight tracking-tight">
+                                                Machine Learning
+                                                <span class="text-primary block text-sm font-label uppercase tracking-[0.2em] font-bold mt-2">Engineer</span>
+                                            </h3>
+                                        </div>
+                                        <div class="w-full mt-4 pt-4 border-t border-outline-variant/50">
+                                            <div class="flex flex-wrap justify-center gap-1.5">
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">PyTorch</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">vLLM</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">FastAPI</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">LangChain</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">RAG</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">Docker</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">K8s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Back Face -->
+                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between" style="height: 460px; min-height: 460px;">
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-3">
+                                                <span class="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
+                                                <h3 class="text-lg font-headline font-bold text-primary">ML Systems Impact</h3>
+                                            </div>
+                                            <ul class="text-[13px] text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
+                                                <li>Designed and deployed scalable <strong>FastAPI & Python REST APIs</strong>, serving models supporting <strong>10K+ daily requests</strong> with 99.9% uptime.</li>
+                                                <li>Distilled and optimized LLMs on AWS SageMaker, achieving <strong>2.4x faster inference</strong> and 35% lower compute costs.</li>
+                                                <li>Integrated production <strong>RAG pipelines</strong> using FAISS and Chroma DB.</li>
+                                                <li>Architected high-availability deployments on <strong>Docker & Kubernetes</strong> CI/CD infrastructure.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Security Card -->
+                            <div class="flip-card-container w-full group cursor-default" style="height: 460px; min-height: 460px;">
+                                <div class="flip-card-inner" style="height: 460px; min-height: 460px;">
+                                    <!-- Front Face -->
+                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center" style="height: 460px; min-height: 460px;">
+                                        <div class="flex flex-col items-center justify-center flex-1">
+                                            <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
+                                                <span class="material-symbols-outlined text-4xl">shield</span>
+                                            </div>
+                                            <h3 class="text-3xl font-headline font-bold text-on-surface leading-tight tracking-tight">
+                                                AI Security
+                                                <span class="text-primary block text-sm font-label uppercase tracking-[0.2em] font-bold mt-2">Focal / Engineer</span>
+                                            </h3>
+                                        </div>
+                                        <div class="w-full mt-4 pt-4 border-t border-outline-variant/50">
+                                            <div class="flex flex-wrap justify-center gap-1.5">
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">STRIDE</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">DevSecOps</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">SAST / DAST</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">SOC 2</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">FedRAMP</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">AI Security</span>
+                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">IAM</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Back Face -->
+                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between" style="height: 460px; min-height: 460px;">
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-3">
+                                                <span class="material-symbols-outlined text-primary text-2xl">verified_user</span>
+                                                <h3 class="text-lg font-headline font-bold text-primary">Security Impact</h3>
+                                            </div>
+                                            <ul class="text-[13px] text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
+                                                <li>Serving as <strong>Security Focal for IBM watsonx.governance</strong>, spearheading threat modeling, security reviews, and risk assessments.</li>
+                                                <li>Led <strong>STRIDE-based threat modeling</strong>, annual architecture audits, and secure-by-design audits across cloud-native platforms.</li>
+                                                <li>Implemented <strong>SAST, DAST, dependency</strong>, and container scanning in CI/CD pipelines.</li>
+                                                <li>Drove compliance programs for <strong>FedRAMP, SOC 2, HIPAA</strong>, and FIPS requirements.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
                 

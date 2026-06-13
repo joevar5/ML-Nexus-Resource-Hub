@@ -389,7 +389,7 @@ chmod 664 logs/*.log
 # rw-rw-r-- : Owner and group can write, others can read
 
 # Temporary processing directory
-chmod 1777 /data/temp/
+chmod 777 /data/temp/
 # rwxrwxrwt : Everyone can use, sticky bit prevents deletion by others
 ```
 
@@ -1043,13 +1043,13 @@ sudo usermod -aG docker alice
 
 ### Security Principles
 
-✅ **Principle of Least Privilege**: Minimum necessary access
-✅ **Defense in Depth**: Multiple security layers
-✅ **Regular Audits**: Check permissions periodically
-✅ **Document Access**: Know who has access to what
-✅ **Secure Defaults**: Restrictive umask
-✅ **Group-Based Access**: Use groups for team access
-✅ **Protect Secrets**: 600 permissions for sensitive files
+- **Principle of Least Privilege**: Minimum necessary access
+- **Defense in Depth**: Multiple security layers
+- **Regular Audits**: Check permissions periodically
+- **Document Access**: Know who has access to what
+- **Secure Defaults**: Restrictive umask
+- **Group-Based Access**: Use groups for team access
+- **Protect Secrets**: 600 permissions for sensitive files
 
 ### AI Infrastructure Best Practices
 
@@ -1064,36 +1064,14 @@ sudo usermod -aG docker alice
 
 ### Common Mistakes to Avoid
 
-❌ `chmod 777` - Never use unless absolutely necessary and temporary
-❌ Running services as root - Use dedicated service accounts
-❌ Storing secrets in world-readable files
-❌ Ignoring file ownership when extracting archives
-❌ Forgetting to set umask for team environments
-❌ Not using setgid on shared team directories
-❌ Overlooking ACLs for complex permission scenarios
-❌ Not auditing permissions regularly
-
-### Troubleshooting Guide
-
-**Problem**: "Permission denied" when reading file
-- **Check**: `ls -l file` - Do you have read permission?
-- **Fix**: `chmod u+r file` (if owner) or contact owner
-
-**Problem**: Cannot write to directory
-- **Check**: `ls -ld directory` - Do you have write+execute?
-- **Fix**: `chmod u+wx directory`
-
-**Problem**: Script won't execute
-- **Check**: `ls -l script.sh` - Execute permission set?
-- **Fix**: `chmod u+x script.sh`
-
-**Problem**: Created files have wrong group
-- **Check**: `ls -ld directory` - Is setgid set?
-- **Fix**: `chmod g+s directory`
-
-**Problem**: Other users deleting my files in shared directory
-- **Check**: Directory permissions
-- **Fix**: `chmod +t directory` (sticky bit)
+- `chmod 777` - Never use unless absolutely necessary and temporary
+- Running services as root - Use dedicated service accounts
+- Storing secrets in world-readable files
+- Ignoring file ownership when extracting archives
+- Forgetting to set umask for team environments
+- Not using setgid on shared team directories
+- Overlooking ACLs for complex permission scenarios
+- Not auditing permissions regularly
 
 ### Practice Exercises
 
@@ -1105,58 +1083,6 @@ sudo usermod -aG docker alice
 6. Secure API keys and credentials
 7. Set up setgid directories for automatic group inheritance
 
-### Next Steps
-
-In **Lecture 03: Process Management**, you'll learn:
-- Understanding processes and system resources
-- Monitoring with ps, top, htop
-- Managing services with systemd
-- Job control and background processes
-- Resource limits and priorities
-
-### Additional Resources
-
-- **Man Pages**: `man chmod`, `man chown`, `man setfacl`, `man umask`
-- **Linux Security**: "Understanding Linux File Permissions" (LinuxAcademy)
-- **ACL Guide**: Red Hat documentation on ACLs
-- **Security Hardening**: CIS Benchmarks for Linux
-
-### Quick Reference Card
-
-```bash
-# View permissions
-ls -l file                    # Standard view
-ls -ld directory             # Directory itself
-getfacl file                 # ACL view
-id                           # Current user info
-groups                       # Current user groups
-
-# Change permissions
-chmod 644 file               # Numeric
-chmod u+x file               # Symbolic
-chmod -R 755 dir/            # Recursive
-
-# Change ownership
-chown user:group file        # Owner and group
-chown -R user:group dir/     # Recursive
-chgrp group file             # Group only
-
-# Special permissions
-chmod u+s file               # Setuid
-chmod g+s dir                # Setgid
-chmod +t dir                 # Sticky bit
-chmod 4755 file              # Setuid numeric
-
-# ACLs
-setfacl -m u:bob:rw file     # Grant user access
-setfacl -m g:team:r file     # Grant group access
-setfacl -x u:bob file        # Remove ACL entry
-setfacl -b file              # Remove all ACLs
-
-# Default permissions
-umask                        # View umask
-umask 027                    # Set umask
-```
 
 ---
 
