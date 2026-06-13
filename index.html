@@ -1087,7 +1087,7 @@
             
             <!-- Table of Contents aside -->
             <aside class="hidden xl:block">
-                <div class="sticky top-24 border-l border-outline-variant/50 pl-5">
+                <div class="sticky top-24 border-l border-outline-variant/50 pl-5 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2">
                     <h4 class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-md">On This Page</h4>
                     <nav class="space-y-1 text-sm font-label flex flex-col" id="toc-nav">
                         <!-- Populated dynamically -->
@@ -1944,14 +1944,13 @@ Assume I am learning this for practical use and interview preparation.`;
                 else if (cleanType === 'warning') iconName = 'warning';
                 else if (cleanType === 'caution') iconName = 'report';
                 
-                return `
-                <div class="alert-box ${cleanType}">
-                    <div class="alert-title">
-                        <span class="material-symbols-outlined text-sm">${iconName}</span>
-                        <span>${type}</span>
-                    </div>
-                    <div class="alert-body">${marked.parse(cleanContent)}</div>
-                </div>`;
+                return `<div class="alert-box ${cleanType}">
+<div class="alert-title">
+<span class="material-symbols-outlined text-sm">${iconName}</span>
+<span>${type}</span>
+</div>
+<div class="alert-body">${marked.parse(cleanContent)}</div>
+</div>\n\n`;
             });
         }
 
@@ -2186,6 +2185,7 @@ Assume I am learning this for practical use and interview preparation.`;
                             if (link.getAttribute('href') === `#${id}`) {
                                 link.classList.add('text-primary', 'font-bold');
                                 link.classList.remove('text-on-surface-variant');
+                                link.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                             }
                         });
                     }

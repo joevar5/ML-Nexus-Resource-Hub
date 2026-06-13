@@ -2,13 +2,12 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [History and Philosophy of Linux](#history-and-philosophy-of-linux)
-3. [Linux Distributions](#linux-distributions)
-4. [Terminal Emulators and Shells](#terminal-emulators-and-shells)
-5. [Basic Command Structure](#basic-command-structure)
-6. [Getting Help and Documentation](#getting-help-and-documentation)
-7. [Environment Variables](#environment-variables)
-8. [Best Practices for AI Infrastructure](#best-practices-for-ai-infrastructure)
+2. [Linux Distributions](#linux-distributions)
+3. [Terminal Emulators and Shells](#terminal-emulators-and-shells)
+4. [Basic Command Structure](#basic-command-structure)
+5. [Getting Help and Documentation](#getting-help-and-documentation)
+6. [Environment Variables](#environment-variables)
+7. [Best Practices for AI Infrastructure](#best-practices-for-ai-infrastructure)
 9. [Summary and Key Takeaways](#summary-and-key-takeaways)
 
 ## Introduction
@@ -16,17 +15,6 @@
 As an AI Infrastructure Engineer, Linux is your foundation. Whether deploying machine learning models, managing GPU servers, or orchestrating containers, Linux powers over 90% of cloud infrastructure and is the standard for AI/ML workloads.
 
 This lecture introduces you to Linux, its philosophy, the command-line environment, and essential concepts that will prepare you for deeper technical work ahead.
-
-### Learning Objectives
-
-By the end of this lecture, you will:
-- Understand the history and philosophy of Linux
-- Navigate the Linux distribution landscape
-- Use terminal emulators and understand different shells
-- Construct and execute basic Linux commands
-- Access help and documentation systems
-- Work with environment variables
-- Apply Linux fundamentals to AI infrastructure scenarios
 
 ### Prerequisites
 - Access to a Linux system (Ubuntu 22.04 LTS, CentOS 8, or similar)
@@ -45,63 +33,6 @@ By the end of this lecture, you will:
 
 **Container Native**: Docker, Kubernetes, and modern orchestration tools are built for Linux.
 
-## History and Philosophy of Linux
-
-### The Birth of Unix (1969)
-
-The story begins at Bell Labs with **Unix**, created by Ken Thompson and Dennis Ritchie. Unix introduced revolutionary concepts:
-- Hierarchical file system
-- Everything is a file
-- Small, composable programs
-- Pipes for connecting programs
-- Portable across hardware
-
-**Unix Philosophy**: "Do one thing and do it well"
-
-### The GNU Project (1983)
-
-Richard Stallman launched the **GNU Project** (GNU's Not Unix) to create a free Unix-like operating system:
-- Free Software Foundation
-- GNU tools (bash, gcc, make, etc.)
-- GPL (General Public License)
-- **Freedom**: Use, study, modify, distribute software
-
-### Linux Kernel (1991)
-
-Linus Torvalds, a Finnish computer science student, created the **Linux kernel**:
-```
-Date: August 25, 1991
-From: torvalds@klaava.Helsinki.FI (Linus Benedict Torvalds)
-Subject: What would you like to see most in minix?
-
-Hello everybody out there using minix -
-
-I'm doing a (free) operating system (just a hobby, won't be big and
-professional like gnu) for 386(486) AT clones. This has been brewing
-since april, and is starting to get ready.
-```
-
-**Key Innovations**:
-- Open source from day one
-- Monolithic kernel architecture
-- Community-driven development
-- Rapid iteration and improvement
-
-### GNU/Linux Combination
-
-**GNU + Linux Kernel = Complete Operating System**
-- GNU provided user-space tools
-- Linux provided the kernel
-- Combined: A free, powerful, Unix-like OS
-
-### Linux Today
-
-**Statistics (2024)**:
-- 100% of supercomputers run Linux
-- 96.3% of top million web servers run Linux
-- 85% of smartphones (Android) use Linux kernel
-- Major cloud providers (AWS, Azure, GCP) primarily Linux
-- NASA, CERN, SpaceX use Linux
 
 ## Linux Distributions
 
@@ -154,7 +85,15 @@ A **Linux distribution** (distro) packages the Linux kernel with software, tools
 - **RHEL/Rocky/Alma**: Enterprise, regulated industries
 - **Amazon Linux 2**: AWS-optimized
 
+> [!NOTE]
+> **Real-World Case Study: Standardizing on RHEL**
+> At IBM, RHEL (Red Hat Enterprise Linux) is standard and used across all customer-facing and enterprise infrastructure scenarios. Enterprise environments prefer RHEL because:
+> - **Long-Term Support & SLAs**: Provides up to 10 years of support, ensuring stability for long-running deployments.
+> - **Hardware Integration**: Optimized for IBM Power systems and Z mainframes, as well as modern hybrid-cloud architectures like Red Hat OpenShift.
+> - **Security Certifications**: Meets strict regulatory compliance standards (FIPS, Common Criteria), essential for enterprise clients.
+
 **Key Factors**:
+
 - LTS (Long Term Support) for stability
 - Hardware support (NVIDIA drivers, CUDA)
 - Package availability (ML frameworks)
@@ -686,125 +625,17 @@ ls --<TAB><TAB>        # Shows all --options
 - `$PATH`, `$HOME`, `$USER` are essential
 - AI-specific: `$CUDA_VISIBLE_DEVICES`, `$PYTHONPATH`
 
-### Commands Introduced
-
-```bash
-# Basic navigation
-pwd                    # Print working directory
-cd                     # Change directory
-ls                     # List files
-
-# System information
-whoami                 # Current user
-hostname               # Computer name
-uname -a               # System details
-
-# Getting help
-man command            # Manual pages
-command --help         # Quick help
-info command           # Detailed info
-
-# Environment
-env                    # View all variables
-echo $VARIABLE         # View specific variable
-export VAR=value       # Set variable
-```
 
 ### Best Practices
 
-✅ Learn Bash - it's universal
-✅ Use man pages and help options
-✅ Leverage tab completion
-✅ Set up environment consistently
-✅ Document your configuration
-✅ Use absolute paths in production
-✅ Version control your scripts
-✅ Understand your distribution's package manager
-
-### AI Infrastructure Applications
-
-- Remote server management via SSH
-- GPU environment configuration
-- Python path and dependency management
-- Model deployment automation
-- System monitoring and logging
-- Distributed training orchestration
-
-### Next Steps
-
-In **Lecture 02: File System and Navigation**, you'll learn:
-- Linux filesystem hierarchy
-- Advanced navigation techniques
-- File operations and management
-- Finding files quickly
-- Working with archives
-- Organizing ML projects
-
-### Practice Exercises
-
-1. Explore your Linux system:
-   ```bash
-   uname -a
-   lsb_release -a
-   echo $SHELL
-   echo $PATH
-   ```
-
-2. Practice basic commands:
-   ```bash
-   pwd
-   cd /tmp
-   ls -la
-   whoami
-   hostname
-   ```
-
-3. Read documentation:
-   ```bash
-   man ls
-   man bash
-   ls --help
-   ```
-
-4. Set up environment:
-   ```bash
-   export TEST_VAR="Hello Linux"
-   echo $TEST_VAR
-   ```
-
-5. Explore your system:
-   ```bash
-   which python
-   which bash
-   echo $HOME
-   cd ~
-   pwd
-   ```
-
-### Quick Reference Card
-
-```bash
-# Navigation
-pwd                    # Where am I?
-cd <directory>         # Go to directory
-ls                     # List files
-
-# Help
-man <command>          # Full manual
-<command> --help       # Quick help
-
-# Environment
-echo $VAR              # Show variable
-export VAR=value       # Set variable
-env                    # Show all variables
-
-# System info
-whoami                 # Current user
-hostname               # Computer name
-uname -a               # System details
-date                   # Current date/time
-```
-
+- Learn Bash - it's universal
+- Use man pages and help options
+- Leverage tab completion
+- Set up environment consistently
+- Document your configuration
+- Use absolute paths in production
+- Version control your scripts
+- Understand your distribution's package manager
 ---
 
 **End of Lecture 01**

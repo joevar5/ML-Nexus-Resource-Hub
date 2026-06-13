@@ -17,17 +17,6 @@ As an AI Infrastructure Engineer, you'll spend significant time working with Lin
 
 This lecture introduces you to the Linux file system hierarchy and essential commands for navigating and managing files and directories in AI infrastructure scenarios.
 
-### Learning Objectives
-
-By the end of this lecture, you will:
-- Understand the Linux file system hierarchy and organization
-- Navigate efficiently using command-line tools
-- Perform file and directory operations confidently
-- Find files quickly using various search tools
-- Work with symbolic and hard links
-- Create and extract archives for data and model management
-- Apply Linux fundamentals to AI infrastructure scenarios
-
 ### Prerequisites
 - Lecture 01: Introduction to Linux and Command Line
 - Access to a Linux system (Ubuntu 22.04 LTS, CentOS 8, or similar)
@@ -1219,20 +1208,22 @@ du -h --max-depth=2 /data | sort -hr | head -20
 
 ### Best Practices
 
-✅ Use descriptive names for files and directories
-✅ Organize projects with consistent structure
-✅ Verify before destructive operations
-✅ Use absolute paths in scripts
-✅ Document your file organization
-✅ Automate repetitive tasks
-✅ Monitor disk space proactively
-✅ Keep backups of important data
+**Recommended Practices**:
+- Use descriptive names for files and directories
+- Organize projects with consistent structure
+- Verify before destructive operations
+- Use absolute paths in scripts
+- Document your file organization
+- Automate repetitive tasks
+- Monitor disk space proactively
+- Keep backups of important data
 
-❌ Don't use `rm -rf` without verification
-❌ Don't store important data in `/tmp`
-❌ Don't use spaces in filenames (use underscores/hyphens)
-❌ Don't work as root unless necessary
-❌ Don't ignore disk space warnings
+**Practices to Avoid**:
+- Using `rm -rf` without verification
+- Storing important data in `/tmp`
+- Using spaces in filenames (use underscores/hyphens instead)
+- Working as root unless necessary
+- Ignoring disk space warnings
 
 ### Practice Exercises
 
@@ -1243,52 +1234,6 @@ du -h --max-depth=2 /data | sort -hr | head -20
 5. Write a script to clean old checkpoint files
 6. Monitor a training log in real-time with `tail -f`
 7. Find and delete all Python cache directories
-
-### Next Steps
-
-In **Lecture 03: Permissions and Security**, you'll learn:
-- Understanding Linux permission model
-- Managing users and groups
-- Securing ML infrastructure
-- Setting up multi-user environments
-- Access control best practices
-
-### Quick Reference Card
-
-```bash
-# Navigation
-pwd                    # Print working directory
-cd /path               # Change directory
-ls -lah               # List all files with details
-tree -L 2             # Show directory tree
-
-# File operations
-touch file.txt        # Create file
-mkdir -p dir/subdir   # Create directories
-cp -r src/ dst/       # Copy recursively
-mv old new            # Move/rename
-rm -i file            # Remove (interactive)
-
-# Viewing
-cat file.txt          # Display file
-less file.txt         # Page through file
-head -20 file.txt     # First 20 lines
-tail -f log.txt       # Follow log file
-
-# Finding
-find . -name "*.py"   # Find by name
-find . -size +1G      # Find by size
-locate filename       # Fast database search
-which command         # Find command location
-
-# Archiving
-tar -czvf arch.tar.gz dir/  # Create archive
-tar -xzvf arch.tar.gz       # Extract archive
-gzip file.txt               # Compress file
-unzip archive.zip           # Extract zip
-```
-
----
 
 **End of Lecture 02**
 
