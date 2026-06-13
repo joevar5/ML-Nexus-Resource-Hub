@@ -678,10 +678,12 @@
         }
         /* hide default cursor inside home hero only on non-touch devices */
         @media (pointer: fine) {
-            body.home-cursor-active #home-view {
+            body.home-cursor-active #home-view,
+            body.home-cursor-active #author-view {
                 cursor: none;
             }
-            body.home-cursor-active #home-view * {
+            body.home-cursor-active #home-view *,
+            body.home-cursor-active #author-view * {
                 cursor: none;
             }
         }
@@ -2414,9 +2416,12 @@ Assume I am learning this for practical use and interview preparation.`;
                 raf = requestAnimationFrame(tick);
             }
 
-            function isHomeVisible() {
+            function isCursorViewActive() {
                 const hv = document.getElementById('home-view');
-                return hv && hv.style.display !== 'none';
+                const av = document.getElementById('author-view');
+                const isHome = hv && hv.style.display !== 'none';
+                const isAuthor = av && av.style.display !== 'none';
+                return isHome || isAuthor;
             }
 
             function enableCursor() {
@@ -2437,14 +2442,14 @@ Assume I am learning this for practical use and interview preparation.`;
             document.addEventListener('mousemove', e => {
                 mouseX = e.clientX;
                 mouseY = e.clientY;
-                if (isHomeVisible()) enableCursor();
+                if (isCursorViewActive()) enableCursor();
                 else disableCursor();
             });
 
             // Expand ring on interactive elements
             const hoverTargets = 'button, a, [onclick], .roadmap-row, .hero-cta-primary';
             document.addEventListener('mouseover', e => {
-                if (e.target.closest(hoverTargets) && isHomeVisible()) {
+                if (e.target.closest(hoverTargets) && isCursorViewActive()) {
                     ring.classList.add('expanded');
                 }
             });
@@ -2456,7 +2461,7 @@ Assume I am learning this for practical use and interview preparation.`;
 
             // Watch for view changes (hash navigation)
             window.addEventListener('hashchange', () => {
-                if (!isHomeVisible()) disableCursor();
+                if (!isCursorViewActive()) disableCursor();
             });
 
             // Initial state — hidden until mouse moves
