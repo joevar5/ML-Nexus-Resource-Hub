@@ -41,9 +41,6 @@ By the end of this lecture, you will:
 **Integration**: Glue together different tools and services
 **Documentation**: Scripts serve as executable documentation
 
-**Duration**: 90 minutes
-**Difficulty**: Beginner to Intermediate
-
 ---
 
 ## Bash Script Basics
@@ -1164,14 +1161,14 @@ log "Backup complete"
 
 ### Best Practices Learned
 
-✅ **Always use shebang**: `#!/bin/bash`
-✅ **Quote variables**: `"$VAR"` not `$VAR`
-✅ **Use local in functions**: Prevents variable conflicts
-✅ **Check exit codes**: Verify commands succeeded
-✅ **Add comments**: Explain what and why
-✅ **Use meaningful names**: `model_name` not `x`
-✅ **Handle errors**: Use `set -e` or check return values
-✅ **Test scripts**: Run with test data before production
+- **Always use shebang**: `#!/bin/bash`
+- **Quote variables**: `"$VAR"` not `$VAR`
+- **Use local in functions**: Prevents variable conflicts
+- **Check exit codes**: Verify commands succeeded
+- **Add comments**: Explain what and why
+- **Use meaningful names**: `model_name` not `x`
+- **Handle errors**: Use `set -e` or check return values
+- **Test scripts**: Run with test data before production
 
 ### Common Patterns for AI Infrastructure
 

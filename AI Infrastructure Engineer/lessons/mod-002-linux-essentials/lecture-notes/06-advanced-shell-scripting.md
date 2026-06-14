@@ -46,9 +46,6 @@ By the end of this lecture, you will:
 
 **Professionalism**: Production infrastructure demands professional code quality
 
-**Duration**: 120 minutes
-**Difficulty**: Intermediate to Advanced
-
 ---
 
 ## Advanced Control Structures

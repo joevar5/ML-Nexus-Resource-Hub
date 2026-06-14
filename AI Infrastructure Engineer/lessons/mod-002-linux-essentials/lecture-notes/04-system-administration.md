@@ -42,9 +42,6 @@ By the end of this lecture, you will:
 
 **Troubleshooting**: When things break (and they will), you need to diagnose and fix issues quickly.
 
-**Duration**: 120 minutes
-**Difficulty**: Intermediate
-
 ---
 
 ## Package Management
@@ -643,12 +640,12 @@ A **process** is a running instance of a program. Each process has:
 
 ### Process States
 
-**R - Running/Runnable**: Executing or ready to execute
-**S - Sleeping (Interruptible)**: Waiting for event (I/O, timer)
-**D - Disk Sleep (Uninterruptible)**: Waiting for disk I/O
-**T - Stopped**: Suspended by signal (Ctrl+Z)
-**Z - Zombie**: Terminated but parent hasn't read exit status
-**I - Idle**: Kernel thread
+- **R - Running/Runnable**: Executing or ready to execute
+- **S - Sleeping (Interruptible)**: Waiting for event (I/O, timer)
+- **D - Disk Sleep (Uninterruptible)**: Waiting for disk I/O
+- **T - Stopped**: Suspended by signal (Ctrl+Z)
+- **Z - Zombie**: Terminated but parent hasn't read exit status
+- **I - Idle**: Kernel thread
 
 ### Viewing Processes with ps
 
@@ -1389,14 +1386,14 @@ grep "sudo" /var/log/auth.log | tail -20
 
 ### AI Infrastructure Best Practices
 
-✅ **Pin dependency versions** for reproducibility
-✅ **Use systemd services** for production ML applications
-✅ **Set resource limits** to prevent resource exhaustion
-✅ **Monitor GPU usage** continuously during training
-✅ **Implement log rotation** to manage disk space
-✅ **Use nice values** to prioritize production workloads
-✅ **Regular system updates** for security patches
-✅ **Automate health checks** with systemd timers
+- **Pin dependency versions** for reproducibility
+- **Use systemd services** for production ML applications
+- **Set resource limits** to prevent resource exhaustion
+- **Monitor GPU usage** continuously during training
+- **Implement log rotation** to manage disk space
+- **Use nice values** to prioritize production workloads
+- **Regular system updates** for security patches
+- **Automate health checks** with systemd timers
 
 ### Troubleshooting Checklist
 
@@ -1437,47 +1434,6 @@ df -h
 du -h / | sort -rh | head -20
 # Clean logs, remove old models, compress data
 ```
-
-### Next Steps
-
-In **Lecture 05: Introduction to Shell Scripting**, you'll learn:
-- Writing bash scripts for automation
-- Variables, loops, and conditionals
-- Functions and argument processing
-- Error handling basics
-- Automating system administration tasks
-
-### Quick Reference Card
-
-```bash
-# Package Management
-sudo apt update && sudo apt upgrade -y
-sudo apt install package-name
-apt search keyword
-
-# Service Management
-sudo systemctl restart service-name
-systemctl status service-name
-journalctl -u service-name -f
-
-# Process Management
-ps aux --sort=-%cpu | head
-kill -9 PID
-nice -n 10 command
-
-# Monitoring
-top
-htop
-free -h
-df -h
-nvidia-smi
-
-# Logs
-journalctl -u service-name -f
-tail -f /var/log/syslog
-grep ERROR /var/log/syslog
-```
-
 ---
 
 **End of Lecture 04: System Administration Basics**
