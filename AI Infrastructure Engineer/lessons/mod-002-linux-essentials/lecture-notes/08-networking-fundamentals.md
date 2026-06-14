@@ -46,9 +46,6 @@ By the end of this lecture, you will:
 
 **Troubleshooting**: Debug connectivity issues in complex infrastructure
 
-**Duration**: 120 minutes
-**Difficulty**: Intermediate
-
 ---
 
 ## TCP/IP Networking Basics
@@ -1174,105 +1171,128 @@ sudo firewall-cmd --reload
 
 ## AI Infrastructure Networking
 
+Modern AI clusters partition network traffic into specialized channels to ensure high throughput, low latency, and security for both model training and online serving.
+
+### High-Level AI Infrastructure Overview
+
+The diagram below shows how the **Distributed Training Cluster** (which trains the model) and the **Model Serving Infrastructure** (which serves predictions to users) connect through a shared **Model Store**.
+
+```mermaid
+flowchart TD
+    %% Training Phase
+    subgraph TrainingPhase ["1. Distributed Training Phase"]
+        Dataset([Internet/Dataset Source]) -->|Management Switch| GPUCluster["GPU Cluster (Master & Workers)"]
+        GPUCluster <-->|InfiniBand Switch| Sync["Gradient Synchronization"]
+        GPUCluster -->|Saves Trained Weights| ModelStore[(Model Store)]
+    end
+
+    %% Serving Phase
+    subgraph ServingPhase ["2. Model Serving Phase"]
+        ModelStore -->|Loads Model Weights| InferenceAPIs["Inference API Instances"]
+        Clients([Internet Clients]) -->|Load Balancer| InferenceAPIs
+        InferenceAPIs -->|Writes Performance Logs| Metrics[(Metrics & Logging)]
+    end
+```
+
+---
+
 ### Distributed Training Network Architecture
 
-**Example: 4-node GPU cluster**
+Distributed machine learning workloads train models across multiple GPU nodes (servers). This requires high-bandwidth and low-latency communication to synchronize parameters between GPU devices.
 
-```
-                    Internet
-                        |
-                   [Gateway]
-                        |
-           ┌────────────┴────────────┐
-           |   Management Network    |
-           |     (10.0.0.0/24)      |
-           └────────────┬────────────┘
-                        |
-        ┌───────────────┼───────────────┐
-        |               |               |
-    [Master]        [Worker1]      [Worker2]
-    10.0.0.10       10.0.0.11      10.0.0.12
-        |               |               |
-        └───────────────┼───────────────┘
-                        |
-           ┌────────────┴────────────┐
-           |   Training Network      |
-           |   (192.168.10.0/24)     |
-           |   (High-speed/InfiniBand)|
-           └────────────┬────────────┘
-                        |
-        ┌───────────────┼───────────────┐
-        |               |               |
-    192.168.10.1  192.168.10.11   192.168.10.12
-```
+#### Communication Stages & Data Flow in Distributed Training
+A typical training step runs in four sequential stages, using the networks and components shown in the high-level diagram above:
 
-**Network requirements**:
-- **Management**: SSH, monitoring, logging (1 Gbps)
-- **Training**: Model updates, gradients (10+ Gbps, InfiniBand ideal)
-- **Storage**: Dataset access (10+ Gbps)
+1. **Stage 1: Initialization & Handshake (Management Network)**
+   - *Data Flow*: Master and worker nodes initialize coordinates within the `GPU Cluster (Master & Workers)`.
+   - *Operation*: Set up the distributed training process group.
+2. **Stage 2: Dataset Loading (Management Network)**
+   - *Data Flow*: Training data is fetched from the `Internet/Dataset Source` and distributed to the `GPU Cluster (Master & Workers)`.
+   - *Operation*: Load the dataset partitions into local memory.
+3. **Stage 3: Local GPU Computation (No Network Flow)**
+   - *Data Flow*: None (data remains internal to the `GPU Cluster (Master & Workers)`).
+   - *Operation*: Execute forward and backward passes on local GPUs.
+4. **Stage 4: Gradient Synchronization (Training Network)**
+   - *Data Flow*: Model gradients are synchronized across the `GPU Cluster (Master & Workers)` via the `InfiniBand Switch` to trigger the `Gradient Synchronization` state.
+   - *Operation*: Synchronize weights across all nodes using Ring-AllReduce.
 
-### Model Serving Network
 
-**Load-balanced API architecture**:
+---
 
-```
-            Internet
-                |
-           [Load Balancer]
-                |
-        ┌───────┴───────┐
-        |               |
-    [API-1]         [API-2]
-    (Inference)     (Inference)
-        |               |
-        └───────┬───────┘
-                |
-          [Model Store]
-          [Monitoring]
-```
+### Model Serving Network Architecture
 
-**Network considerations**:
-- **Latency**: Critical for real-time inference
-- **Bandwidth**: Large models, high request volume
-- **Reliability**: Load balancing, failover
-- **Security**: TLS, authentication, rate limiting
+Model serving is the process of hosting a trained model behind an API to respond to user predictions in real time.
+
+#### Request-Response Flow & Data Flow in Model Serving
+A typical prediction request follows these four sequential steps, using the networks and components shown in the high-level diagram above:
+
+1. **Step 1: Request Ingress**
+   - *Data Flow*: Client prediction payloads flow from `Internet Clients` through a load balancer to the `Inference API Instances`.
+   - *Operation*: Traffic enters the infrastructure boundary and is distributed to inference endpoints.
+2. **Step 2: Model Loading**
+   - *Data Flow*: The `Inference API Instances` load model parameters/weights from the `Model Store` (if not already cached locally).
+   - *Operation*: Cache and initialize model weights in local memory.
+3. **Step 3: Prediction Execution**
+   - *Data Flow*: None (local computation inside the `Inference API Instances`).
+   - *Operation*: Execute the forward pass on GPU/CPU to run model inference.
+4. **Step 4: Response Return & Telemetry**
+   - *Data Flow*: Latency and prediction metrics are written from the `Inference API Instances` to `Metrics & Logging`, and the inference response is delivered back to `Internet Clients`.
+   - *Operation*: Write performance telemetry and return the final prediction back to the client application.
+
+#### AI Infrastructure Network Requirements & Considerations
+To support both training and serving workloads, the network must meet specific requirements across different phases:
+- **Management (Ethernet)**: A standard, low-bandwidth network (typically 1 Gbps) for SSH access, system metrics, health monitoring, and loading datasets from the `Internet/Dataset Source`.
+- **Training (InfiniBand/RoCE)**: An ultra-low latency, high-bandwidth network (100–400+ Gbps) utilizing the `InfiniBand Switch` exclusively for GPU parameter synchronization.
+- **Serving (Inference)**: 
+  - *Latency & Bandwidth*: Optimized for real-time predictions (often using CDNs) and high output bandwidth (for streaming text or media payloads).
+  - *Reliability & Security*: Secured using HTTPS/TLS encryption and rate limiting, distributed via load balancers to route traffic to healthy API instances.
+
+---
 
 ### Performance Optimization
 
-**TCP tuning for large transfers**:
+To prevent network interfaces from bottlenecking large data transfers or gradient syncs, you must tune the Linux kernel network stack.
+
+#### TCP Buffer Tuning
+Default Linux configurations limit the memory size allocated to socket buffers. For high-speed clusters, increasing these boundaries prevents buffer overflow drops and enables continuous high-velocity data streams.
 ```bash
-# Increase TCP buffer sizes (add to /etc/sysctl.conf)
+# Configure maximum network socket memory buffers (add to /etc/sysctl.conf)
 net.core.rmem_max = 134217728
 net.core.wmem_max = 134217728
 net.ipv4.tcp_rmem = 4096 87380 67108864
 net.ipv4.tcp_wmem = 4096 65536 67108864
 
-# Apply changes
+# Apply settings instantly
 sudo sysctl -p
 ```
 
-**MTU optimization**:
+#### Jumbo Frames (MTU Optimization)
+Standard Ethernet frames hold 1,500 bytes. Configuring Jumbo Frames (9,000 bytes) on local high-speed cluster interfaces reduces packet count, lowering CPU interrupt overhead.
 ```bash
-# Check current MTU
+# Check current packet size (MTU)
 ip link show eth0 | grep mtu
 
-# Set jumbo frames (9000 bytes) for high-speed networks
+# Set Jumbo Frames (9000 bytes) for cluster interfaces
 sudo ip link set eth0 mtu 9000
 
-# Test MTU path
+# Verify Jumbo Frames function without fragmentation
 ping -M do -s 8972 remote-host
 ```
 
+---
+
 ### Network Monitoring
 
+Use these utility commands to monitor bandwidth, active connections, and network interface health.
+
 ```bash
-# Monitor bandwidth
+# 1. Inspect live bandwidth utilization on an interface
 iftop -i eth0
 
-# Monitor connections
+# 2. Count active TCP/UDP socket connections in real time
 watch -n 1 'ss -tun | wc -l'
 
-# Log network stats
+# 3. Log network interface statistics over time
 while true; do
     echo "$(date): $(ip -s link show eth0 | grep 'RX:' -A1)"
     sleep 60
@@ -1344,16 +1364,16 @@ sudo ufw status
 
 ### AI Infrastructure Best Practices
 
-✅ **Use static IPs for servers**: Predictable addressing
-✅ **Separate networks**: Management, training, storage
-✅ **High-bandwidth for training**: 10+ Gbps for distributed training
-✅ **Low latency for inference**: Optimize for real-time response
-✅ **Secure SSH access**: Keys only, no passwords
-✅ **Firewall by default**: Explicit allow, default deny
-✅ **Monitor network health**: Bandwidth, latency, errors
-✅ **Document topology**: Network diagrams, IP assignments
-✅ **Use SSH tunnels**: Secure access to internal services
-✅ **Test thoroughly**: Verify connectivity before production
+- **Use static IPs for servers**: Predictable addressing
+- **Separate networks**: Management, training, storage
+- **High-bandwidth for training**: 10+ Gbps for distributed training
+- **Low latency for inference**: Optimize for real-time response
+- **Secure SSH access**: Keys only, no passwords
+- **Firewall by default**: Explicit allow, default deny
+- **Monitor network health**: Bandwidth, latency, errors
+- **Document topology**: Network diagrams, IP assignments
+- **Use SSH tunnels**: Secure access to internal services
+- **Test thoroughly**: Verify connectivity before production
 
 ### Troubleshooting Checklist
 
@@ -1365,25 +1385,6 @@ sudo ufw status
 6. **Service**: Is it listening?
 7. **Application**: Check logs
 
-### Next Steps
-
-**Congratulations!** You've completed Module 002: Linux Essentials.
-
-**What you've learned**:
-- Linux fundamentals and command line
-- File system navigation and permissions
-- System administration and package management
-- Process management and monitoring
-- Shell scripting (basic and advanced)
-- Text processing with grep, sed, awk
-- Networking fundamentals
-
-**Continue learning**:
-- Practice these skills daily
-- Complete module exercises
-- Build automation scripts
-- Set up a lab environment
-- Move to Module 003: Version Control with Git
 
 ### Quick Reference Card
 

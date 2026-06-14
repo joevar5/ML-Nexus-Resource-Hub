@@ -9,8 +9,7 @@
 6. [Regular Expressions in Bash](#regular-expressions-in-bash)
 7. [Advanced Error Handling and Debugging](#advanced-error-handling-and-debugging)
 8. [Script Templates and Best Practices](#script-templates-and-best-practices)
-9. [Practical AI Infrastructure Automation](#practical-ai-infrastructure-automation)
-10. [Summary and Key Takeaways](#summary-and-key-takeaways)
+9. [Summary and Key Takeaways](#summary-and-key-takeaways)
 
 ## Introduction
 
@@ -1325,256 +1324,21 @@ main
 
 ### Best Practices Checklist
 
-✅ **Shebang**: Start with `#!/bin/bash`
-✅ **Strict mode**: Use `set -euo pipefail`
-✅ **Header comment**: Script name, description, author, date
-✅ **Constants**: Use `readonly` for constants
-✅ **Functions**: Break code into reusable functions
-✅ **Quotes**: Always quote variables: `"$VAR"`
-✅ **Local variables**: Use `local` in functions
-✅ **Error handling**: Use `trap` and error handlers
-✅ **Logging**: Log important events with timestamps
-✅ **Validation**: Validate inputs before using
-✅ **Usage function**: Provide clear usage information
-✅ **Exit codes**: Use meaningful exit codes
-✅ **Comments**: Explain why, not what
-✅ **Dry-run mode**: Support --dry-run for testing
-✅ **Version info**: Include --version flag
-
----
-
-## Practical AI Infrastructure Automation
-
-### Complete Model Deployment Pipeline
-
-```bash
-#!/bin/bash
-set -euo pipefail
-
-################################################################################
-# deploy-ml-model.sh - Complete ML model deployment pipeline
-################################################################################
-
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly LOG_FILE="/var/log/model-deployment.log"
-
-# Configuration
-MODEL_REGISTRY="/models/registry"
-STAGING_DIR="/models/staging"
-PRODUCTION_DIR="/models/production"
-BACKUP_DIR="/backups/models"
-SERVICE_NAME="ml-inference-api"
-
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-NC='\033[0m'
-
-# Logging
-function log() {
-    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $@" | tee -a "$LOG_FILE"
-}
-
-function log_error() {
-    echo -e "${RED}[ERROR]${NC} $@" | tee -a "$LOG_FILE" >&2
-}
-
-function log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $@" | tee -a "$LOG_FILE"
-}
-
-function log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $@" | tee -a "$LOG_FILE"
-}
-
-# Validation
-function validate_model() {
-    local model_path=$1
-
-    log "Validating model: $model_path"
-
-    # Check file exists
-    if [ ! -f "$model_path" ]; then
-        log_error "Model file not found: $model_path"
-        return 1
-    fi
-
-    # Check file size
-    local size=$(stat -f%z "$model_path" 2>/dev/null || stat -c%s "$model_path")
-    if [ "$size" -lt 1000 ]; then
-        log_error "Model file too small: $size bytes"
-        return 1
-    fi
-
-    # Validate model format
-    if ! python -c "import tensorflow as tf; tf.keras.models.load_model('$model_path')" &> /dev/null; then
-        log_error "Invalid model format"
-        return 1
-    fi
-
-    log_success "Model validation passed"
-    return 0
-}
-
-# Backup current model
-function backup_current_model() {
-    log "Backing up current production model..."
-
-    local current_model="$PRODUCTION_DIR/current.h5"
-
-    if [ ! -f "$current_model" ]; then
-        log_warning "No current model to backup"
-        return 0
-    fi
-
-    local backup_name="model_$(date +%Y%m%d_%H%M%S).h5"
-    local backup_path="$BACKUP_DIR/$backup_name"
-
-    mkdir -p "$BACKUP_DIR"
-    cp "$current_model" "$backup_path"
-
-    log_success "Backup saved: $backup_path"
-
-    # Keep only last 10 backups
-    log "Cleaning old backups..."
-    ls -t "$BACKUP_DIR"/model_*.h5 | tail -n +11 | xargs -r rm
-}
-
-# Deploy to staging
-function deploy_to_staging() {
-    local source_model=$1
-
-    log "Deploying to staging..."
-
-    mkdir -p "$STAGING_DIR"
-    cp "$source_model" "$STAGING_DIR/candidate.h5"
-
-    log_success "Deployed to staging"
-}
-
-# Run validation tests
-function run_validation_tests() {
-    log "Running validation tests..."
-
-    local test_script="$SCRIPT_DIR/validate_model.py"
-
-    if [ ! -f "$test_script" ]; then
-        log_error "Test script not found: $test_script"
-        return 1
-    fi
-
-    if python "$test_script" --model "$STAGING_DIR/candidate.h5"; then
-        log_success "All validation tests passed"
-        return 0
-    else
-        log_error "Validation tests failed"
-        return 1
-    fi
-}
-
-# Promote to production
-function promote_to_production() {
-    log "Promoting to production..."
-
-    backup_current_model
-
-    mkdir -p "$PRODUCTION_DIR"
-    cp "$STAGING_DIR/candidate.h5" "$PRODUCTION_DIR/current.h5"
-
-    log_success "Model promoted to production"
-}
-
-# Restart service
-function restart_service() {
-    log "Restarting $SERVICE_NAME..."
-
-    if systemctl restart "$SERVICE_NAME"; then
-        log_success "Service restarted successfully"
-
-        # Wait for service to be ready
-        sleep 5
-
-        # Health check
-        if systemctl is-active "$SERVICE_NAME" &> /dev/null; then
-            log_success "Service is running"
-        else
-            log_error "Service failed to start"
-            return 1
-        fi
-    else
-        log_error "Failed to restart service"
-        return 1
-    fi
-}
-
-# Rollback
-function rollback() {
-    log_warning "Rolling back deployment..."
-
-    local latest_backup=$(ls -t "$BACKUP_DIR"/model_*.h5 | head -1)
-
-    if [ -z "$latest_backup" ]; then
-        log_error "No backup available for rollback"
-        return 1
-    fi
-
-    cp "$latest_backup" "$PRODUCTION_DIR/current.h5"
-    restart_service
-
-    log_success "Rollback completed"
-}
-
-# Main deployment pipeline
-function main() {
-    local model_path=$1
-
-    if [ -z "$model_path" ]; then
-        log_error "Usage: $0 <model_path>"
-        exit 1
-    fi
-
-    log "=== Starting Model Deployment Pipeline ==="
-    log "Model: $model_path"
-
-    # Validation
-    if ! validate_model "$model_path"; then
-        log_error "Model validation failed"
-        exit 1
-    fi
-
-    # Deploy to staging
-    if ! deploy_to_staging "$model_path"; then
-        log_error "Staging deployment failed"
-        exit 1
-    fi
-
-    # Run tests
-    if ! run_validation_tests; then
-        log_error "Validation tests failed"
-        exit 1
-    fi
-
-    # Promote to production
-    if ! promote_to_production; then
-        log_error "Production promotion failed"
-        rollback
-        exit 1
-    fi
-
-    # Restart service
-    if ! restart_service; then
-        log_error "Service restart failed"
-        rollback
-        exit 1
-    fi
-
-    log_success "=== Deployment completed successfully ==="
-}
-
-# Execute
-main "$@"
-```
+- **Shebang**: Start with `#!/bin/bash`
+- **Strict mode**: Use `set -euo pipefail`
+- **Header comment**: Script name, description, author, date
+- **Constants**: Use `readonly` for constants
+- **Functions**: Break code into reusable functions
+- **Quotes**: Always quote variables: `"$VAR"`
+- **Local variables**: Use `local` in functions
+- **Error handling**: Use `trap` and error handlers
+- **Logging**: Log important events with timestamps
+- **Validation**: Validate inputs before using
+- **Usage function**: Provide clear usage information
+- **Exit codes**: Use meaningful exit codes
+- **Comments**: Explain why, not what
+- **Dry-run mode**: Support --dry-run for testing
+- **Version info**: Include --version flag
 
 ---
 
@@ -1615,34 +1379,25 @@ main "$@"
 
 ### Production Best Practices
 
-✅ **Use strict mode**: `set -euo pipefail`
-✅ **Validate all inputs**: Never trust user input
-✅ **Log everything**: Timestamps and severity levels
-✅ **Handle errors gracefully**: Trap, cleanup, rollback
-✅ **Support dry-run mode**: Test without executing
-✅ **Provide clear usage**: --help with examples
-✅ **Version your scripts**: Track changes over time
-✅ **Document thoroughly**: Comments, headers, README
-✅ **Make idempotent**: Safe to run multiple times
-✅ **Test extensively**: Unit tests for functions
+- **Use strict mode**: `set -euo pipefail`
+- **Validate all inputs**: Never trust user input
+- **Log everything**: Timestamps and severity levels
+- **Handle errors gracefully**: Trap, cleanup, rollback
+- **Support dry-run mode**: Test without executing
+- **Provide clear usage**: --help with examples
+- **Version your scripts**: Track changes over time
+- **Document thoroughly**: Comments, headers, README
+- **Make idempotent**: Safe to run multiple times
+- **Test extensively**: Unit tests for functions
 
 ### AI Infrastructure Applications
 
-**Model Deployment**: Automated pipelines with validation and rollback
-**Training Automation**: Multi-model, multi-GPU orchestration
-**Resource Management**: Health checks, alerting, auto-scaling
-**Data Processing**: ETL pipelines for datasets
-**Monitoring**: Metrics collection and analysis
-**Backup/Recovery**: Automated backups with retention policies
-
-### Next Steps
-
-In **Lecture 07: Text Processing Tools**, you'll learn:
-- grep for pattern matching
-- sed for stream editing
-- awk for text processing and reports
-- Combining tools in pipelines
-- Analyzing ML logs and metrics
+- **Model Deployment**: Automated pipelines with validation and rollback
+- **Training Automation**: Multi-model, multi-GPU orchestration
+- **Resource Management**: Health checks, alerting, auto-scaling
+- **Data Processing**: ETL pipelines for datasets
+- **Monitoring**: Metrics collection and analysis
+- **Backup/Recovery**: Automated backups with retention policies
 
 ### Quick Reference
 

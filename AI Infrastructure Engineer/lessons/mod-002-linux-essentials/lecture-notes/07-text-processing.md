@@ -33,16 +33,14 @@ By the end of this lecture, you will:
 
 ### Why Text Processing for AI Infrastructure?
 
-**Log Analysis**: Extract errors, warnings, and metrics from training logs
-**Metrics Processing**: Parse and analyze model performance data
-**Configuration Management**: Modify config files programmatically
-**Data Preprocessing**: Clean and transform datasets
-**Troubleshooting**: Debug issues by searching through logs
-**Automation**: Process text in scripts and pipelines
-**Reporting**: Generate summaries from raw data
+- **Log Analysis**: Extract errors, warnings, and metrics from training logs
+- **Metrics Processing**: Parse and analyze model performance data
+- **Configuration Management**: Modify config files programmatically
+- **Data Preprocessing**: Clean and transform datasets
+- **Troubleshooting**: Debug issues by searching through logs
+- **Automation**: Process text in scripts and pipelines
+- **Reporting**: Generate summaries from raw data
 
-**Duration**: 90 minutes
-**Difficulty**: Intermediate
 
 ---
 
@@ -1172,36 +1170,17 @@ cat "$OUTPUT_FILE"
 4. **Transformations**: Modify text programmatically
 5. **Aggregation**: Calculate statistics and summaries
 
-### AI Infrastructure Applications
-
-**Log Analysis**:
-- Extract errors and warnings
-- Parse training metrics
-- Identify performance bottlenecks
-- Monitor resource usage
-
-**Data Processing**:
-- Clean datasets
-- Transform formats
-- Extract features
-- Generate reports
-
-**Automation**:
-- Process logs in scripts
-- Generate alerts
-- Create dashboards
-- Automate reporting
 
 ### Best Practices
 
-✅ **Start simple**: Basic grep before complex awk
-✅ **Test incrementally**: Build pipelines step by step
-✅ **Use appropriate tool**: grep for search, sed for replace, awk for reports
-✅ **Quote patterns**: Prevent shell interpretation
-✅ **Save intermediate results**: Debug complex pipelines
-✅ **Comment regex**: Document complex patterns
-✅ **Use -n with sed**: Explicit printing for clarity
-✅ **Name awk variables**: Readable code over brevity
+- **Start simple**: Basic grep before complex awk
+- **Test incrementally**: Build pipelines step by step
+- **Use appropriate tool**: grep for search, sed for replace, awk for reports
+- **Quote patterns**: Prevent shell interpretation
+- **Save intermediate results**: Debug complex pipelines
+- **Comment regex**: Document complex patterns
+- **Use -n with sed**: Explicit printing for clarity
+- **Name awk variables**: Readable code over brevity
 
 ### Common Patterns
 
@@ -1223,42 +1202,6 @@ awk '/metric/ {sum+=$2; count++} END {print sum/count}' log.txt
     echo "Report:"
     grep metric log.txt | awk '{print "  " $0}'
 } > report.txt
-```
-
-### Next Steps
-
-In **Lecture 08: Networking Fundamentals**, you'll learn:
-- TCP/IP networking basics
-- Network configuration
-- SSH and remote access
-- Network troubleshooting
-- AI infrastructure networking
-
-### Quick Reference
-
-```bash
-# grep
-grep pattern file.txt           # Search
-grep -i pattern file.txt        # Case-insensitive
-grep -r pattern dir/            # Recursive
-grep -n pattern file.txt        # Line numbers
-grep -A 3 pattern file.txt      # 3 lines after
-grep -E 'pat1|pat2' file.txt    # Extended regex
-
-# sed
-sed 's/old/new/g' file.txt      # Replace all
-sed -i 's/old/new/g' file.txt   # In-place
-sed '/pattern/d' file.txt       # Delete lines
-sed -n '10,20p' file.txt        # Print lines 10-20
-
-# awk
-awk '{print $1}' file.txt       # First field
-awk -F: '{print $1}' file.txt   # Custom separator
-awk '$3 > 100' file.txt         # Filter
-awk '{sum+=$1} END {print sum}' # Sum column
-
-# Pipelines
-grep ERROR log.txt | awk '{print $1}' | sort | uniq -c
 ```
 
 ---
