@@ -19,6 +19,16 @@
     <!-- Marked for Markdown Parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
+    <!-- Mermaid for Rendering Diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+            securityLevel: 'loose'
+        });
+    </script>
+
     <!-- Prism.js for Code Syntax Highlighting -->
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
@@ -551,6 +561,147 @@
         }
         .markdown-body tr:nth-child(even) {
             background-color: var(--color-surface-container-lowest);
+        }
+
+        /* Zoom Lightbox for Images & Mermaid Diagrams */
+        .zoom-lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            cursor: grab;
+            animation: zoomFadeIn 0.25s ease;
+        }
+        .zoom-lightbox.active { display: flex; align-items: center; justify-content: center; }
+        .zoom-lightbox.dragging { cursor: grabbing; }
+        @keyframes zoomFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .zoom-lightbox-content {
+            max-width: 90vw;
+            max-height: 85vh;
+            transform-origin: center center;
+            transition: transform 0.15s ease;
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+        }
+        .zoom-lightbox-content img,
+        .zoom-lightbox-content svg {
+            max-width: 100%;
+            max-height: 85vh;
+            display: block;
+        }
+
+        .zoom-toolbar {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            padding: 6px 10px;
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+        }
+        .zoom-toolbar button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.25rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .zoom-toolbar button:hover { background: rgba(255,255,255,0.15); }
+        .zoom-toolbar .zoom-level {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-family: 'Fira Code', monospace;
+            min-width: 48px;
+            justify-content: center;
+        }
+
+        .zoom-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: rgba(30,30,30,0.6);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+            z-index: 10000;
+        }
+        .zoom-close-btn:hover { background: rgba(255,255,255,0.15); }
+
+        /* Magnifying Glass Lens */
+        .mag-lens {
+            display: none;
+            position: fixed;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 3px solid var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 99,102,241), 0.2),
+                        0 8px 32px rgba(0,0,0,0.35),
+                        inset 0 0 30px rgba(0,0,0,0.1);
+            pointer-events: none;
+            z-index: 9998;
+            background-repeat: no-repeat;
+            background-color: var(--color-surface);
+            overflow: hidden;
+            transition: opacity 0.15s ease, transform 0.05s ease;
+            opacity: 0;
+        }
+        .mag-lens.active {
+            display: block;
+            opacity: 1;
+        }
+        .mag-lens::after {
+            content: '2.5×';
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 0.6rem;
+            font-family: 'Fira Code', monospace;
+            color: var(--color-primary);
+            background: var(--color-surface-container);
+            padding: 1px 5px;
+            border-radius: 4px;
+            opacity: 0.8;
+        }
+
+        /* Make images & mermaid diagrams show a zoom cursor hint */
+        .markdown-body img,
+        .markdown-body .mermaid svg {
+            cursor: none;
+            transition: transform 0.2s ease;
+        }
+        .markdown-body img:hover,
+        .markdown-body .mermaid:hover svg {
+            transform: scale(1.015);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
         }
 
         /* Alert boxes styled similarly to GitHub alerts */
@@ -1497,6 +1648,9 @@
                     document.documentElement.classList.remove('dark');
                     localStorage.setItem('theme', 'light');
                 }
+                if (window.mermaid) {
+                    mermaid.initialize({ theme: newTheme === 'dark' ? 'dark' : 'default' });
+                }
                 updateThemeToggleButton();
             });
         }
@@ -2099,6 +2253,147 @@ Assume I am learning this for practical use and interview preparation.`;
             });
         }
 
+        // ── Zoom Lightbox for Images & Mermaid Diagrams ──
+        function initZoomLightbox() {
+            const lightbox = document.getElementById('zoom-lightbox');
+            const contentWrap = document.getElementById('zoom-lightbox-content');
+            const zoomLevel = document.getElementById('zoom-level');
+            const magLens = document.getElementById('mag-lens');
+            const MAG_SCALE = 2.5;
+            const LENS_SIZE = 180;
+            let scale = 1, translateX = 0, translateY = 0;
+            let isDragging = false, startX = 0, startY = 0;
+
+            function applyTransform() {
+                contentWrap.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+                zoomLevel.textContent = Math.round(scale * 100) + '%';
+            }
+            function openLightbox(el) {
+                contentWrap.innerHTML = '';
+                let clone;
+                if (el.tagName === 'IMG') {
+                    clone = document.createElement('img');
+                    clone.src = el.src;
+                    clone.alt = el.alt || '';
+                } else {
+                    clone = el.cloneNode(true);
+                }
+                contentWrap.appendChild(clone);
+                scale = 1; translateX = 0; translateY = 0;
+                applyTransform();
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            // ── Magnifier: convert element to image URL for background ──
+            function getImageURL(el) {
+                if (el.tagName === 'IMG') return el.src;
+                // For SVG (mermaid), serialize to data URL
+                const svgEl = el.tagName === 'svg' ? el : el.querySelector('svg');
+                if (!svgEl) return null;
+                const clone = svgEl.cloneNode(true);
+                clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                const svgStr = new XMLSerializer().serializeToString(clone);
+                return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+            }
+
+            // ── Attach magnifier to each zoomable element ──
+            function attachMagnifier(el) {
+                let imgURL = null;
+                let naturalW = 0, naturalH = 0;
+
+                el.addEventListener('mouseenter', () => {
+                    imgURL = getImageURL(el);
+                    if (!imgURL) return;
+                    // Get rendered size
+                    const rect = el.getBoundingClientRect();
+                    naturalW = rect.width;
+                    naturalH = rect.height;
+                    magLens.style.backgroundImage = `url("${imgURL}")`;
+                    magLens.style.backgroundSize = `${naturalW * MAG_SCALE}px ${naturalH * MAG_SCALE}px`;
+                    magLens.classList.add('active');
+                });
+
+                el.addEventListener('mousemove', (e) => {
+                    if (!imgURL) return;
+                    const rect = el.getBoundingClientRect();
+                    // Cursor position relative to the element (0-1)
+                    const ratioX = (e.clientX - rect.left) / rect.width;
+                    const ratioY = (e.clientY - rect.top) / rect.height;
+                    // Background position so the cursor area is centered in the lens
+                    const bgX = ratioX * naturalW * MAG_SCALE - LENS_SIZE / 2;
+                    const bgY = ratioY * naturalH * MAG_SCALE - LENS_SIZE / 2;
+                    magLens.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+                    // Position the lens near the cursor
+                    magLens.style.left = `${e.clientX - LENS_SIZE / 2}px`;
+                    magLens.style.top = `${e.clientY - LENS_SIZE / 2}px`;
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    magLens.classList.remove('active');
+                    imgURL = null;
+                });
+
+                // Click opens the full lightbox
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    magLens.classList.remove('active');
+                    openLightbox(el);
+                });
+            }
+
+            // Attach to all images
+            document.querySelectorAll('#markdown-content img').forEach(img => attachMagnifier(img));
+            // Attach to all mermaid SVGs
+            document.querySelectorAll('#markdown-content .mermaid svg').forEach(svg => {
+                svg.style.cursor = 'none';
+                attachMagnifier(svg);
+            });
+
+            // Close lightbox
+            document.getElementById('zoom-close').addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+            // Zoom buttons
+            document.getElementById('zoom-in-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); scale = Math.min(scale * 1.3, 8); applyTransform();
+            });
+            document.getElementById('zoom-out-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); scale = Math.max(scale / 1.3, 0.2); applyTransform();
+            });
+            document.getElementById('zoom-reset-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); scale = 1; translateX = 0; translateY = 0; applyTransform();
+            });
+
+            // Mouse wheel zoom
+            lightbox.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                scale = Math.min(Math.max(scale * delta, 0.2), 8);
+                applyTransform();
+            }, { passive: false });
+
+            // Drag to pan
+            lightbox.addEventListener('mousedown', (e) => {
+                if (e.target.closest('.zoom-toolbar') || e.target.closest('.zoom-close-btn')) return;
+                isDragging = true; startX = e.clientX - translateX; startY = e.clientY - translateY;
+                lightbox.classList.add('dragging');
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                translateX = e.clientX - startX; translateY = e.clientY - startY;
+                applyTransform();
+            });
+            window.addEventListener('mouseup', () => {
+                isDragging = false; lightbox.classList.remove('dragging');
+            });
+        }
+
         // Local image path resolution
         function fixRelativeImages() {
             const images = document.querySelectorAll('#markdown-content img');
@@ -2201,13 +2496,35 @@ Assume I am learning this for practical use and interview preparation.`;
                 let markdown = await response.text();
                 
                 markdown = parseAlertBlocks(markdown);
-                
                 const markdownContentDiv = document.getElementById('markdown-content');
                 markdownContentDiv.innerHTML = marked.parse(markdown);
                 
+                // Convert mermaid code blocks into renderable <pre class="mermaid"> elements
+                // marked outputs: <pre><code class="language-mermaid">...diagram code...</code></pre>
+                // mermaid needs: <pre class="mermaid">...diagram code...</pre>
+                markdownContentDiv.querySelectorAll('pre > code.language-mermaid').forEach(codeEl => {
+                    const pre = codeEl.parentElement;
+                    const diagramSource = codeEl.textContent;
+                    const mermaidPre = document.createElement('pre');
+                    mermaidPre.className = 'mermaid';
+                    mermaidPre.textContent = diagramSource;
+                    pre.replaceWith(mermaidPre);
+                });
+                
                 Prism.highlightAllUnder(markdownContentDiv);
+                
+                // Render Mermaid Diagrams
+                const mermaidNodes = markdownContentDiv.querySelectorAll('pre.mermaid');
+                if (window.mermaid && mermaidNodes.length > 0) {
+                    mermaid.run({ nodes: mermaidNodes })
+                        .catch(err => console.error('Mermaid rendering error:', err));
+                }
+
                 addCopyButtons();
                 fixRelativeImages();
+
+                // Wait for mermaid to finish rendering, then init lightbox
+                setTimeout(() => { initZoomLightbox(); }, 500);
                 
                 // Math LaTeX Auto-Render
                 renderMathInElement(markdownContentDiv, {
@@ -2470,5 +2787,29 @@ Assume I am learning this for practical use and interview preparation.`;
             ring.style.opacity = '0';
         })();
     </script>
+
+<!-- Magnifying Glass Lens -->
+<div id="mag-lens" class="mag-lens"></div>
+
+<!-- Zoom Lightbox Overlay -->
+<div id="zoom-lightbox" class="zoom-lightbox">
+    <button id="zoom-close" class="zoom-close-btn" title="Close (Esc)">
+        <span class="material-symbols-outlined">close</span>
+    </button>
+    <div id="zoom-lightbox-content" class="zoom-lightbox-content"></div>
+    <div class="zoom-toolbar">
+        <button id="zoom-out-btn" title="Zoom Out">
+            <span class="material-symbols-outlined">remove</span>
+        </button>
+        <span id="zoom-level" class="zoom-level">100%</span>
+        <button id="zoom-in-btn" title="Zoom In">
+            <span class="material-symbols-outlined">add</span>
+        </button>
+        <button id="zoom-reset-btn" title="Reset Zoom">
+            <span class="material-symbols-outlined">fit_screen</span>
+        </button>
+    </div>
+</div>
+
 </body>
 </html>

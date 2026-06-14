@@ -218,18 +218,58 @@ To overcome Matrix Factorization's limitations (inability to handle cold-starts 
 
 ## 7. Deployment, Serving & Monitoring
 
-### Serving Strategy
-*   **Hybrid Serving:** 
-    *   Video embeddings are static and precomputed offline, then loaded into a fast Vector DB index.
-    *   At query time, the user tower processes user demographics and real-time context to generate the user embedding. 
-    *   ANN search performs vector lookup over the video indexes, followed by real-time ranking scoring and re-ranking.
+To serve recommendations to billions of users within a strict latency budget of $\leq 200\text{ ms}$, we partition the architecture into distinct **Offline Training** and **Online Serving (Production)** pipelines.
+
+```mermaid
+graph LR
+    subgraph Offline
+        A["Interaction Logs"] --> B["Train Models"]
+        C["Video Catalog"] --> D["Compute Embeddings"]
+        B --> E[("Vector DB")]
+        D --> E
+    end
+
+    subgraph Online
+        F["User Request"] --> G["Extract Context"]
+        G --> H1["Collab-Filter"]
+        G --> H2["Location"]
+        G --> H3["Trending"]
+        H1 & H2 & H3 --> I["Merge Candidates"]
+        I --> J["Score & Rank"]
+        J --> K["Re-rank & Filter"]
+        K --> L["Top-K Feed"]
+    end
+
+    E -->|ANN Lookup| H1
+```
+
+### Offline Pipeline
+*   **Train Models** — Train retrieval (Two-Tower) and scoring models on GPU clusters using interaction logs.
+*   **Compute Embeddings** — Run the video catalog through the video tower to produce static video vectors.
+*   **Vector DB** — Index all video embeddings in an ANN index (HNSW / IVF-PQ) for sub-ms lookup.
+
+### Online Pipeline (≤ 200 ms)
+
+**Stage 1 — Candidate Generation** (10B → ~1K videos)
+*   Three parallel threads query candidates simultaneously to cut latency:
+    *   **Collab-Filter** — ANN lookup in Vector DB using the user's embedding.
+    *   **Location** — Region/demographic-popular videos.
+    *   **Trending** — Globally popular videos (fallback if model fails).
+*   Results are merged & deduplicated into one candidate pool.
+
+**Stage 2 — Score & Rank** (~1K → ~100 videos)
+*   A heavy neural ranker scores each candidate using user history, real-time context (device, time), and video metadata (BERT titles, CBOW tags).
+
+**Stage 3 — Re-rank & Filter** (~100 → Top-K)
+*   Deduplication, freshness decay, clickbait/safety filters, and category interleaving to ensure a diverse, high-quality feed.
 
 ### Cold-Start Handling
-*   **New Users:** Handled using the two-tower user encoder, relying on demographic features (age, gender, language, location) to serve generalized personalized recommendations until interaction data is gathered.
-*   **New Videos:** Handled via content-based features (BERT embeddings for titles, CBOW for tags). Additionally, utilize heuristics to inject new videos to random users (exploration) to gather bootstrap interactions.
+*   **New Users** — Two-Tower user encoder falls back to demographics (age, location, language).
+*   **New Videos** — Content-based features (BERT/CBOW embeddings) + random exploration injection.
 
-### Retraining & Scalability
-*   The neural network architecture is designed to support **warm-start fine-tuning** to update model weights incrementally as new interaction logs stream in, avoiding expensive training runs from scratch.
+### Model Updates
+*   **Warm-start fine-tuning** on streaming logs (no full retrains).
+*   **Canary deploy** (5% traffic) → **A/B test** → full rollout.
 
 
 ## Appendix: Interview Whiteboard Design Sketch
