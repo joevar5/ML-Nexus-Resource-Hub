@@ -303,10 +303,10 @@ D) To request help with Git problems
 ### Question 20: Code Review Comments
 Which type of code review comment indicates a blocking issue that must be fixed?
 
-A) 💅 Nitpick
-B) ❓ Question
-C) 👍 Nice
-D) 🚨 BLOCKER
+A) Nitpick
+B) Question
+C) Nice
+D) BLOCKER
 
 **Answer:** D
 

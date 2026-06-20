@@ -409,8 +409,8 @@ ml-data-pipeline/
 ml-infrastructure/
 ```
 
-**Pros**: Clear ownership, independent versioning
-**Cons**: Dependency hell, code duplication, difficult refactoring
+- **Pros**: Clear ownership, independent versioning
+- **Cons**: Dependency hell, code duplication, difficult refactoring
 
 **Monorepo**
 ```
@@ -421,8 +421,8 @@ ml-platform/
 └── infrastructure/
 ```
 
-**Pros**: Easy code sharing, atomic changes, simplified dependencies
-**Cons**: Larger repo, requires discipline
+- **Pros**: Easy code sharing, atomic changes, simplified dependencies
+- **Cons**: Larger repo, requires discipline
 
 ### When to Use Monorepo for ML
 
@@ -880,23 +880,16 @@ git commit -m "deps: pin dependencies for reproducibility"
    - Tag production releases
    - Use DVC for datasets
 
-### Practical Skills Gained
-
-✅ Configure and use Git LFS for ML artifacts
-✅ Structure ML projects for team collaboration
-✅ Choose appropriate Git workflow for ML teams
-✅ Optimize Git performance for large repositories
-✅ Apply versioning best practices to models and data
-✅ Ensure reproducibility across team and time
+   
 
 ### Common Pitfalls to Avoid
 
-❌ Committing large files without LFS (bloats repo)
-❌ Versioning raw data in Git (use S3/GCS + DVC)
-❌ Versioning virtual environments (use requirements.txt)
-❌ Not pinning dependencies (breaks reproducibility)
-❌ Creating long-lived feature branches (causes merge conflicts)
-❌ Not tagging production model versions
+- Committing large files without LFS (bloats repo)
+- Versioning raw data in Git (use S3/GCS + DVC)
+- Versioning virtual environments (use requirements.txt)
+- Not pinning dependencies (breaks reproducibility)
+- Creating long-lived feature branches (causes merge conflicts)
+- Not tagging production model versions
 
 ### Next Steps
 

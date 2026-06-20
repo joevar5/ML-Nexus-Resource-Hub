@@ -22,6 +22,9 @@
     <!-- Mermaid for Rendering Diagrams -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
     <script>
+        marked.use({
+            breaks: true
+        });
         mermaid.initialize({
             startOnLoad: false,
             theme: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
