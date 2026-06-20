@@ -201,12 +201,12 @@ logging/
 
 | Factor | Loki | Elasticsearch | Verdict |
 |--------|------|---------------|---------|
-| Cost | Low (no full-text indexing) | High (indexes all fields) | ✅ Loki |
+| Cost | Low (no full-text indexing) | High (indexes all fields) | - Loki |
 | Query Speed | Fast for label-based queries | Fast for full-text search | Tie |
-| Storage Efficiency | 10x compression | Larger indexes | ✅ Loki |
-| Integration | Native Grafana | Requires Kibana or plugin | ✅ Loki |
-| Ops Complexity | Low (single binary) | High (cluster management) | ✅ Loki |
-| Scalability | Horizontal (via object storage) | Horizontal (complex) | ✅ Loki |
+| Storage Efficiency | 10x compression | Larger indexes | - Loki |
+| Integration | Native Grafana | Requires Kibana or plugin | - Loki |
+| Ops Complexity | Low (single binary) | High (cluster management) | - Loki |
+| Scalability | Horizontal (via object storage) | Horizontal (complex) | - Loki |
 
 **Decision:** Loki is ideal for structured logs with known query patterns.
 
@@ -2366,16 +2366,16 @@ Before completing this exercise, ensure:
 
 You have successfully built a production-ready logging pipeline with:
 
-✅ **Centralized log aggregation** with Loki (2.9.3)
-✅ **Automated log collection** with Promtail
-✅ **Structured log parsing** with pipeline stages
-✅ **PII redaction** for compliance
-✅ **Log-based metrics** for alerting
-✅ **Trace-log correlation** for debugging
-✅ **Grafana dashboards** for visualization
-✅ **Retention and governance** policies
-✅ **Performance optimization** (cardinality, caching)
-✅ **Comprehensive documentation**
+- **Centralized log aggregation** with Loki (2.9.3)
+- **Automated log collection** with Promtail
+- **Structured log parsing** with pipeline stages
+- **PII redaction** for compliance
+- **Log-based metrics** for alerting
+- **Trace-log correlation** for debugging
+- **Grafana dashboards** for visualization
+- **Retention and governance** policies
+- **Performance optimization** (cardinality, caching)
+- **Comprehensive documentation**
 
 **Total line count:** ~2,400 lines
 **Key files created:** 8+

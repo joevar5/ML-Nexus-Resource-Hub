@@ -142,7 +142,7 @@ ml_infra=#
 \! clear
 ```
 
-✅ **Checkpoint**: You should be connected to the `ml_infra` database and able to run `\l` to list databases.
+- **Checkpoint**: You should be connected to the `ml_infra` database and able to run `\l` to list databases.
 
 ---
 
@@ -378,7 +378,7 @@ Indexes:
     ...
 ```
 
-✅ **Checkpoint**: Table created successfully with all constraints and indexes.
+- **Checkpoint**: Table created successfully with all constraints and indexes.
 
 ---
 
@@ -904,7 +904,7 @@ WHERE framework = 'pytorch'
 LIMIT 5;
 ```
 
-✅ **Checkpoint**: 20 training runs inserted successfully with realistic data.
+- **Checkpoint**: 20 training runs inserted successfully with realistic data.
 
 ---
 
@@ -1311,7 +1311,7 @@ GROUP BY experiment_name
 ORDER BY best_accuracy DESC NULLS LAST;
 ```
 
-✅ **Checkpoint**: You can run complex SELECT queries with filtering, aggregation, and JSONB operations.
+- **Checkpoint**: You can run complex SELECT queries with filtering, aggregation, and JSONB operations.
 
 ---
 
@@ -1438,7 +1438,7 @@ COMMIT;
 -- ROLLBACK;
 ```
 
-✅ **Checkpoint**: You can safely update records with WHERE clauses and transactions.
+- **Checkpoint**: You can safely update records with WHERE clauses and transactions.
 
 ---
 
@@ -1519,7 +1519,7 @@ TRUNCATE TABLE training_runs;  -- DON'T RUN THIS NOW!
 -- TRUNCATE TABLE training_runs CASCADE;  -- DANGEROUS!
 ```
 
-✅ **Checkpoint**: You understand DELETE operations and safety practices.
+- **Checkpoint**: You understand DELETE operations and safety practices.
 
 ---
 
@@ -1612,7 +1612,7 @@ BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 COMMIT;
 ```
 
-✅ **Checkpoint**: You understand transactions and can use BEGIN/COMMIT/ROLLBACK.
+- **Checkpoint**: You understand transactions and can use BEGIN/COMMIT/ROLLBACK.
 
 ---
 
@@ -1897,14 +1897,14 @@ COMMIT;
 ### Step 12.2: SQL Best Practices Summary
 
 **DO**:
-- ✅ Always use `WHERE` clause with UPDATE/DELETE
-- ✅ Use transactions for multi-step operations
-- ✅ Test queries with `SELECT` before `UPDATE`/`DELETE`
-- ✅ Use `LIMIT` when exploring large tables
-- ✅ Add indexes on frequently queried columns
-- ✅ Use specific column names instead of `SELECT *`
-- ✅ Use `EXPLAIN ANALYZE` to check query performance
-- ✅ Use constraints to enforce data quality
+- - Always use `WHERE` clause with UPDATE/DELETE
+- - Use transactions for multi-step operations
+- - Test queries with `SELECT` before `UPDATE`/`DELETE`
+- - Use `LIMIT` when exploring large tables
+- - Add indexes on frequently queried columns
+- - Use specific column names instead of `SELECT *`
+- - Use `EXPLAIN ANALYZE` to check query performance
+- - Use constraints to enforce data quality
 
 **DON'T**:
 - ❌ Never `UPDATE`/`DELETE` without `WHERE` (unless intentional)
@@ -2028,26 +2028,26 @@ Write a 300-500 word reflection answering:
 
 ### What You Learned
 
-✅ **Schema Design**:
+- **Schema Design**:
 - Table creation with appropriate data types
 - Constraints (PRIMARY KEY, UNIQUE, CHECK, NOT NULL)
 - Default values and generated columns
 - JSONB for flexible metadata storage
 
-✅ **CRUD Operations**:
+- **CRUD Operations**:
 - **CREATE**: INSERT data with single and bulk operations
 - **READ**: SELECT queries with filtering, sorting, aggregation
 - **UPDATE**: Modify records safely with WHERE clauses
 - **DELETE**: Remove records with proper safety measures
 
-✅ **Advanced SQL**:
+- **Advanced SQL**:
 - JSONB queries for flexible data
 - Date/time operations and intervals
 - Aggregate functions and GROUP BY
 - Window functions (preview)
 - Common Table Expressions (preview)
 
-✅ **Best Practices**:
+- **Best Practices**:
 - Always use WHERE with UPDATE/DELETE
 - Use transactions for multi-step operations
 - Test with SELECT before UPDATE/DELETE
@@ -2079,5 +2079,5 @@ You now have a solid foundation in SQL fundamentals and CRUD operations for ML i
 
 **Estimated Time Spent**: 3-4 hours
 **Difficulty**: Beginner → Intermediate
-**Learning Objectives Achieved**: ✅ All objectives met
+**Learning Objectives Achieved**: - All objectives met
 **Ready for**: Exercise 02 - Database Design for ML Model Registry

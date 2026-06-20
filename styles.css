@@ -593,6 +593,13 @@
             opacity: 0.8;
         }
 
+        /* Center mermaid diagrams */
+        .markdown-body .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 1.5em 0;
+        }
+
         /* Make images & mermaid diagrams show a zoom cursor hint */
         .markdown-body img,
         .markdown-body .mermaid svg {

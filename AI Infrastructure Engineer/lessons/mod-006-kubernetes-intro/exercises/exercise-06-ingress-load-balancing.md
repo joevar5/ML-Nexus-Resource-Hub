@@ -224,7 +224,7 @@ curl -H "Host: v1.myapp.com" http://$INGRESS_IP/
 curl -H "Host: v2.myapp.com" http://$INGRESS_IP/
 ```
 
-✅ **Checkpoint**: You can create basic Ingress resources.
+- **Checkpoint**: You can create basic Ingress resources.
 
 ---
 
@@ -348,7 +348,7 @@ kubectl get certificate
 kubectl describe certificate myapp-tls
 ```
 
-✅ **Checkpoint**: You can configure SSL/TLS termination.
+- **Checkpoint**: You can configure SSL/TLS termination.
 
 ---
 
@@ -617,7 +617,7 @@ curl -H "Host: myapp.com" http://$INGRESS_IP/
 # Gets stable version
 ```
 
-✅ **Checkpoint**: You can implement advanced routing patterns.
+- **Checkpoint**: You can implement advanced routing patterns.
 
 ---
 
@@ -737,7 +737,7 @@ EOF
 kubectl apply -f timeouts-ingress.yaml
 ```
 
-✅ **Checkpoint**: You understand load balancing strategies.
+- **Checkpoint**: You understand load balancing strategies.
 
 ---
 
@@ -857,7 +857,7 @@ EOF
 kubectl apply -f cors-ingress.yaml
 ```
 
-✅ **Checkpoint**: You can implement security features in Ingress.
+- **Checkpoint**: You can implement security features in Ingress.
 
 ---
 
@@ -1061,7 +1061,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You can route ML inference traffic.
+- **Checkpoint**: You can route ML inference traffic.
 
 ---
 
@@ -1143,7 +1143,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You can monitor Ingress traffic.
+- **Checkpoint**: You can monitor Ingress traffic.
 
 ---
 
@@ -1237,22 +1237,22 @@ EOF
 kubectl apply -f ingress-pdb.yaml
 ```
 
-✅ **Checkpoint**: You can deploy production-ready Ingress.
+- **Checkpoint**: You can deploy production-ready Ingress.
 
 ---
 
 ## Summary
 
 **What You Accomplished**:
-✅ Installed and configured Ingress controllers
-✅ Implemented path and host-based routing
-✅ Configured SSL/TLS termination
-✅ Implemented canary deployments
-✅ Applied load balancing strategies
-✅ Configured rate limiting and security
-✅ Routed ML inference traffic
-✅ Monitored Ingress performance
-✅ Applied production best practices
+- Installed and configured Ingress controllers
+- Implemented path and host-based routing
+- Configured SSL/TLS termination
+- Implemented canary deployments
+- Applied load balancing strategies
+- Configured rate limiting and security
+- Routed ML inference traffic
+- Monitored Ingress performance
+- Applied production best practices
 
 **Key Concepts**:
 - Ingress provides HTTP(S) routing
@@ -1270,10 +1270,3 @@ kubectl apply -f ingress-pdb.yaml
 - Monitor ingress metrics
 - Scale ingress controllers for HA
 - Use PodDisruptionBudgets
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 3-4 hours
-**Difficulty**: Intermediate to Advanced

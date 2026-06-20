@@ -1064,7 +1064,7 @@ git log --oneline
 # git reset --hard HEAD~1  # ⚠️ DELETES last commit and changes!
 
 # git revert creates new commit (SAFE!)
-# git revert HEAD  # ✅ Keeps history, undoes changes
+# git revert HEAD  # - Keeps history, undoes changes
 
 # Let's demonstrate reset in a safe way
 # Create a test branch
@@ -1396,15 +1396,15 @@ git reflog  # Shows all HEAD movements
 
 Congratulations! You've completed Exercise 02. You learned:
 
-- ✅ Writing effective commit messages with conventional format
-- ✅ Navigating Git history with various `git log` options
-- ✅ Searching commit history for specific changes
-- ✅ Inspecting commits with `git show`
-- ✅ Amending commits to fix messages or add files
-- ✅ Reverting commits safely without losing history
-- ✅ Understanding revert vs. reset
-- ✅ Following a complete feature development workflow
-- ✅ Auditing commit history for quality
+- - Writing effective commit messages with conventional format
+- - Navigating Git history with various `git log` options
+- - Searching commit history for specific changes
+- - Inspecting commits with `git show`
+- - Amending commits to fix messages or add files
+- - Reverting commits safely without losing history
+- - Understanding revert vs. reset
+- - Following a complete feature development workflow
+- - Auditing commit history for quality
 
 ### Key Commands Learned
 

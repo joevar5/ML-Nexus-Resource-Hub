@@ -156,7 +156,7 @@ volumes:
 EOF
 ```
 
-✅ **Checkpoint**: You can implement security hardening for containers.
+- **Checkpoint**: You can implement security hardening for containers.
 
 ---
 
@@ -266,7 +266,7 @@ docker stats io-test
 docker rm -f io-test
 ```
 
-✅ **Checkpoint**: You can configure and enforce resource limits.
+- **Checkpoint**: You can configure and enforce resource limits.
 
 ---
 
@@ -478,7 +478,7 @@ scrape_configs:
 EOF
 ```
 
-✅ **Checkpoint**: You can implement health checks and monitoring.
+- **Checkpoint**: You can implement health checks and monitoring.
 
 ---
 
@@ -629,7 +629,7 @@ volumes:
 EOF
 ```
 
-✅ **Checkpoint**: You can implement production logging strategies.
+- **Checkpoint**: You can implement production logging strategies.
 
 ---
 
@@ -751,7 +751,7 @@ services:
 EOF
 ```
 
-✅ **Checkpoint**: You can implement high availability patterns.
+- **Checkpoint**: You can implement high availability patterns.
 
 ---
 
@@ -958,7 +958,7 @@ docker compose -f docker-compose-rolling.yml up -d --no-deps --build app
 watch docker compose -f docker-compose-rolling.yml ps
 ```
 
-✅ **Checkpoint**: You can implement various deployment strategies.
+- **Checkpoint**: You can implement various deployment strategies.
 
 ---
 
@@ -1076,7 +1076,7 @@ if __name__ == '__main__':
 EOF
 ```
 
-✅ **Checkpoint**: You can manage secrets securely.
+- **Checkpoint**: You can manage secrets securely.
 
 ---
 
@@ -1250,7 +1250,7 @@ EOF
 chmod +x test-deployment.sh
 ```
 
-✅ **Checkpoint**: You can integrate Docker with CI/CD pipelines.
+- **Checkpoint**: You can integrate Docker with CI/CD pipelines.
 
 ---
 
@@ -1435,22 +1435,22 @@ networks:
 EOF
 ```
 
-✅ **Checkpoint**: You can deploy a complete production stack.
+- **Checkpoint**: You can deploy a complete production stack.
 
 ---
 
 ## Summary
 
 **What You Accomplished**:
-✅ Implemented security hardening
-✅ Configured resource limits
-✅ Set up health checks and monitoring
-✅ Implemented centralized logging
-✅ Built high availability patterns
-✅ Mastered deployment strategies
-✅ Managed secrets securely
-✅ Integrated with CI/CD
-✅ Deployed complete production stacks
+- Implemented security hardening
+- Configured resource limits
+- Set up health checks and monitoring
+- Implemented centralized logging
+- Built high availability patterns
+- Mastered deployment strategies
+- Managed secrets securely
+- Integrated with CI/CD
+- Deployed complete production stacks
 
 **Production Checklist**:
 - [x] Non-root users
@@ -1471,10 +1471,3 @@ EOF
 **Continue Learning**:
 - **Exercise 07**: Complete ML Application Containerization
 - **Module Quiz**: Test your Docker knowledge
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 4-5 hours
-**Difficulty**: Advanced

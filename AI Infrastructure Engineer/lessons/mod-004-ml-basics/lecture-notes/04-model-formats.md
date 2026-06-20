@@ -13,10 +13,6 @@ By the end of this lecture, you will be able to:
 - Package models for production deployment
 - Understand model versioning and management strategies
 
-**Duration**: 6-8 hours
-**Difficulty**: Intermediate
-**Prerequisites**: Lectures 01-03 (ML Overview, PyTorch, TensorFlow)
-
 ---
 
 ## 1. Introduction to ONNX
@@ -27,10 +23,17 @@ By the end of this lecture, you will be able to:
 
 **Key Concept**: Train in any framework, deploy anywhere.
 
-```
-PyTorch Model  ─┐
-                ├──→ ONNX Format ──→ ONNX Runtime ──→ Production
-TensorFlow Model ─┘
+```mermaid
+graph LR
+    A(["PyTorch Model"]):::src --> C(["ONNX Format"]):::onnx
+    B(["TensorFlow Model"]):::src --> C
+    C --> D(["ONNX Runtime"]):::rt
+    D --> E(["Production"]):::prod
+
+    classDef src fill:#6d28d9,stroke:#5b21b6,color:#fff,font-weight:bold
+    classDef onnx fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef rt fill:#047857,stroke:#065f46,color:#fff,font-weight:bold
+    classDef prod fill:#b45309,stroke:#92400e,color:#fff,font-weight:bold
 ```
 
 ### Why ONNX Matters for Infrastructure
@@ -65,23 +68,18 @@ Deploy with ONNX Runtime (framework-agnostic)
 
 ### ONNX Ecosystem
 
-```
-┌─────────────────────────────────────────────────┐
-│                   ONNX Format                   │
-└─────────────────────────────────────────────────┘
-         ↑                              ↓
-    ┌────────┐                    ┌──────────┐
-    │ Export │                    │  Deploy  │
-    └────────┘                    └──────────┘
-         ↑                              ↓
-┌────────────────────┐          ┌──────────────────┐
-│  PyTorch           │          │ ONNX Runtime     │
-│  TensorFlow        │          │ - Python         │
-│  scikit-learn      │          │ - C++            │
-│  Keras             │          │ - JavaScript     │
-│  MXNet             │          │ - Java           │
-└────────────────────┘          │ - C#             │
-                                └──────────────────┘
+```mermaid
+graph TD
+    ONNX(["ONNX Format"]):::onnx
+    ONNX --> EX(["Export"]):::green
+    ONNX --> DEP(["Deploy"]):::green
+    EX --> FW(["Frameworks<br/>PyTorch, TensorFlow,<br/>scikit-learn, Keras, MXNet"]):::src
+    DEP --> RT(["ONNX Runtime<br/>Python, C++, JavaScript,<br/>Java, C#"]):::amber
+
+    classDef src fill:#6d28d9,stroke:#5b21b6,color:#fff,font-weight:bold
+    classDef onnx fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef green fill:#047857,stroke:#065f46,color:#fff,font-weight:bold
+    classDef amber fill:#b45309,stroke:#92400e,color:#fff,font-weight:bold
 ```
 
 ---
@@ -560,24 +558,24 @@ for data, labels in dataloader:
 
 ### Decision Matrix
 
-```
-                                        ┌─────────────┐
-                                        │  Deployment │
-                                        │   Target    │
-                                        └──────┬──────┘
-                                               │
-                    ┌──────────────────────────┼──────────────────────────┐
-                    │                          │                          │
-             ┌──────▼──────┐          ┌────────▼────────┐        ┌───────▼──────┐
-             │   Server    │          │  Mobile/Edge    │        │   Browser    │
-             └──────┬──────┘          └────────┬────────┘        └───────┬──────┘
-                    │                          │                          │
-        ┌───────────┼───────────┐              │                          │
-        │           │           │              │                          │
-   ┌────▼───┐  ┌───▼────┐  ┌───▼────┐   ┌─────▼─────┐            ┌──────▼──────┐
-   │PyTorch │  │TensorFlow│ │  ONNX  │   │  TFLite   │            │TensorFlow.js│
-   │TorchSrv│  │ Serving │  │ Runtime│   │  ONNX     │            │   ONNX.js   │
-   └────────┘  └─────────┘  └────────┘   └───────────┘            └─────────────┘
+```mermaid
+graph TD
+    Root(["Deployment Target"]):::blue
+    Root --> Srv(["Server"]):::green
+    Root --> Mob(["Mobile/Edge"]):::green
+    Root --> Web(["Browser"]):::green
+
+    Srv --> PT(["PyTorch<br/>TorchServe"]):::amber
+    Srv --> TF(["TensorFlow<br/>Serving"]):::amber
+    Srv --> ORT(["ONNX<br/>Runtime"]):::amber
+
+    Mob --> TFL(["TFLite<br/>ONNX"]):::amber
+    
+    Web --> TFJ(["TensorFlow.js<br/>ONNX.js"]):::amber
+
+    classDef blue fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef green fill:#047857,stroke:#065f46,color:#fff,font-weight:bold
+    classDef amber fill:#b45309,stroke:#92400e,color:#fff,font-weight:bold
 ```
 
 ### Format Selection Guide
@@ -627,7 +625,7 @@ For maximum flexibility:
 
 ### Creating a Model Package
 
-```python
+````python
 # model_package.py
 import json
 from pathlib import Path
@@ -704,7 +702,7 @@ class ModelPackage:
 ```python
 # Load model
 from model_loader import load_model
-model = load_model('model/{metadata['model_file']}')
+model = load_model('model/{metadata["model_file"]}')
 
 # Run inference
 output = model.predict(input_data)
@@ -733,7 +731,7 @@ packager.create(
         'author': 'Infrastructure Team'
     }
 )
-```
+````
 
 ### Docker Image for Model Serving
 
@@ -1047,9 +1045,3 @@ You've completed all lectures in Module 004! Now it's time to:
 
 Continue to `exercises/exercise-01-pytorch-inference.md`
 
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Completion Time**: 6-8 hours
-**Difficulty**: Intermediate

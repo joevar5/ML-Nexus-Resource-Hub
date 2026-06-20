@@ -479,7 +479,7 @@ Copy to `.env`:
 cp .env.example .env
 ```
 
-**✅ Checkpoint:** Verify directory structure and configuration files are created correctly.
+**- Checkpoint:** Verify directory structure and configuration files are created correctly.
 
 ---
 
@@ -630,7 +630,7 @@ class ServiceUnavailableError(InferenceGatewayException):
         super().__init__(message, error_code="SERVICE_UNAVAILABLE")
 ```
 
-**✅ Checkpoint:** Configuration module loads correctly with environment variables.
+**- Checkpoint:** Configuration module loads correctly with environment variables.
 
 ---
 
@@ -768,7 +768,7 @@ configure_logging()
 }
 ```
 
-**✅ Checkpoint:** Import the logging module and verify JSON output:
+**- Checkpoint:** Import the logging module and verify JSON output:
 
 ```python
 from app.instrumentation.logging import get_logger
@@ -1090,7 +1090,7 @@ def set_model_memory(model_name: str, memory_bytes: int) -> None:
 - Inference: 10ms to 2s (model execution range)
 - Preprocessing/postprocessing: 1ms to 500ms (data transformation range)
 
-**✅ Checkpoint:** Metrics are defined and can be imported without errors.
+**- Checkpoint:** Metrics are defined and can be imported without errors.
 
 ---
 
@@ -1237,7 +1237,7 @@ def get_current_span_id() -> Optional[str]:
 - Trace context helpers
 - Resource attributes (service, version, environment)
 
-**✅ Checkpoint:** Tracing module imports without errors.
+**- Checkpoint:** Tracing module imports without errors.
 
 ---
 
@@ -1511,7 +1511,7 @@ model_service = ModelInferenceService()
 - ML-specific metrics (confidence, predictions by class)
 - Memory tracking
 
-**✅ Checkpoint:** Inference module imports correctly.
+**- Checkpoint:** Inference module imports correctly.
 
 ---
 
@@ -1846,7 +1846,7 @@ if __name__ == "__main__":
 - Exception handlers
 - Conditional API docs (dev only)
 
-**✅ Checkpoint:** Application starts successfully:
+**- Checkpoint:** Application starts successfully:
 
 ```bash
 # Start with Docker Compose
@@ -2089,7 +2089,7 @@ Re-evaluate SLOs if:
 - Internal: [ML Platform SLO Standards](https://wiki.internal/ml-platform-slos)
 ```
 
-**✅ Checkpoint:** SLO document is created and accessible.
+**- Checkpoint:** SLO document is created and accessible.
 
 ---
 
@@ -2103,7 +2103,7 @@ Create `docs/observability-readiness.md`:
 **Service**: inference-gateway
 **Assessment Date**: 2025-10-23
 **Assessor**: Junior AI Infrastructure Engineer
-**Status**: ✅ Ready for Production Monitoring Integration
+**Status**: - Ready for Production Monitoring Integration
 
 ---
 
@@ -2121,14 +2121,14 @@ The `inference-gateway` service has achieved **comprehensive observability cover
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| ✅ Service exposes `/metrics` endpoint | Complete | Prometheus exposition format |
-| ✅ Four Golden Signals instrumented | Complete | Latency, Traffic, Errors, Saturation |
-| ✅ HTTP request metrics | Complete | Counter + histogram by method, endpoint, status |
-| ✅ Application-specific metrics | Complete | Inference latency, confidence, predictions |
-| ✅ Resource usage metrics | Complete | Model memory, queue depth |
-| ✅ Histogram buckets appropriate | Complete | Aligned with SLO targets |
-| ✅ Cardinality control | Complete | Limited label values, no unbounded dimensions |
-| ✅ Metric naming conventions | Complete | Follows Prometheus best practices |
+| - Service exposes `/metrics` endpoint | Complete | Prometheus exposition format |
+| - Four Golden Signals instrumented | Complete | Latency, Traffic, Errors, Saturation |
+| - HTTP request metrics | Complete | Counter + histogram by method, endpoint, status |
+| - Application-specific metrics | Complete | Inference latency, confidence, predictions |
+| - Resource usage metrics | Complete | Model memory, queue depth |
+| - Histogram buckets appropriate | Complete | Aligned with SLO targets |
+| - Cardinality control | Complete | Limited label values, no unbounded dimensions |
+| - Metric naming conventions | Complete | Follows Prometheus best practices |
 
 **Metrics Coverage**: 100% (8/8)
 
@@ -2149,14 +2149,14 @@ The `inference-gateway` service has achieved **comprehensive observability cover
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| ✅ Structured JSON logging | Complete | All logs output as JSON |
-| ✅ Consistent log schema | Complete | Timestamp, level, event, service, trace_id |
-| ✅ Trace context in logs | Complete | trace_id and span_id automatically injected |
-| ✅ Service metadata | Complete | Service name, version, environment |
-| ✅ Request correlation | Complete | Request ID and trace ID for correlation |
-| ✅ Appropriate log levels | Complete | DEBUG, INFO, WARNING, ERROR used correctly |
+| - Structured JSON logging | Complete | All logs output as JSON |
+| - Consistent log schema | Complete | Timestamp, level, event, service, trace_id |
+| - Trace context in logs | Complete | trace_id and span_id automatically injected |
+| - Service metadata | Complete | Service name, version, environment |
+| - Request correlation | Complete | Request ID and trace ID for correlation |
+| - Appropriate log levels | Complete | DEBUG, INFO, WARNING, ERROR used correctly |
 | ⚠️ Log aggregation integration | Pending | Loki/Elasticsearch integration in Exercise 04 |
-| ✅ PII/sensitive data redaction | Complete | No credentials or PII in logs |
+| - PII/sensitive data redaction | Complete | No credentials or PII in logs |
 
 **Logging Coverage**: 87.5% (7/8) - Aggregation pending
 
@@ -2184,13 +2184,13 @@ The `inference-gateway` service has achieved **comprehensive observability cover
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| ✅ OpenTelemetry SDK configured | Complete | OTLP exporter to collector |
-| ✅ Automatic HTTP instrumentation | Complete | FastAPI auto-instrumentation |
-| ✅ Custom span creation | Complete | Manual spans for preprocessing, inference, postprocessing |
-| ✅ Span attributes | Complete | Model name, latency, file size |
-| ✅ Trace context propagation | Complete | Trace ID propagates to logs |
-| ✅ Trace sampling | Complete | Default sampling (100% for dev) |
-| ✅ OTLP collector integration | Complete | Exports to Jaeger via collector |
+| - OpenTelemetry SDK configured | Complete | OTLP exporter to collector |
+| - Automatic HTTP instrumentation | Complete | FastAPI auto-instrumentation |
+| - Custom span creation | Complete | Manual spans for preprocessing, inference, postprocessing |
+| - Span attributes | Complete | Model name, latency, file size |
+| - Trace context propagation | Complete | Trace ID propagates to logs |
+| - Trace sampling | Complete | Default sampling (100% for dev) |
+| - OTLP collector integration | Complete | Exports to Jaeger via collector |
 
 **Tracing Coverage**: 100% (7/7)
 
@@ -2207,9 +2207,9 @@ The `inference-gateway` service has achieved **comprehensive observability cover
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| ✅ Liveness probe endpoint | Complete | GET /healthz |
-| ✅ Readiness probe endpoint | Complete | GET /readyz (checks model loaded) |
-| ✅ Startup probe (if needed) | N/A | Not needed for this service |
+| - Liveness probe endpoint | Complete | GET /healthz |
+| - Readiness probe endpoint | Complete | GET /readyz (checks model loaded) |
+| - Startup probe (if needed) | N/A | Not needed for this service |
 
 **Health Check Coverage**: 100% (2/2)
 
@@ -2219,10 +2219,10 @@ The `inference-gateway` service has achieved **comprehensive observability cover
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| ✅ SLIs defined | Complete | Availability, latency, error rate, throughput |
-| ✅ SLOs documented | Complete | See docs/slo.md |
-| ✅ Error budgets calculated | Complete | 0.5% downtime = 3.6 hours/month |
-| ✅ Alerting rules defined | Complete | Warning and critical thresholds |
+| - SLIs defined | Complete | Availability, latency, error rate, throughput |
+| - SLOs documented | Complete | See docs/slo.md |
+| - Error budgets calculated | Complete | 0.5% downtime = 3.6 hours/month |
+| - Alerting rules defined | Complete | Warning and critical thresholds |
 
 **SLO Coverage**: 100% (4/4)
 
@@ -2232,12 +2232,12 @@ The `inference-gateway` service has achieved **comprehensive observability cover
 
 | Category | Criteria Met | Percentage | Status |
 |----------|--------------|------------|--------|
-| Metrics | 8/8 | 100% | ✅ Ready |
+| Metrics | 8/8 | 100% | - Ready |
 | Logging | 7/8 | 87.5% | ⚠️ Pending aggregation |
-| Tracing | 7/7 | 100% | ✅ Ready |
-| Health Checks | 2/2 | 100% | ✅ Ready |
-| SLOs | 4/4 | 100% | ✅ Ready |
-| **Overall** | **28/29** | **96.6%** | ✅ **Production Ready** |
+| Tracing | 7/7 | 100% | - Ready |
+| Health Checks | 2/2 | 100% | - Ready |
+| SLOs | 4/4 | 100% | - Ready |
+| **Overall** | **28/29** | **96.6%** | - **Production Ready** |
 
 ---
 
@@ -2306,11 +2306,11 @@ Before deploying to production:
 
 ---
 
-**Assessment Complete**: ✅
+**Assessment Complete**: - 
 **Next Review**: After Exercise 02 (Prometheus Stack)
 ```
 
-**✅ Checkpoint:** Observability readiness document is complete.
+**- Checkpoint:** Observability readiness document is complete.
 
 ---
 
@@ -2421,7 +2421,7 @@ Open http://localhost:16686 in browser:
 - Click "Find Traces"
 - Inspect individual spans
 
-**✅ Checkpoint:** All observability signals (metrics, logs, traces) are working correctly.
+**- Checkpoint:** All observability signals (metrics, logs, traces) are working correctly.
 
 ---
 
@@ -2585,7 +2585,7 @@ services:
 ```
 ```
 
-**✅ Checkpoint:** Architecture documentation is complete.
+**- Checkpoint:** Architecture documentation is complete.
 
 ---
 
@@ -2995,7 +2995,7 @@ kubectl apply -f k8s/
 
 ## Observability Status
 
-✅ **Production Ready**
+- **Production Ready**
 
 See [`docs/observability-readiness.md`](docs/observability-readiness.md) for detailed assessment.
 
@@ -3012,7 +3012,7 @@ See `CONTRIBUTING.md` (to be created)
 ML Platform Team - ml-platform@example.com
 ```
 
-**✅ Checkpoint:** README is comprehensive and professional.
+**- Checkpoint:** README is comprehensive and professional.
 
 ---
 
@@ -3023,16 +3023,16 @@ ML Platform Team - ml-platform@example.com
 Congratulations! You've successfully built a production-ready inference gateway service with comprehensive observability instrumentation:
 
 **What You Built**:
-1. ✅ FastAPI inference service with ResNet-50 model
-2. ✅ Prometheus metrics (Four Golden Signals + ML-specific)
-3. ✅ Structured JSON logging with trace context
-4. ✅ OpenTelemetry distributed tracing
-5. ✅ Health check endpoints (liveness/readiness)
-6. ✅ Comprehensive error handling
-7. ✅ SLO definitions with error budgets
-8. ✅ Observability readiness assessment
-9. ✅ Docker Compose development environment
-10. ✅ Documentation (SLOs, architecture, README)
+1. - FastAPI inference service with ResNet-50 model
+2. - Prometheus metrics (Four Golden Signals + ML-specific)
+3. - Structured JSON logging with trace context
+4. - OpenTelemetry distributed tracing
+5. - Health check endpoints (liveness/readiness)
+6. - Comprehensive error handling
+7. - SLO definitions with error budgets
+8. - Observability readiness assessment
+9. - Docker Compose development environment
+10. - Documentation (SLOs, architecture, README)
 
 **Skills Gained**:
 - Designing SLIs and SLOs for microservices
@@ -3047,14 +3047,14 @@ Congratulations! You've successfully built a production-ready inference gateway 
 
 ### Deliverables Checklist
 
-- ✅ Instrumented FastAPI service with metrics/logging/tracing
-- ✅ `docs/slo.md` with comprehensive SLO definitions
-- ✅ `docs/observability-readiness.md` with readiness assessment
-- ✅ `docs/architecture.md` with system architecture
-- ✅ Updated `README.md` documenting observability setup
-- ✅ Docker Compose stack with OTLP collector, Jaeger, Prometheus
-- ✅ Load test script demonstrating functionality
-- ✅ All code properly structured and documented
+- - Instrumented FastAPI service with metrics/logging/tracing
+- - `docs/slo.md` with comprehensive SLO definitions
+- - `docs/observability-readiness.md` with readiness assessment
+- - `docs/architecture.md` with system architecture
+- - Updated `README.md` documenting observability setup
+- - Docker Compose stack with OTLP collector, Jaeger, Prometheus
+- - Load test script demonstrating functionality
+- - All code properly structured and documented
 
 ---
 

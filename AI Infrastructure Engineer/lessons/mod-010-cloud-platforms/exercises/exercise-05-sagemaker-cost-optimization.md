@@ -741,42 +741,42 @@ cat > cost-optimization-report.md <<'EOF'
 
 | Service | Cost | Optimization Opportunity |
 |---------|------|--------------------------|
-| **SageMaker Training** | $50 | Use Spot instances (70% savings) ✅ |
-| **SageMaker Endpoints** | $85 | Right-size instances, use auto-scaling ✅ |
-| **EC2 (ECS)** | $35 | Use Fargate Spot ✅ |
-| **S3 Storage** | $5 | Lifecycle policies to Glacier ✅ |
-| **NAT Gateway** | $66 | Use VPC endpoints for S3 ✅ |
+| **SageMaker Training** | $50 | Use Spot instances (70% savings) - |
+| **SageMaker Endpoints** | $85 | Right-size instances, use auto-scaling - |
+| **EC2 (ECS)** | $35 | Use Fargate Spot - |
+| **S3 Storage** | $5 | Lifecycle policies to Glacier - |
+| **NAT Gateway** | $66 | Use VPC endpoints for S3 - |
 | **Data Transfer** | $15 | Minimize cross-region transfers |
-| **CloudWatch Logs** | $10 | Set retention to 7 days ✅ |
+| **CloudWatch Logs** | $10 | Set retention to 7 days - |
 | **EKS Control Plane** | $73 | Use ECS instead (no control plane cost) |
 | **Total** | **$339/month** | **Optimized: ~$180/month (47% savings)** |
 
 ## Optimization Actions Implemented
 
 ### 1. Compute Optimization
-- ✅ SageMaker training with Spot instances (70% savings)
-- ✅ SageMaker endpoints auto-scaling (scale to zero when idle)
-- ✅ ECS Fargate Spot for inference (70% savings)
-- ✅ Right-sized instance types based on CloudWatch metrics
+- - SageMaker training with Spot instances (70% savings)
+- - SageMaker endpoints auto-scaling (scale to zero when idle)
+- - ECS Fargate Spot for inference (70% savings)
+- - Right-sized instance types based on CloudWatch metrics
 
 ### 2. Storage Optimization
-- ✅ S3 lifecycle policies:
+- - S3 lifecycle policies:
   - Standard → Standard-IA (30 days)
   - Standard-IA → Glacier IR (90 days)
   - Delete old training data (180 days)
-- ✅ EBS snapshots lifecycle management
-- ✅ CloudWatch Logs retention (7 days)
+- - EBS snapshots lifecycle management
+- - CloudWatch Logs retention (7 days)
 
 ### 3. Network Optimization
-- ✅ VPC endpoints for S3 (free vs $0.045/GB via NAT)
-- ✅ Multi-AZ only for production (not dev/staging)
+- - VPC endpoints for S3 (free vs $0.045/GB via NAT)
+- - Multi-AZ only for production (not dev/staging)
 - ⚠️  Consider single NAT Gateway for dev (saves $33/month)
 
 ### 4. Cost Monitoring
-- ✅ Cost allocation tags on all resources
-- ✅ Monthly budget with 80% alert
-- ✅ Daily cost reports to Slack
-- ✅ Automated unused resource cleanup
+- - Cost allocation tags on all resources
+- - Monthly budget with 80% alert
+- - Daily cost reports to Slack
+- - Automated unused resource cleanup
 
 ## Additional Recommendations
 
@@ -1060,15 +1060,15 @@ cat > platform-summary.md <<EOF
 
 ## Security Measures
 
-- ✅ IAM roles with least privilege
-- ✅ MFA on root account
-- ✅ Security Groups (stateful firewall)
-- ✅ Network ACLs (stateless firewall)
-- ✅ Encryption at rest (S3, EBS)
-- ✅ Encryption in transit (HTTPS/TLS)
-- ✅ VPC Flow Logs (network monitoring)
-- ✅ CloudTrail (API audit logging)
-- ✅ GuardDuty (threat detection)
+- - IAM roles with least privilege
+- - MFA on root account
+- - Security Groups (stateful firewall)
+- - Network ACLs (stateless firewall)
+- - Encryption at rest (S3, EBS)
+- - Encryption in transit (HTTPS/TLS)
+- - VPC Flow Logs (network monitoring)
+- - CloudTrail (API audit logging)
+- - GuardDuty (threat detection)
 
 ## Monitoring & Alerting
 
@@ -1127,14 +1127,14 @@ aws s3 rb s3://$BUCKET_NAME
 
 By the end of this exercise, you should have:
 
-1. ✅ SageMaker training job with Spot instances
-2. ✅ Hyperparameter tuning for model optimization
-3. ✅ SageMaker endpoint with auto-scaling
-4. ✅ Complete cost allocation tagging strategy
-5. ✅ Cost budgets and alerts
-6. ✅ Cost optimization report (47% savings)
-7. ✅ End-to-end ML platform on AWS
-8. ✅ Comprehensive monitoring and alerting
+1. - SageMaker training job with Spot instances
+2. - Hyperparameter tuning for model optimization
+3. - SageMaker endpoint with auto-scaling
+4. - Complete cost allocation tagging strategy
+5. - Cost budgets and alerts
+6. - Cost optimization report (47% savings)
+7. - End-to-end ML platform on AWS
+8. - Comprehensive monitoring and alerting
 
 **Evidence**:
 - SageMaker training job completion

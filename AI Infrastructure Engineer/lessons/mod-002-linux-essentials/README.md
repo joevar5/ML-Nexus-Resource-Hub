@@ -15,29 +15,17 @@ $$
 \downarrow \cr
 \boxed{\text{Lecture 02: File System and Navigation}} \cr
 \downarrow \cr
-\boxed{\text{Exercise 01: Navigation and File System Mastery}} \cr
-\downarrow \cr
 \boxed{\text{Lecture 03: Permissions and Security}} \cr
 \downarrow \cr
-\boxed{\text{Exercise 02: Permissions and Access Control}} \cr
-\downarrow \cr
 \boxed{\text{Lecture 04: System Administration Basics}} \cr
-\downarrow \cr
-\boxed{\text{Exercises 03 and 05: Processes and Package Management}} \cr
 \downarrow \cr
 \boxed{\text{Lecture 05: Intro to Shell Scripting}} \cr
 \downarrow \cr
 \boxed{\text{Lecture 06: Advanced Shell Scripting}} \cr
 \downarrow \cr
-\boxed{\text{Exercise 04: Shell Scripting for ML Operations}} \cr
-\downarrow \cr
 \boxed{\text{Lecture 07: Text Processing Tools}} \cr
 \downarrow \cr
-\boxed{\text{Exercise 06: Log File Analysis}} \cr
-\downarrow \cr
-\boxed{\text{Lecture 08: Networking Fundamentals}} \cr
-\downarrow \cr
-\boxed{\text{Exercises 07 and 08: Troubleshooting and System Automation}}
+\boxed{\text{Lecture 08: Networking Fundamentals}}
 \end{array}
 $$
 

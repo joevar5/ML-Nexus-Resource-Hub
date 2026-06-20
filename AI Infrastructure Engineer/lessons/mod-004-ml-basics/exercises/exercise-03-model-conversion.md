@@ -4,10 +4,6 @@
 
 **Objective**: Convert PyTorch and TensorFlow models to ONNX format, run inference with ONNX Runtime, and compare performance between native frameworks and ONNX.
 
-**Difficulty**: Beginner-Intermediate
-**Estimated Time**: 3-4 hours
-**Prerequisites**: Lectures 02 (PyTorch Basics) and 03 (TensorFlow Basics), Exercise 01
-
 **What You'll Learn**:
 - Converting PyTorch models to ONNX format
 - Converting TensorFlow models to ONNX format
@@ -22,13 +18,13 @@
 
 By the end of this exercise, you will be able to:
 
-✅ Export PyTorch models to ONNX using `torch.onnx.export()`
-✅ Convert TensorFlow models to ONNX using `tf2onnx`
-✅ Run inference with ONNX Runtime
-✅ Validate converted models for numerical accuracy
-✅ Measure and compare performance across formats
-✅ Understand ONNX's role in AI infrastructure
-✅ Make informed decisions about when to use ONNX
+- Export PyTorch models to ONNX using `torch.onnx.export()`
+- Convert TensorFlow models to ONNX using `tf2onnx`
+- Run inference with ONNX Runtime
+- Validate converted models for numerical accuracy
+- Measure and compare performance across formats
+- Understand ONNX's role in AI infrastructure
+- Make informed decisions about when to use ONNX
 
 ---
 
@@ -136,13 +132,13 @@ urllib.request.urlretrieve(image_url, "test_images/dog.jpg")
 labels_url = "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt"
 urllib.request.urlretrieve(labels_url, "imagenet_classes.txt")
 
-print("✅ Resources downloaded!")
+print("- Resources downloaded!")
 print("  - test_images/dog.jpg")
 print("  - imagenet_classes.txt")
 print("  - models/ directory created")
 ```
 
-✅ **Checkpoint**: Environment set up with all necessary tools installed.
+- **Checkpoint**: Environment set up with all necessary tools installed.
 
 ---
 
@@ -194,12 +190,12 @@ torch.onnx.export(
     }
 )
 
-print(f"✅ Model exported to {onnx_path}")
+print(f"- Model exported to {onnx_path}")
 
 # Verify the ONNX model
 onnx_model = onnx.load(onnx_path)
 onnx.checker.check_model(onnx_model)
-print("✅ ONNX model is valid!")
+print("- ONNX model is valid!")
 
 # Print model information
 print(f"\nModel info:")
@@ -210,8 +206,8 @@ print(f"  Operators: {len(onnx_model.graph.node)}")
 
 **Expected Output**:
 ```
-✅ Model exported to models/simple_net.onnx
-✅ ONNX model is valid!
+- Model exported to models/simple_net.onnx
+- ONNX model is valid!
 
 Model info:
   Inputs: ['input']
@@ -271,7 +267,7 @@ torch.onnx.export(
     verbose=False
 )
 
-print("✅ Model exported with all parameters explained!")
+print("- Model exported with all parameters explained!")
 ```
 
 ### Step 2.3: Export ResNet50 to ONNX
@@ -312,13 +308,13 @@ torch.onnx.export(
     }
 )
 
-print("✅ Export complete!")
+print("- Export complete!")
 
 # Verify ONNX model
 print("\nVerifying ONNX model...")
 onnx_model = onnx.load(onnx_path)
 onnx.checker.check_model(onnx_model)
-print("✅ ONNX model is valid!")
+print("- ONNX model is valid!")
 
 # Model statistics
 file_size_mb = os.path.getsize(onnx_path) / (1024 * 1024)
@@ -333,10 +329,10 @@ print(f"  Outputs: {[o.name for o in onnx_model.graph.output]}")
 ```
 Loading ResNet50...
 Exporting to models/resnet50.onnx...
-✅ Export complete!
+- Export complete!
 
 Verifying ONNX model...
-✅ ONNX model is valid!
+- ONNX model is valid!
 
 Model Statistics:
   File size: 97.53 MB
@@ -345,7 +341,7 @@ Model Statistics:
   Outputs: ['output']
 ```
 
-✅ **Checkpoint**: You can export PyTorch models to ONNX format.
+- **Checkpoint**: You can export PyTorch models to ONNX format.
 
 ---
 
@@ -381,12 +377,12 @@ model_proto, _ = tf2onnx.convert.from_keras(
     output_path=onnx_path
 )
 
-print(f"\n✅ Model exported to {onnx_path}")
+print(f"\n- Model exported to {onnx_path}")
 
 # Verify ONNX model
 onnx_model = onnx.load(onnx_path)
 onnx.checker.check_model(onnx_model)
-print("✅ ONNX model is valid!")
+print("- ONNX model is valid!")
 ```
 
 ### Step 3.2: Export TensorFlow SavedModel to ONNX
@@ -419,12 +415,12 @@ os.system(f"python -m tf2onnx.convert \
     --output {onnx_path} \
     --opset 14")
 
-print("\n✅ Conversion complete!")
+print("\n- Conversion complete!")
 
 # Verify
 onnx_model = onnx.load(onnx_path)
 onnx.checker.check_model(onnx_model)
-print("✅ ONNX model is valid!")
+print("- ONNX model is valid!")
 
 # Model info
 file_size_mb = os.path.getsize(onnx_path) / (1024 * 1024)
@@ -464,10 +460,10 @@ model_proto, _ = tf2onnx.convert.from_function(
     output_path=onnx_path
 )
 
-print(f"✅ Model exported to {onnx_path}")
+print(f"- Model exported to {onnx_path}")
 ```
 
-✅ **Checkpoint**: You can convert both PyTorch and TensorFlow models to ONNX.
+- **Checkpoint**: You can convert both PyTorch and TensorFlow models to ONNX.
 
 ---
 
@@ -675,7 +671,7 @@ else:
 # - DmlExecutionProvider: DirectML (Windows)
 ```
 
-✅ **Checkpoint**: You can run inference with ONNX Runtime on converted models.
+- **Checkpoint**: You can run inference with ONNX Runtime on converted models.
 
 ---
 
@@ -734,7 +730,7 @@ print(f"  Mean relative difference: {relative_diff:.6f}")
 # Check if outputs are close
 tolerance = 1e-5
 if np.allclose(pytorch_result, onnx_result, rtol=tolerance, atol=tolerance):
-    print(f"\n✅ PASS: Outputs match within tolerance ({tolerance})")
+    print(f"\n- PASS: Outputs match within tolerance ({tolerance})")
 else:
     print(f"\n❌ FAIL: Outputs differ beyond tolerance ({tolerance})")
 
@@ -747,7 +743,7 @@ print(f"  PyTorch: {pytorch_top5}")
 print(f"  ONNX:    {onnx_top5}")
 
 if np.array_equal(pytorch_top5, onnx_top5):
-    print("  ✅ Top 5 predictions match!")
+    print("  - Top 5 predictions match!")
 else:
     print("  ⚠️  Top 5 predictions differ")
 ```
@@ -771,12 +767,12 @@ Numerical Comparison:
   Mean absolute difference: 0.000003
   Mean relative difference: 0.000001
 
-✅ PASS: Outputs match within tolerance (1e-05)
+- PASS: Outputs match within tolerance (1e-05)
 
 Top 5 Class Predictions:
   PyTorch: [259 261 260 262 263]
   ONNX:    [259 261 260 262 263]
-  ✅ Top 5 predictions match!
+  - Top 5 predictions match!
 ```
 
 ### Step 5.2: Comprehensive Validation Suite
@@ -833,7 +829,7 @@ class ModelValidator:
             passed = np.allclose(pytorch_output, onnx_output, rtol=tolerance, atol=tolerance)
             if passed:
                 results['passed'] += 1
-                status = '✅'
+                status = '- '
             else:
                 results['failed'] += 1
                 status = '❌'
@@ -890,12 +886,12 @@ print(f"Max difference: {results['max_diff']:.6f}")
 print(f"Mean difference: {results['mean_diff']:.6f}")
 
 if results['failed'] == 0:
-    print("\n✅ All validation tests passed!")
+    print("\n- All validation tests passed!")
 else:
     print(f"\n⚠️  {results['failed']} tests failed")
 ```
 
-✅ **Checkpoint**: You can validate ONNX models for numerical accuracy.
+- **Checkpoint**: You can validate ONNX models for numerical accuracy.
 
 ---
 
@@ -1194,7 +1190,7 @@ PERFORMANCE COMPARISON SUMMARY
   Throughput:   1.47x higher
 ```
 
-✅ **Checkpoint**: You can comprehensively measure and compare performance.
+- **Checkpoint**: You can comprehensively measure and compare performance.
 
 ---
 
@@ -1274,10 +1270,10 @@ class ModelConverter:
             )
 
             # Verify ONNX model
-            self.log("✅ Checking ONNX model validity...")
+            self.log("- Checking ONNX model validity...")
             onnx_model = onnx.load(output_path)
             onnx.checker.check_model(onnx_model)
-            self.log("✅ ONNX model is valid!")
+            self.log("- ONNX model is valid!")
 
             # Store model info
             file_size = os.path.getsize(output_path) / (1024 * 1024)
@@ -1299,12 +1295,12 @@ class ModelConverter:
                 self.conversion_report['validation_passed'] = validation_passed
 
                 if validation_passed:
-                    self.log("✅ Validation passed!")
+                    self.log("- Validation passed!")
                 else:
                     self.log("⚠️  Validation failed - outputs differ significantly")
                     return False
 
-            self.log("\n✅ Conversion successful!")
+            self.log("\n- Conversion successful!")
             return True
 
         except Exception as e:
@@ -1403,7 +1399,7 @@ python model_converter.py --model mobilenet_v2 --output models/mobilenet.onnx --
 python model_converter.py --model efficientnet_b0 --opset 15
 ```
 
-✅ **Checkpoint**: You have a production-ready conversion tool!
+- **Checkpoint**: You have a production-ready conversion tool!
 
 ---
 
@@ -1641,7 +1637,7 @@ python inference_comparison_app.py test_images/dog.jpg \
     --onnx-model models/resnet18.onnx
 ```
 
-✅ **Final Checkpoint**: You have a complete multi-framework inference system!
+- **Final Checkpoint**: You have a complete multi-framework inference system!
 
 ---
 
@@ -1711,7 +1707,7 @@ def test_conversion_validity():
         if os.path.exists(onnx_file):
             model = onnx.load(onnx_file)
             onnx.checker.check_model(model)
-            print(f"✅ {onnx_file} is valid")
+            print(f"- {onnx_file} is valid")
         else:
             print(f"⚠️  {onnx_file} not found")
 
@@ -1763,13 +1759,13 @@ Answer these questions to solidify your learning:
 ## Summary
 
 **What You Accomplished**:
-✅ Converted PyTorch models to ONNX format
-✅ Converted TensorFlow models to ONNX format
-✅ Ran inference with ONNX Runtime
-✅ Validated converted models for accuracy
-✅ Measured performance across frameworks
-✅ Built production-ready conversion tools
-✅ Understood ONNX's role in ML infrastructure
+- Converted PyTorch models to ONNX format
+- Converted TensorFlow models to ONNX format
+- Ran inference with ONNX Runtime
+- Validated converted models for accuracy
+- Measured performance across frameworks
+- Built production-ready conversion tools
+- Understood ONNX's role in ML infrastructure
 
 **Key Skills Gained**:
 - Model format conversion (PyTorch → ONNX)
@@ -1815,10 +1811,3 @@ Answer these questions to solidify your learning:
 - Netron (visualize ONNX models)
 - ONNX Optimizer
 - ONNX Runtime Tools
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 3-4 hours
-**Difficulty**: Beginner-Intermediate

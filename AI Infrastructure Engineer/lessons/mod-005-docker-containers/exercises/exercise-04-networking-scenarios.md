@@ -127,7 +127,7 @@ docker rm -f isolated
 - Testing scenarios
 - Security-sensitive workloads
 
-✅ **Checkpoint**: You understand different Docker network drivers.
+- **Checkpoint**: You understand different Docker network drivers.
 
 ---
 
@@ -238,7 +238,7 @@ EOF
 - Services can resolve each other by name
 - Multiple replicas get round-robin DNS
 
-✅ **Checkpoint**: You understand Docker DNS and service discovery.
+- **Checkpoint**: You understand Docker DNS and service discovery.
 
 ---
 
@@ -420,7 +420,7 @@ Internet → DMZ → App Tier → Data Tier
           LB     Web/API    DB/Cache
 ```
 
-✅ **Checkpoint**: You can implement network isolation for security.
+- **Checkpoint**: You can implement network isolation for security.
 
 ---
 
@@ -494,7 +494,7 @@ docker run --rm --network multi-alias alpine nslookup api
 docker run --rm --network multi-alias alpine nslookup frontend
 ```
 
-✅ **Checkpoint**: You can configure advanced network settings.
+- **Checkpoint**: You can configure advanced network settings.
 
 ---
 
@@ -677,7 +677,7 @@ networks:
 EOF
 ```
 
-✅ **Checkpoint**: You understand container communication patterns.
+- **Checkpoint**: You understand container communication patterns.
 
 ---
 
@@ -897,7 +897,7 @@ for i in {1..10}; do curl -s http://localhost/ | grep server; done
 open http://localhost:8080/stats
 ```
 
-✅ **Checkpoint**: You can configure load balancing with health checks.
+- **Checkpoint**: You can configure load balancing with health checks.
 
 ---
 
@@ -966,7 +966,7 @@ docker run --rm \
 # Useful for accessing host's services from container
 ```
 
-✅ **Checkpoint**: You understand external connectivity patterns.
+- **Checkpoint**: You understand external connectivity patterns.
 
 ---
 
@@ -1067,7 +1067,7 @@ docker run -it --rm \
 # - netstat, ss
 ```
 
-✅ **Checkpoint**: You can debug and troubleshoot network issues.
+- **Checkpoint**: You can debug and troubleshoot network issues.
 
 ---
 
@@ -1282,7 +1282,7 @@ volumes:
 EOF
 ```
 
-✅ **Checkpoint**: You can design ML infrastructure networks.
+- **Checkpoint**: You can design ML infrastructure networks.
 
 ---
 
@@ -1420,7 +1420,7 @@ networks:
 EOF
 ```
 
-✅ **Checkpoint**: You understand production networking patterns.
+- **Checkpoint**: You understand production networking patterns.
 
 ---
 
@@ -1458,14 +1458,14 @@ EOF
 ## Summary
 
 **What You Accomplished**:
-✅ Mastered Docker network drivers (bridge, host, overlay, none)
-✅ Implemented service discovery and DNS resolution
-✅ Created network isolation for security
-✅ Configured custom networks with specific IP ranges
-✅ Implemented load balancing with health checks
-✅ Debugged network connectivity issues
-✅ Designed ML infrastructure networks
-✅ Applied production networking patterns
+- Mastered Docker network drivers (bridge, host, overlay, none)
+- Implemented service discovery and DNS resolution
+- Created network isolation for security
+- Configured custom networks with specific IP ranges
+- Implemented load balancing with health checks
+- Debugged network connectivity issues
+- Designed ML infrastructure networks
+- Applied production networking patterns
 
 **Key Networking Concepts**:
 - Bridge networks and DNS
@@ -1484,10 +1484,3 @@ EOF
 - **Exercise 05**: Volume Management and Data Persistence
 - **Exercise 06**: Production Deployment Strategies
 - **Exercise 07**: Complete ML Application Containerization
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 3-4 hours
-**Difficulty**: Intermediate to Advanced

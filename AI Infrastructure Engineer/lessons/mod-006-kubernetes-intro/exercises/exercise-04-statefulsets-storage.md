@@ -138,7 +138,7 @@ kubectl get pvc
 # All 5 PVCs still exist!
 ```
 
-✅ **Checkpoint**: You understand StatefulSet behavior and ordering.
+- **Checkpoint**: You understand StatefulSet behavior and ordering.
 
 ---
 
@@ -264,7 +264,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You can create and use PersistentVolumes.
+- **Checkpoint**: You can create and use PersistentVolumes.
 
 ---
 
@@ -342,7 +342,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You understand dynamic provisioning with StorageClasses.
+- **Checkpoint**: You understand dynamic provisioning with StorageClasses.
 
 ---
 
@@ -488,7 +488,7 @@ kubectl apply -f postgres-client.yaml
 kubectl exec -it postgres-client -- psql -c "SELECT * FROM test_data;"
 ```
 
-✅ **Checkpoint**: You can run stateful databases on Kubernetes.
+- **Checkpoint**: You can run stateful databases on Kubernetes.
 
 ---
 
@@ -705,7 +705,7 @@ kubectl port-forward svc/minio 9001:9001
 # Open http://localhost:9001
 ```
 
-✅ **Checkpoint**: You can implement ML storage patterns.
+- **Checkpoint**: You can implement ML storage patterns.
 
 ---
 
@@ -836,7 +836,7 @@ chmod +x backup-volumes.sh
 ./backup-volumes.sh default
 ```
 
-✅ **Checkpoint**: You can backup and restore volumes.
+- **Checkpoint**: You can backup and restore volumes.
 
 ---
 
@@ -968,20 +968,20 @@ kubectl apply -f pdb.yaml
 # Will respect PDB limits
 ```
 
-✅ **Checkpoint**: You understand StatefulSet best practices.
+- **Checkpoint**: You understand StatefulSet best practices.
 
 ---
 
 ## Summary
 
 **What You Accomplished**:
-✅ Understood StatefulSets vs Deployments
-✅ Created and managed PersistentVolumes
-✅ Used StorageClasses for dynamic provisioning
-✅ Deployed stateful PostgreSQL database
-✅ Implemented ML storage patterns
-✅ Created volume snapshots and backups
-✅ Applied best practices for stateful apps
+- Understood StatefulSets vs Deployments
+- Created and managed PersistentVolumes
+- Used StorageClasses for dynamic provisioning
+- Deployed stateful PostgreSQL database
+- Implemented ML storage patterns
+- Created volume snapshots and backups
+- Applied best practices for stateful apps
 
 **Key Concepts**:
 - StatefulSets provide stable identity
@@ -998,10 +998,3 @@ kubectl apply -f pdb.yaml
 - Model registry (MinIO)
 - Automated backups
 - Resource limits and PDBs
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 3-4 hours
-**Difficulty**: Intermediate

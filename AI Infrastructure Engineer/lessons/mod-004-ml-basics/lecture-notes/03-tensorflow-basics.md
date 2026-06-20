@@ -12,10 +12,6 @@ By the end of this lecture, you will be able to:
 - Compare TensorFlow and PyTorch from infrastructure perspective
 - Troubleshoot common TensorFlow deployment issues
 
-**Duration**: 8-10 hours
-**Difficulty**: Beginner to Intermediate
-**Prerequisites**: Module 001 (Python), Lecture 01 (ML Overview), Lecture 02 (PyTorch Basics)
-
 ---
 
 ## 1. Introduction to TensorFlow
@@ -1088,10 +1084,3 @@ In the next lecture, we'll cover:
 - **Optimization techniques**: Quantization, pruning, distillation
 
 Continue to `lecture-notes/04-model-formats.md`
-
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Completion Time**: 8-10 hours
-**Difficulty**: Beginner to Intermediate

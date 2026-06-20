@@ -1,9 +1,5 @@
 # Exercise 04: LLM Basics - Running Your First Language Model
 
-**Difficulty**: Beginner
-**Duration**: 2-3 hours
-**Prerequisites**: Python fundamentals, basic ML concepts
-
 ## Learning Objectives
 
 By the end of this exercise, you will:

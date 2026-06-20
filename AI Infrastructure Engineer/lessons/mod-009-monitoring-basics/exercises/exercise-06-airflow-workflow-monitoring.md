@@ -48,13 +48,13 @@ python deploy_model.py
 ### The Solution: Apache Airflow
 
 **Airflow** is a workflow orchestration platform that lets you:
-- ✅ Define workflows as code (Python)
-- ✅ Schedule automated execution
-- ✅ Manage dependencies between tasks
-- ✅ Monitor task execution
-- ✅ Retry failed tasks automatically
-- ✅ View logs and history
-- ✅ Alert on failures
+- - Define workflows as code (Python)
+- - Schedule automated execution
+- - Manage dependencies between tasks
+- - Monitor task execution
+- - Retry failed tasks automatically
+- - View logs and history
+- - Alert on failures
 
 ### Key Concepts
 
@@ -419,7 +419,7 @@ with DAG(
     # Task 6: Send notification
     notify = BashOperator(
         task_id='send_notification',
-        bash_command='echo "✅ ML pipeline completed successfully!"',
+        bash_command='echo "- ML pipeline completed successfully!"',
     )
 
     # Define task dependencies
@@ -573,7 +573,7 @@ with DAG(
 
     success_notification = BashOperator(
         task_id='quality_check_passed',
-        bash_command='echo "✅ All data quality checks passed!"',
+        bash_command='echo "- All data quality checks passed!"',
     )
 
     # Define workflow

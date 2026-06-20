@@ -125,7 +125,7 @@ SELECT COUNT(*) AS total_runs FROM training_runs;
 SELECT COUNT(*) AS total_deployments FROM deployments;
 ```
 
-✅ **Checkpoint**: Sample data loaded with models, versions, runs, and deployments.
+- **Checkpoint**: Sample data loaded with models, versions, runs, and deployments.
 
 ---
 
@@ -200,7 +200,7 @@ HAVING COUNT(tr.run_id) > 0
 ORDER BY total_gpu_hours DESC;
 ```
 
-✅ **Checkpoint**: You understand INNER JOIN returns only matching rows from both tables.
+- **Checkpoint**: You understand INNER JOIN returns only matching rows from both tables.
 
 ---
 
@@ -297,7 +297,7 @@ ORDER BY mv.semver DESC NULLS LAST, tr.created_at DESC NULLS LAST;
 -- Shows complete lineage even if some parts are missing
 ```
 
-✅ **Checkpoint**: You understand LEFT JOIN preserves all left table rows with NULL for missing matches.
+- **Checkpoint**: You understand LEFT JOIN preserves all left table rows with NULL for missing matches.
 
 ---
 
@@ -405,7 +405,7 @@ FULL OUTER JOIN actual_deployments act
 ORDER BY deployment_status, ex.semver;
 ```
 
-✅ **Checkpoint**: You understand FULL OUTER JOIN returns all rows from both tables.
+- **Checkpoint**: You understand FULL OUTER JOIN returns all rows from both tables.
 
 ---
 
@@ -510,7 +510,7 @@ WHERE SIMILARITY(m1.model_name, m2.model_name) > 0.6  -- PostgreSQL pg_trgm exte
 -- - Naming convention violations
 ```
 
-✅ **Checkpoint**: You understand CROSS JOIN (all combinations) and SELF JOIN (table joins itself).
+- **Checkpoint**: You understand CROSS JOIN (all combinations) and SELF JOIN (table joins itself).
 
 ---
 
@@ -668,7 +668,7 @@ ORDER BY tr.accuracy DESC;
 -- PERCENT_RANK(): Percentile (0.0 to 1.0)
 ```
 
-✅ **Checkpoint**: You can use window functions for ranking, comparisons, and running calculations.
+- **Checkpoint**: You can use window functions for ranking, comparisons, and running calculations.
 
 ---
 
@@ -780,8 +780,8 @@ SELECT
         WHEN lv.status != 'validated'
             THEN '⏳ Not ready - Needs validation'
         WHEN COALESCE(dst.prod_deployments, 0) > 0
-            THEN '✅ Deployed to production'
-        ELSE '✅ Ready for deployment'
+            THEN '- Deployed to production'
+        ELSE '- Ready for deployment'
     END AS readiness_status
 FROM latest_versions lv
 LEFT JOIN approval_status ast ON lv.model_id = ast.model_id
@@ -837,7 +837,7 @@ ORDER BY m.model_name, vl.depth, vl.semver;
 -- Recursive CTEs are powerful for hierarchical data!
 ```
 
-✅ **Checkpoint**: You can use CTEs to break complex queries into readable steps.
+- **Checkpoint**: You can use CTEs to break complex queries into readable steps.
 
 ---
 
@@ -958,7 +958,7 @@ FROM (
 ORDER BY metrics.avg_accuracy DESC;
 ```
 
-✅ **Checkpoint**: You can use subqueries in WHERE, SELECT, FROM, and with EXISTS.
+- **Checkpoint**: You can use subqueries in WHERE, SELECT, FROM, and with EXISTS.
 
 ---
 
@@ -1024,7 +1024,7 @@ CROSS JOIN LATERAL (
 ORDER BY m.model_name;
 ```
 
-✅ **Checkpoint**: You understand LATERAL joins for row-level subqueries.
+- **Checkpoint**: You understand LATERAL joins for row-level subqueries.
 
 ---
 
@@ -1112,7 +1112,7 @@ DROP INDEX idx_training_runs_status_temp;
 -- Time: Y ms (without index)
 ```
 
-✅ **Checkpoint**: You can use EXPLAIN ANALYZE to understand query performance.
+- **Checkpoint**: You can use EXPLAIN ANALYZE to understand query performance.
 
 ---
 
@@ -1195,7 +1195,7 @@ $$ LANGUAGE plpgsql;
 -- SELECT refresh_model_health_summary();
 ```
 
-✅ **Checkpoint**: You can create materialized views to cache expensive queries.
+- **Checkpoint**: You can create materialized views to cache expensive queries.
 
 ---
 
@@ -1275,27 +1275,27 @@ Identify:
 
 ### What You Learned
 
-✅ **JOIN Types**:
+- **JOIN Types**:
 - INNER JOIN (intersection)
 - LEFT/RIGHT JOIN (preserve one side)
 - FULL OUTER JOIN (union)
 - CROSS JOIN (cartesian product)
 - SELF JOIN (compare rows in same table)
 
-✅ **Window Functions**:
+- **Window Functions**:
 - ROW_NUMBER, RANK, DENSE_RANK
 - LAG, LEAD (compare with previous/next)
 - Running totals with SUM OVER
 - Moving averages with window frames
 - NTILE for percentiles
 
-✅ **Advanced Patterns**:
+- **Advanced Patterns**:
 - CTEs for readable multi-step queries
 - Subqueries (correlated and non-correlated)
 - EXISTS for efficient existence checks
 - LATERAL joins for row-level subqueries
 
-✅ **Performance**:
+- **Performance**:
 - EXPLAIN and EXPLAIN ANALYZE
 - Index usage analysis
 - Materialized views for caching
@@ -1342,5 +1342,5 @@ You've mastered advanced SQL joins and analytical queries. You can now write com
 **Estimated Time**: 3-4 hours
 **Difficulty**: Intermediate → Advanced
 **Lines of Code**: ~200 SQL queries
-**Learning Objectives**: ✅ All achieved
+**Learning Objectives**: - All achieved
 **Ready for**: Exercise 04 - SQLAlchemy ORM Integration

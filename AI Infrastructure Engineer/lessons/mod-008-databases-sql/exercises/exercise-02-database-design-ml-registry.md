@@ -45,11 +45,11 @@ The ML Model Registry must support:
 ### Why This Matters
 
 A well-designed schema:
-- ✅ Prevents data anomalies and inconsistencies
-- ✅ Enforces business rules at the database level
-- ✅ Enables efficient queries across relationships
-- ✅ Supports future growth without major redesigns
-- ✅ Provides clear data lineage and audit trails
+- - Prevents data anomalies and inconsistencies
+- - Enforces business rules at the database level
+- - Enables efficient queries across relationships
+- - Supports future growth without major redesigns
+- - Provides clear data lineage and audit trails
 
 ---
 
@@ -914,7 +914,7 @@ WHERE constraint_type = 'FOREIGN KEY' AND table_schema = 'public';
 SELECT COUNT(*) AS index_count FROM pg_indexes WHERE schemaname = 'public';
 ```
 
-✅ **Checkpoint**: Schema created with all tables, relationships, indexes, and constraints.
+- **Checkpoint**: Schema created with all tables, relationships, indexes, and constraints.
 
 ---
 
@@ -1046,7 +1046,7 @@ INNER JOIN tags t ON mt.tag_id = t.tag_id
 WHERE m.model_name = 'sentiment-classifier';
 ```
 
-✅ **Checkpoint**: All referential integrity constraints work correctly.
+- **Checkpoint**: All referential integrity constraints work correctly.
 
 ---
 
@@ -1208,7 +1208,7 @@ GROUP BY d.dataset_id, d.dataset_name, d.display_name
 ORDER BY used_by_models DESC, total_training_runs DESC;
 ```
 
-✅ **Checkpoint**: You can query complex relationships across multiple tables.
+- **Checkpoint**: You can query complex relationships across multiple tables.
 
 ---
 
@@ -1431,24 +1431,24 @@ SELECT * FROM vw_production_deployments;
 
 ### What You Learned
 
-✅ **Database Design**:
+- **Database Design**:
 - Entity-Relationship modeling
 - Normalization to 3NF
 - Primary and foreign keys
 - Referential integrity
 
-✅ **Relationships**:
+- **Relationships**:
 - One-to-many (1:N)
 - Many-to-many (M:N) with junction tables
 - CASCADE vs RESTRICT delete behaviors
 
-✅ **Advanced Concepts**:
+- **Advanced Concepts**:
 - Lookup tables for enums
 - Triggers for automatic updates
 - Views for common queries
 - JSONB for flexible data
 
-✅ **Best Practices**:
+- **Best Practices**:
 - Indexing strategy
 - Constraint enforcement
 - Documentation standards
@@ -1498,5 +1498,5 @@ You've designed a production-ready, normalized ML Model Registry schema that can
 **Estimated Time**: 3-4 hours
 **Difficulty**: Intermediate
 **Lines of Code**: ~650 SQL
-**Learning Objectives**: ✅ All achieved
+**Learning Objectives**: - All achieved
 **Ready for**: Exercise 03 - Advanced SQL Joins

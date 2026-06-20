@@ -21,13 +21,13 @@ import time
 async def download_weights(name: str) -> dict:
     print(f"📥 Starting download: {name}")
     await asyncio.sleep(1.5)  # Simulate network latency
-    print(f"✅ Downloaded: {name}")
+    print(f"- Downloaded: {name}")
     return {"model": name, "status": "loaded"}
 
 async def load_features(dataset: str) -> list:
     print(f"📖 Reading dataset: {dataset}")
     await asyncio.sleep(0.8)  # Simulate disk I/O
-    print(f"✅ Loaded: {dataset}")
+    print(f"- Loaded: {dataset}")
     return [0.1, 0.4, 0.9]
 
 async def main():

@@ -1085,13 +1085,13 @@ pip install -r requirements.lock
 
 Congratulations! You've mastered ML-specific Git workflows:
 
-- ✅ Data versioning with DVC
-- ✅ Model tracking with Git LFS
-- ✅ Experiment versioning and tracking
-- ✅ Reproducibility with locked dependencies
-- ✅ ML pipelines with DVC
-- ✅ Pre-commit hooks for ML
-- ✅ Model and data provenance
+- - Data versioning with DVC
+- - Model tracking with Git LFS
+- - Experiment versioning and tracking
+- - Reproducibility with locked dependencies
+- - ML pipelines with DVC
+- - Pre-commit hooks for ML
+- - Model and data provenance
 
 ### Key Commands
 

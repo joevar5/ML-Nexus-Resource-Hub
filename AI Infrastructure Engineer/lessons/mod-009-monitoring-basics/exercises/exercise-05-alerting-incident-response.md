@@ -3343,29 +3343,29 @@ If us-east-1 degraded:
 
 Congratulations! You've built a production-ready alerting and incident response system for ML infrastructure, including:
 
-✅ **Complete Alerting Stack**:
+- **Complete Alerting Stack**:
 - Alertmanager with multi-channel routing
 - SLO-based burn rate alerts
 - Log-based alerts for application errors
 - ML-specific drift and performance alerts
 
-✅ **Professional Runbooks**:
+- **Professional Runbooks**:
 - Latency, error rate, and drift runbooks following Google SRE best practices
 - Step-by-step mitigation procedures
 - Investigation queries and commands
 - Escalation paths
 
-✅ **Incident Simulation Framework**:
+- **Incident Simulation Framework**:
 - Automated incident injection
 - Timeline and documentation generation
 - Hands-on runbook practice
 
-✅ **Post-Incident Review Process**:
+- **Post-Incident Review Process**:
 - Blameless postmortem template
 - MTTD/MTTR tracking
 - Action item management
 
-✅ **Continuous Improvement**:
+- **Continuous Improvement**:
 - Prioritized observability backlog
 - Effort estimates and ownership
 

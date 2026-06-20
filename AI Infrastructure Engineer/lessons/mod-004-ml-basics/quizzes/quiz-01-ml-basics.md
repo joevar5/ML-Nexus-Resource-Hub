@@ -506,9 +506,3 @@ Before moving forward, ensure you understand:
 - ONNX Format Spec: https://onnx.ai/
 - TorchServe: https://pytorch.org/serve/
 - TensorFlow Serving: https://www.tensorflow.org/tfx/guide/serving
-
----
-
-**Quiz Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Completion Time**: 45-60 minutes

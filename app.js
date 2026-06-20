@@ -1039,8 +1039,33 @@ Assume I am learning this for practical use and interview preparation.`;
                 let markdown = await response.text();
                 
                 markdown = parseAlertBlocks(markdown);
+
+                // Protect LaTeX math blocks from being mangled by the markdown parser.
+                // marked.parse() strips/corrupts backslashes (\begin, \boxed, \downarrow, etc.),
+                // so we extract math blocks first, replace with unique placeholders, parse the
+                // markdown, then restore the original LaTeX for KaTeX to render correctly.
+                const mathPlaceholders = [];
+                // Match display math ($$...$$) first, then inline math ($...$)
+                markdown = markdown.replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
+                    const id = `%%MATH_BLOCK_${mathPlaceholders.length}%%`;
+                    mathPlaceholders.push(match);
+                    return id;
+                });
+                markdown = markdown.replace(/(?<!\$)\$(?!\$)(.+?)\$(?!\$)/g, (match) => {
+                    const id = `%%MATH_BLOCK_${mathPlaceholders.length}%%`;
+                    mathPlaceholders.push(match);
+                    return id;
+                });
+
                 const markdownContentDiv = document.getElementById('markdown-content');
-                markdownContentDiv.innerHTML = marked.parse(markdown);
+                let parsedHtml = marked.parse(markdown);
+
+                // Restore the original LaTeX blocks from placeholders
+                mathPlaceholders.forEach((original, index) => {
+                    parsedHtml = parsedHtml.replace(`%%MATH_BLOCK_${index}%%`, original);
+                });
+
+                markdownContentDiv.innerHTML = parsedHtml;
                 
                 // Convert mermaid code blocks into renderable <pre class="mermaid"> elements
                 // marked outputs: <pre><code class="language-mermaid">...diagram code...</code></pre>

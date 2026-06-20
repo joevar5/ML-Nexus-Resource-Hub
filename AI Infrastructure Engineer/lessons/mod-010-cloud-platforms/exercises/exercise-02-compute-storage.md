@@ -1222,15 +1222,15 @@ rm ~/.ssh/ml-inference-key.pem
 
 By the end of this exercise, you should have:
 
-1. ✅ Launched EC2 instances with user data automation
-2. ✅ Created and attached EBS volumes
-3. ✅ Implemented EBS snapshot backups
-4. ✅ Created S3 buckets with encryption and versioning
-5. ✅ Configured S3 lifecycle policies
-6. ✅ Set up cross-region replication
-7. ✅ Launched Spot instances for cost savings
-8. ✅ Monitored resources with CloudWatch
-9. ✅ Calculated cost estimates
+1. - Launched EC2 instances with user data automation
+2. - Created and attached EBS volumes
+3. - Implemented EBS snapshot backups
+4. - Created S3 buckets with encryption and versioning
+5. - Configured S3 lifecycle policies
+6. - Set up cross-region replication
+7. - Launched Spot instances for cost savings
+8. - Monitored resources with CloudWatch
+9. - Calculated cost estimates
 
 **Evidence**:
 - Screenshots of running EC2 instances

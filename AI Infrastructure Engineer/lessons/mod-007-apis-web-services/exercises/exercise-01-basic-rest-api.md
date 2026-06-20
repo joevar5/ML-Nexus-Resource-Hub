@@ -600,14 +600,14 @@ POST /api/v1/models/batch
 
 By the end of this exercise, you should have:
 
-1. ✅ Working FastAPI application with CRUD endpoints
-2. ✅ Pydantic models for request/response validation
-3. ✅ In-memory database implementation
-4. ✅ Proper HTTP status codes for all responses
-5. ✅ Error handling for invalid requests
-6. ✅ Interactive API documentation (Swagger UI)
-7. ✅ Test suite with 90%+ coverage
-8. ✅ README with setup and usage instructions
+1. - Working FastAPI application with CRUD endpoints
+2. - Pydantic models for request/response validation
+3. - In-memory database implementation
+4. - Proper HTTP status codes for all responses
+5. - Error handling for invalid requests
+6. - Interactive API documentation (Swagger UI)
+7. - Test suite with 90%+ coverage
+8. - README with setup and usage instructions
 
 ## Submission Checklist
 

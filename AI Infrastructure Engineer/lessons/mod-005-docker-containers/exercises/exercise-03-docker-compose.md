@@ -161,7 +161,7 @@ docker compose down -v
 3. What happens to the data when you run `docker compose down`?
 4. What about with `docker compose down -v`?
 
-✅ **Checkpoint**: You can run a multi-container application with Docker Compose.
+- **Checkpoint**: You can run a multi-container application with Docker Compose.
 
 ---
 
@@ -281,7 +281,7 @@ docker compose -f docker-compose-v3.yml exec db \
   psql -U postgres -d myapp -c "SELECT * FROM visits;"
 ```
 
-✅ **Checkpoint**: You can manage service dependencies and initialization.
+- **Checkpoint**: You can manage service dependencies and initialization.
 
 ---
 
@@ -463,7 +463,7 @@ docker compose up -d
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
-✅ **Checkpoint**: You can manage environment-specific configurations.
+- **Checkpoint**: You can manage environment-specific configurations.
 
 ---
 
@@ -696,7 +696,7 @@ docker compose logs -f web
 docker compose ps
 ```
 
-✅ **Checkpoint**: You can orchestrate a complete web stack with multiple services.
+- **Checkpoint**: You can orchestrate a complete web stack with multiple services.
 
 ---
 
@@ -992,7 +992,7 @@ curl http://localhost:8000/health
 curl http://localhost:8000/metrics
 ```
 
-✅ **Checkpoint**: You can deploy an ML inference stack with caching and monitoring.
+- **Checkpoint**: You can deploy an ML inference stack with caching and monitoring.
 
 ---
 
@@ -1110,7 +1110,7 @@ for i in {1..10}; do
 done
 ```
 
-✅ **Checkpoint**: You can scale services and configure load balancing.
+- **Checkpoint**: You can scale services and configure load balancing.
 
 ---
 
@@ -1213,7 +1213,7 @@ networks:
 EOF
 ```
 
-✅ **Checkpoint**: You can configure network isolation and custom networks.
+- **Checkpoint**: You can configure network isolation and custom networks.
 
 ---
 
@@ -1281,7 +1281,7 @@ docker run --rm \
   alpine tar xzf /backup/postgres-data.tar.gz -C /data
 ```
 
-✅ **Checkpoint**: You can manage volumes for different use cases.
+- **Checkpoint**: You can manage volumes for different use cases.
 
 ---
 
@@ -1403,7 +1403,7 @@ volumes:
 EOF
 ```
 
-✅ **Checkpoint**: You can create production-ready Compose configurations.
+- **Checkpoint**: You can create production-ready Compose configurations.
 
 ---
 
@@ -1462,7 +1462,7 @@ docker volume ls
 docker volume inspect project_volume_name
 ```
 
-✅ **Checkpoint**: You can debug and troubleshoot Compose applications.
+- **Checkpoint**: You can debug and troubleshoot Compose applications.
 
 ---
 
@@ -1506,16 +1506,16 @@ docker volume inspect project_volume_name
 ## Summary
 
 **What You Accomplished**:
-✅ Created multi-container applications with Docker Compose
-✅ Managed service dependencies and startup order
-✅ Configured environment variables and secrets
-✅ Built complete web stacks (web + db + cache + proxy)
-✅ Deployed ML inference services with supporting infrastructure
-✅ Scaled services and configured load balancing
-✅ Implemented network isolation
-✅ Managed volumes for different use cases
-✅ Applied production best practices
-✅ Debugged and troubleshooted compose applications
+- Created multi-container applications with Docker Compose
+- Managed service dependencies and startup order
+- Configured environment variables and secrets
+- Built complete web stacks (web + db + cache + proxy)
+- Deployed ML inference services with supporting infrastructure
+- Scaled services and configured load balancing
+- Implemented network isolation
+- Managed volumes for different use cases
+- Applied production best practices
+- Debugged and troubleshooted compose applications
 
 **Key Compose Features Mastered**:
 - Service definitions and dependencies
@@ -1536,10 +1536,3 @@ docker volume inspect project_volume_name
 - **Exercise 05**: Volume Management and Data Persistence
 - **Exercise 06**: Production Deployment Strategies
 - **Exercise 07**: Complete ML Application Containerization
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 3-4 hours
-**Difficulty**: Intermediate

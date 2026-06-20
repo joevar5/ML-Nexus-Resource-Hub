@@ -67,12 +67,12 @@ resource "aws_instance" "ml_server" {
 ```
 
 **Benefits**:
-- ✅ Reproducible (run same code → get same infrastructure)
-- ✅ Version controlled (Git tracks all changes)
-- ✅ Reviewable (pull requests for infrastructure)
-- ✅ Auditable (who changed what when)
-- ✅ Testable (validate before applying)
-- ✅ Documented (code is documentation)
+- - Reproducible (run same code → get same infrastructure)
+- - Version controlled (Git tracks all changes)
+- - Reviewable (pull requests for infrastructure)
+- - Auditable (who changed what when)
+- - Testable (validate before applying)
+- - Documented (code is documentation)
 
 ### Why Terraform?
 

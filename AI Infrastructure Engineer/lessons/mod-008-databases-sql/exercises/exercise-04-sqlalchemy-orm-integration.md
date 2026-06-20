@@ -255,7 +255,7 @@ Thumbs.db
 
 ### Checkpoint 1
 
-✅ Verify your setup:
+- Verify your setup:
 
 ```bash
 poetry --version
@@ -415,11 +415,11 @@ if __name__ == "__main__":
 
 **Security Best Practices:**
 
-- ✅ Never commit `.env` files to version control
-- ✅ Use different credentials for dev/staging/prod
-- ✅ Rotate database passwords regularly
-- ✅ Use IAM authentication in cloud environments (AWS RDS IAM, GCP Cloud SQL)
-- ✅ Encrypt DATABASE_URL in CI/CD secrets
+- - Never commit `.env` files to version control
+- - Use different credentials for dev/staging/prod
+- - Rotate database passwords regularly
+- - Use IAM authentication in cloud environments (AWS RDS IAM, GCP Cloud SQL)
+- - Encrypt DATABASE_URL in CI/CD secrets
 
 ---
 
@@ -634,23 +634,23 @@ if __name__ == "__main__":
 
     try:
         engine = get_engine()
-        print(f"✅ Engine created: {engine}")
+        print(f"- Engine created: {engine}")
 
         # Test connection
         with engine.connect() as conn:
             result = conn.execute("SELECT version()")
             version = result.scalar()
-            print(f"✅ PostgreSQL version: {version}")
+            print(f"- PostgreSQL version: {version}")
 
         # Test session
         with get_session() as session:
             result = session.execute("SELECT current_database()")
             db_name = result.scalar()
-            print(f"✅ Connected to database: {db_name}")
+            print(f"- Connected to database: {db_name}")
 
         # Pool stats
         stats = get_pool_status()
-        print(f"✅ Pool status: {stats}")
+        print(f"- Pool status: {stats}")
 
     except Exception as e:
         print(f"❌ Connection failed: {e}")
@@ -700,10 +700,10 @@ docker ps  # Check ml-registry-postgres container
 python -m ml_registry_db.db
 
 # Expected output:
-# ✅ Engine created: Engine(postgresql://...)
-# ✅ PostgreSQL version: PostgreSQL 14.x
-# ✅ Connected to database: ml_registry
-# ✅ Pool status: {'pool_size': 5, ...}
+# - Engine created: Engine(postgresql://...)
+# - PostgreSQL version: PostgreSQL 14.x
+# - Connected to database: ml_registry
+# - Pool status: {'pool_size': 5, ...}
 ```
 
 ---
@@ -1196,13 +1196,13 @@ from ml_registry_db.db import get_engine, Base
 
 engine = get_engine()
 Base.metadata.create_all(engine)
-print("✅ All tables created successfully!")
+print("- All tables created successfully!")
 
 # Show tables
 from sqlalchemy import inspect
 inspector = inspect(engine)
 tables = inspector.get_table_names()
-print(f"✅ Tables: {tables}")
+print(f"- Tables: {tables}")
 EOF
 
 python test_models.py
@@ -2203,7 +2203,7 @@ with get_session() as session:
             team_email="ml@company.com",
         ),
     )
-    print(f"✅ Team created: {team}")
+    print(f"- Team created: {team}")
 
     # Register model
     model = repositories.register_model(
@@ -2214,7 +2214,7 @@ with get_session() as session:
             team_id=team.team_id,
         ),
     )
-    print(f"✅ Model registered: {model}")
+    print(f"- Model registered: {model}")
 
     # Add version
     version = repositories.add_model_version(
@@ -2225,9 +2225,9 @@ with get_session() as session:
             artifact_uri="s3://models/fraud-v1",
         ),
     )
-    print(f"✅ Version added: {version}")
+    print(f"- Version added: {version}")
 
-print("✅ All repository operations successful!")
+print("- All repository operations successful!")
 EOF
 
 python test_repos.py
@@ -2956,7 +2956,7 @@ def init():
     """Initialize database schema (create all tables)."""
     try:
         init_db()
-        rprint("[green]✅ Database schema initialized successfully[/green]")
+        rprint("[green]- Database schema initialized successfully[/green]")
     except Exception as e:
         rprint(f"[red]❌ Error initializing database: {e}[/red]")
         raise typer.Exit(code=1)
@@ -3012,7 +3012,7 @@ def register_model(
             )
             model = repositories.register_model(session, data)
 
-            rprint(f"[green]✅ Model registered: {model.model_name}[/green]")
+            rprint(f"[green]- Model registered: {model.model_name}[/green]")
             rprint(f"   Model ID: {model.model_id}")
     except repositories.DuplicateError:
         rprint(f"[red]❌ Model '{name}' already exists[/red]")
@@ -3131,7 +3131,7 @@ def seed_data():
                 ),
             )
 
-            rprint("[green]✅ Sample data created successfully[/green]")
+            rprint("[green]- Sample data created successfully[/green]")
             rprint(f"   Teams: 2")
             rprint(f"   Models: 2")
             rprint(f"   Versions: 2")
@@ -3657,14 +3657,14 @@ sqlalchemy.exc.IntegrityError: foreign key constraint "fk_version" violated
 
 ### What You've Learned
 
-✅ **SQLAlchemy ORM**: Mapping tables to Python classes with relationships
-✅ **Session Management**: Connection pooling, context managers, transaction handling
-✅ **Repository Pattern**: Encapsulating database logic in reusable functions
-✅ **Pydantic Integration**: Type-safe validation for API requests/responses
-✅ **Alembic Migrations**: Managing schema evolution over time
-✅ **Testing**: Comprehensive test suite with fixtures and factories
-✅ **Production Patterns**: Connection pooling, error handling, logging, security
-✅ **FastAPI Integration**: Building RESTful APIs backed by databases
+- **SQLAlchemy ORM**: Mapping tables to Python classes with relationships
+- **Session Management**: Connection pooling, context managers, transaction handling
+- **Repository Pattern**: Encapsulating database logic in reusable functions
+- **Pydantic Integration**: Type-safe validation for API requests/responses
+- **Alembic Migrations**: Managing schema evolution over time
+- **Testing**: Comprehensive test suite with fixtures and factories
+- **Production Patterns**: Connection pooling, error handling, logging, security
+- **FastAPI Integration**: Building RESTful APIs backed by databases
 
 ### Key Takeaways
 
@@ -3676,15 +3676,15 @@ sqlalchemy.exc.IntegrityError: foreign key constraint "fk_version" violated
 
 ### Project Deliverables
 
-✅ Fully functional Python package: `ml-registry-db`
-✅ ORM models for all 9 tables from Exercise 02
-✅ Repository layer with 20+ functions
-✅ Pydantic schemas for validation
-✅ Alembic migration setup
-✅ Test suite with 25+ tests
-✅ CLI tools for database management
-✅ FastAPI integration example
-✅ Production-ready configuration
+- Fully functional Python package: `ml-registry-db`
+- ORM models for all 9 tables from Exercise 02
+- Repository layer with 20+ functions
+- Pydantic schemas for validation
+- Alembic migration setup
+- Test suite with 25+ tests
+- CLI tools for database management
+- FastAPI integration example
+- Production-ready configuration
 
 ### Next Steps
 

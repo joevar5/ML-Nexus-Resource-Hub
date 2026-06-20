@@ -172,7 +172,7 @@ chmod +x test-volumes.sh
 ./test-volumes.sh
 ```
 
-✅ **Checkpoint**: You understand the three types of Docker volumes.
+- **Checkpoint**: You understand the three types of Docker volumes.
 
 ---
 
@@ -246,7 +246,7 @@ docker volume inspect tmpfs-volume
 docker volume rm my-local-volume tmpfs-volume
 ```
 
-✅ **Checkpoint**: You can manage volumes with Docker CLI.
+- **Checkpoint**: You can manage volumes with Docker CLI.
 
 ---
 
@@ -365,7 +365,7 @@ docker compose exec analyzer sh -c "echo 'test' >> /logs/app.log"
 docker compose down -v
 ```
 
-✅ **Checkpoint**: You can share volumes between multiple containers.
+- **Checkpoint**: You can share volumes between multiple containers.
 
 ---
 
@@ -524,7 +524,7 @@ docker compose -f docker-compose-db.yml exec redis redis-cli GET mykey
 docker compose -f docker-compose-db.yml down -v
 ```
 
-✅ **Checkpoint**: You can implement persistent database storage.
+- **Checkpoint**: You can implement persistent database storage.
 
 ---
 
@@ -682,7 +682,7 @@ docker rm -f postgres-restore
 docker volume rm postgres-restore-data
 ```
 
-✅ **Checkpoint**: You can backup and restore Docker volumes.
+- **Checkpoint**: You can backup and restore Docker volumes.
 
 ---
 
@@ -846,7 +846,7 @@ echo "MinIO: http://localhost:9001"
 docker compose -f docker-compose-registry.yml down -v
 ```
 
-✅ **Checkpoint**: You can manage ML models and datasets with volumes.
+- **Checkpoint**: You can manage ML models and datasets with volumes.
 
 ---
 
@@ -962,7 +962,7 @@ docker rm -f perf-app
 docker volume rm fast-cache ssd-storage
 ```
 
-✅ **Checkpoint**: You understand volume performance characteristics.
+- **Checkpoint**: You understand volume performance characteristics.
 
 ---
 
@@ -1040,7 +1040,7 @@ volumes:
 EOF
 ```
 
-✅ **Checkpoint**: You understand volume drivers and plugins.
+- **Checkpoint**: You understand volume drivers and plugins.
 
 ---
 
@@ -1152,7 +1152,7 @@ EOF
 chmod +x dr-backup.sh
 ```
 
-✅ **Checkpoint**: You can implement production volume patterns.
+- **Checkpoint**: You can implement production volume patterns.
 
 ---
 
@@ -1270,7 +1270,7 @@ chmod +x monitor-volumes.sh
 ./monitor-volumes.sh
 ```
 
-✅ **Checkpoint**: You can troubleshoot and follow volume best practices.
+- **Checkpoint**: You can troubleshoot and follow volume best practices.
 
 ---
 
@@ -1309,16 +1309,16 @@ chmod +x monitor-volumes.sh
 ## Summary
 
 **What You Accomplished**:
-✅ Mastered three volume types (named, bind mounts, tmpfs)
-✅ Managed volume lifecycle operations
-✅ Implemented data sharing between containers
-✅ Created persistent database storage
-✅ Built backup and restore strategies
-✅ Managed ML models and datasets
-✅ Optimized volume performance
-✅ Used volume drivers and plugins
-✅ Applied production volume patterns
-✅ Troubleshooted volume issues
+- Mastered three volume types (named, bind mounts, tmpfs)
+- Managed volume lifecycle operations
+- Implemented data sharing between containers
+- Created persistent database storage
+- Built backup and restore strategies
+- Managed ML models and datasets
+- Optimized volume performance
+- Used volume drivers and plugins
+- Applied production volume patterns
+- Troubleshooted volume issues
 
 **Key Concepts Mastered**:
 - Volume types and use cases
@@ -1340,10 +1340,3 @@ chmod +x monitor-volumes.sh
 **Continue Learning**:
 - **Exercise 06**: Production Deployment Strategies
 - **Exercise 07**: Complete ML Application Containerization
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 3-4 hours
-**Difficulty**: Intermediate

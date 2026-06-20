@@ -1148,14 +1148,14 @@ eksctl delete cluster --name ml-inference-eks
 
 By the end of this exercise, you should have:
 
-1. ✅ Containerized ML inference application
-2. ✅ Docker image pushed to Amazon ECR
-3. ✅ ECS Fargate deployment with ALB
-4. ✅ Auto-scaling based on CPU and request count
-5. ✅ Blue/green deployment strategy
-6. ✅ EKS deployment for comparison
-7. ✅ CloudWatch monitoring and alarms
-8. ✅ Cost optimization with Fargate Spot
+1. - Containerized ML inference application
+2. - Docker image pushed to Amazon ECR
+3. - ECS Fargate deployment with ALB
+4. - Auto-scaling based on CPU and request count
+5. - Blue/green deployment strategy
+6. - EKS deployment for comparison
+7. - CloudWatch monitoring and alarms
+8. - Cost optimization with Fargate Spot
 
 **Evidence**:
 - Screenshots of running ECS tasks

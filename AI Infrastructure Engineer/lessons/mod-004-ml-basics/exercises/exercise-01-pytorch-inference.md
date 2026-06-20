@@ -21,12 +21,12 @@
 
 By the end of this exercise, you will be able to:
 
-✅ Load pre-trained PyTorch models from various sources
-✅ Preprocess images to match model requirements
-✅ Run inference correctly with `model.eval()` and `torch.no_grad()`
-✅ Measure and optimize inference performance
-✅ Handle device management (CPU/GPU)
-✅ Debug common inference errors
+- Load pre-trained PyTorch models from various sources
+- Preprocess images to match model requirements
+- Run inference correctly with `model.eval()` and `torch.no_grad()`
+- Measure and optimize inference performance
+- Handle device management (CPU/GPU)
+- Debug common inference errors
 
 ---
 
@@ -90,7 +90,7 @@ for filename, url in images.items():
 print("All images downloaded!")
 ```
 
-✅ **Checkpoint**: You should have Python environment set up and 3 test images downloaded.
+- **Checkpoint**: You should have Python environment set up and 3 test images downloaded.
 
 ---
 
@@ -157,7 +157,7 @@ print("  Output shape: [batch_size, 1000] (ImageNet classes)")
 2. What is the expected input shape?
 3. How many output classes does the model predict?
 
-✅ **Checkpoint**: Model loaded successfully and you understand its architecture.
+- **Checkpoint**: Model loaded successfully and you understand its architecture.
 
 ---
 
@@ -230,7 +230,7 @@ Batch shape: torch.Size([1, 3, 224, 224])
 3. **Why is the tensor range negative?**
    - Hint: Normalization formula is (x - mean) / std
 
-✅ **Checkpoint**: You can preprocess images correctly.
+- **Checkpoint**: You can preprocess images correctly.
 
 ---
 
@@ -335,7 +335,7 @@ Top 5 Predictions:
   5. Great Pyrenees                1.42%
 ```
 
-✅ **Checkpoint**: You can run inference and get meaningful predictions!
+- **Checkpoint**: You can run inference and get meaningful predictions!
 
 ---
 
@@ -435,7 +435,7 @@ Batch Size   Latency (ms)    Throughput (img/s)
 32           1156.78         27.67
 ```
 
-✅ **Checkpoint**: You can measure and understand inference performance.
+- **Checkpoint**: You can measure and understand inference performance.
 
 ---
 
@@ -500,7 +500,7 @@ GPU latency: 3.45 ms
 Speedup: 13.11x
 ```
 
-✅ **Checkpoint**: You understand CPU vs GPU performance differences.
+- **Checkpoint**: You understand CPU vs GPU performance differences.
 
 ---
 
@@ -623,7 +623,7 @@ python image_classifier.py dog.jpg --device cpu
 python image_classifier.py dog.jpg --top-k 10
 ```
 
-✅ **Checkpoint**: You have a complete, working image classifier!
+- **Checkpoint**: You have a complete, working image classifier!
 
 ---
 
@@ -685,7 +685,7 @@ def test_classifier():
     total_prob = sum(r['probability'] for r in results[:5])
     assert 0.95 <= total_prob <= 1.05, f"Top 5 probabilities should sum close to 1, got {total_prob}"
 
-    print("✅ All tests passed!")
+    print("- All tests passed!")
 
 if __name__ == "__main__":
     test_classifier()
@@ -717,12 +717,12 @@ Answer these questions to solidify your learning:
 ## Summary
 
 **What You Accomplished**:
-✅ Loaded and used pre-trained PyTorch models
-✅ Preprocessed images correctly
-✅ Ran inference with proper eval mode and no_grad context
-✅ Measured inference performance
-✅ Compared CPU vs GPU execution
-✅ Built a complete image classification application
+- Loaded and used pre-trained PyTorch models
+- Preprocessed images correctly
+- Ran inference with proper eval mode and no_grad context
+- Measured inference performance
+- Compared CPU vs GPU execution
+- Built a complete image classification application
 
 **Key Skills Gained**:
 - Model loading from PyTorch Hub
@@ -738,10 +738,3 @@ Answer these questions to solidify your learning:
 1. **Complete Exercise 02**: TensorFlow Model Inference
 2. **Compare frameworks**: Notice differences between PyTorch and TensorFlow
 3. **Experiment**: Try different models and images
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 2-3 hours
-**Difficulty**: Beginner

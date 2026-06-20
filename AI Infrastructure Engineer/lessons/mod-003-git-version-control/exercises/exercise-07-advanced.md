@@ -246,7 +246,7 @@ if [ -n "$python_files" ]; then
             exit 1
         fi
     done
-    echo "✅ Python syntax OK"
+    echo "- Python syntax OK"
 fi
 
 # Check for debug statements
@@ -258,7 +258,7 @@ if git diff --cached | grep -i "print(\|pdb\|breakpoint("; then
     echo "To commit anyway: git commit --no-verify"
     exit 1
 fi
-echo "✅ No debug statements found"
+echo "- No debug statements found"
 
 # Check for large files
 echo "3. Checking file sizes..."
@@ -273,7 +273,7 @@ for file in $(git diff --cached --name-only --diff-filter=ACM); do
         fi
     fi
 done
-echo "✅ File sizes OK"
+echo "- File sizes OK"
 
 # Check for AWS keys (security)
 echo "4. Checking for secrets..."
@@ -281,10 +281,10 @@ if git diff --cached | grep -E "AKIA[0-9A-Z]{16}"; then
     echo "❌ Possible AWS key detected!"
     exit 1
 fi
-echo "✅ No secrets detected"
+echo "- No secrets detected"
 
 echo ""
-echo "✅ All pre-commit checks passed!"
+echo "- All pre-commit checks passed!"
 exit 0
 EOF
 
@@ -325,7 +325,7 @@ timestamp=$(date +"%Y-%m-%d %H:%M:%S")
 echo "[$timestamp] $commit_hash: $commit_msg" >> .git/commit-log.txt
 
 # Notify about commit
-echo "✅ Commit logged: $commit_hash"
+echo "- Commit logged: $commit_hash"
 EOF
 
 chmod +x .git/hooks/post-commit
@@ -357,7 +357,7 @@ echo "Running pre-push checks..."
 # Run tests
 echo "1. Running tests..."
 # pytest tests/ -v
-echo "✅ Tests passed (simulated)"
+echo "- Tests passed (simulated)"
 
 # Check branch name
 current_branch=$(git branch --show-current)
@@ -382,10 +382,10 @@ while read -r msg; do
         exit 1
     fi
 done <<< "$commits"
-echo "✅ Commit messages valid"
+echo "- Commit messages valid"
 
 echo ""
-echo "✅ All pre-push checks passed!"
+echo "- All pre-push checks passed!"
 exit 0
 EOF
 
@@ -996,16 +996,16 @@ git cherry-pick <hash>  # Add to correct branch
 
 Congratulations! You've mastered advanced Git techniques:
 
-- ✅ Interactive rebasing for clean history
-- ✅ Custom Git hooks for automation
-- ✅ Cherry-picking specific changes
-- ✅ Advanced stashing workflows
-- ✅ Bisecting to find bugs
-- ✅ Reflog for recovery
-- ✅ Git submodules
-- ✅ Advanced merge strategies
-- ✅ Worktrees for parallel work
-- ✅ Troubleshooting and recovery
+- - Interactive rebasing for clean history
+- - Custom Git hooks for automation
+- - Cherry-picking specific changes
+- - Advanced stashing workflows
+- - Bisecting to find bugs
+- - Reflog for recovery
+- - Git submodules
+- - Advanced merge strategies
+- - Worktrees for parallel work
+- - Troubleshooting and recovery
 
 ### Key Commands
 

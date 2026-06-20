@@ -41,10 +41,10 @@ As the infrastructure engineer on call, you must:
 4. Document a repeatable performance tuning process
 
 Management expects:
-- ✅ 80% reduction in P99 query latency
-- ✅ Dashboard load times < 1 second
-- ✅ Zero query timeouts during peak hours
-- ✅ Automated monitoring and alerting
+- - 80% reduction in P99 query latency
+- - Dashboard load times < 1 second
+- - Zero query timeouts during peak hours
+- - Automated monitoring and alerting
 
 ---
 
@@ -535,7 +535,7 @@ ORDER BY d.deployed_at DESC;
 
 ### Checkpoint 1
 
-✅ Verify your profiling setup:
+- Verify your profiling setup:
 
 ```bash
 # Check pg_stat_statements is enabled
@@ -1023,15 +1023,15 @@ Execution Time: 8.678 ms
 ```
 
 **Improvements:**
-- ✅ **Execution time**: 145ms → 8.7ms (16x faster!)
-- ✅ **Index scans** instead of sequential scans
-- ✅ **Nested loops** instead of hash joins (better for LIMIT queries)
-- ✅ **Buffer usage**: 5,877 blocks → 168 blocks (35x less I/O)
-- ✅ **Backward index scan** leverages DESC index
+- - **Execution time**: 145ms → 8.7ms (16x faster!)
+- - **Index scans** instead of sequential scans
+- - **Nested loops** instead of hash joins (better for LIMIT queries)
+- - **Buffer usage**: 5,877 blocks → 168 blocks (35x less I/O)
+- - **Backward index scan** leverages DESC index
 
 ### Checkpoint 2
 
-✅ Verify indexes are working:
+- Verify indexes are working:
 
 ```bash
 # Check all indexes were created
@@ -1114,7 +1114,7 @@ Create `docs/performance-results.md`:
 | Avg Time | 145.58ms | 8.67ms | **94% faster** |
 | Max Time | 1,250.34ms | 23.45ms | **98% faster** |
 | Cache Hit | 45.23% | 95.67% | +50.44pp |
-| Execution Plan | Seq Scan → Sort | Index Scan (backwards) | ✅ |
+| Execution Plan | Seq Scan → Sort | Index Scan (backwards) | - |
 
 **Index Used**: `idx_deployments_deployed_at_desc`
 
@@ -1127,7 +1127,7 @@ Create `docs/performance-results.md`:
 | Avg Time | 31.90ms | 5.12ms | **84% faster** |
 | Max Time | 456.78ms | 18.90ms | **96% faster** |
 | Cache Hit | 78.92% | 97.34% | +18.42pp |
-| Execution Plan | Seq Scan → Filter | Index Scan | ✅ |
+| Execution Plan | Seq Scan → Filter | Index Scan | - |
 
 **Index Used**: `idx_training_runs_exp_created` (composite + covering)
 
@@ -1140,7 +1140,7 @@ Create `docs/performance-results.md`:
 | Avg Time | 143.21ms | 18.34ms | **87% faster** |
 | Max Time | 890.12ms | 67.89ms | **92% faster** |
 | Cache Hit | 38.45% | 91.23% | +52.78pp |
-| Execution Plan | Hash Join | Nested Loop (indexed) | ✅ |
+| Execution Plan | Hash Join | Nested Loop (indexed) | - |
 
 **Indexes Used**: `idx_training_runs_version_id`, `idx_model_versions_model_id`
 
@@ -1153,7 +1153,7 @@ Create `docs/performance-results.md`:
 | Avg Time | 44.94ms | 2.34ms | **95% faster** |
 | Max Time | 234.56ms | 8.12ms | **97% faster** |
 | Cache Hit | 56.78% | 98.45% | +41.67pp |
-| Execution Plan | Seq Scan → Filter | Partial Index Scan | ✅ |
+| Execution Plan | Seq Scan → Filter | Partial Index Scan | - |
 
 **Index Used**: `idx_deployments_prod_active` (partial index)
 
@@ -1204,11 +1204,11 @@ Create `docs/performance-results.md`:
 
 ## Next Steps
 
-1. ✅ Monitor index usage for 7 days
-2. ✅ Drop unused JSONB indexes (`idx_training_runs_hyperparameters_gin`, `idx_training_runs_metrics_gin`)
-3. ✅ Set up automated alerts for slow queries (>100ms)
-4. ✅ Schedule monthly REINDEX for high-churn tables
-5. ✅ Document index maintenance in runbook
+1. - Monitor index usage for 7 days
+2. - Drop unused JSONB indexes (`idx_training_runs_hyperparameters_gin`, `idx_training_runs_metrics_gin`)
+3. - Set up automated alerts for slow queries (>100ms)
+4. - Schedule monthly REINDEX for high-churn tables
+5. - Document index maintenance in runbook
 ```
 
 ### Step 3.3: Identify Unused Indexes
@@ -1241,7 +1241,7 @@ DROP INDEX CONCURRENTLY IF EXISTS idx_training_runs_metrics_gin;
 
 ### Checkpoint 3
 
-✅ Validate performance improvements:
+- Validate performance improvements:
 
 ```bash
 # Compare before/after metrics
@@ -1758,7 +1758,7 @@ groups:
 
 ### Checkpoint 4
 
-✅ Verify maintenance and monitoring:
+- Verify maintenance and monitoring:
 
 ```bash
 # Check autovacuum is running
@@ -1791,7 +1791,7 @@ SELECT * FROM training_runs
 WHERE model_name = 'fraud-detection' OR experiment_name = 'exp-001';
 ```
 
-**✅ Good: Use UNION for OR conditions**
+**- Good: Use UNION for OR conditions**
 
 ```sql
 -- Can use indexes
@@ -1810,7 +1810,7 @@ SELECT * FROM models
 WHERE model_id NOT IN (SELECT model_id FROM model_versions);
 ```
 
-**✅ Good: Use LEFT JOIN with NULL check**
+**- Good: Use LEFT JOIN with NULL check**
 
 ```sql
 -- Much faster
@@ -1831,7 +1831,7 @@ ORDER BY created_at DESC
 LIMIT 20 OFFSET 10000;  -- Slow for high offsets
 ```
 
-**✅ Good: Keyset pagination**
+**- Good: Keyset pagination**
 
 ```sql
 -- Uses index, constant time
@@ -1851,7 +1851,7 @@ SELECT * FROM training_runs
 WHERE DATE(created_at) = '2024-01-15';
 ```
 
-**✅ Good: Range query**
+**- Good: Range query**
 
 ```sql
 -- Uses index on created_at
@@ -1913,10 +1913,10 @@ SELECT create_monthly_partitions();
 ```
 
 **Benefits of Partitioning:**
-- ✅ Queries with time filters only scan relevant partitions (partition pruning)
-- ✅ Easier maintenance (drop old partitions instead of DELETE)
-- ✅ Parallel query execution across partitions
-- ✅ Smaller indexes per partition
+- - Queries with time filters only scan relevant partitions (partition pruning)
+- - Easier maintenance (drop old partitions instead of DELETE)
+- - Parallel query execution across partitions
+- - Smaller indexes per partition
 
 ### Step 5.3: Connection Pooling with PgBouncer
 
@@ -1961,9 +1961,9 @@ DATABASE_URL = "postgresql://ml_user:ml_password@localhost:6432/ml_registry"
 ```
 
 **Benefits:**
-- ✅ Reduce connection overhead (connection creation is expensive)
-- ✅ Handle connection spikes without exhausting database connections
-- ✅ Support > 1000 application connections with only 100 database connections
+- - Reduce connection overhead (connection creation is expensive)
+- - Handle connection spikes without exhausting database connections
+- - Support > 1000 application connections with only 100 database connections
 
 ### Step 5.4: Read Replicas for Scaling Reads
 
@@ -2039,7 +2039,7 @@ def get_models_readonly():
 
 ### Checkpoint 5
 
-✅ Verify advanced optimizations:
+- Verify advanced optimizations:
 
 ```bash
 # Check if partitioning is enabled (if implemented)
@@ -2305,7 +2305,7 @@ Create `docs/performance-improvements.md`:
 
 ### Checkpoint 6
 
-✅ Verify runbook completeness:
+- Verify runbook completeness:
 
 ```bash
 # Check all documentation exists
@@ -2402,13 +2402,13 @@ ORDER BY total_deployments DESC;
 
 ### What You've Learned
 
-✅ **Database profiling** with pg_stat_statements and EXPLAIN ANALYZE
-✅ **Index strategy design** for different query patterns
-✅ **Performance measurement** with before/after metrics
-✅ **Maintenance procedures** (VACUUM, ANALYZE, REINDEX)
-✅ **Monitoring setup** with Prometheus and Grafana
-✅ **Production runbooks** for performance issues
-✅ **Advanced techniques** (partitioning, connection pooling, replication)
+- **Database profiling** with pg_stat_statements and EXPLAIN ANALYZE
+- **Index strategy design** for different query patterns
+- **Performance measurement** with before/after metrics
+- **Maintenance procedures** (VACUUM, ANALYZE, REINDEX)
+- **Monitoring setup** with Prometheus and Grafana
+- **Production runbooks** for performance issues
+- **Advanced techniques** (partitioning, connection pooling, replication)
 
 ### Key Takeaways
 

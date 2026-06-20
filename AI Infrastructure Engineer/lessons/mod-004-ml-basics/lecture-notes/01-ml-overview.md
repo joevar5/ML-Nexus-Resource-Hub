@@ -113,19 +113,19 @@ ML: Here are 10,000 cat images and 10,000 dog images.
 
 ### What ML Is Good For
 
-✅ **Pattern recognition** - Identifying cats in images, detecting fraud
-✅ **Prediction** - Stock prices, equipment failure, customer churn
-✅ **Classification** - Spam detection, sentiment analysis, disease diagnosis
-✅ **Generation** - Text generation (GPT), image generation (DALL-E)
-✅ **Complex decision-making** - Game playing (AlphaGo), robotics
+- **Pattern recognition** - Identifying cats in images, detecting fraud
+- **Prediction** - Stock prices, equipment failure, customer churn
+- **Classification** - Spam detection, sentiment analysis, disease diagnosis
+- **Generation** - Text generation (GPT), image generation (DALL-E)
+- **Complex decision-making** - Game playing (AlphaGo), robotics
 
 ### What ML Is NOT Good For
 
-❌ **Exact calculations** - Use traditional programming (2 + 2 = 4)
-❌ **Guaranteed correctness** - ML is probabilistic, not deterministic
-❌ **Explaining decisions** - Many models are "black boxes"
-❌ **Tasks without data** - ML needs examples to learn from
-❌ **Simple rule-based logic** - Don't use ML when `if/else` suffices
+- **Exact calculations** - Use traditional programming (2 + 2 = 4)
+- **Guaranteed correctness** - ML is probabilistic, not deterministic
+- **Explaining decisions** - Many models are "black boxes"
+- **Tasks without data** - ML needs examples to learn from
+- **Simple rule-based logic** - Don't use ML when `if/else` suffices
 
 ---
 
@@ -133,42 +133,22 @@ ML: Here are 10,000 cat images and 10,000 dog images.
 
 ### Overview: Data to Deployed Model
 
+```mermaid
+graph TD
+    A["1. Data Collection\nCollect and prepare training data"] --> B["2. Data Preparation\nClean, transform, split data"]
+    B --> C["3. Training\nLearn patterns from data"]
+    C --> D["4. Evaluation\nTest model performance"]
+    D --> E["5. Deployment\nDeploy model to production"]
+    E --> F["6. Inference\nMake predictions on new data"]
+    F --> G["7. Monitoring\nTrack performance, detect drift"]
+
+    style E fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style F fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style G fill:#2563eb,stroke:#1d4ed8,color:#fff
 ```
-┌─────────────┐
-│ 1. Data     │  Collect and prepare training data
-│ Collection  │
-└──────┬──────┘
-       │
-┌──────▼──────┐
-│ 2. Data     │  Clean, transform, split data
-│ Preparation │
-└──────┬──────┘
-       │
-┌──────▼──────┐
-│ 3. Training │  Learn patterns from data
-│             │  (This is what "ML" usually refers to)
-└──────┬──────┘
-       │
-┌──────▼──────┐
-│ 4. Evaluation│ Test model performance
-│             │
-└──────┬──────┘
-       │
-┌──────▼──────┐
-│ 5. Deployment│ Deploy model to production
-│             │  (THIS IS YOUR PRIMARY FOCUS)
-└──────┬──────┘
-       │
-┌──────▼──────┐
-│ 6. Inference│  Make predictions on new data
-│             │  (THIS IS ALSO YOUR FOCUS)
-└──────┬──────┘
-       │
-┌──────▼──────┐
-│ 7. Monitoring│ Track performance, detect drift
-│             │  (THIS TOO)
-└─────────────┘
-```
+
+> [!IMPORTANT]
+> Steps 5, 6, and 7 (highlighted in blue) are your primary focus as an Infrastructure Engineer.
 
 ### Phase 1: Data Collection
 
@@ -527,53 +507,21 @@ Output: [
 
 ### High-Level Architecture
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                      ML System Architecture                   │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    A(["Data Storage"]):::data --> B(["Training Pipeline"]):::train
+    B --> C(["Model Registry"]):::train
+    C --> D(["Model Server"]):::serve
+    D --> E(["API Gateway"]):::serve
+    E --> F(["Monitoring"]):::ops
 
-┌─────────────────────┐
-│ Data Storage        │
-│ - Raw data          │
-│ - Processed data    │
-│ - Feature store     │
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│ Training Pipeline   │
-│ - Data processing   │
-│ - Model training    │
-│ - Evaluation        │
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│ Model Registry      │
-│ - Model artifacts   │
-│ - Metadata          │
-│ - Versioning        │
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│ Serving Layer       │
-│ - Model loading     │
-│ - Preprocessing     │
-│ - Inference         │
-│ - Postprocessing    │
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│ API Layer           │
-│ - REST/gRPC         │
-│ - Auth              │
-│ - Rate limiting     │
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│ Monitoring          │
-│ - Metrics           │
-│ - Logs              │
-│ - Alerting          │
-└─────────────────────┘
+    F -. "retrain trigger" .-> B
+    F -. "data quality alert" .-> A
+
+    classDef data fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef train fill:#6d28d9,stroke:#5b21b6,color:#fff,font-weight:bold
+    classDef serve fill:#047857,stroke:#065f46,color:#fff,font-weight:bold
+    classDef ops fill:#b45309,stroke:#92400e,color:#fff,font-weight:bold
 ```
 
 ### Key Components
@@ -788,23 +736,23 @@ Inference (monthly):
 
 When you encounter an ML project, ask:
 
-✅ **Is this training or inference?**
-✅ **What type of ML task is this?**
-✅ **What are the resource requirements?**
-✅ **What's the latency requirement?**
-✅ **How often does the model need to be retrained?**
-✅ **What's the expected query volume?**
-✅ **What framework is used? (PyTorch, TensorFlow, etc.)**
+- **Is this training or inference?**
+- **What type of ML task is this?**
+- **What are the resource requirements?**
+- **What's the latency requirement?**
+- **How often does the model need to be retrained?**
+- **What's the expected query volume?**
+- **What framework is used? (PyTorch, TensorFlow, etc.)**
 
 ### What You've Learned
 
-- ✅ What machine learning actually is (function approximation from data)
-- ✅ The full ML workflow from data to deployment
-- ✅ Training vs inference (critically important!)
-- ✅ Types of ML and their infrastructure implications
-- ✅ Common ML tasks and resource requirements
-- ✅ ML system architecture components
-- ✅ How to think about ML infrastructure
+- What machine learning actually is (function approximation from data)
+- The full ML workflow from data to deployment
+- Training vs inference (critically important!)
+- Types of ML and their infrastructure implications
+- Common ML tasks and resource requirements
+- ML system architecture components
+- How to think about ML infrastructure
 
 ### Next Steps
 
@@ -813,11 +761,5 @@ Now that you understand ML fundamentals, you'll dive into:
 - **Lecture 03:** TensorFlow basics (alternative framework)
 - **Lecture 04:** Model formats and deployment preparation
 
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Word Count**: ~3,800 words
-**Estimated Reading Time**: 50-70 minutes
 
 **Ready for hands-on work?** Continue to `02-pytorch-basics.md`

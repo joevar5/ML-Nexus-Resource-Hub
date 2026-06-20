@@ -615,13 +615,13 @@ public_cors = CORSMiddleware(
 
 ## Deliverables
 
-- ✅ Rate limiting implemented
-- ✅ CORS configured correctly
-- ✅ Security headers added
-- ✅ Tiered rate limits based on user roles
-- ✅ Custom error responses for rate limits
-- ✅ Tests for all security features
-- ✅ Documentation of rate limits
+- - Rate limiting implemented
+- - CORS configured correctly
+- - Security headers added
+- - Tiered rate limits based on user roles
+- - Custom error responses for rate limits
+- - Tests for all security features
+- - Documentation of rate limits
 
 ## Key Takeaways
 

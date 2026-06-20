@@ -41,7 +41,7 @@ Docker version 24.0.6, build ed223bc
 Hello from Docker!
 ```
 
-✅ **Checkpoint**: Docker is installed and running.
+- **Checkpoint**: Docker is installed and running.
 
 ---
 
@@ -90,7 +90,7 @@ docker ps
 1. Why is naming containers useful?
 2. What happens if you try to create another container with the same name?
 
-✅ **Checkpoint**: You can run containers in detached mode with custom names.
+- **Checkpoint**: You can run containers in detached mode with custom names.
 
 ---
 
@@ -177,7 +177,7 @@ docker rm web
 echo "Done!"
 ```
 
-✅ **Checkpoint**: You can manage container lifecycle (start, stop, remove).
+- **Checkpoint**: You can manage container lifecycle (start, stop, remove).
 
 ---
 
@@ -248,7 +248,7 @@ curl http://localhost:8082
 curl http://localhost:8083
 ```
 
-✅ **Checkpoint**: You can map container ports to host.
+- **Checkpoint**: You can map container ports to host.
 
 ---
 
@@ -315,7 +315,7 @@ docker exec -it postgres-db psql -U myuser -d mydb
 # \q  - quit
 ```
 
-✅ **Checkpoint**: You can configure containers with environment variables.
+- **Checkpoint**: You can configure containers with environment variables.
 
 ---
 
@@ -367,7 +367,7 @@ docker run -d \
 docker run -d --log-driver none --name no-logs nginx
 ```
 
-✅ **Checkpoint**: You can view and manage container logs.
+- **Checkpoint**: You can view and manage container logs.
 
 ---
 
@@ -433,7 +433,7 @@ docker exec -it python-app python
 # >>> exit()
 ```
 
-✅ **Checkpoint**: You can execute commands inside running containers.
+- **Checkpoint**: You can execute commands inside running containers.
 
 ---
 
@@ -486,7 +486,7 @@ docker diff web
 # C - Changed
 ```
 
-✅ **Checkpoint**: You can inspect container details and resource usage.
+- **Checkpoint**: You can inspect container details and resource usage.
 
 ---
 
@@ -536,7 +536,7 @@ docker stats stress-test
 # Container should be killed due to OOM
 ```
 
-✅ **Checkpoint**: You can set and monitor resource limits.
+- **Checkpoint**: You can set and monitor resource limits.
 
 ---
 
@@ -586,7 +586,7 @@ docker cp web:/tmp/from-container.txt .
 cat from-container.txt
 ```
 
-✅ **Checkpoint**: You can work with containers interactively.
+- **Checkpoint**: You can work with containers interactively.
 
 ---
 
@@ -627,7 +627,7 @@ docker system prune
 docker system prune -a --volumes
 ```
 
-✅ **Checkpoint**: You can clean up Docker resources.
+- **Checkpoint**: You can clean up Docker resources.
 
 ---
 
@@ -767,15 +767,15 @@ echo "Done!"
 ## Summary
 
 **What You Accomplished**:
-✅ Ran containers in multiple modes
-✅ Managed container lifecycle
-✅ Configured port mapping
-✅ Used environment variables
-✅ Viewed and analyzed logs
-✅ Executed commands in containers
-✅ Set resource limits
-✅ Inspected container details
-✅ Cleaned up resources
+- Ran containers in multiple modes
+- Managed container lifecycle
+- Configured port mapping
+- Used environment variables
+- Viewed and analyzed logs
+- Executed commands in containers
+- Set resource limits
+- Inspected container details
+- Cleaned up resources
 
 **Key Commands Mastered**:
 - `docker run` - Create and start containers
@@ -800,10 +800,3 @@ echo "Done!"
 **Continue Learning**:
 - **Exercise 02**: Building Custom Images
 - **Exercise 03**: Docker Compose Applications
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 2-3 hours
-**Difficulty**: Beginner

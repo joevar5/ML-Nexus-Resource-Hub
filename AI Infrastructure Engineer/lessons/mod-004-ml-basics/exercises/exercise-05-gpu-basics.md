@@ -1,9 +1,5 @@
 # Exercise 05: GPU Basics - Accelerating ML Inference
 
-**Difficulty**: Beginner-Intermediate
-**Duration**: 2-3 hours
-**Prerequisites**: Python fundamentals, Exercise 01-04 completed
-
 **Note**: This exercise can be completed without a physical GPU using cloud resources or CPU-only mode for learning concepts.
 
 ## Learning Objectives

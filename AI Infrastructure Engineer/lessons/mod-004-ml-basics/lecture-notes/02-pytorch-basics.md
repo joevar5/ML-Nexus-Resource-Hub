@@ -12,10 +12,6 @@ By the end of this lecture, you will be able to:
 - Identify and resolve common PyTorch deployment issues
 - Estimate resource requirements for PyTorch models
 
-**Duration**: 8-10 hours
-**Difficulty**: Beginner to Intermediate
-**Prerequisites**: Module 001 (Python), Lecture 01 (ML Overview)
-
 ---
 
 ## 1. Introduction to PyTorch
@@ -966,10 +962,3 @@ In the next lecture, we'll cover:
 - **Model format differences**: SavedModel vs state_dict
 
 Continue to `lecture-notes/03-tensorflow-basics.md`
-
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Completion Time**: 8-10 hours
-**Difficulty**: Beginner to Intermediate

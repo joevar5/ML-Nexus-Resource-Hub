@@ -141,7 +141,7 @@ kubectl apply -f pod-with-config-volume.yaml
 kubectl exec app-with-config-volume -- cat /etc/config/application.properties
 ```
 
-✅ **Checkpoint**: You can create and use ConfigMaps.
+- **Checkpoint**: You can create and use ConfigMaps.
 
 ---
 
@@ -274,7 +274,7 @@ kubectl get secret tls-secret -o yaml
 rm tls.key tls.crt
 ```
 
-✅ **Checkpoint**: You can create and use Secrets securely.
+- **Checkpoint**: You can create and use Secrets securely.
 
 ---
 
@@ -443,7 +443,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You can manage multi-environment configurations.
+- **Checkpoint**: You can manage multi-environment configurations.
 
 ---
 
@@ -627,7 +627,7 @@ stringData:
 EOF
 ```
 
-✅ **Checkpoint**: You can configure ML workloads properly.
+- **Checkpoint**: You can configure ML workloads properly.
 
 ---
 
@@ -777,7 +777,7 @@ kubectl exec subpath-demo -- ls -la /etc/nginx/conf.d/
 kubectl exec subpath-demo -- ls -la /etc/app/
 ```
 
-✅ **Checkpoint**: You understand advanced configuration patterns.
+- **Checkpoint**: You understand advanced configuration patterns.
 
 ---
 
@@ -863,7 +863,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You can integrate external configuration systems.
+- **Checkpoint**: You can integrate external configuration systems.
 
 ---
 
@@ -1000,7 +1000,7 @@ data:
 EOF
 ```
 
-✅ **Checkpoint**: You follow configuration best practices.
+- **Checkpoint**: You follow configuration best practices.
 
 ---
 
@@ -1069,21 +1069,21 @@ stringData:  # Use this for plain text
 EOF
 ```
 
-✅ **Checkpoint**: You can troubleshoot configuration issues.
+- **Checkpoint**: You can troubleshoot configuration issues.
 
 ---
 
 ## Summary
 
 **What You Accomplished**:
-✅ Created and used ConfigMaps
-✅ Managed Secrets securely
-✅ Implemented multi-environment configurations
-✅ Configured ML training and inference
-✅ Applied advanced configuration patterns
-✅ Integrated external config systems
-✅ Followed best practices
-✅ Debugged configuration issues
+- Created and used ConfigMaps
+- Managed Secrets securely
+- Implemented multi-environment configurations
+- Configured ML training and inference
+- Applied advanced configuration patterns
+- Integrated external config systems
+- Followed best practices
+- Debugged configuration issues
 
 **Key Concepts**:
 - ConfigMaps for non-sensitive configuration
@@ -1102,10 +1102,3 @@ EOF
 - Document and label configurations
 - Use external secret stores in production
 - Version your configurations
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 3-4 hours
-**Difficulty**: Intermediate

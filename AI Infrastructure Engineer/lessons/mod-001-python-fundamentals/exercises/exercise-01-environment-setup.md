@@ -129,7 +129,7 @@ if [ ! -f ".env" ]; then
     echo "📄 Created .env configuration file."
 fi
 
-echo "✅ Setup complete. Run 'source .venv/bin/activate' to begin."
+echo "- Setup complete. Run 'source .venv/bin/activate' to begin."
 ```
 
 **Your Turn:**

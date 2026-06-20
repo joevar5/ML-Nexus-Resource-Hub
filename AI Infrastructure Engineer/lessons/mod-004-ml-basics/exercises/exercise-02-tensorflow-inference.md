@@ -4,10 +4,6 @@
 
 **Objective**: Load pre-trained TensorFlow/Keras models, run inference on images, measure performance, and explore TensorFlow Serving basics.
 
-**Difficulty**: Beginner
-**Estimated Time**: 2-3 hours
-**Prerequisites**: Lecture 03 (TensorFlow Basics)
-
 **What You'll Learn**:
 - Loading pre-trained models from keras.applications
 - Preprocessing images for TensorFlow models
@@ -22,13 +18,13 @@
 
 By the end of this exercise, you will be able to:
 
-✅ Load pre-trained Keras models from keras.applications
-✅ Preprocess images using TensorFlow preprocessing functions
-✅ Run inference using both Keras and TensorFlow APIs
-✅ Measure and optimize TensorFlow inference performance
-✅ Export models in SavedModel format
-✅ Understand TensorFlow Serving fundamentals
-✅ Compare TensorFlow and PyTorch inference patterns
+- Load pre-trained Keras models from keras.applications
+- Preprocess images using TensorFlow preprocessing functions
+- Run inference using both Keras and TensorFlow APIs
+- Measure and optimize TensorFlow inference performance
+- Export models in SavedModel format
+- Understand TensorFlow Serving fundamentals
+- Compare TensorFlow and PyTorch inference patterns
 
 ---
 

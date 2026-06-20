@@ -1372,14 +1372,14 @@ echo $(__git_ps1)  # If configured
 
 Congratulations! You've completed Exercise 03. You learned:
 
-- ✅ Creating and switching between branches
-- ✅ Branch naming conventions
-- ✅ Parallel feature development
-- ✅ Comparing and visualizing branches
-- ✅ Managing multiple features simultaneously
-- ✅ Deleting merged and unmerged branches
-- ✅ Handling uncommitted changes when switching
-- ✅ Complete feature development workflow
+- - Creating and switching between branches
+- - Branch naming conventions
+- - Parallel feature development
+- - Comparing and visualizing branches
+- - Managing multiple features simultaneously
+- - Deleting merged and unmerged branches
+- - Handling uncommitted changes when switching
+- - Complete feature development workflow
 
 ### Key Commands
 

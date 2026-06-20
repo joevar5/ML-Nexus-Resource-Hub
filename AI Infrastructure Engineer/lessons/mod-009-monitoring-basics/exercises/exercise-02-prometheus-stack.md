@@ -282,7 +282,7 @@ This document describes the architecture of the Prometheus monitoring stack for 
 - Escalate if not received within expected window
 ```
 
-**✅ Checkpoint:** Architecture document is complete and reviewed.
+**- Checkpoint:** Architecture document is complete and reviewed.
 
 ### Step 1.2: Create Project Structure
 
@@ -738,7 +738,7 @@ scrape_configs:
 - Alertmanager integration
 - Optional remote write setup
 
-**✅ Checkpoint:** Prometheus configuration is created and validated with `promtool check config prometheus.yml`.
+**- Checkpoint:** Prometheus configuration is created and validated with `promtool check config prometheus.yml`.
 
 ---
 
@@ -1025,7 +1025,7 @@ groups:
 - Service-level aggregations for dashboards
 - ML-specific metrics (inference latency, throughput, confidence)
 
-**✅ Checkpoint:** Validate rules with `promtool check rules prometheus/rules/slo_recording.rules.yml`.
+**- Checkpoint:** Validate rules with `promtool check rules prometheus/rules/slo_recording.rules.yml`.
 
 ---
 
@@ -1280,7 +1280,7 @@ groups:
             Check for memory leaks or consider model optimization (quantization, pruning).
 ```
 
-**✅ Checkpoint:** Validate alerting rules with `promtool check rules prometheus/rules/slo_alerts.rules.yml`.
+**- Checkpoint:** Validate alerting rules with `promtool check rules prometheus/rules/slo_alerts.rules.yml`.
 
 ### Step 4.2: Create Alertmanager Configuration
 
@@ -1464,7 +1464,7 @@ Create `alertmanager/templates/slack.tmpl`:
 {{ end }}
 ```
 
-**✅ Checkpoint:** Alertmanager configuration is complete.
+**- Checkpoint:** Alertmanager configuration is complete.
 
 ---
 

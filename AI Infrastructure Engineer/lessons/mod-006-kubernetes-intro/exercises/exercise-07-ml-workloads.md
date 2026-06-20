@@ -235,7 +235,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You can run ML training jobs on Kubernetes.
+- **Checkpoint**: You can run ML training jobs on Kubernetes.
 
 ---
 
@@ -366,7 +366,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You can schedule GPU workloads.
+- **Checkpoint**: You can schedule GPU workloads.
 
 ---
 
@@ -621,7 +621,7 @@ EOF
 # kubectl logs -f pytorch-distributed-master-0
 ```
 
-✅ **Checkpoint**: You can run distributed training.
+- **Checkpoint**: You can run distributed training.
 
 ---
 
@@ -866,7 +866,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You can deploy ML model serving.
+- **Checkpoint**: You can deploy ML model serving.
 
 ---
 
@@ -1007,7 +1007,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You understand Kubeflow basics.
+- **Checkpoint**: You understand Kubeflow basics.
 
 ---
 
@@ -1110,7 +1110,7 @@ spec:
 EOF
 ```
 
-✅ **Checkpoint**: You can monitor ML models.
+- **Checkpoint**: You can monitor ML models.
 
 ---
 
@@ -1265,20 +1265,20 @@ EOF
 kubectl apply -f complete-ml-system.yaml
 ```
 
-✅ **Checkpoint**: You built a complete ML system on Kubernetes!
+- **Checkpoint**: You built a complete ML system on Kubernetes!
 
 ---
 
 ## Summary
 
 **What You Accomplished**:
-✅ Ran ML training jobs and CronJobs
-✅ Scheduled GPU resources
-✅ Implemented distributed training
-✅ Deployed model serving with autoscaling
-✅ Used Kubeflow for ML pipelines
-✅ Monitored ML model performance
-✅ Built complete end-to-end ML workflow
+- Ran ML training jobs and CronJobs
+- Scheduled GPU resources
+- Implemented distributed training
+- Deployed model serving with autoscaling
+- Used Kubeflow for ML pipelines
+- Monitored ML model performance
+- Built complete end-to-end ML workflow
 
 **Key Concepts**:
 - Jobs for one-time training
@@ -1308,10 +1308,3 @@ Serving Pipeline:
 Monitoring:
   Metrics (Prometheus) → Dashboards (Grafana) → Alerts
 ```
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 4-5 hours
-**Difficulty**: Advanced

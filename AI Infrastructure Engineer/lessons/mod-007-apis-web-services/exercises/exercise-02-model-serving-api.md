@@ -748,12 +748,12 @@ async def predict_async(
 
 ## Deliverables
 
-- ✅ Working ML model serving API
-- ✅ JWT authentication implementation
-- ✅ Single and batch prediction endpoints
-- ✅ Model statistics tracking
-- ✅ Comprehensive test suite
-- ✅ Documentation and usage examples
+- - Working ML model serving API
+- - JWT authentication implementation
+- - Single and batch prediction endpoints
+- - Model statistics tracking
+- - Comprehensive test suite
+- - Documentation and usage examples
 
 ## Key Takeaways
 

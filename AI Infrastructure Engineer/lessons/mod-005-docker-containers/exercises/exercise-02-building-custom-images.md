@@ -126,7 +126,7 @@ docker logs pyapp
 2. What happens if you change `app.py` and rebuild?
 3. Which layers are cached?
 
-✅ **Checkpoint**: You can build and run a custom Python application in Docker.
+- **Checkpoint**: You can build and run a custom Python application in Docker.
 
 ---
 
@@ -250,7 +250,7 @@ time docker build -f Dockerfile.optimized -t my-python-app:v4 .
 
 **Challenge**: Modify `requirements.txt` and rebuild. What happens to build time?
 
-✅ **Checkpoint**: You can optimize images using slim bases and multi-stage builds.
+- **Checkpoint**: You can optimize images using slim bases and multi-stage builds.
 
 ---
 
@@ -441,7 +441,7 @@ docker images | grep ml-serve
 # The CPU version should be significantly smaller!
 ```
 
-✅ **Checkpoint**: You can containerize ML applications with optimized images.
+- **Checkpoint**: You can containerize ML applications with optimized images.
 
 ---
 
@@ -600,7 +600,7 @@ docker run --rm secure-app id
 # Output shows non-root UID/GID
 ```
 
-✅ **Checkpoint**: You understand Dockerfile instructions and best practices.
+- **Checkpoint**: You understand Dockerfile instructions and best practices.
 
 ---
 
@@ -691,7 +691,7 @@ docker build -t context-demo:v2 .
 
 **Challenge**: Create a Python project with tests, docs, and data. Write a `.dockerignore` that only includes production files.
 
-✅ **Checkpoint**: You can optimize build context with .dockerignore.
+- **Checkpoint**: You can optimize build context with .dockerignore.
 
 ---
 
@@ -749,7 +749,7 @@ docker images myapp
 4. **Avoid using latest in production** (pin versions!)
 5. **Include build metadata** when needed
 
-✅ **Checkpoint**: You can version and tag images properly.
+- **Checkpoint**: You can version and tag images properly.
 
 ---
 
@@ -823,7 +823,7 @@ docker tag myapp:1.0.0 localhost:5001/myapp:1.0.0
 docker push localhost:5001/myapp:1.0.0
 ```
 
-✅ **Checkpoint**: You can work with Docker registries.
+- **Checkpoint**: You can work with Docker registries.
 
 ---
 
@@ -920,7 +920,7 @@ docker history myapp --human --no-trunc
 - [ ] Ensure correct syntax in Dockerfile
 - [ ] Use --no-cache to avoid stale layers
 
-✅ **Checkpoint**: You can debug Dockerfile build issues.
+- **Checkpoint**: You can debug Dockerfile build issues.
 
 ---
 
@@ -1033,7 +1033,7 @@ docker run --rm myapp:dev python --version
 docker run --rm myapp:prod gunicorn --version
 ```
 
-✅ **Checkpoint**: You can use advanced Dockerfile patterns.
+- **Checkpoint**: You can use advanced Dockerfile patterns.
 
 ---
 
@@ -1113,7 +1113,7 @@ EOF
 - [x] Proper signal handling
 - [x] Security best practices
 
-✅ **Checkpoint**: You can create production-ready Dockerfiles.
+- **Checkpoint**: You can create production-ready Dockerfiles.
 
 ---
 
@@ -1319,7 +1319,7 @@ chmod +x test_matrix.sh
 ./test_matrix.sh
 ```
 
-✅ **Checkpoint**: You can test your Docker images.
+- **Checkpoint**: You can test your Docker images.
 
 ---
 
@@ -1394,15 +1394,15 @@ echo "Validation complete!"
 ## Summary
 
 **What You Accomplished**:
-✅ Created custom Docker images from Dockerfiles
-✅ Optimized images with multi-stage builds
-✅ Containerized Python and ML applications
-✅ Mastered Dockerfile instructions
-✅ Implemented security best practices
-✅ Tagged and versioned images properly
-✅ Worked with Docker registries
-✅ Debugged build issues
-✅ Created production-ready Dockerfiles
+- Created custom Docker images from Dockerfiles
+- Optimized images with multi-stage builds
+- Containerized Python and ML applications
+- Mastered Dockerfile instructions
+- Implemented security best practices
+- Tagged and versioned images properly
+- Worked with Docker registries
+- Debugged build issues
+- Created production-ready Dockerfiles
 
 **Key Concepts Mastered**:
 - **Dockerfile syntax** and best practices
@@ -1436,10 +1436,3 @@ Optimized ML (CPU): ~400 MB
 - **Exercise 03**: Docker Compose Applications
 - **Exercise 04**: Networking and Service Discovery
 - **Exercise 05**: Volume Management and Persistence
-
----
-
-**Exercise Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 3-4 hours
-**Difficulty**: Beginner to Intermediate

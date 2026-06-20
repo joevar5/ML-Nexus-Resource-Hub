@@ -94,7 +94,7 @@ This foundational exercise sets up your AWS environment with security best pract
    - Log file validation: Enabled
    - SNS notification delivery: Disabled (for now)
 4. Choose log events:
-   - Management events: ✅ Read and Write
+   - Management events: - Read and Write
    - Data events: ❌ (not needed for this exercise)
    - Insights events: ❌ (adds cost)
 5. Click "Create trail"
@@ -198,7 +198,7 @@ aws --version
    - User name: `ml-admin`
    - Select "Provide user access to the AWS Management Console"
    - Console password: Custom password (or auto-generated)
-   - ✅ Users must create a new password at next sign-in
+   - - Users must create a new password at next sign-in
 4. Click "Next"
 5. Permissions:
    - Select "Attach policies directly"
@@ -720,9 +720,9 @@ aws resourcegroupstaggingapi get-resources \
 1. Open Billing console: https://console.aws.amazon.com/billing/
 2. Go to "Billing Preferences"
 3. Enable:
-   - ✅ Receive PDF Invoice By Email
-   - ✅ Receive Free Tier Usage Alerts
-   - ✅ Receive Billing Alerts
+   - - Receive PDF Invoice By Email
+   - - Receive Free Tier Usage Alerts
+   - - Receive Billing Alerts
 4. Enter email address for alerts
 5. Click "Save preferences"
 
@@ -1084,14 +1084,14 @@ Create a role that allows users from another AWS account to access specific reso
 
 By the end of this exercise, you should have:
 
-1. ✅ Secured AWS root account with MFA
-2. ✅ AWS CLI installed and configured with profiles
-3. ✅ Created IAM users, groups, and roles following least privilege
-4. ✅ Implemented custom IAM policies
-5. ✅ Defined and applied tagging standards
-6. ✅ Configured billing alerts and budgets
-7. ✅ Enabled CloudTrail and GuardDuty
-8. ✅ Generated IAM security audit report
+1. - Secured AWS root account with MFA
+2. - AWS CLI installed and configured with profiles
+3. - Created IAM users, groups, and roles following least privilege
+4. - Implemented custom IAM policies
+5. - Defined and applied tagging standards
+6. - Configured billing alerts and budgets
+7. - Enabled CloudTrail and GuardDuty
+8. - Generated IAM security audit report
 
 **Evidence**:
 - Screenshots of IAM dashboard showing users and groups

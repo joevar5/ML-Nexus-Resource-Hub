@@ -951,13 +951,13 @@ cat .git/MERGE_HEAD  # Shows branch being merged
 
 Congratulations! You've mastered merging and conflict resolution:
 
-- ✅ Fast-forward merges
-- ✅ Three-way merges
-- ✅ Conflict resolution in code and configs
-- ✅ Merge strategies (squash, no-ff)
-- ✅ Aborting problematic merges
-- ✅ Using merge tools
-- ✅ Pre and post-merge validation
+- - Fast-forward merges
+- - Three-way merges
+- - Conflict resolution in code and configs
+- - Merge strategies (squash, no-ff)
+- - Aborting problematic merges
+- - Using merge tools
+- - Pre and post-merge validation
 
 ### Key Commands
 

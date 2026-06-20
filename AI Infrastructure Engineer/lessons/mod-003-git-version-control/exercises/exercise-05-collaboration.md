@@ -725,10 +725,10 @@ Thanks for the thorough review! I've addressed all the feedback:
 
 ## Changes Made
 
-✅ Added input validation to `resize_image`
-✅ Added docstrings to all functions
-✅ Handle edge cases in `normalize` (division by zero, empty arrays)
-✅ Added comprehensive unit tests
+- Added input validation to `resize_image`
+- Added docstrings to all functions
+- Handle edge cases in `normalize` (division by zero, empty arrays)
+- Added comprehensive unit tests
 
 ## Additional Improvements
 
@@ -777,7 +777,7 @@ cat > .github/PULL_REQUEST_TEMPLATE.md << 'EOF'
 - [ ] 🎨 Code style update (formatting, renaming)
 - [ ] ♻️ Code refactoring
 - [ ] ⚡ Performance improvement
-- [ ] ✅ Test update
+- [ ] - Test update
 
 ## Changes Made
 <!-- List the specific changes in this PR -->
@@ -914,14 +914,14 @@ docs(readme): update installation instructions
 ```
 
 ### Comment Tone
-✅ **Good**: "This function could benefit from error handling for null inputs."
+- **Good**: "This function could benefit from error handling for null inputs."
 ❌ **Bad**: "This is wrong. You forgot error handling."
 
-✅ **Good**: "Have you considered using a set here for O(1) lookup?"
+- **Good**: "Have you considered using a set here for O(1) lookup?"
 ❌ **Bad**: "Why aren't you using a set? This is inefficient."
 
 ### Approval Criteria
-- ✅ **Approve**: No blocking issues, minor suggestions only
+- - **Approve**: No blocking issues, minor suggestions only
 - 🔄 **Request Changes**: Blocking issues present
 - 💬 **Comment**: Questions or non-blocking suggestions
 
@@ -1100,13 +1100,13 @@ git push --force-with-lease
 
 Congratulations! You've mastered Git collaboration:
 
-- ✅ Forking and cloning repositories
-- ✅ Creating professional pull requests
-- ✅ Conducting effective code reviews
-- ✅ Addressing review feedback
-- ✅ Collaboration best practices
-- ✅ Managing concurrent development
-- ✅ PR templates and guidelines
+- - Forking and cloning repositories
+- - Creating professional pull requests
+- - Conducting effective code reviews
+- - Addressing review feedback
+- - Collaboration best practices
+- - Managing concurrent development
+- - PR templates and guidelines
 
 ### Key Commands
 

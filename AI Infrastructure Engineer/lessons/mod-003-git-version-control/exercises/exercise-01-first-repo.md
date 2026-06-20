@@ -1610,15 +1610,15 @@ Answer these questions to solidify your understanding:
 
 Congratulations! You've completed Exercise 01. You learned:
 
-- ✅ How to initialize a Git repository properly
-- ✅ Configure Git for ML projects
-- ✅ Create proper directory structures
-- ✅ Write comprehensive `.gitignore` files
-- ✅ Make atomic, well-documented commits
-- ✅ Use the three-state Git workflow
-- ✅ Navigate commit history
-- ✅ Stage and unstage files selectively
-- ✅ Use `git status` and `git diff` effectively
+- - How to initialize a Git repository properly
+- - Configure Git for ML projects
+- - Create proper directory structures
+- - Write comprehensive `.gitignore` files
+- - Make atomic, well-documented commits
+- - Use the three-state Git workflow
+- - Navigate commit history
+- - Stage and unstage files selectively
+- - Use `git status` and `git diff` effectively
 
 ### Key Commands Learned
 

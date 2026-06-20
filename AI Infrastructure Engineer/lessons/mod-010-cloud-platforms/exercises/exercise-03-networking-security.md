@@ -1479,14 +1479,14 @@ aws ec2 delete-vpc --vpc-id $VPC_ID
 
 By the end of this exercise, you should have:
 
-1. ✅ Production VPC with multi-tier architecture (public, private, database subnets)
-2. ✅ Multi-AZ deployment for high availability
-3. ✅ Defense-in-depth security (Security Groups + NACLs)
-4. ✅ Bastion host for secure SSH access
-5. ✅ VPC Flow Logs for network troubleshooting
-6. ✅ NAT Gateways for private subnet internet access
-7. ✅ VPC Endpoint for cost-optimized S3 access
-8. ✅ Terraform infrastructure as code implementation
+1. - Production VPC with multi-tier architecture (public, private, database subnets)
+2. - Multi-AZ deployment for high availability
+3. - Defense-in-depth security (Security Groups + NACLs)
+4. - Bastion host for secure SSH access
+5. - VPC Flow Logs for network troubleshooting
+6. - NAT Gateways for private subnet internet access
+7. - VPC Endpoint for cost-optimized S3 access
+8. - Terraform infrastructure as code implementation
 
 **Evidence**:
 - VPC architecture diagram

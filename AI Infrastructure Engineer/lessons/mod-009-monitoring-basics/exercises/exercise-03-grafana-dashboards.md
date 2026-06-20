@@ -280,7 +280,7 @@ Access Grafana:
 2. Verify all data sources show green "Data source is working" status
 3. Test Prometheus query: `up` (should return metrics)
 
-**✅ Checkpoint:** Grafana is running and all data sources are connected.
+**- Checkpoint:** Grafana is running and all data sources are connected.
 
 ---
 
@@ -394,7 +394,7 @@ Create `docs/dashboard-requirements.md`:
 ### Update Frequency: Daily (snapshot at midnight UTC)
 ```
 
-**✅ Checkpoint:** Dashboard requirements documented.
+**- Checkpoint:** Dashboard requirements documented.
 
 ### Step 2.2: Panel Design Best Practices
 
@@ -486,7 +486,7 @@ If latency exceeds 300ms:
 ```
 ```
 
-**✅ Checkpoint:** Design guide established.
+**- Checkpoint:** Design guide established.
 
 ---
 
@@ -1052,7 +1052,7 @@ Create `grafana/dashboards/service/inference-gateway.json`:
 
 For brevity, I've shown the structure and key panels. The complete version would be 1,500-2,000 lines of JSON.
 
-**✅ Checkpoint:** Service dashboard JSON created.
+**- Checkpoint:** Service dashboard JSON created.
 
 ### Step 3.3: Import and Test Dashboard
 
@@ -1076,7 +1076,7 @@ curl -X POST http://admin:admin@localhost:3000/api/admin/provisioning/dashboards
 - Thresholds display correctly
 - Annotations show deployment markers
 
-**✅ Checkpoint:** Service dashboard is functional.
+**- Checkpoint:** Service dashboard is functional.
 
 ---
 
@@ -1215,7 +1215,7 @@ Create `grafana/dashboards/platform/prometheus-health.json`:
 }
 ```
 
-**✅ Checkpoint:** Platform health dashboard created.
+**- Checkpoint:** Platform health dashboard created.
 
 ---
 
@@ -1454,7 +1454,7 @@ Create `grafana/dashboards/executive/slo-overview.json`:
 }
 ```
 
-**✅ Checkpoint:** Executive dashboard created.
+**- Checkpoint:** Executive dashboard created.
 
 ---
 
@@ -1612,7 +1612,7 @@ policies:
           - severity = warning
 ```
 
-**✅ Checkpoint:** Grafana alerting is configured.
+**- Checkpoint:** Grafana alerting is configured.
 
 ---
 
@@ -1685,7 +1685,7 @@ Create `docs/dashboard-update-process.md`:
 - **Variables**: Use templating for multi-environment support
 ```
 
-**✅ Checkpoint:** Dashboard-as-code workflow established.
+**- Checkpoint:** Dashboard-as-code workflow established.
 
 ---
 
@@ -1802,7 +1802,7 @@ Grafana unified alerting is enabled. Alerts route to:
 3. Restart Grafana: `docker-compose restart grafana`
 ```
 
-**✅ Checkpoint:** Documentation is complete.
+**- Checkpoint:** Documentation is complete.
 
 ---
 
@@ -1885,14 +1885,14 @@ POST /api/reports
 Congratulations! You've built a comprehensive Grafana dashboard suite that transforms Prometheus metrics into actionable operational insights.
 
 **What You Built**:
-1. ✅ Complete Grafana deployment with Docker Compose
-2. ✅ Multiple data sources (Prometheus, Loki, Tempo, Alertmanager)
-3. ✅ Service dashboard with 20+ panels covering SLOs, latency, traffic, errors, ML metrics
-4. ✅ Platform health dashboard for monitoring infrastructure
-5. ✅ Executive SLO overview for business visibility
-6. ✅ Grafana unified alerting with contact points and policies
-7. ✅ Dashboard provisioning as code for version control
-8. ✅ Dashboard governance and update processes
+1. - Complete Grafana deployment with Docker Compose
+2. - Multiple data sources (Prometheus, Loki, Tempo, Alertmanager)
+3. - Service dashboard with 20+ panels covering SLOs, latency, traffic, errors, ML metrics
+4. - Platform health dashboard for monitoring infrastructure
+5. - Executive SLO overview for business visibility
+6. - Grafana unified alerting with contact points and policies
+7. - Dashboard provisioning as code for version control
+8. - Dashboard governance and update processes
 
 **Skills Gained**:
 - Designing effective dashboards for different audiences
@@ -1905,14 +1905,14 @@ Congratulations! You've built a comprehensive Grafana dashboard suite that trans
 
 ### Deliverables Checklist
 
-- ✅ Grafana deployed and configured
-- ✅ Service dashboard for inference gateway
-- ✅ Platform health dashboard
-- ✅ Executive SLO overview dashboard
-- ✅ Grafana alerting rules and contact points
-- ✅ Dashboard provisioning configuration
-- ✅ Dashboard update process documentation
-- ✅ README with dashboard catalog
+- - Grafana deployed and configured
+- - Service dashboard for inference gateway
+- - Platform health dashboard
+- - Executive SLO overview dashboard
+- - Grafana alerting rules and contact points
+- - Dashboard provisioning configuration
+- - Dashboard update process documentation
+- - README with dashboard catalog
 
 ### Reflection Questions
 
