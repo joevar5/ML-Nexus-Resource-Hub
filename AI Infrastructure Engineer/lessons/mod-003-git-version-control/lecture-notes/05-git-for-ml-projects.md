@@ -2,13 +2,13 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
-2. [Git Large File Storage (LFS)](#git-large-file-storage-lfs)
-3. [Managing ML Artifacts](#managing-ml-artifacts)
-4. [Monorepo Strategies](#monorepo-strategies)
-5. [Git Workflows for ML Teams](#git-workflows-for-ml-teams)
-6. [Performance Optimization](#performance-optimization)
-7. [ML-Specific Best Practices](#ml-specific-best-practices)
-8. [Summary and Key Takeaways](#summary-and-key-takeaways)
+2. [Git Large File Storage (LFS)](#1-git-large-file-storage-lfs)
+3. [Managing ML Artifacts](#2-managing-ml-artifacts)
+4. [Monorepo Strategies](#3-monorepo-strategies)
+5. [Git Workflows for ML Teams](#4-git-workflows-for-ml-teams)
+6. [Performance Optimization](#5-performance-optimization)
+7. [ML-Specific Best Practices](#6-ml-specific-best-practices)
+8. [Summary and Key Takeaways](#7-summary-and-key-takeaways)
 
 ## Introduction
 
@@ -35,57 +35,44 @@ By the end of this lecture, you will:
 - Completion of Lectures 01-04 in this module
 - Understanding of ML workflows (training, evaluation, deployment)
 - Familiarity with ML artifacts (models, datasets, checkpoints)
-
-**Duration**: 90 minutes
-**Difficulty**: Intermediate to Advanced
-
 ---
 
 ## 1. Git Large File Storage (LFS)
 
 ### The Problem with Large Files in Git
 
-Git was designed for source code (text files), not large binary files. When you commit a large file:
-
-```
-Bad: Regular Git commit of model.pt (500MB)
-┌────────────────────────────────────┐
-│  .git/ directory                   │
-│  ├── model_v1.pt (500MB)          │
-│  ├── model_v2.pt (500MB)          │
-│  ├── model_v3.pt (500MB)          │
-│  └── model_v4.pt (500MB)          │
-│  Total: 2GB for 4 versions!        │
-└────────────────────────────────────┘
-
-Result:
-✗ Slow clones (download all versions)
-✗ Slow pushes/pulls
-✗ Repository bloat
-✗ Network bandwidth waste
-```
+Git was designed for source code (text files), not large binary files. When you commit a large file, Git tracks every version in the repository history, leading to massive bloat.
 
 ### Git LFS Solution
 
-Git LFS (Large File Storage) stores large files outside the Git repository:
+Git LFS (Large File Storage) solves this by storing large files outside the main Git repository and replacing them with tiny pointer files in the `.git` directory.
 
-```
-Good: Git LFS for model.pt
-┌────────────────────────────────────┐
-│  .git/ directory                   │
-│  ├── model.pt → pointer (123 bytes)│
-└────────────────────────────────────┘
-        ↓
-┌────────────────────────────────────┐
-│  LFS Storage (separate)            │
-│  └── model_v4.pt (500MB)          │
-│      Only current version!         │
-└────────────────────────────────────┘
+Here is a comparison of how regular Git commits compare to Git LFS:
 
-Result:
-✓ Fast clones (download only needed versions)
-✓ Small repository size
-✓ Efficient bandwidth usage
+```mermaid
+flowchart TD
+    subgraph RegularGit ["Approach 1: Regular Git Commit"]
+        A1[".git/ Directory"] --> V1["model_v1.pt (500MB)"]
+        A1 --> V2["model_v2.pt (500MB)"]
+        A1 --> V3["model_v3.pt (500MB)"]
+        A1 --> V4["model_v4.pt (500MB)"]
+        
+        V1 --> R1["Total Local Storage: 2GB"]
+        V2 --> R1
+        V3 --> R1
+        V4 --> R1
+        
+        R1 --> R2["Result: Slow clones/pushes & repository bloat"]
+    end
+
+    subgraph GitLFS ["Approach 2: Git LFS"]
+        B1[".git/ Directory"] --> B2["model.pt pointer (123 bytes)"]
+        B2 --> LFS["LFS Storage (Remote/Separate)"]
+        
+        LFS --> L4["model_v4.pt (500MB)"]
+        
+        L4 --> R3["Result: Fast clones (download only needed version)"]
+    end
 ```
 
 ### Installing Git LFS

@@ -64,6 +64,38 @@ let filesTree = [];
                     }
                 }
             });
+            
+            document.querySelectorAll('.tree-folder').forEach(el => {
+                const folderpath = el.dataset.folderpath;
+                if (!folderpath) return;
+                
+                const folderName = folderpath.split('/').pop();
+                if (!folderName.startsWith('mod-')) return;
+                
+                const descendantFiles = flattenedFiles.filter(f => f.path.startsWith(folderpath + '/'));
+                const labelSpan = el.querySelector('.folder-label');
+                const bellIcon = el.querySelector('.revise-bell-icon');
+                
+                if (descendantFiles.length > 0) {
+                    const allCompleted = descendantFiles.every(f => completedFiles.has(f.path));
+                    
+                    if (labelSpan) {
+                        if (allCompleted) {
+                            labelSpan.classList.add('line-through', 'opacity-60');
+                        } else {
+                            labelSpan.classList.remove('line-through', 'opacity-60');
+                        }
+                    }
+                    
+                    if (bellIcon) {
+                        if (allCompleted) {
+                            bellIcon.classList.remove('hidden');
+                        } else {
+                            bellIcon.classList.add('hidden');
+                        }
+                    }
+                }
+            });
         }
 
         function updateReaderDoneBtn() {
@@ -346,7 +378,7 @@ Assume I am learning this for practical use and interview preparation.`;
             // Filter filesTree and render sidebar files navigation
             const targetNode = filesTree.find(node => node.name === cat.dir);
             if (targetNode && targetNode.children) {
-                renderSidebar(targetNode.children, document.getElementById('sidebar-menu'));
+                renderSidebar(targetNode.children, document.getElementById('sidebar-menu'), cat.dir);
             } else {
                 document.getElementById('sidebar-menu').innerHTML = `
                     <div class="p-2 text-on-surface-variant/60 text-xs">
@@ -526,7 +558,7 @@ Assume I am learning this for practical use and interview preparation.`;
         }
 
         // Render recursive tree sidebar navigation
-        function renderSidebar(nodes, container) {
+        function renderSidebar(nodes, container, parentPath = '') {
             container.innerHTML = '';
             const wrapper = document.createElement('div');
             wrapper.className = "space-y-1";
@@ -535,16 +567,38 @@ Assume I am learning this for practical use and interview preparation.`;
                 const item = document.createElement('div');
                 item.className = 'tree-node';
                 
+                const currentPath = parentPath ? `${parentPath}/${node.name}` : node.name;
+                
                 if (node.type === 'directory') {
                     const folderDiv = document.createElement('div');
                     folderDiv.className = 'tree-folder flex items-center justify-between gap-md p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+                    folderDiv.dataset.folderpath = currentPath;
+                    
+                    const isModFolder = node.name.startsWith('mod-');
+                    let isAllCompleted = false;
+                    let labelStyle = '';
+                    let bellStyle = 'hidden';
+                    
+                    if (isModFolder) {
+                        const descendantFiles = flattenedFiles.filter(f => f.path.startsWith(currentPath + '/'));
+                        isAllCompleted = descendantFiles.length > 0 && descendantFiles.every(f => completedFiles.has(f.path));
+                        labelStyle = isAllCompleted ? 'line-through opacity-60' : '';
+                        bellStyle = isAllCompleted ? '' : 'hidden';
+                    }
+                    
+                    const bellHTML = isModFolder ? `
+                        <span class="revise-bell-icon material-symbols-outlined text-md text-amber-500 dark:text-amber-400 hover:scale-110 transition-transform cursor-pointer flex-shrink-0 ${bellStyle} ml-1" title="Revise Now">notifications</span>
+                    ` : '';
                     
                     folderDiv.innerHTML = `
-                        <div class="flex items-center gap-2 overflow-hidden">
+                        <div class="flex items-center gap-2 overflow-hidden flex-1">
                             <span class="material-symbols-outlined text-md text-on-surface-variant/80 flex-shrink-0">folder</span>
-                            <span class="whitespace-normal break-words text-left leading-tight">${node.name}</span>
+                            <span class="folder-label whitespace-normal break-words text-left leading-tight ${labelStyle}">${node.name}</span>
                         </div>
-                        <span class="material-symbols-outlined text-xs tree-folder-chevron transition-transform flex-shrink-0">chevron_right</span>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            ${bellHTML}
+                            <span class="material-symbols-outlined text-xs tree-folder-chevron transition-transform flex-shrink-0">chevron_right</span>
+                        </div>
                     `;
                     
                     const childrenDiv = document.createElement('div');
@@ -557,10 +611,29 @@ Assume I am learning this for practical use and interview preparation.`;
                         e.stopPropagation();
                     });
                     
+                    const bellIcon = folderDiv.querySelector('.revise-bell-icon');
+                    if (bellIcon) {
+                        bellIcon.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            // Find README file under this folder
+                            let readmeFile = node.children.find(child => child.type === 'file' && child.path.toLowerCase().endsWith('readme.md'));
+                            if (!readmeFile) {
+                                const descendantFiles = flattenedFiles.filter(f => f.path.startsWith(currentPath + '/'));
+                                readmeFile = descendantFiles.find(f => f.path.toLowerCase().endsWith('readme.md'));
+                            }
+                            
+                            if (readmeFile) {
+                                window.location.hash = encodeURIComponent(readmeFile.path);
+                            }
+                        });
+                    }
+                    
                     item.appendChild(folderDiv);
                     item.appendChild(childrenDiv);
                     
-                    renderSidebar(node.children, childrenDiv);
+                    renderSidebar(node.children, childrenDiv, currentPath);
                 } else {
                     const fileLink = document.createElement('a');
                     const isCompleted = completedFiles.has(node.path);

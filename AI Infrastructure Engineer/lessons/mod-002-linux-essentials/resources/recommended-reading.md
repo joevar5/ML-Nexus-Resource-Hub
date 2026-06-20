@@ -161,9 +161,3 @@
 - Advanced shell scripting
 - System performance tuning
 - Linux internals
-
----
-
-**Note:** This resource list will be continuously updated. Bookmark and check back regularly for new additions.
-
-**Last Updated:** 2025-10-18

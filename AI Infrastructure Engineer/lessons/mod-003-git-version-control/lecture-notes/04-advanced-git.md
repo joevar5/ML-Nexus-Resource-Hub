@@ -1468,20 +1468,6 @@ git bisect reset              # End bisect
 - **Jupyter notebooks**: Strip output or use Jupytext
 - **Git LFS**: For model weights that must be in Git
 
-### What's Next
-
-This completes the Git module. You now know:
-- Git fundamentals (Lecture 1)
-- Branching and merging (Lecture 2)
-- Collaboration (Lecture 3)
-- Advanced techniques (Lecture 4)
-
-**Next steps:**
-1. Complete all exercises to practice these concepts
-2. Set up pre-commit hooks in your projects
-3. Contribute to an open-source project
-4. Implement Git workflows in your team
-
 ### Further Reading
 
 - Pro Git book (entire book): https://git-scm.com/book/en/v2

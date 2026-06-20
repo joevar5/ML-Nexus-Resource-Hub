@@ -34,10 +34,6 @@ By the end of this lecture, you will:
 - Lectures 01-04 (SQL fundamentals, query optimization, ORMs)
 - Understanding of ML workflows (training, inference, metrics)
 - Basic knowledge of caching concepts
-
-**Duration**: 90 minutes
-**Difficulty**: Intermediate to Advanced
-
 ---
 
 ## 1. Database Scaling Fundamentals

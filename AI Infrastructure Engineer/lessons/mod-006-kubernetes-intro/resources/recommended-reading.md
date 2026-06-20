@@ -583,5 +583,3 @@
 **Remember**: The best resource is hands-on experience. Read, watch, and learn, but most importantly, practice deploying and managing applications on Kubernetes every day!
 
 *This resource list is maintained as part of the AI Infrastructure Curriculum Project. Contributions and updates are welcome.*
-
-Last Updated: 2025-10-18

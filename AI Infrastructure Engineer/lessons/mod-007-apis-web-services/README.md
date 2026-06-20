@@ -753,5 +753,4 @@ Help improve this module by:
 
 **Module Maintainer:** AI Infrastructure Curriculum Team
 **Contact:** ai-infra-curriculum@joshua-ferguson.com
-**Last Updated:** 2025-10-18
 **Version:** 1.0.0-template

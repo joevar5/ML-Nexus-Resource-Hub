@@ -40,10 +40,6 @@ By the end of this lecture, you will:
 - Lectures 01-03 in this module (REST, FastAPI, Authentication)
 - Understanding of HTTP and APIs
 - Basic Python and FastAPI knowledge
-
-**Duration**: 90 minutes
-**Difficulty**: Intermediate to Advanced
-
 ---
 
 ## 1. API Versioning Strategies

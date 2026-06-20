@@ -817,3 +817,42 @@
         .flip-card-back {
             transform: rotateY(180deg);
         }
+
+        /* 🔔 Bell Ringing Animations */
+        @keyframes bell-ring {
+            0%, 100% { transform: rotate(0); }
+            15% { transform: rotate(15deg); }
+            30% { transform: rotate(-12deg); }
+            45% { transform: rotate(10deg); }
+            60% { transform: rotate(-8deg); }
+            75% { transform: rotate(4deg); }
+            90% { transform: rotate(-2deg); }
+        }
+
+        @keyframes bell-ring-once {
+            0%, 100% { transform: rotate(0); }
+            15% { transform: rotate(15deg); }
+            30% { transform: rotate(-12deg); }
+            45% { transform: rotate(10deg); }
+            60% { transform: rotate(-8deg); }
+            75% { transform: rotate(4deg); }
+            90% { transform: rotate(-2deg); }
+        }
+
+        .revise-bell-icon {
+            display: inline-block;
+            transform-origin: top center;
+            transition: transform 0.2s ease;
+        }
+
+        .revise-bell-icon.hidden {
+            display: none !important;
+        }
+
+        .revise-bell-icon:not(.hidden) {
+            animation: bell-ring-once 1.2s ease-in-out 1;
+        }
+
+        .revise-bell-icon:hover {
+            animation: bell-ring 0.6s ease-in-out infinite !important;
+        }
