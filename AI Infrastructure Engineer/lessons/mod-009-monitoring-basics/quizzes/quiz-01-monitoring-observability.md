@@ -18,11 +18,12 @@
 1. Answer all questions; only one answer is correct unless explicitly stated.
 2. Some scenario questions require selecting the best operational choice.
 3. Explanations follow each answer to reinforce core concepts.
-4. The answer key for instructors resides in the solutions repository (`ai-infra-junior-engineer-solutions`).
 
 ---
 
-### 1. Which statement best differentiates monitoring from observability?
+### Question 1
+Which statement best differentiates monitoring from observability?
+
 A) Monitoring focuses on logs; observability focuses on metrics.  
 B) Monitoring answers whether the system is healthy; observability helps explain *why* it behaves a certain way.  
 C) Monitoring is reactive; observability is proactive; both use the same data.  
@@ -33,7 +34,9 @@ D) Monitoring is only for infrastructure; observability is only for applications
 
 ---
 
-### 2. What is an error budget if the SLO is 99.5% availability over 30 days?
+### Question 2
+What is an error budget if the SLO is 99.5% availability over 30 days?
+
 A) 0.5% downtime allowed (~3.6 hours)  
 B) 0.5% uptime allowed (~3.6 hours)  
 C) 99.5% uptime allowed (~28.5 days)  
@@ -44,7 +47,9 @@ D) 0.05% downtime allowed (~22 minutes)
 
 ---
 
-### 3. Which Prometheus component is responsible for storing metrics and evaluating rules?
+### Question 3
+Which Prometheus component is responsible for storing metrics and evaluating rules?
+
 A) Alertmanager  
 B) Pushgateway  
 C) Prometheus server  
@@ -55,7 +60,9 @@ D) Exporter
 
 ---
 
-### 4. When should the Prometheus Pushgateway be used?
+### Question 4
+When should the Prometheus Pushgateway be used?
+
 A) For long-running services behind firewalls  
 B) For short-lived batch jobs that cannot be scraped directly  
 C) For exporting traces to Jaeger  
@@ -66,7 +73,9 @@ D) For scaling Prometheus horizontally
 
 ---
 
-### 5. Which PromQL function returns the per-second rate of a monotonically increasing counter over a range?
+### Question 5
+Which PromQL function returns the per-second rate of a monotonically increasing counter over a range?
+
 A) `increase()`  
 B) `rate()`  
 C) `avg_over_time()`  
@@ -77,7 +86,9 @@ D) `histogram_quantile()`
 
 ---
 
-### 6. What is the primary risk of high-cardinality metrics in Prometheus?
+### Question 6
+What is the primary risk of high-cardinality metrics in Prometheus?
+
 A) Alerts become too sensitive  
 B) Dashboards cannot display them  
 C) TSDB memory usage and query performance degrade sharply  
@@ -88,7 +99,9 @@ D) Counter resets become impossible to detect
 
 ---
 
-### 7. In Grafana, which feature allows the same dashboard to filter by environment, cluster, or team without duplicating panels?
+### Question 7
+In Grafana, which feature allows the same dashboard to filter by environment, cluster, or team without duplicating panels?
+
 A) Transformations  
 B) Canvas panels  
 C) Templating variables  
@@ -99,7 +112,9 @@ D) Dashboard permissions
 
 ---
 
-### 8. What is the benefit of provisioning Grafana dashboards as code?
+### Question 8
+What is the benefit of provisioning Grafana dashboards as code?
+
 A) It allows real-time editing without restart  
 B) It enables Git-based version control and consistent deployment across environments  
 C) It automatically generates alert rules  
@@ -110,7 +125,9 @@ D) It converts PromQL to SQL
 
 ---
 
-### 9. In a Loki pipeline, which stage parses JSON fields so they can be used as labels or filters?
+### Question 9
+In a Loki pipeline, which stage parses JSON fields so they can be used as labels or filters?
+
 A) `docker {}`  
 B) `json {}`  
 C) `match {}`  
@@ -121,7 +138,9 @@ D) `drop {}`
 
 ---
 
-### 10. Which metric best captures SLO compliance for inference latency?
+### Question 10
+Which metric best captures SLO compliance for inference latency?
+
 A) `avg_over_time(inference_latency_seconds[5m])`  
 B) `histogram_quantile(0.99, sum(rate(inference_latency_seconds_bucket[5m])) by (le))`  
 C) `max(inference_latency_seconds)`  
@@ -132,7 +151,9 @@ D) `sum(inference_latency_seconds_count)`
 
 ---
 
-### 11. What is the purpose of multi-window, multi-burn-rate alerting?
+### Question 11
+What is the purpose of multi-window, multi-burn-rate alerting?
+
 A) To verify Kubernetes autoscaling before generating an alert  
 B) To combine fast and slow detection windows so alerts trigger only when sustained SLO violations occur  
 C) To alert simultaneously on latency and error rate  
@@ -143,7 +164,9 @@ D) To reduce the number of Alertmanager receivers
 
 ---
 
-### 12. Which Grafana panel type is best for visualizing latency distribution across GPU IDs?
+### Question 12
+Which Grafana panel type is best for visualizing latency distribution across GPU IDs?
+
 A) Stat panel  
 B) Gauge panel  
 C) Heatmap  
@@ -154,7 +177,9 @@ D) Bar gauge
 
 ---
 
-### 13. What should you do before deleting a column via database migration that dashboards rely on?
+### Question 13
+What should you do before deleting a column via database migration that dashboards rely on?
+
 A) Drop the column immediately and fix dashboards later  
 B) Scale Prometheus to avoid downtime  
 C) Audit dashboard queries, update or provide fallback views, and notify stakeholders  
@@ -165,7 +190,9 @@ D) Convert the column to JSONB
 
 ---
 
-### 14. Which tool enriches FastAPI logs with trace IDs when using OpenTelemetry?
+### Question 14
+Which tool enriches FastAPI logs with trace IDs when using OpenTelemetry?
+
 A) `structlog` with manual span context extraction  
 B) Promtail pipeline stages  
 C) Grafana Tempo  
@@ -176,7 +203,9 @@ D) Prometheus relabeling
 
 ---
 
-### 15. What is a key advantage of structured JSON logging over plain text?
+### Question 15
+What is a key advantage of structured JSON logging over plain text?
+
 A) It reduces disk usage  
 B) It increases log verbosity  
 C) It enables reliable parsing, filtering, and correlation in log analysis tools  
@@ -187,7 +216,9 @@ D) It eliminates the need for log aggregation
 
 ---
 
-### 16. Which Prometheus query detects when a target stops exposing metrics entirely?
+### Question 16
+Which Prometheus query detects when a target stops exposing metrics entirely?
+
 A) `up == 1`  
 B) `increase(up[5m])`  
 C) `absent(up{job="inference-gateway"})`  
@@ -198,7 +229,9 @@ D) `rate(up[5m]) > 0`
 
 ---
 
-### 17. What is the primary role of Alertmanager in the Prometheus ecosystem?
+### Question 17
+What is the primary role of Alertmanager in the Prometheus ecosystem?
+
 A) Running PromQL queries  
 B) Storing time-series data  
 C) Deduplicating, silencing, and routing alerts to notifications  
@@ -209,7 +242,9 @@ D) Rendering Grafana dashboards
 
 ---
 
-### 18. During an incident, which dashboard panels should appear at the top of an on-call dashboard?
+### Question 18
+During an incident, which dashboard panels should appear at the top of an on-call dashboard?
+
 A) Experiment results and feature flags  
 B) SLO compliance, error rate, request volume, and high-level resource saturation  
 C) Cost analytics and marketing KPIs  
@@ -220,7 +255,9 @@ D) Historical release notes
 
 ---
 
-### 19. Which description best matches a burn-rate alert?
+### Question 19
+Which description best matches a burn-rate alert?
+
 A) Alerts when CPU usage >90% for 5 minutes  
 B) Alerts when the ratio of errors to budgeted errors exceeds a threshold over a window  
 C) Alerts when Prometheus cannot reach Alertmanager  
@@ -231,7 +268,9 @@ D) Alerts when Grafana dashboards are edited
 
 ---
 
-### 20. Why should logs avoid high-cardinality labels like `user_id`?
+### Question 20
+Why should logs avoid high-cardinality labels like `user_id`?
+
 A) They cause dashboards to be unreadable  
 B) They make alerting impossible  
 C) They introduce privacy/compliance risks and create storage/query explosions  
@@ -242,7 +281,9 @@ D) They prevent tracing integration
 
 ---
 
-### 21. Which metric indicates GPU overheating risk for inference workloads?
+### Question 21
+Which metric indicates GPU overheating risk for inference workloads?
+
 A) `ai_infra_inference_requests_total`  
 B) `node_disk_io_time_seconds_total`  
 C) `DCGM_FI_DEV_GPU_TEMP`  
@@ -253,7 +294,9 @@ D) `container_memory_rss`
 
 ---
 
-### 22. What is the best practice for storing Grafana alert rule definitions?
+### Question 22
+What is the best practice for storing Grafana alert rule definitions?
+
 A) Manual entry only  
 B) Embedded in Prometheus configuration  
 C) Managed via code or API exports stored in Git, aligned with dashboards  
@@ -264,7 +307,9 @@ D) Stored in Excel spreadsheets
 
 ---
 
-### 23. Which LogQL query counts error-level logs for the inference service in the past 10 minutes?
+### Question 23
+Which LogQL query counts error-level logs for the inference service in the past 10 minutes?
+
 A) `{service="inference-gateway"} |= "error"`  
 B) `count_over_time({service="inference-gateway", level="error"}[10m])`  
 C) `sum(rate({service="inference-gateway"}[10m]))`  
@@ -275,7 +320,9 @@ D) `increase({level="error"}[10m])`
 
 ---
 
-### 24. Which step best prepares an on-call engineer before a major release?
+### Question 24
+Which step best prepares an on-call engineer before a major release?
+
 A) Disable all alerts to reduce noise  
 B) Review runbooks, confirm dashboards/alerts reference the upcoming release, and schedule maintenance windows  
 C) Scale down Prometheus to reduce costs  
@@ -286,7 +333,9 @@ D) Only monitor models, ignore infrastructure
 
 ---
 
-### 25. In ML observability, what metric detects covariate drift?
+### Question 25
+In ML observability, what metric detects covariate drift?
+
 A) Error budget burn rate  
 B) Population Stability Index (PSI) comparing feature distributions  
 C) Request latency  
@@ -297,7 +346,9 @@ D) CPU saturation
 
 ---
 
-### 26. Which approach ensures log data remains compliant with privacy regulations?
+### Question 26
+Which approach ensures log data remains compliant with privacy regulations?
+
 A) Keep all raw logs forever  
 B) Delete logs daily regardless of policy  
 C) Apply redaction/masking at ingestion, define retention per log class, enforce access controls and deletion workflows  
@@ -308,7 +359,9 @@ D) Store logs in public object storage for transparency
 
 ---
 
-### 27. Why is it important to pair alert annotations with runbook links?
+### Question 27
+Why is it important to pair alert annotations with runbook links?
+
 A) They automatically resolve the alert  
 B) They provide immediate context and next steps, reducing Mean Time to Mitigate  
 C) They change alert severity automatically  
@@ -319,7 +372,9 @@ D) They disable duplicate alerts
 
 ---
 
-### 28. What is the most effective way to validate observability changes in CI/CD?
+### Question 28
+What is the most effective way to validate observability changes in CI/CD?
+
 A) Deploy directly to production; roll back if issues arise  
 B) Run promtool/linting checks, deploy to staging, execute smoke tests, and monitor for regressions before production rollout  
 C) Manually check dashboards weekly  
@@ -330,7 +385,9 @@ D) Disable CI checks for speed
 
 ---
 
-### 29. Which KPI best reflects the health of an on-call rotation?
+### Question 29
+Which KPI best reflects the health of an on-call rotation?
+
 A) Number of dashboards created  
 B) Mean Time To Acknowledge (MTTA) and alert volume per shift  
 C) Amount of log storage used  
@@ -341,7 +398,9 @@ D) Number of Prometheus rules
 
 ---
 
-### 30. During a post-incident review, what should be the focus?
+### Question 30
+During a post-incident review, what should be the focus?
+
 A) Assigning blame to individuals  
 B) Confirming that downtime penalties are charged  
 C) Identifying systemic improvements, documenting timeline, root causes, and action items with owners  
@@ -352,7 +411,9 @@ D) Reducing logging to prevent future incidents
 
 ---
 
-### 31. What is the purpose of multi-window burn rate alerts in SLO monitoring?
+### Question 31
+What is the purpose of multi-window burn rate alerts in SLO monitoring?
+
 A) To reduce alert noise by requiring multiple consecutive breaches
 B) To detect both fast (short window) and slow (long window) error budget consumption
 C) To send alerts to multiple on-call engineers
@@ -363,7 +424,9 @@ D) To automatically scale infrastructure based on SLO violations
 
 ---
 
-### 32. Given a 99.9% availability SLO, what burn rate multiplier indicates critical error budget exhaustion in <6 hours?
+### Question 32
+Given a 99.9% availability SLO, what burn rate multiplier indicates critical error budget exhaustion in <6 hours?
+
 A) 1x
 B) 6x
 C) 14.4x
@@ -374,7 +437,9 @@ D) 100x
 
 ---
 
-### 33. Which Alertmanager feature prevents duplicate notifications when multiple related alerts fire?
+### Question 33
+Which Alertmanager feature prevents duplicate notifications when multiple related alerts fire?
+
 A) Grouping
 B) Inhibition rules
 C) Silences
@@ -385,7 +450,9 @@ D) Time intervals
 
 ---
 
-### 34. What is the recommended structure for a production runbook?
+### Question 34
+What is the recommended structure for a production runbook?
+
 A) Just list the alert name and contact
 B) Impact, symptoms, triage steps (<5 min), investigation queries, mitigation procedures, escalation path, post-incident tasks
 C) Only include Prometheus queries
@@ -396,7 +463,9 @@ D) Defer all details to verbal communication
 
 ---
 
-### 35. During an incident, what metric measures time from issue occurrence to detection?
+### Question 35
+During an incident, what metric measures time from issue occurrence to detection?
+
 A) MTTR (Mean Time To Repair)
 B) MTTD (Mean Time To Detect)
 C) MTTA (Mean Time To Acknowledge)
@@ -407,7 +476,9 @@ D) MTBF (Mean Time Between Failures)
 
 ---
 
-### 36. Which PromQL query calculates the P95 latency from histogram buckets?
+### Question 36
+Which PromQL query calculates the P95 latency from histogram buckets?
+
 A) `rate(http_request_duration_seconds_sum[5m])`
 B) `histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))`
 C) `avg(http_request_duration_seconds)`
@@ -418,7 +489,9 @@ D) `max(http_request_duration_seconds)`
 
 ---
 
-### 37. What is a Population Stability Index (PSI) threshold indicating significant feature drift?
+### Question 37
+What is a Population Stability Index (PSI) threshold indicating significant feature drift?
+
 A) PSI < 0.1
 B) PSI 0.1-0.2
 C) PSI > 0.2
@@ -429,7 +502,9 @@ D) PSI = 1.0
 
 ---
 
-### 38. In a blameless postmortem, what should be the primary focus?
+### Question 38
+In a blameless postmortem, what should be the primary focus?
+
 A) Identifying the engineer who caused the issue
 B) Documenting timeline, root cause analysis (systemic), and preventive action items
 C) Calculating financial penalties
@@ -440,7 +515,9 @@ D) Reducing monitoring to prevent future alerts
 
 ---
 
-### 39. Which log redaction technique is most effective for PII compliance?
+### Question 39
+Which log redaction technique is most effective for PII compliance?
+
 A) Delete all logs
 B) Apply regex patterns at ingestion to mask/redact sensitive data (SSN, credit cards, emails)
 C) Store logs in plain text for transparency
@@ -451,7 +528,9 @@ D) Only log errors, not info-level logs
 
 ---
 
-### 40. What is the recommended approach for incident simulation and runbook practice?
+### Question 40
+What is the recommended approach for incident simulation and runbook practice?
+
 A) Wait for real incidents to practice
 B) Create automated simulation scripts that inject faults, trigger alerts, and generate incident timelines
 C) Only test in production during business hours
@@ -462,7 +541,9 @@ D) Avoid testing to prevent false alarms
 
 ---
 
-### 41. When should you escalate an incident to the next level?
+### Question 41
+When should you escalate an incident to the next level?
+
 A) Immediately for all incidents
 B) After 30 minutes if unresolved, impact is increasing, or root cause unclear
 C) Never escalate to avoid looking incompetent
@@ -473,7 +554,9 @@ D) Only during business hours
 
 ---
 
-### 42. Which Grafana feature allows dashboard variables to be populated from Prometheus label values?
+### Question 42
+Which Grafana feature allows dashboard variables to be populated from Prometheus label values?
+
 A) Static variables
 B) Query variables with label_values()
 C) Constant variables
@@ -484,7 +567,9 @@ D) Text box variables
 
 ---
 
-### 43. What is the benefit of correlation IDs in distributed tracing?
+### Question 43
+What is the benefit of correlation IDs in distributed tracing?
+
 A) They reduce log storage costs
 B) They enable end-to-end request tracking across multiple services and link traces to logs
 C) They automatically fix performance issues
@@ -495,7 +580,9 @@ D) They disable unnecessary metrics
 
 ---
 
-### 44. Which metric best indicates GPU saturation in an inference service?
+### Question 44
+Which metric best indicates GPU saturation in an inference service?
+
 A) CPU usage
 B) GPU utilization at 95-100% with increasing queue depth
 C) Network bandwidth
@@ -506,7 +593,9 @@ D) Disk I/O
 
 ---
 
-### 45. What is the correct order of actions when responding to a critical SLO burn rate alert?
+### Question 45
+What is the correct order of actions when responding to a critical SLO burn rate alert?
+
 A) Rollback → Investigate → Notify stakeholders → Document
 B) Verify alert → Assess scope → Investigate root cause → Mitigate → Document → Post-incident review
 C) Disable alerts → Fix issue later → Re-enable alerts
@@ -517,7 +606,9 @@ D) Wait to see if it resolves itself
 
 ---
 
-### 46. Which Log QL query detects log ingestion outages?
+### Question 46
+Which Log QL query detects log ingestion outages?
+
 A) `{job="logs"} |= "error"`
 B) `absent_over_time({job="docker-logs"}[10m])`
 C) `rate({job="logs"}[5m])`
@@ -528,7 +619,9 @@ D) `count({job="logs"})`
 
 ---
 
-### 47. What is the purpose of Alertmanager's `group_wait` parameter?
+### Question 47
+What is the purpose of Alertmanager's `group_wait` parameter?
+
 A) How long to wait before sending the first notification for a group of alerts
 B) How long to wait between re-sending notifications
 C) How long to keep alerts in memory
@@ -539,7 +632,9 @@ D) How long to wait for user acknowledgment
 
 ---
 
-### 48. When monitoring model fairness, what metric detects demographic parity violations?
+### Question 48
+When monitoring model fairness, what metric detects demographic parity violations?
+
 A) Latency P95
 B) Absolute difference in prediction rates between demographic groups exceeding threshold (e.g., > 0.1)
 C) Error budget consumption
@@ -550,7 +645,9 @@ D) GPU temperature
 
 ---
 
-### 49. Which practice reduces alert fatigue in on-call rotations?
+### Question 49
+Which practice reduces alert fatigue in on-call rotations?
+
 A) Send all alerts to pagers for maximum awareness
 B) Implement SLO-based alerting, tune thresholds quarterly, automate common mitigations, and track alerts/week/person
 C) Disable all non-critical alerts permanently
@@ -561,7 +658,9 @@ D) Only alert during business hours
 
 ---
 
-### 50. What is the recommended retention period for incident timelines and postmortems?
+### Question 50
+What is the recommended retention period for incident timelines and postmortems?
+
 A) Delete after resolution
 B) Keep for 30 days
 C) Archive indefinitely for organizational learning and compliance
