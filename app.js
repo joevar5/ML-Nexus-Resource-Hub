@@ -976,7 +976,353 @@ Assume I am learning this for practical use and interview preparation.`;
         }
 
         // Load Markdown file and update UI view panels
+        // ── Interactive Quiz Engine ──
+        // Detects quiz patterns in rendered markdown and makes them clickable with radio buttons
+        function makeQuizInteractive() {
+            const container = document.getElementById('markdown-content');
+            if (!container) return;
+
+            // Find all h3 headings that look like quiz questions
+            const questionHeadings = Array.from(container.querySelectorAll('h3')).filter(h3 => {
+                return /question\s+\d+/i.test(h3.textContent);
+            });
+
+            if (questionHeadings.length === 0) return;
+
+            // ── Parse quiz metadata from the page content ──
+            const fullText = container.textContent;
+            const totalQuestions = questionHeadings.length;
+
+            // Try to parse passing score: "Passing Score: 70% (20/28 correct)" or "80% (40/50 correct)"
+            let passingPercent = 70; // default
+            const passingMatch = fullText.match(/Passing\s+Score:?\s*(\d+)%/i);
+            if (passingMatch) passingPercent = parseInt(passingMatch[1]);
+
+            const passingCount = Math.ceil((passingPercent / 100) * totalQuestions);
+
+            // ── Quiz state ──
+            let quizState = {
+                correct: 0,
+                wrong: 0,
+                total: totalQuestions,
+                answered: 0,
+                questionStates: {} // track per-question state for retry
+            };
+
+            // ── Build scoreboard ──
+            const scoreboard = document.createElement('div');
+            scoreboard.className = 'quiz-scoreboard';
+            scoreboard.id = 'quiz-scoreboard';
+            scoreboard.innerHTML = `
+                <div class="quiz-scoreboard-left">
+                    <div class="quiz-score-pct" id="quiz-score-pct">0%</div>
+                    <div class="quiz-score-info">
+                        <div class="quiz-score-title" id="quiz-score-title">Quiz in Progress</div>
+                        <div class="quiz-score-subtitle">Pass: ${passingPercent}% (${passingCount}/${totalQuestions})</div>
+                    </div>
+                </div>
+                <div class="quiz-scoreboard-right">
+                    <div class="quiz-score-pills">
+                        <span class="quiz-pill quiz-pill-correct">
+                            <span class="material-symbols-outlined" style="font-size:16px">check_circle</span>
+                            <span id="quiz-sb-correct">0</span>
+                        </span>
+                        <span class="quiz-pill quiz-pill-wrong">
+                            <span class="material-symbols-outlined" style="font-size:16px">cancel</span>
+                            <span id="quiz-sb-wrong">0</span>
+                        </span>
+                        <span class="quiz-pill quiz-pill-remaining">
+                            <span class="material-symbols-outlined" style="font-size:16px">radio_button_unchecked</span>
+                            <span id="quiz-sb-remaining">${totalQuestions}</span>
+                        </span>
+                    </div>
+                    <button class="quiz-reset-all-btn" id="quiz-reset-all-btn">
+                        <span class="material-symbols-outlined" style="font-size:16px">restart_alt</span>
+                        Reset All
+                    </button>
+                </div>
+            `;
+
+            // Insert scoreboard before the first section heading (h2) above the first question
+            let firstSectionH2 = null;
+            let el = questionHeadings[0];
+            while (el && el.previousElementSibling) {
+                el = el.previousElementSibling;
+                if (el.tagName === 'H2') {
+                    firstSectionH2 = el;
+                    break;
+                }
+            }
+            if (firstSectionH2) {
+                firstSectionH2.parentNode.insertBefore(scoreboard, firstSectionH2);
+            } else {
+                container.insertBefore(scoreboard, container.firstChild);
+            }
+
+            // ── Scoreboard update function ──
+            function updateScoreboard() {
+                const pct = quizState.total > 0 ? Math.round((quizState.correct / quizState.total) * 100) : 0;
+
+                // Update percentage display
+                const pctEl = document.getElementById('quiz-score-pct');
+                pctEl.textContent = `${pct}%`;
+
+                // Color the percentage based on status
+                if (quizState.answered === 0) {
+                    pctEl.className = 'quiz-score-pct';
+                } else if (quizState.correct >= passingCount) {
+                    pctEl.className = 'quiz-score-pct quiz-score-pct-passed';
+                } else if (quizState.answered === quizState.total && quizState.correct < passingCount) {
+                    pctEl.className = 'quiz-score-pct quiz-score-pct-failed';
+                } else {
+                    pctEl.className = 'quiz-score-pct';
+                }
+
+                // Update pills
+                document.getElementById('quiz-sb-correct').textContent = quizState.correct;
+                document.getElementById('quiz-sb-wrong').textContent = quizState.wrong;
+                document.getElementById('quiz-sb-remaining').textContent = quizState.total - quizState.answered;
+
+                // Update title and pass/fail status
+                const titleEl = document.getElementById('quiz-score-title');
+                if (quizState.answered === quizState.total) {
+                    if (quizState.correct >= passingCount) {
+                        titleEl.innerHTML = `<span class="quiz-status-badge quiz-status-passed">
+                            <span class="material-symbols-outlined" style="font-size:16px">emoji_events</span> Passed!
+                        </span> ${quizState.correct}/${quizState.total} correct`;
+                    } else {
+                        titleEl.innerHTML = `<span class="quiz-status-badge quiz-status-failed">
+                            <span class="material-symbols-outlined" style="font-size:16px">close</span> Not Passed
+                        </span> ${quizState.correct}/${quizState.total} correct`;
+                    }
+                } else if (quizState.answered > 0) {
+                    titleEl.textContent = `${quizState.correct}/${quizState.answered} correct so far`;
+                } else {
+                    titleEl.textContent = 'Quiz in Progress';
+                }
+            }
+
+            // ── Process each question ──
+            const allRetryBtns = [];
+            const allQuestionOptionSets = [];
+
+            questionHeadings.forEach((h3, qIndex) => {
+                const questionElements = [];
+                let sibling = h3.nextElementSibling;
+                while (sibling) {
+                    if (sibling.tagName === 'H3' || sibling.tagName === 'H2' || sibling.tagName === 'HR') break;
+                    questionElements.push(sibling);
+                    sibling = sibling.nextElementSibling;
+                }
+
+                if (questionElements.length === 0) return;
+
+                let correctAnswer = '';
+                let answerEl = null;
+                let explanationEls = [];
+                let questionTextEls = [];
+                let rawOptionLines = [];
+                let optionSourceEls = [];
+                let foundAnswer = false;
+
+                for (const elem of questionElements) {
+                    const text = elem.textContent.trim();
+
+                    if (/^(Correct\s+)?Answer:?\s*[A-D]/i.test(text)) {
+                        answerEl = elem;
+                        const match = text.match(/(?:Correct\s+)?Answer:?\s*([A-D])/i);
+                        if (match) correctAnswer = match[1].toUpperCase();
+                        foundAnswer = true;
+                        continue;
+                    }
+
+                    if (foundAnswer) {
+                        explanationEls.push(elem);
+                        continue;
+                    }
+
+                    const innerHtml = elem.innerHTML || '';
+                    const htmlLines = innerHtml.split(/<br\s*\/?>/i).map(l => l.trim()).filter(l => l);
+                    let hasOptions = false;
+
+                    for (const line of htmlLines) {
+                        const temp = document.createElement('span');
+                        temp.innerHTML = line;
+                        const lineText = temp.textContent.trim();
+
+                        if (/^[A-D][)\].\s]/i.test(lineText)) {
+                            hasOptions = true;
+                            rawOptionLines.push({ text: lineText, html: line });
+                        }
+                    }
+
+                    if (hasOptions) {
+                        optionSourceEls.push(elem);
+                    } else if (rawOptionLines.length === 0) {
+                        questionTextEls.push(elem);
+                    }
+                }
+
+                if (rawOptionLines.length === 0 || !correctAnswer) return;
+
+                // Build interactive options
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'quiz-options-container';
+
+                rawOptionLines.forEach(({ text, html }) => {
+                    const letterMatch = text.match(/^([A-D])[)\].\s]\s*(.*)/is);
+                    if (!letterMatch) return;
+
+                    const letter = letterMatch[1].toUpperCase();
+                    const htmlMatch = html.match(/^[A-D][)\].\s]\s*(.*)/is);
+                    const optionContent = htmlMatch ? htmlMatch[1].trim() : letterMatch[2].trim();
+                    const isCorrect = letter === correctAnswer;
+
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'quiz-option';
+                    optionDiv.dataset.letter = letter;
+                    optionDiv.dataset.correct = isCorrect.toString();
+
+                    optionDiv.innerHTML = `
+                        <span class="quiz-option-radio"></span>
+                        <span class="quiz-option-letter">${letter}</span>
+                        <span class="quiz-option-text">${optionContent}</span>
+                        <span class="quiz-option-result-icon">
+                            <span class="material-symbols-outlined" style="font-size:18px">${isCorrect ? 'check' : 'close'}</span>
+                        </span>
+                    `;
+
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                optionSourceEls.forEach(el => { el.style.display = 'none'; });
+
+                // Explanation wrapper
+                const explanationWrapper = document.createElement('div');
+                explanationWrapper.className = 'quiz-explanation';
+                const explanationInner = document.createElement('div');
+                explanationInner.className = 'quiz-explanation-inner';
+
+                let explanationHTML = '';
+                if (answerEl) {
+                    explanationHTML += `<strong>✓ Correct Answer: ${correctAnswer}</strong><br>`;
+                }
+                explanationEls.forEach(el => {
+                    explanationHTML += el.innerHTML;
+                    el.style.display = 'none';
+                });
+                explanationInner.innerHTML = explanationHTML;
+                explanationWrapper.appendChild(explanationInner);
+
+                if (answerEl) answerEl.style.display = 'none';
+
+                // Retry button
+                const retryBtn = document.createElement('button');
+                retryBtn.className = 'quiz-retry-btn';
+                retryBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size:15px">refresh</span> Try Again`;
+                retryBtn.style.display = 'none';
+                allRetryBtns.push(retryBtn);
+
+                // Insert elements
+                const lastQuestionTextEl = questionTextEls.length > 0 ? questionTextEls[questionTextEls.length - 1] : h3;
+                lastQuestionTextEl.after(optionsContainer);
+                optionsContainer.after(explanationWrapper);
+                explanationWrapper.after(retryBtn);
+
+                // Click handler
+                const allOptions = optionsContainer.querySelectorAll('.quiz-option');
+                allQuestionOptionSets.push({ allOptions, explanationWrapper, retryBtn, qIndex });
+
+                allOptions.forEach(opt => {
+                    opt.addEventListener('click', () => {
+                        if (opt.classList.contains('quiz-option-disabled')) return;
+
+                        const isCorrect = opt.dataset.correct === 'true';
+
+                        // If this question was previously answered (via retry), undo the previous answer
+                        if (quizState.questionStates[qIndex]) {
+                            const prev = quizState.questionStates[qIndex];
+                            if (prev === 'correct') quizState.correct--;
+                            else quizState.wrong--;
+                            quizState.answered--;
+                        }
+
+                        opt.classList.add('quiz-option-selected');
+                        allOptions.forEach(o => o.classList.add('quiz-option-disabled'));
+
+                        if (isCorrect) {
+                            opt.classList.add('quiz-option-correct');
+                            quizState.correct++;
+                            quizState.questionStates[qIndex] = 'correct';
+                        } else {
+                            opt.classList.add('quiz-option-wrong');
+                            quizState.wrong++;
+                            quizState.questionStates[qIndex] = 'wrong';
+                            allOptions.forEach(o => {
+                                if (o.dataset.correct === 'true') {
+                                    o.classList.add('quiz-option-correct');
+                                }
+                            });
+                        }
+
+                        quizState.answered++;
+                        updateScoreboard();
+
+                        explanationWrapper.classList.add('quiz-explanation-visible');
+                        retryBtn.style.display = 'inline-flex';
+                    });
+                });
+
+                // Retry handler
+                retryBtn.addEventListener('click', () => {
+                    // Undo this question's score
+                    if (quizState.questionStates[qIndex]) {
+                        const prev = quizState.questionStates[qIndex];
+                        if (prev === 'correct') quizState.correct--;
+                        else quizState.wrong--;
+                        quizState.answered--;
+                        delete quizState.questionStates[qIndex];
+                        updateScoreboard();
+                    }
+
+                    allOptions.forEach(o => {
+                        o.classList.remove('quiz-option-disabled', 'quiz-option-correct', 'quiz-option-wrong', 'quiz-option-selected');
+                    });
+                    explanationWrapper.classList.remove('quiz-explanation-visible');
+                    retryBtn.style.display = 'none';
+                });
+            });
+
+            // ── Reset All button handler ──
+            document.getElementById('quiz-reset-all-btn').addEventListener('click', () => {
+                quizState = {
+                    correct: 0,
+                    wrong: 0,
+                    total: totalQuestions,
+                    answered: 0,
+                    questionStates: {}
+                };
+
+                allQuestionOptionSets.forEach(({ allOptions, explanationWrapper, retryBtn }) => {
+                    allOptions.forEach(o => {
+                        o.classList.remove('quiz-option-disabled', 'quiz-option-correct', 'quiz-option-wrong', 'quiz-option-selected');
+                    });
+                    explanationWrapper.classList.remove('quiz-explanation-visible');
+                    retryBtn.style.display = 'none';
+                });
+
+                updateScoreboard();
+                scoreboard.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Initial render
+            updateScoreboard();
+        }
+
+
+
         async function loadFile(filePath) {
+
             currentFilePath = filePath;
             
             document.getElementById('home-view').style.display = 'none';
@@ -1106,6 +1452,7 @@ Assume I am learning this for practical use and interview preparation.`;
                 });
 
                 buildTOC();
+                makeQuizInteractive();
                 updateReaderDoneBtn();
                 
                 document.getElementById('reader-view').style.display = 'grid';

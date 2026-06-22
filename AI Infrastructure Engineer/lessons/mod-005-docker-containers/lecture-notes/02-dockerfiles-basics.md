@@ -13,10 +13,6 @@ By the end of this lecture, you will be able to:
 - Tag and version Docker images
 - Debug image building issues
 
-**Duration**: 120 minutes
-**Difficulty**: Beginner to Intermediate
-**Prerequisites**: Lecture 01 (Docker Fundamentals)
-
 ---
 
 ## 1. Introduction to Dockerfiles
@@ -58,11 +54,11 @@ CMD ["python3", "/app/app.py"]
 
 ### Dockerfile Benefits
 
-✅ **Reproducible**: Same Dockerfile = Same image every time
-✅ **Versionable**: Store in Git like code
-✅ **Documented**: Dockerfile shows exactly how image is built
-✅ **Automated**: Can be built in CI/CD pipelines
-✅ **Shareable**: Team uses same build process
+- **Reproducible**: Same Dockerfile = Same image every time
+- **Versionable**: Store in Git like code
+- **Documented**: Dockerfile shows exactly how image is built
+- **Automated**: Can be built in CI/CD pipelines
+- **Shareable**: Team uses same build process
 
 ---
 
@@ -858,16 +854,16 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
 
 ## Key Takeaways
 
-✅ **Dockerfiles** define how to build images
-✅ **Each instruction** creates a new layer
-✅ **Layer order matters** for caching
-✅ **COPY dependencies first**, code last
-✅ **Multi-stage builds** reduce image size
-✅ **Use specific base image versions**, not `:latest`
-✅ **Combine RUN commands** to reduce layers
-✅ **Use .dockerignore** to exclude files
-✅ **Tag images** with versions
-✅ **CMD vs ENTRYPOINT**: CMD for defaults, ENTRYPOINT for fixed commands
+- **Dockerfiles** define how to build images
+- **Each instruction** creates a new layer
+- **Layer order matters** for caching
+- **COPY dependencies first**, code last
+- **Multi-stage builds** reduce image size
+- **Use specific base image versions**, not `:latest`
+- **Combine RUN commands** to reduce layers
+- **Use .dockerignore** to exclude files
+- **Tag images** with versions
+- **CMD vs ENTRYPOINT**: CMD for defaults, ENTRYPOINT for fixed commands
 
 ---
 
@@ -952,10 +948,3 @@ In the next lecture, we'll explore:
 - **Real-world application stacks**
 
 Continue to `lecture-notes/03-docker-compose.md`
-
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 120 minutes
-**Difficulty**: Beginner to Intermediate

@@ -13,9 +13,6 @@ By the end of this lecture, you will be able to:
 - Use Compose for development workflows
 - Build ML application stacks with Compose
 
-**Duration**: 120 minutes
-**Difficulty**: Intermediate
-**Prerequisites**: Lectures 01-02 (Docker Fundamentals, Dockerfiles)
 
 ---
 
@@ -81,25 +78,25 @@ docker-compose down
 
 ### Why Use Docker Compose?
 
-✅ **Simplicity**: One command to start entire stack
-✅ **Declarative**: Define desired state, not steps
-✅ **Reproducible**: Same environment every time
-✅ **Version Control**: Store compose file in Git
-✅ **Development**: Quick local environment setup
-✅ **Testing**: Spin up test environments easily
+- **Simplicity**: One command to start entire stack
+- **Declarative**: Define desired state, not steps
+- **Reproducible**: Same environment every time
+- **Version Control**: Store compose file in Git
+- **Development**: Quick local environment setup
+- **Testing**: Spin up test environments easily
 
 ### When to Use Docker Compose
 
 **Perfect for:**
-- 🎯 Local development environments
-- 🎯 Testing and CI/CD
-- 🎯 Small production deployments (single host)
-- 🎯 Prototyping microservices
+- Local development environments
+- Testing and CI/CD
+- Small production deployments (single host)
+- Prototyping microservices
 
 **Not ideal for:**
-- ❌ Large-scale production (use Kubernetes)
-- ❌ Multi-host deployments (use Swarm/K8s)
-- ❌ Complex orchestration needs
+- Large-scale production (use Kubernetes)
+- Multi-host deployments (use Swarm/K8s)
+- Complex orchestration needs
 
 ---
 
@@ -395,9 +392,9 @@ services:
 ```
 
 **Use cases**:
-- ✅ Development: Live code reloading
-- ✅ Configuration files
-- ⚠️ Production: Use named volumes instead
+- Development: Live code reloading
+- Configuration files
+- Production (Avoid): Use named volumes instead
 
 ### Volume Syntax
 
@@ -447,8 +444,8 @@ services:
 ```
 
 **What depends_on does**:
-- ✅ Controls startup order: db → redis → web
-- ❌ Does NOT wait for service to be "ready"
+- Controls startup order: db → redis → web
+- Does NOT wait for service to be "ready"
 
 ### Health Checks
 
@@ -1040,16 +1037,16 @@ docker-compose up --build --force-recreate
 
 ## Key Takeaways
 
-✅ **Docker Compose** manages multi-container applications
-✅ **docker-compose.yml** defines services declaratively
-✅ **Services** can reference each other by name (DNS)
-✅ **depends_on** controls startup order
-✅ **volumes** provide data persistence
-✅ **networks** enable service isolation
-✅ **override files** customize for different environments
-✅ **docker-compose up/down** manages lifecycle
-✅ **Perfect for development**, okay for small production
-✅ **Use Kubernetes** for large-scale production
+- **Docker Compose** manages multi-container applications
+- **docker-compose.yml** defines services declaratively
+- **Services** can reference each other by name (DNS)
+- **depends_on** controls startup order
+- **volumes** provide data persistence
+- **networks** enable service isolation
+- **override files** customize for different environments
+- **docker-compose up/down** manages lifecycle
+- **Perfect for development**, okay for small production
+- **Use Kubernetes** for large-scale production
 
 ---
 
@@ -1133,10 +1130,3 @@ In the next lecture, we'll explore:
 - **Network troubleshooting**
 
 Continue to `lecture-notes/04-networking-volumes.md`
-
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 120 minutes
-**Difficulty**: Intermediate

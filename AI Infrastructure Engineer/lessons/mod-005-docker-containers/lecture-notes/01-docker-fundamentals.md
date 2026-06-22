@@ -12,10 +12,6 @@ By the end of this lecture, you will be able to:
 - Use basic Docker commands confidently
 - Understand the relationship between images and containers
 
-**Duration**: 90 minutes
-**Difficulty**: Beginner
-**Prerequisites**: Module 002 (Linux Essentials)
-
 ---
 
 ## 1. Introduction to Containerization
@@ -30,26 +26,30 @@ By the end of this lecture, you will be able to:
 - Isolated from other containers
 - Can be stacked and managed easily
 
-```
-Traditional Deployment:
-┌─────────────────────────┐
-│   Physical Server       │
-│  ┌──────────────────┐  │
-│  │  App A + Deps    │  │
-│  │  App B + Deps    │  │  ← Dependencies conflict!
-│  │  App C + Deps    │  │     Hard to manage!
-│  └──────────────────┘  │
-└─────────────────────────┘
+```mermaid
+graph TD
+    subgraph Traditional ["Traditional Deployment"]
+        A1(["Physical Server"]):::hw --> B1(["Operating System"]):::os
+        B1 --> C1(["App A + Deps"]):::app
+        B1 --> C2(["App B + Deps"]):::app
+        B1 --> C3(["App C + Deps"]):::app
+        C1 & C2 & C3 -.-> Conflict(["⚠️ Dependency Conflict\nHard to Manage"]):::conflict
+    end
 
-Container Deployment:
-┌─────────────────────────┐
-│   Physical Server       │
-│  ┌────┐ ┌────┐ ┌────┐  │
-│  │App │ │App │ │App │  │
-│  │ A  │ │ B  │ │ C  │  │  ← Isolated!
-│  │+Dep│ │+Dep│ │+Dep│  │     Portable!
-│  └────┘ └────┘ └────┘  │
-└─────────────────────────┘
+    subgraph Container ["Container Deployment"]
+        A2(["Physical Server"]):::hw --> B2(["Host OS"]):::os
+        B2 --> Docker(["Docker Engine"]):::docker
+        Docker --> D1(["Container A\nApp A + Deps"]):::isolated
+        Docker --> D2(["Container B\nApp B + Deps"]):::isolated
+        Docker --> D3(["Container C\nApp C + Deps"]):::isolated
+    end
+
+    classDef hw fill:#475569,stroke:#334155,color:#fff,font-weight:bold
+    classDef os fill:#0f766e,stroke:#115e59,color:#fff,font-weight:bold
+    classDef app fill:#0284c7,stroke:#0369a1,color:#fff,font-weight:bold
+    classDef docker fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef conflict fill:#991b1b,stroke:#7f1d1d,color:#fff,font-weight:bold
+    classDef isolated fill:#0284c7,stroke:#0369a1,color:#fff,font-weight:bold
 ```
 
 ### Why Containers Matter
@@ -77,34 +77,36 @@ Container Deployment:
 
 ### Architecture Comparison
 
-```
-Virtual Machines:
-┌─────────────────────────────────┐
-│        Physical Server          │
-│  ┌──────────────────────────┐  │
-│  │      Hypervisor          │  │
-│  └──────────────────────────┘  │
-│  ┌────┐  ┌────┐  ┌────┐       │
-│  │VM1 │  │VM2 │  │VM3 │       │
-│  │OS  │  │OS  │  │OS  │       │  ← Each VM has full OS!
-│  │App │  │App │  │App │       │     Heavy!
-│  └────┘  └────┘  └────┘       │
-└─────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph VM ["Virtual Machines (Hardware Isolation)"]
+        A1(["Physical Server"]):::hw --> B1(["Hypervisor"]):::hyper
+        B1 --> C1(["Guest OS 1"]):::gos
+        B1 --> C2(["Guest OS 2"]):::gos
+        B1 --> C3(["Guest OS 3"]):::gos
+        C1 --> D1(["App 1 + Deps"]):::app
+        C2 --> D2(["App 2 + Deps"]):::app
+        C3 --> D3(["App 3 + Deps"]):::app
+        D1 & D2 & D3 -.-> VM_Note(["⚠️ Heavyweight\nFull OS per VM (GBs)"]):::conflict
+    end
 
-Containers:
-┌─────────────────────────────────┐
-│        Physical Server          │
-│  ┌──────────────────────────┐  │
-│  │        Host OS           │  │
-│  └──────────────────────────┘  │
-│  ┌──────────────────────────┐  │
-│  │    Container Runtime     │  │
-│  └──────────────────────────┘  │
-│  ┌────┐  ┌────┐  ┌────┐       │
-│  │C1  │  │C2  │  │C3  │       │  ← Share host OS kernel!
-│  │App │  │App │  │App │       │     Lightweight!
-│  └────┘  └────┘  └────┘       │
-└─────────────────────────────────┘
+    subgraph CTR ["Containers (OS-level Isolation)"]
+        A2(["Physical Server"]):::hw --> B2(["Host OS"]):::hos
+        B2 --> C_Run(["Container Runtime"]):::runtime
+        C_Run --> E1(["Container 1\nApp 1 + Deps"]):::container
+        C_Run --> E2(["Container 2\nApp 2 + Deps"]):::container
+        C_Run --> E3(["Container 3\nApp 3 + Deps"]):::container
+        E1 & E2 & E3 -.-> CTR_Note(["✅ Lightweight\nShared Kernel (MBs)"]):::container
+    end
+
+    classDef hw fill:#475569,stroke:#334155,color:#fff,font-weight:bold
+    classDef hyper fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef gos fill:#0f766e,stroke:#115e59,color:#fff,font-weight:bold
+    classDef app fill:#0284c7,stroke:#0369a1,color:#fff,font-weight:bold
+    classDef hos fill:#0f766e,stroke:#115e59,color:#fff,font-weight:bold
+    classDef runtime fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef container fill:#0284c7,stroke:#0369a1,color:#fff,font-weight:bold
+    classDef conflict fill:#991b1b,stroke:#7f1d1d,color:#fff,font-weight:bold
 ```
 
 ### Comparison Table
@@ -145,38 +147,43 @@ Containers:
 
 Docker uses a **client-server architecture**:
 
-```
-┌─────────────────────────────────────────────────┐
-│                Docker Client                    │
-│              (docker command)                   │
-└────────────────────┬────────────────────────────┘
-                     │ REST API
-                     ↓
-┌─────────────────────────────────────────────────┐
-│              Docker Daemon                      │
-│               (dockerd)                         │
-│  ┌────────────────────────────────────────┐   │
-│  │     Container Management               │   │
-│  ├────────────────────────────────────────┤   │
-│  │     Image Management                   │   │
-│  ├────────────────────────────────────────┤   │
-│  │     Volume Management                  │   │
-│  ├────────────────────────────────────────┤   │
-│  │     Network Management                 │   │
-│  └────────────────────────────────────────┘   │
-│                     │                          │
-│                     ↓                          │
-│              containerd                        │
-│                     │                          │
-│                     ↓                          │
-│                  runc                          │
-└─────────────────────────────────────────────────┘
-                     │
-                     ↓
-┌─────────────────────────────────────────────────┐
-│              Containers                         │
-│    [Container 1] [Container 2] [Container 3]   │
-└─────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    Client(["Docker Client\n(docker command)"]):::client -->|REST API| Daemon
+    
+    subgraph Host_Scope ["Docker Engine Host"]
+        direction TB
+        
+        subgraph Daemon_Scope ["Docker Daemon (dockerd)"]
+            direction TB
+            Daemon(["Docker Daemon"]):::daemon
+            
+            subgraph Mgmt_Scope ["Daemon Managers"]
+                C_Mgmt(["Container Management"]):::mgmt
+                I_Mgmt(["Image Management"]):::mgmt
+                V_Mgmt(["Volume Management"]):::mgmt
+                N_Mgmt(["Network Management"]):::mgmt
+            end
+            
+            Containerd(["containerd"]):::runtime
+            Runc(["runc"]):::runc
+            
+            Daemon --> Mgmt_Scope
+            Mgmt_Scope --> Containerd
+            Containerd --> Runc
+        end
+        
+        Runc --> C1(["Container 1"]):::container
+        Runc --> C2(["Container 2"]):::container
+        Runc --> C3(["Container 3"]):::container
+    end
+
+    classDef client fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef daemon fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef mgmt fill:#64748b,stroke:#475569,color:#fff
+    classDef runtime fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef runc fill:#475569,stroke:#334155,color:#fff,font-weight:bold
+    classDef container fill:#0284c7,stroke:#0369a1,color:#fff,font-weight:bold
 ```
 
 ### Key Components
@@ -347,17 +354,19 @@ One image, multiple containers!
 - Layers are cached and reusable
 - Images are immutable
 
-```
-Image Layers (example):
-┌─────────────────────┐
-│  App Code Layer     │  ← Top layer
-├─────────────────────┤
-│  pip install deps   │
-├─────────────────────┤
-│  Python 3.11        │
-├─────────────────────┤
-│  Ubuntu Base        │  ← Bottom layer
-└─────────────────────┘
+```mermaid
+graph BT
+    subgraph Image_Layers ["Image Layers (Example Stack)"]
+        direction BT
+        L1(["Ubuntu Base\n(Bottom Layer)"]):::base --> L2(["Python 3.11\n(Runtime Layer)"]):::lang
+        L2 --> L3(["pip install deps\n(Dependency Layer)"]):::deps
+        L3 --> L4(["App Code Layer\n(Top Layer)"]):::app
+    end
+
+    classDef base fill:#475569,stroke:#334155,color:#fff,font-weight:bold
+    classDef lang fill:#0f766e,stroke:#115e59,color:#fff,font-weight:bold
+    classDef deps fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef app fill:#0284c7,stroke:#0369a1,color:#fff,font-weight:bold
 ```
 
 ### What is a Container?
@@ -748,16 +757,16 @@ docker exec -it <container-name> bash
 
 ## Key Takeaways
 
-✅ **Containers** are lightweight, isolated application packages
-✅ **Containers ≠ VMs**: Containers share host OS, much lighter
-✅ **Docker** is a platform for building and running containers
-✅ **Images** are blueprints, **containers** are running instances
-✅ **Docker uses client-server architecture** with daemon
-✅ **Basic workflow**: pull image → run container → manage lifecycle
-✅ **Port mapping** connects container to host network
-✅ **docker ps** shows running containers
-✅ **docker logs** shows container output
-✅ **docker exec** runs commands in running containers
+- **Containers** are lightweight, isolated application packages
+- **Containers ≠ VMs**: Containers share host OS, much lighter
+- **Docker** is a platform for building and running containers
+- **Images** are blueprints, **containers** are running instances
+- **Docker uses client-server architecture** with daemon
+- **Basic workflow**: pull image → run container → manage lifecycle
+- **Port mapping** connects container to host network
+- **docker ps** shows running containers
+- **docker logs** shows container output
+- **docker exec** runs commands in running containers
 
 ---
 
@@ -823,10 +832,3 @@ In the next lecture, we'll dive deeper into:
 4. Try port mapping with different applications
 
 Continue to `lecture-notes/02-dockerfiles-basics.md`
-
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 90 minutes
-**Difficulty**: Beginner

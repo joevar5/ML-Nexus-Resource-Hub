@@ -14,10 +14,6 @@ By the end of this lecture, you will be able to:
 - Implement data persistence strategies
 - Troubleshoot networking and storage issues
 
-**Duration**: 120 minutes
-**Difficulty**: Intermediate
-**Prerequisites**: Lectures 01-03 (Fundamentals, Dockerfiles, Compose)
-
 ---
 
 ## Part 1: Docker Networking
@@ -75,24 +71,23 @@ docker run -d --name api --network my-bridge python:3.11
 # web can reach api at hostname "api"
 ```
 
-```
-Host Machine
-┌─────────────────────────────┐
-│  ┌───────────────────────┐  │
-│  │   Bridge Network      │  │
-│  │   (172.18.0.0/16)     │  │
-│  │  ┌────┐      ┌────┐  │  │
-│  │  │web │ ←──→ │api │  │  │
-│  │  └────┘      └────┘  │  │
-│  └───────────────────────┘  │
-└─────────────────────────────┘
+```mermaid
+graph TD
+    subgraph Host ["Host Machine"]
+        subgraph Bridge ["Bridge Network\n(172.18.0.0/16)"]
+            direction LR
+            Web(["web\nContainer"]):::container <--> Api(["api\nContainer"]):::container
+        end
+    end
+
+    classDef container fill:#0284c7,stroke:#0369a1,color:#fff,font-weight:bold
 ```
 
 **Characteristics**:
-- ✅ Best for single-host deployments
-- ✅ Network isolation
-- ✅ Container-to-container communication
-- ❌ Cannot span multiple hosts
+- Best for single-host deployments
+- Network isolation
+- Container-to-container communication
+- Cannot span multiple hosts
 
 ### Host Network
 
@@ -110,10 +105,10 @@ Container shares host network namespace
 ```
 
 **Characteristics**:
-- ✅ Best performance (no NAT)
-- ✅ No port mapping overhead
-- ❌ Port conflicts with host
-- ❌ Less isolation
+- Best performance (no NAT)
+- No port mapping overhead
+- Port conflicts with host
+- Less isolation
 
 **When to use**: High-performance requirements, monitoring tools
 
@@ -126,8 +121,8 @@ docker run -d --network none nginx
 ```
 
 **Characteristics**:
-- ✅ Maximum isolation
-- ❌ No network access at all
+- Maximum isolation
+- No network access at all
 - **Use case**: Processing sensitive data, batch jobs
 
 ### Overlay Network
@@ -139,9 +134,9 @@ docker network create -d overlay my-overlay
 ```
 
 **Characteristics**:
-- ✅ Spans multiple Docker hosts
-- ✅ Encrypted by default
-- ⚠️ Requires Docker Swarm mode
+- Spans multiple Docker hosts
+- Encrypted by default
+- Requires Docker Swarm mode
 
 ---
 
@@ -315,26 +310,19 @@ docker run -d --name web \
   nginx
 ```
 
+```mermaid
+graph TD
+    Internet(["Internet"]):::client --> Web(["web\n(Frontend Network)"]):::container
+    Web --> Api(["api\n(Frontend & Backend Networks)"]):::container
+    Api --> Db(["db\n(Backend Network)"]):::container
+    
+    Web -.-x|Blocked| Db
+
+    classDef client fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef container fill:#0284c7,stroke:#0369a1,color:#fff,font-weight:bold
 ```
-Internet
-   │
-   ↓
-┌─────────┐
-│   web   │ (frontend network)
-└─────────┘
-   │
-   ↓
-┌─────────┐
-│   api   │ (frontend + backend networks)
-└─────────┘
-   │
-   ↓
-┌─────────┐
-│   db    │ (backend network only)
-└─────────┘
 
 web CANNOT access db directly!
-```
 
 ### Pattern 2: Service Mesh
 
@@ -399,8 +387,6 @@ docker run -d --name app \
 
 ---
 
-## Part 2: Docker Volumes and Storage
-
 ## 6. Understanding Docker Storage
 
 ### Storage Architecture
@@ -423,7 +409,7 @@ docker run --name app myapp
 
 docker stop app
 docker rm app
-# Data is GONE! 💥
+# Data is GONE!
 ```
 
 ### Storage Types
@@ -514,11 +500,11 @@ docker run --rm -v /:/host alpine ls /host/var/lib/docker/volumes
 ```
 
 **Volume advantages**:
-- ✅ Docker manages location
-- ✅ Portable across hosts
-- ✅ Safer than bind mounts
-- ✅ Can be pre-populated
-- ✅ Volume drivers (NFS, cloud storage)
+- Docker manages location
+- Portable across hosts
+- Safer than bind mounts
+- Can be pre-populated
+- Volume drivers (NFS, cloud storage)
 
 ---
 
@@ -563,15 +549,15 @@ docker run -d \
 ### Bind Mount Considerations
 
 **Pros**:
-- ✅ Easy access to files on host
-- ✅ Perfect for development
-- ✅ Configuration files
+- Easy access to files on host
+- Perfect for development
+- Configuration files
 
 **Cons**:
-- ❌ Host path must exist
-- ❌ Permission issues
-- ❌ Less portable
-- ❌ Security concerns
+- Host path must exist
+- Permission issues
+- Less portable
+- Security concerns
 
 ---
 
@@ -668,10 +654,10 @@ docker run -d \
 ### Use Cases
 
 **Perfect for**:
-- 🔐 Sensitive temporary data
-- 🚀 High-performance temp files
-- 🗄️ Session data
-- 📝 Cache files
+- Sensitive temporary data
+- High-performance temp files
+- Session data
+- Cache files
 
 **Example: Secure API tokens**:
 ```bash
@@ -870,22 +856,22 @@ docker system prune -a --volumes
 
 ### Networking Best Practices
 
-✅ **Use custom networks** instead of default bridge
-✅ **Segment networks** by function (frontend, backend, data)
-✅ **Use internal networks** for sensitive services
-✅ **Name containers** for easy DNS resolution
-✅ **Document port mappings** in Compose files
-✅ **Use health checks** to verify connectivity
+- **Use custom networks** instead of default bridge
+- **Segment networks** by function (frontend, backend, data)
+- **Use internal networks** for sensitive services
+- **Name containers** for easy DNS resolution
+- **Document port mappings** in Compose files
+- **Use health checks** to verify connectivity
 
 ### Storage Best Practices
 
-✅ **Use named volumes** for production data
-✅ **Use bind mounts** for development only
-✅ **Never store secrets** in volumes
-✅ **Backup volumes** regularly
-✅ **Set resource limits** on tmpfs mounts
-✅ **Use read-only mounts** when possible
-✅ **Clean up unused volumes** periodically
+- **Use named volumes** for production data
+- **Use bind mounts** for development only
+- **Never store secrets** in volumes
+- **Backup volumes** regularly
+- **Set resource limits** on tmpfs mounts
+- **Use read-only mounts** when possible
+- **Clean up unused volumes** periodically
 
 ### Security Best Practices
 
@@ -915,21 +901,21 @@ services:
 
 ### Networking
 
-✅ **Bridge networks** isolate containers
-✅ **Containers** resolve each other by name (DNS)
-✅ **Custom networks** better than default bridge
-✅ **Network segmentation** improves security
-✅ **Port mapping** exposes services externally
-✅ **Host network** for performance, less isolation
+- **Bridge networks** isolate containers
+- **Containers** resolve each other by name (DNS)
+- **Custom networks** better than default bridge
+- **Network segmentation** improves security
+- **Port mapping** exposes services externally
+- **Host network** for performance, less isolation
 
 ### Storage
 
-✅ **Volumes** for production data persistence
-✅ **Bind mounts** for development
-✅ **tmpfs** for temporary sensitive data
-✅ **Named volumes** are Docker-managed and portable
-✅ **Backup volumes** before major changes
-✅ **Use read-only mounts** when data shouldn't change
+- **Volumes** for production data persistence
+- **Bind mounts** for development
+- **tmpfs** for temporary sensitive data
+- **Named volumes** are Docker-managed and portable
+- **Backup volumes** before major changes
+- **Use read-only mounts** when data shouldn't change
 
 ---
 
@@ -988,9 +974,3 @@ In the next lecture, we'll cover:
 
 Continue to `lecture-notes/05-best-practices.md`
 
----
-
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 120 minutes
-**Difficulty**: Intermediate

@@ -13,9 +13,6 @@ By the end of this lecture, you will be able to:
 - Apply the Twelve-Factor App principles
 - Troubleshoot common production issues
 
-**Duration**: 90-120 minutes
-**Difficulty**: Intermediate to Advanced
-**Prerequisites**: Lectures 01-04 (All previous Docker lectures)
 
 ---
 
@@ -869,16 +866,16 @@ docker network inspect myapp_network
 
 ## Key Takeaways
 
-✅ **Use specific image tags** for reproducibility
-✅ **Multi-stage builds** reduce image size
-✅ **Run as non-root user** for security
-✅ **Add health checks** for reliability
-✅ **Log to stdout** for container best practices
-✅ **Set resource limits** to prevent resource exhaustion
-✅ **Scan images** for vulnerabilities
-✅ **Use .dockerignore** to minimize build context
-✅ **Follow 12-factor principles** for cloud-native apps
-✅ **Implement graceful shutdown** for zero-downtime deployments
+- **Use specific image tags** for reproducibility
+- **Multi-stage builds** reduce image size
+- **Run as non-root user** for security
+- **Add health checks** for reliability
+- **Log to stdout** for container best practices
+- **Set resource limits** to prevent resource exhaustion
+- **Scan images** for vulnerabilities
+- **Use .dockerignore** to minimize build context
+- **Follow 12-factor principles** for cloud-native apps
+- **Implement graceful shutdown** for zero-downtime deployments
 
 ---
 
@@ -987,17 +984,6 @@ networks:
 
 ---
 
-## Congratulations!
-
-You've completed the Docker lecture series! You now have the knowledge to:
-
-- ✅ Build efficient Docker images
-- ✅ Create multi-container applications
-- ✅ Configure networking and storage
-- ✅ Apply production best practices
-- ✅ Secure your containers
-- ✅ Monitor and troubleshoot
-
 ### Next Steps
 
 1. **Practice**: Build real applications
@@ -1005,9 +991,4 @@ You've completed the Docker lecture series! You now have the knowledge to:
 3. **Projects**: Containerize your own applications
 4. **Advanced**: Learn Kubernetes for orchestration
 
----
 
-**Lecture Version**: 1.0
-**Last Updated**: October 2025
-**Estimated Time**: 90-120 minutes
-**Difficulty**: Intermediate to Advanced
