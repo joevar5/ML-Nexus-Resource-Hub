@@ -34,7 +34,7 @@ The curriculum is structured into two distinct phases to build your expertise sy
 
 Master the tools and workflows required to bring models to production, from containerization to orchestration and automated deployment pipelines.
 
-**[Start Learning: Phase 1 Learning Plan](phase-1-learning-plan.md)**
+**[Start Learning: Phase 1 Learning Plan](Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/phase-1-learning-plan.md)**
 
 *   **Learn**: Study structured modules covering Python, Linux, Docker, Kubernetes, Web APIs, and Observability.
 *   **Build**: Apply knowledge in end-to-end projects including REST API containerization, Kubernetes scaling, and CI/CD pipelines.
