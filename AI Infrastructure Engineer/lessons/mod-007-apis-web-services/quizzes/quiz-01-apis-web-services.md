@@ -445,55 +445,6 @@ D) HTTPS uses less bandwidth
 
 **Explanation:** HTTPS encrypts all data in transit using TLS/SSL, protecting credentials, tokens, and sensitive data from interception.
 
----
-
-## Answer Key
-
-### Section 1: REST API Fundamentals
-1. B - Representational State Transfer
-2. C - POST for creating resources
-3. C - Database-Driven is not a REST constraint
-4. B - 201 Created for successful creation
-5. C - Same effect with multiple requests
-6. B - 401 for unauthenticated
-7. B - PUT replaces, PATCH modifies
-8. C - `/api/users` is correct
-9. C - 429 for rate limiting
-10. A - Nested paths for hierarchy
-
-### Section 2: FastAPI Framework
-11. B - Automatic validation and docs
-12. C - Pydantic
-13. D - No default or Query(...)
-14. B - Multiple uses for DI
-15. B - @app.on_event("startup")
-16. B - background_tasks.add_task()
-17. C - Type hints and Pydantic
-18. B - Filter and validate responses
-19. B - Uvicorn/Gunicorn
-20. B - Concurrent I/O handling
-
-### Section 3: Authentication & Security
-21. B - Authentication=identity, Authorization=permissions
-22. C - bcrypt or argon2
-23. B - Header, payload, signature
-24. B - Reduce compromise window
-25. B - Control cross-origin access
-26. B - Authorization: Bearer <token>
-27. B - Prevent abuse
-28. C - X-Database-Password (not real)
-29. B - Minimum permissions
-30. B - Encryption in transit
-
----
-
-## Scoring Guide
-
-- **27-30 correct (90-100%):** Excellent! You have a strong understanding of APIs and web services.
-- **24-26 correct (80-86%):** Good! You passed with a solid grasp of the concepts.
-- **20-23 correct (67-76%):** Fair. Review the material, especially areas where you struggled.
-- **Below 20 (< 67%):** Needs improvement. Revisit the lectures and exercises before retaking.
-
 ## Next Steps
 
 After completing this quiz:

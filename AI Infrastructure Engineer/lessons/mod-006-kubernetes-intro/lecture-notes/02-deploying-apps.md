@@ -2045,21 +2045,6 @@ Service → Endpoints → Pod IPs
 - **LoadBalancer**: Cloud load balancer
 - **ExternalName**: DNS mapping
 
-### Best Practices Checklist
-
-- [ ] Set resource requests and limits
-- [ ] Implement liveness and readiness probes
-- [ ] Use specific image tags (not `latest`)
-- [ ] Run as non-root user
-- [ ] Use ConfigMaps for configuration
-- [ ] Use Secrets for sensitive data (mounted as volumes)
-- [ ] Label resources consistently
-- [ ] Use namespaces for isolation
-- [ ] Configure rolling update strategy
-- [ ] Use Pod anti-affinity for HA
-- [ ] Implement monitoring and logging
-- [ ] Document your deployments
-
 ### Next Steps
 
 Now that you can deploy applications, proceed to:

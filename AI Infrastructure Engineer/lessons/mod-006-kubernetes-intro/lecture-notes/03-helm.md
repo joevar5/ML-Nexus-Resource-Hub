@@ -114,24 +114,10 @@ helm uninstall myapp
 
 ### Helm Components
 
-```
-┌─────────────────────────────────────────┐
-│          Helm Client (CLI)              │
-│   Commands: install, upgrade, rollback  │
-└────────────────┬────────────────────────┘
-                 │
-                 │ Uses kubectl config
-                 │
-                 ▼
-┌─────────────────────────────────────────┐
-│      Kubernetes API Server              │
-└────────────────┬────────────────────────┘
-                 │
-                 ▼
-┌─────────────────────────────────────────┐
-│         Kubernetes Resources            │
-│  (Deployments, Services, ConfigMaps)    │
-└─────────────────────────────────────────┘
+```mermaid
+graph TD
+    Client["Helm Client (CLI)<br>Commands: install, upgrade, rollback"] -->|"Uses kubectl config"| API["Kubernetes API Server"]
+    API --> Resources["Kubernetes Resources<br>(Deployments, Services, ConfigMaps)"]
 ```
 
 **Key Point**: Helm 3 is client-only (no Tiller server like Helm 2). It uses your kubectl configuration to connect directly to Kubernetes.

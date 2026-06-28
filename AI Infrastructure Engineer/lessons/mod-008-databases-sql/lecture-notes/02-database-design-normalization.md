@@ -198,39 +198,38 @@ model_id (underlined) = primary key
 
 ### Example: ML Model Registry ER Diagram
 
-```
-                  1                     N
-┌─────────┐              ┌──────────────┐
-│ Models  │──────────────│ Experiments  │
-└─────────┘   has many   └──────────────┘
-│                         │
-│ model_id (PK)           │ experiment_id (PK)
-│ name                    │ model_id (FK)
-│ framework               │ accuracy
-│ version                 │ created_at
-│ created_at              │
-│                         │
-│         1               │        N
-│         │               │        │
-│         └───────────────┴────────┘
-│                 runs
-│
-│              1
-│              │
-│              │
-│         ┌────┴──────┐
-│         │           │
-│    ┌────┴────┐  ┌──┴──────────┐
-│    │ Users   │  │ Predictions │
-│    └─────────┘  └─────────────┘
-│    │            │
-│    │user_id(PK) │ prediction_id (PK)
-│    │username    │ model_id (FK)
-│    │email       │ input_data
-│                 │ prediction
-│                 │ created_at
-└─────────────────┘
-      created by
+```mermaid
+erDiagram
+    Users {
+        int user_id PK
+        string username
+        string email
+    }
+    Models {
+        int model_id PK
+        int user_id FK
+        string name
+        string framework
+        string version
+        timestamp created_at
+    }
+    Experiments {
+        int experiment_id PK
+        int model_id FK
+        float accuracy
+        timestamp created_at
+    }
+    Predictions {
+        int prediction_id PK
+        int model_id FK
+        string input_data
+        string prediction
+        timestamp created_at
+    }
+
+    Users ||--o{ Models : "created by"
+    Models ||--o{ Experiments : "runs"
+    Models ||--o{ Predictions : "serves"
 ```
 
 ### Cardinality Notations
@@ -1228,9 +1227,3 @@ In the next lecture, we'll cover:
 - Query optimization techniques
 - Indexing strategies
 - Query execution plans
-
----
-
-**Estimated Study Time:** 4-5 hours
-**Hands-on Practice:** Complete Exercise 02: Database Design
-**Assessment:** Quiz questions cover ER diagrams and normalization

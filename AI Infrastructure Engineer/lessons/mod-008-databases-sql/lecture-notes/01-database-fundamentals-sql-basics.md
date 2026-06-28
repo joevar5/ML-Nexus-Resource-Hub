@@ -41,8 +41,6 @@ By the end of this lecture, you will:
 - Command-line proficiency
 - Understanding of data structures (arrays, dictionaries)
 
-### Estimated Time
-4-5 hours (including hands-on practice)
 
 ## What is a Database?
 
@@ -1103,16 +1101,3 @@ In the next lecture, we'll cover:
 - Relationships (one-to-many, many-to-many)
 - Entity-Relationship diagrams
 - Schema design for ML systems
-
-### Practice Exercises
-
-1. Create a database for tracking your ML experiments
-2. Write queries to find your best-performing models
-3. Design a schema for prediction logging
-4. Practice filtering with complex WHERE clauses
-
----
-
-**Estimated Study Time:** 4-5 hours
-**Hands-on Practice:** Complete Exercise 01: SQL Basics
-**Assessment:** Quiz 01 covers database fundamentals and basic SQL

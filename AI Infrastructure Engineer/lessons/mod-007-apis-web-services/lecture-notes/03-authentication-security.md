@@ -44,8 +44,6 @@ By the end of this lecture, you will:
 - Basic understanding of cryptography concepts
 - HTTP protocol knowledge
 
-### Estimated Time
-4-5 hours (including hands-on implementation)
 
 ## Security Fundamentals
 
@@ -572,32 +570,27 @@ OAuth2 is an authorization framework that enables third-party applications to ob
 3. **Authorization Server**: Issues tokens
 4. **Resource Server**: Hosts protected resources
 
+<style>
+.messageText {
+    fill: var(--color-on-background) !important;
+}
+</style>
+
 **Flow:**
 
-```
-┌──────────┐                               ┌─────────────┐
-│  Client  │                               │   Resource  │
-│          │                               │    Owner    │
-└────┬─────┘                               └──────┬──────┘
-     │                                             │
-     │  1. Authorization Request                   │
-     │────────────────────────────────────────────>│
-     │                                             │
-     │  2. Authorization Grant                     │
-     │<────────────────────────────────────────────│
-     │                                             │
-     │  3. Authorization Grant                     │
-     │────────────────────────────>┌──────────────┴───┐
-     │                             │  Authorization   │
-     │  4. Access Token            │     Server       │
-     │<────────────────────────────┤                  │
-     │                             └──────────────────┘
-     │  5. Access Token            ┌──────────────────┐
-     │────────────────────────────>│   Resource       │
-     │                             │    Server        │
-     │  6. Protected Resource      │                  │
-     │<────────────────────────────┤                  │
-     │                             └──────────────────┘
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant RO as Resource Owner
+    participant AS as Authorization Server
+    participant RS as Resource Server
+
+    C->>RO: 1. Authorization Request
+    RO->>C: 2. Authorization Grant
+    C->>AS: 3. Authorization Grant
+    AS->>C: 4. Access Token
+    C->>RS: 5. Access Token
+    RS->>C: 6. Protected Resource
 ```
 
 ### FastAPI OAuth2 Implementation
@@ -650,6 +643,10 @@ async def auth_google(request: Request):
     user = await oauth.google.parse_id_token(request, token)
     return {"user": user}
 ```
+
+## Implementing Authentication in FastAPI
+
+Combining the authentication patterns covered above, here's how to build a complete authentication system in FastAPI. The key components are: user registration with secure password hashing, login with JWT token issuance, and dependency injection for protecting routes.
 
 ## Password Security
 
@@ -869,13 +866,26 @@ Security feature that restricts which origins can access your API.
 
 Without CORS configuration, the browser blocks the request.
 
-### CORS Headers
+### CORS Execution Flow
 
-```http
-Access-Control-Allow-Origin: https://app.example.com
-Access-Control-Allow-Methods: GET, POST, PUT, DELETE
-Access-Control-Allow-Headers: Content-Type, Authorization
-Access-Control-Max-Age: 3600
+Here is the step-by-step flow of a cross-origin request and how the browser and server validate permissions:
+
+```mermaid
+graph TD
+    User([User]) -->|"Opens https://app.example.com"| Browser[Browser]
+    Browser -->|"Executes JavaScript"| Fetch["fetch('https://api.example.com/users')"]
+    Fetch -->|"Compare origins"| CheckSameOrigin{Same Origin?}
+    CheckSameOrigin -->|Yes| SendNormal[Send request normally]
+    CheckSameOrigin -->|No| AddOrigin["Add Origin header:<br>Origin: https://app.example.com"]
+    AddOrigin --> Server[API Server]
+    Server -->|"Receives request"| CheckCORS{CORSMiddleware checks:<br>Is this origin allowed?}
+    CheckCORS -->|Yes| AddCORSHeader["Add header:<br>Access-Control-Allow-Origin:<br>https://app.example.com"]
+    CheckCORS -->|No| NoCORSHeader[Do not add CORS headers]
+    AddCORSHeader --> BrowserResp[Browser receives response]
+    NoCORSHeader --> BrowserResp
+    BrowserResp -->|"Compare Origin vs<br>Access-Control-Allow-Origin"| CheckMatch{Match?}
+    CheckMatch -->|Yes| Success[JavaScript receives JSON]
+    CheckMatch -->|No| Error[Browser blocks response<br>and reports a CORS error]
 ```
 
 ### Implementing CORS in FastAPI
@@ -899,36 +909,6 @@ app.add_middleware(
 )
 ```
 
-### Development Configuration
-
-```python
-# WARNING: Only for development!
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-```
-
-### Production Configuration
-
-```python
-import os
-
-# Load allowed origins from environment
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "X-API-Key"],
-    max_age=3600,
-)
-```
 
 ## Rate Limiting and Throttling
 
@@ -1327,52 +1307,46 @@ async def predict(
 ### Security Checklist
 
 **Authentication & Authorization:**
-- [ ] Use HTTPS for all endpoints
-- [ ] Implement proper authentication (JWT, OAuth2)
-- [ ] Hash passwords with bcrypt or argon2
-- [ ] Implement role-based access control
-- [ ] Use API keys for service-to-service communication
-- [ ] Implement token expiration and refresh
+- Use HTTPS for all endpoints
+- Implement proper authentication (JWT, OAuth2)
+- Hash passwords with bcrypt or argon2
+- Implement role-based access control
+- Use API keys for service-to-service communication
+- Implement token expiration and refresh
 
 **Input Validation:**
-- [ ] Validate all inputs with Pydantic
-- [ ] Sanitize user inputs
-- [ ] Implement file upload restrictions
-- [ ] Check for SQL injection vulnerabilities
-- [ ] Prevent command injection
-- [ ] Protect against path traversal
+- Validate all inputs with Pydantic
+- Sanitize user inputs
+- Implement file upload restrictions
+- Check for SQL injection vulnerabilities
+- Prevent command injection
+- Protect against path traversal
 
 **Rate Limiting:**
-- [ ] Implement rate limiting per user/IP
-- [ ] Set appropriate limits for each endpoint
-- [ ] Return rate limit headers
-- [ ] Handle rate limit exceeded gracefully
+- Implement rate limiting per user/IP
+- Set appropriate limits for each endpoint
+- Return rate limit headers
+- Handle rate limit exceeded gracefully
 
 **Headers & CORS:**
-- [ ] Configure CORS properly
-- [ ] Set security headers
-- [ ] Implement CSP policy
-- [ ] Use HSTS for HTTPS enforcement
+- Configure CORS properly
+- Set security headers
+- Implement CSP policy
+- Use HSTS for HTTPS enforcement
 
 **Monitoring & Logging:**
-- [ ] Log authentication attempts
-- [ ] Log authorization failures
-- [ ] Monitor for suspicious activity
-- [ ] Set up alerts for security events
-- [ ] Implement audit logging
-
-**Dependencies:**
-- [ ] Keep dependencies updated
-- [ ] Scan for vulnerabilities
-- [ ] Use verified packages only
-- [ ] Pin dependency versions
+- Log authentication attempts
+- Log authorization failures
+- Monitor for suspicious activity
+- Set up alerts for security events
+- Implement audit logging
 
 **ML-Specific:**
-- [ ] Validate model inputs
-- [ ] Implement resource limits
-- [ ] Protect model files
-- [ ] Handle adversarial inputs
-- [ ] Mask PII in logs
+- Validate model inputs
+- Implement resource limits
+- Protect model files
+- Handle adversarial inputs
+- Mask PII in logs
 
 ## Summary and Key Takeaways
 
@@ -1433,9 +1407,3 @@ async def predict(
 - [FastAPI Security Documentation](https://fastapi.tiangolo.com/tutorial/security/)
 - [JWT.io](https://jwt.io/)
 - [OAuth 2.0 Simplified](https://www.oauth.com/)
-
----
-
-**Estimated Study Time**: 4-5 hours
-**Hands-on Practice**: Complete Exercise 02: Authentication & Security
-**Assessment**: Quiz covers authentication, authorization, and security best practices

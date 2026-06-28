@@ -637,8 +637,3 @@ public_cors = CORSMiddleware(
 - Exercise 05: Deploy API with Docker and NGINX
 - Learn about API gateway patterns
 
----
-
-**Estimated Time:** 2-3 hours
-**Difficulty:** Intermediate
-**Focus:** Rate limiting, CORS, security headers, production hardening

@@ -1240,19 +1240,40 @@ Time  Component             Action
 
 Production clusters run multiple control plane nodes:
 
-```
-       Load Balancer (API Server endpoint)
-                 │
-        ┌────────┼────────┐
-        ▼        ▼        ▼
-    API Srv  API Srv  API Srv
-        │        │        │
-        └────────┼────────┘
-                 │
-           ┌─────┴─────┐
-           ▼           ▼           ▼
-        etcd-1      etcd-2      etcd-3
-      (Raft leader) (follower) (follower)
+```mermaid
+graph TB
+    LB(["Load Balancer\n(API Server endpoint)"]):::lb
+    
+    subgraph APIS ["API Server Layer"]
+        API1(["API Server 1"]):::control
+        API2(["API Server 2"]):::control
+        API3(["API Server 3"]):::control
+    end
+    
+    Net{{"Internal Network / etcd Cluster Port (2379)"}}:::net
+    
+    subgraph ETCD ["etcd Cluster"]
+        etcd1(["etcd-1\n(Raft leader)"]):::store
+        etcd2(["etcd-2\n(follower)"]):::store
+        etcd3(["etcd-3\n(follower)"]):::store
+    end
+    
+    LB --> API1
+    LB --> API2
+    LB --> API3
+    
+    API1 --> Net
+    API2 --> Net
+    API3 --> Net
+    
+    Net --> etcd1
+    Net --> etcd2
+    Net --> etcd3
+
+    classDef lb fill:#475569,stroke:#64748b,color:#fff,font-weight:bold
+    classDef control fill:#1e40af,stroke:#3b82f6,color:#fff,font-weight:bold
+    classDef store fill:#0f766e,stroke:#14b8a6,color:#fff,font-weight:bold
+    classDef net fill:#334155,stroke:#475569,color:#fff,font-weight:bold
 ```
 
 **Key Points**:

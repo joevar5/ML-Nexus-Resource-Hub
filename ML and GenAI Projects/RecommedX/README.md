@@ -97,6 +97,12 @@ graph LR
 
 ---
 
+<style>
+.messageText {
+    fill: var(--color-on-background) !important;
+}
+</style>
+
 ### Data Flow Architecture
 
 ```mermaid

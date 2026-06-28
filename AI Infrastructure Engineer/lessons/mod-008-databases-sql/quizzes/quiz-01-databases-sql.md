@@ -682,6 +682,4 @@ D) Prevents all database writes
 **Correct Answer:** A
 **Explanation:** `autoflush=False` gives explicit control over flush timing but requires developers to call `flush()` manually.
 
----
 
-**End of Quiz** – Review your answers and submit when ready. Good luck!

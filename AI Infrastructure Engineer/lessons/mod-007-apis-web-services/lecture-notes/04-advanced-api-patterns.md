@@ -866,14 +866,6 @@ async def get_job_status(job_id: str):
    - Return job ID immediately
    - Provide status endpoint
 
-### Practical Skills Gained
-
-✅ Version APIs to manage breaking changes
-✅ Implement high-performance gRPC services
-✅ Add rate limiting to protect ML resources
-✅ Cache predictions to reduce latency and cost
-✅ Use API gateways for centralized management
-✅ Handle long-running training jobs asynchronously
 
 ### Next Steps
 
@@ -890,8 +882,3 @@ async def get_job_status(job_id: str):
 - [Kong API Gateway](https://konghq.com/)
 - [FastAPI Background Tasks](https://fastapi.tiangolo.com/tutorial/background-tasks/)
 
----
-
-**Congratulations!** You now understand advanced API patterns and production strategies for building scalable, high-performance ML APIs.
-
-**Next Lecture**: Module 008 - Databases & SQL

@@ -14,7 +14,7 @@ In this exercise, you'll build a basic REST API for managing ML models metadata 
 
 ## Learning Objectives
 
-By completing this exercise, you will:
+By completing this exercise, you will
 - Set up a FastAPI project from scratch
 - Implement CRUD operations following REST principles
 - Use proper HTTP methods and status codes
@@ -639,8 +639,3 @@ After completing this exercise, you should understand:
 - Exercise 03: Add JWT authentication to your API
 - Exercise 04: Deploy your API to production
 
----
-
-**Estimated Completion Time:** 2-3 hours
-**Difficulty:** Beginner
-**Focus:** REST API fundamentals, FastAPI basics, CRUD operations

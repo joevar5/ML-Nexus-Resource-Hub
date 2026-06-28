@@ -45,8 +45,6 @@ By the end of this lecture, you will:
 - Understanding of Python type hints
 - Basic async/await concepts (helpful but not required)
 
-### Estimated Time
-4-5 hours (including hands-on coding)
 
 ## What is FastAPI?
 
@@ -1357,19 +1355,3 @@ In the next lecture, we'll cover **Authentication & Security**, including:
 - Rate limiting
 - Input sanitization
 - HTTPS and security headers
-
-### Practice Exercise
-
-Build a complete model serving API:
-1. Load a scikit-learn model
-2. Create prediction endpoints
-3. Add health checks
-4. Implement error handling
-5. Write tests
-6. Add documentation
-
----
-
-**Estimated Study Time**: 4-5 hours
-**Hands-on Practice**: Complete Exercise 01 and 02
-**Assessment**: Quiz will cover FastAPI concepts and practical implementation

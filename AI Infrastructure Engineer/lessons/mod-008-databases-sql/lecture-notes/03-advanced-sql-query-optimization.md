@@ -35,12 +35,9 @@ By the end of this lecture, you will:
 - Lecture 02: Database Design & Normalization
 - Proficiency with basic SQL (SELECT, WHERE, INSERT, UPDATE, DELETE)
 
-### Estimated Time
-5-6 hours (including hands-on optimization exercises)
-
 ## JOINs in Depth
 
-###Schema for Examples
+### Schema for Examples
 
 ```sql
 -- Models table
@@ -862,38 +859,100 @@ CREATE INDEX idx_experiments_model_id ON experiments(model_id);
 
 ### Pattern 1: Pivot Table (Metrics by Model)
 
+Pivot rows (entity-attribute-value format) into columns. This is common when metrics are logged as key-value rows but you want to view them per model in a flat structure.
+
+#### Example
+
+**Before (Raw Metrics):**
+
+| model_id | metric_name | metric_value |
+| -------- | ----------- | -----------: |
+| 101      | accuracy    |         0.92 |
+| 101      | precision   |         0.90 |
+| 102      | accuracy    |         0.94 |
+| 102      | precision   |         0.93 |
+
+**SQL Query:**
+
 ```sql
--- Pivot metrics from rows to columns
 SELECT
     model_id,
     MAX(CASE WHEN metric_name = 'accuracy' THEN metric_value END) AS accuracy,
-    MAX(CASE WHEN metric_name = 'precision' THEN metric_value END) AS precision,
-    MAX(CASE WHEN metric_name = 'recall' THEN metric_value END) AS recall,
-    MAX(CASE WHEN metric_name = 'f1_score' THEN metric_value END) AS f1_score
+    MAX(CASE WHEN metric_name = 'precision' THEN metric_value END) AS precision
 FROM experiment_metrics
 GROUP BY model_id;
 ```
 
+**After (Pivoted Table):**
+
+| model_id | accuracy | precision |
+| -------- | -------: | --------: |
+| 101      |     0.92 |      0.90 |
+| 102      |     0.94 |      0.93 |
+
+**Summary:**
+* **Before:** Metrics are stored as key-value rows (multiple rows per model).
+* **After:** One row per model, with metric values spread across columns.
+
+---
+
 ### Pattern 2: Cohort Analysis
 
+Analyze group (cohort) behavior over time. For example, grouping models by the month they were created and their framework to observe training trends.
+
+#### Example
+
+**Before (Raw Data):**
+
+| model_id | created_at | framework  | accuracy |
+| -------- | ---------- | ---------- | -------: |
+| 101      | 2024-01-05 | PyTorch    |     0.92 |
+| 102      | 2024-01-10 | PyTorch    |     0.94 |
+| 103      | 2024-01-15 | TensorFlow |     0.91 |
+
+**SQL Query:**
+
 ```sql
--- Analyze model performance by training month
 SELECT
-    DATE_TRUNC('month', created_at) AS training_month,
+    DATE_TRUNC('month', created_at) AS month,
     framework,
     COUNT(*) AS models_trained,
-    AVG(accuracy) AS avg_accuracy,
-    MAX(accuracy) AS best_accuracy
+    AVG(accuracy) AS avg_accuracy
 FROM models
-WHERE created_at >= '2024-01-01'
-GROUP BY training_month, framework
-ORDER BY training_month, framework;
+GROUP BY month, framework;
 ```
+
+**After (Aggregated Cohort):**
+
+| month      | framework  | models_trained | avg_accuracy |
+| ---------- | ---------- | -------------: | -----------: |
+| 2024-01-01 | PyTorch    |              2 |         0.93 |
+| 2024-01-01 | TensorFlow |              1 |         0.91 |
+
+**Summary:**
+* **Before:** One row = one model record.
+* **After:** One row = one **month + framework** summary (cohort).
+
+---
 
 ### Pattern 3: Percentile Analysis
 
+Calculate percentiles (like p95 or p99) to measure performance thresholds. For instance, calculating the 95th percentile (p95) of inference latency per model to check SLA compliance.
+
+#### Example
+
+**Before (predictions):**
+
+| model_id | latency_ms |
+| -------- | ---------: |
+| 101      |         10 |
+| 101      |         15 |
+| 101      |         20 |
+| 101      |        200 |
+
+**SQL Query:**
+
 ```sql
--- Find 95th percentile inference latency
 SELECT
     model_id,
     PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY latency_ms) AS p95_latency
@@ -901,26 +960,81 @@ FROM predictions
 GROUP BY model_id;
 ```
 
+**After (Percentiles):**
+
+| model_id | p95_latency |
+| -------- | ----------: |
+| 101      |       173.7 |
+
+**Summary:**
+* **Before:** Multiple prediction rows with separate execution latencies.
+* **After:** One row per model showing its 95th percentile threshold (excluding rare latency spikes).
+
+---
+
 ### Pattern 4: Time Series Aggregation
 
+Calculate time-based aggregate values, such as rolling or moving averages. This is very common for tracking prediction volumes or inference patterns over time.
+
+#### Example
+
+**Before (predictions):**
+
+| created_at          |
+| ------------------- |
+| 2024-01-01 10:00:00 |
+| 2024-01-01 11:30:00 |
+| 2024-01-02 09:15:00 |
+| 2024-01-03 14:00:00 |
+| 2024-01-03 15:45:00 |
+
+**SQL Query:**
+
 ```sql
--- Daily prediction counts with 7-day moving average
 SELECT
     DATE(created_at) AS date,
     COUNT(*) AS predictions_count,
     AVG(COUNT(*)) OVER (
         ORDER BY DATE(created_at)
-        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
-    ) AS moving_avg_7d
+        ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+    ) AS moving_avg_2d
 FROM predictions
-GROUP BY DATE(created_at)
-ORDER BY date;
+GROUP BY DATE(created_at);
 ```
+
+**After (Daily Predictions + Moving Average):**
+
+| date       | predictions_count | moving_avg_2d |
+| ---------- | ----------------: | ------------: |
+| 2024-01-01 |                 2 |           2.0 |
+| 2024-01-02 |                 1 |           1.5 |
+| 2024-01-03 |                 2 |           1.5 |
+
+**Summary:**
+* **Before:** Raw prediction records with timestamps.
+* **After:** Aggregated daily prediction counts alongside a moving average of the last 2 days.
+
+---
 
 ### Pattern 5: Finding Outliers
 
+Identify anomalies in a dataset by finding values that deviate significantly (e.g. more than 2 standard deviations) from the mean.
+
+#### Example
+
+**Before (experiments):**
+
+| exp_id | accuracy | model_id |
+| ------ | -------- | -------: |
+| 1      | 0.90     |      101 |
+| 2      | 0.91     |      101 |
+| 3      | 0.89     |      101 |
+| 4      | 0.90     |      101 |
+| 5      | 0.50     |      101 |
+
+**SQL Query:**
+
 ```sql
--- Find experiments with anomalous results (> 2 std devs from mean)
 WITH stats AS (
     SELECT
         AVG(accuracy) AS mean_accuracy,
@@ -931,6 +1045,16 @@ SELECT e.exp_id, e.accuracy, e.model_id
 FROM experiments e, stats s
 WHERE ABS(e.accuracy - s.mean_accuracy) > 2 * s.stddev_accuracy;
 ```
+
+**After (Outliers):**
+
+| exp_id | accuracy | model_id |
+| ------ | -------- | -------: |
+| 5      | 0.50     |      101 |
+
+**Summary:**
+* **Before:** Raw list of all experiment results.
+* **After:** Only anomalous experiment results that significantly deviate from the average performance.
 
 ## Best Practices
 
@@ -1056,8 +1180,3 @@ In the next lecture, we'll cover:
 - Transaction management
 - Integration patterns for ML applications
 
----
-
-**Estimated Study Time:** 5-6 hours
-**Hands-on Practice:** Complete Exercise 03: Advanced SQL Queries
-**Assessment:** Quiz covers JOINs, aggregations, window functions, and optimization

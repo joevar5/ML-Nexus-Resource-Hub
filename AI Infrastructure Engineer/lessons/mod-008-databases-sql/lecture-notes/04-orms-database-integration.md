@@ -38,8 +38,6 @@ By the end of this lecture, you will:
 - Python programming proficiency
 - Understanding of classes and objects in Python
 
-### Estimated Time
-4-5 hours (including hands-on ORM practice)
 
 ## What is an ORM?
 
@@ -113,6 +111,11 @@ with Session(engine) as session:
     for model in pytorch_models:
         print(f"{model.name} ({model.framework})")
 ```
+```mermaid
+graph TD
+    Objects["Python Objects"] --> ORM["ORM (SQLAlchemy)"]
+    ORM --> DB["SQL Database (PostgreSQL)"]
+```
 
 **Benefits:**
 - Pythonic code
@@ -164,7 +167,7 @@ with Session(engine) as session:
 ├─────────────────────────────────────┤
 │  Engine (Connection Pool)           │
 ├─────────────────────────────────────┤
-│  DBAPI (psycopg2, sqlite3, etc.)   │
+│  DBAPI (psycopg2, sqlite3, etc.)    │
 ├─────────────────────────────────────┤
 │  Database (PostgreSQL, MySQL, etc.) │
 └─────────────────────────────────────┘
@@ -1118,23 +1121,3 @@ SessionLocal.remove()  # Close session
 - Bulk operations
 - Performance-critical queries
 - Database-specific features needed
-
-### Next Steps
-
-You now have all the database knowledge needed for ML infrastructure:
-- SQL basics and advanced queries
-- Database design and normalization
-- Query optimization
-- ORM integration
-
-**Practice by building:**
-- Model registry application
-- Experiment tracking system
-- Prediction logging service
-- Dataset management tool
-
----
-
-**Estimated Study Time:** 4-5 hours
-**Hands-on Practice:** Complete Exercise 04: SQLAlchemy ORM
-**Final Assessment:** Module quiz covers all 4 lectures

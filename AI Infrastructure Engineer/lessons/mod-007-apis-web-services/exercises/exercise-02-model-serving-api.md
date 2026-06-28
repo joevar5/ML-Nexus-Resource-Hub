@@ -769,8 +769,3 @@ async def predict_async(
 - Exercise 04: Deploy API with Docker
 - Exercise 05: Add monitoring and logging
 
----
-
-**Estimated Time:** 3-4 hours
-**Difficulty:** Intermediate
-**Focus:** ML model serving, JWT authentication, production patterns

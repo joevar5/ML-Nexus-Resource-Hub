@@ -39,9 +39,6 @@ By the end of this lecture, you will:
 - Python fundamentals
 - Comfort with JSON
 
-### Estimated Time
-3 hours (including hands-on exercises)
-
 ---
 
 ## What Is NoSQL?
@@ -402,26 +399,23 @@ The right question is rarely "is this database consistent?" It is **"what consis
 
 Mature ML platforms typically use several databases together:
 
-```
-              ┌────────────────────────────────────────────┐
-              │                                            │
-   ┌──────────┴──────────┐                  ┌──────────────┴──────────────┐
-   │  PostgreSQL          │                  │  Redis                       │
-   │  user / billing      │                  │  online features,            │
-   │  source-of-truth     │                  │  rate limiting, cache        │
-   └──────────┬──────────┘                  └──────────────┬──────────────┘
-              │                                            │
-   ┌──────────┴──────────┐                  ┌──────────────┴──────────────┐
-   │  MongoDB             │                  │  Vector DB (Qdrant/pgvector)│
-   │  experiment metadata │                  │  embedding similarity        │
-   │  model artifact catalog                 │  for RAG / recsys           │
-   └──────────────────────┘                  └──────────────────────────────┘
-              │
-   ┌──────────┴──────────┐
-   │  S3 / GCS / Blob     │
-   │  model files, raw    │
-   │  data, large logs    │
-   └──────────────────────┘
+```mermaid
+graph TD
+    subgraph CoreStorage ["Core & Object Storage"]
+        PG["PostgreSQL<br>• User & billing<br>• Source-of-truth"]
+        Mongo["MongoDB<br>• Experiment metadata<br>• Model artifact catalog"]
+        Blob["Object Storage (S3 / GCS)<br>• Model files & weights<br>• Raw data & large logs"]
+        
+        PG --> Mongo
+        Mongo --> Blob
+    end
+
+    subgraph FastServing ["Fast Serving & Search"]
+        Redis["Redis<br>• Online feature store<br>• Rate limiting & caching"]
+        VectorDB["Vector DB (Qdrant / pgvector)<br>• Embedding similarity search<br>• RAG & Recommendation Systems"]
+        
+        Redis --> VectorDB
+    end
 ```
 
 This is **polyglot persistence**: pick the right store per access pattern. The cost is operational complexity and data-consistency coordination across stores. The benefit is workloads that no single database can serve well.

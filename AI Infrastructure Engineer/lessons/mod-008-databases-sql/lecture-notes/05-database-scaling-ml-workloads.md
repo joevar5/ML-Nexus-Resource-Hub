@@ -44,9 +44,9 @@ By the end of this lecture, you will:
 Vertical Scaling (Scale Up):
 ┌─────────────────────────────┐
 │  Bigger Database Server     │
-│  ├── 4 CPUs  → 32 CPUs     │
-│  ├── 16GB RAM → 256GB RAM  │
-│  └── 1TB SSD → 10TB SSD    │
+│  ├── 4 CPUs  → 32 CPUs      │
+│  ├── 16GB RAM → 256GB RAM   │
+│  └── 1TB SSD → 10TB SSD     │
 └─────────────────────────────┘
 
 Pros: Simple, no code changes
@@ -89,6 +89,8 @@ Solution: Different databases for different workloads!
 ---
 
 ## 2. Read Replicas and Replication
+
+Replication is the process of copying data from one database server (the **Master** or **Primary**) to one or more database servers (the **Replicas**). In AI/ML infrastructure, read replicas are critical for offloading heavy read workloads (like training data extraction and evaluation queries) from the primary database that handles real-time writes (like production prediction logs).
 
 ### Master-Replica Architecture
 
@@ -208,6 +210,8 @@ if lag[2] > 1000000:  # 1MB lag
 ---
 
 ## 3. Database Sharding
+
+Sharding is a method of horizontal scaling that involves partitioning a single logical database into multiple physical databases (called **shards**). Each shard runs on a separate database server and holds a subset of the overall data. In high-scale ML applications, sharding is commonly used when a single table (such as prediction logs or training features) grows too large for one server's storage and processing capacity.
 
 ### What is Sharding?
 
@@ -369,6 +373,8 @@ total = asyncio.run(get_total_count_parallel())
 ---
 
 ## 4. Caching Strategies
+
+Caching is the process of storing copies of frequently accessed data in a fast, temporary storage layer (like Redis or Memcached) to reduce database load and latency. In ML systems, caching is highly effective for storing static features (e.g., user profiles, item catalog data) and precomputed model predictions, enabling sub-millisecond response times for real-time inference pipelines.
 
 ### Why Cache for ML?
 
@@ -633,12 +639,13 @@ engine = create_engine(
 
 ### Practical Skills Gained
 
-✅ Set up read replicas for scaling reads
-✅ Implement database sharding strategies
-✅ Use Redis caching to reduce latency
-✅ Choose appropriate NoSQL databases
-✅ Work with time-series and vector databases
-✅ Optimize database performance
+- Set up read replicas for scaling reads
+- Implement database sharding strategies
+- Use Redis caching to reduce latency
+- Choose appropriate NoSQL databases
+- Work with time-series and vector databases
+- Optimize database performance
+- Implement connection pooling to manage concurrent queries
 
 ### Next Steps
 
@@ -655,8 +662,3 @@ engine = create_engine(
 - [InfluxDB for ML Metrics](https://www.influxdata.com/)
 - [Pinecone Vector Database](https://www.pinecone.io/)
 
----
-
-**Congratulations!** You now understand how to scale databases for ML workloads, from read replicas and sharding to specialized NoSQL databases for different ML data types.
-
-**Module Complete!**

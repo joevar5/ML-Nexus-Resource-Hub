@@ -699,8 +699,4 @@ async def websocket_job_updates(websocket: WebSocket, job_id: str):
 - Learn about Celery and RabbitMQ for production queues
 - Implement WebSocket for real-time bidirectional communication
 
----
 
-**Estimated Time:** 2-3 hours
-**Difficulty:** Intermediate-Advanced
-**Focus:** Async operations, background tasks, job queues, streaming

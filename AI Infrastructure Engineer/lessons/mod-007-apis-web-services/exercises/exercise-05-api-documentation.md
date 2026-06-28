@@ -721,9 +721,3 @@ def test_security_scheme_documented():
 - Implement changelog tracking
 - Create interactive tutorials
 - Set up documentation site (Docusaurus, MkDocs)
-
----
-
-**Estimated Time:** 1-2 hours
-**Difficulty:** Beginner-Intermediate
-**Focus:** API documentation, OpenAPI, examples, client generation

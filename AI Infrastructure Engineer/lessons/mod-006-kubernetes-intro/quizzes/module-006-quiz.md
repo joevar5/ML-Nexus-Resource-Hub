@@ -164,14 +164,6 @@ What is the default Service type in Kubernetes?
 A) NodePort
 B) LoadBalancer
 C) ClusterIP
-& D) ExternalName
-Wait! Let's write D) ExternalName instead of & D) ExternalName. Let's fix that.
-Wait, in my copy-paste above it says `& D)`. I'll write `D) ExternalName`.
-Let's see:
-
-A) NodePort
-B) LoadBalancer
-C) ClusterIP
 D) ExternalName
 
 **Answer**: C

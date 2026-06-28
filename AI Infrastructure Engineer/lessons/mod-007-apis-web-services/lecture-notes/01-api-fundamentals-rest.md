@@ -38,9 +38,6 @@ By the end of this lecture, you will:
 - Basic understanding of client-server architecture
 - Familiarity with JSON data format
 
-### Estimated Time
-4-5 hours (including hands-on examples)
-
 ## What is an API?
 
 ### Definition
@@ -225,11 +222,9 @@ The client and server are **separate** concerns:
 - Better scalability
 - Simpler components
 
-```
-┌─────────┐                    ┌─────────┐
-│ Client  │ ←─── HTTP ────→ │ Server  │
-│ (React) │                    │ (Python)│
-└─────────┘                    └─────────┘
+```mermaid
+graph LR
+    Client["Client<br>(React)"] <-->|"HTTP"| Server["Server<br>(Python)"]
 ```
 
 #### 2. Stateless
@@ -336,7 +331,7 @@ The architecture can be composed of hierarchical layers, with each layer only aw
 ┌──────────────┐
 │  Client      │
 ├──────────────┤
-│  Load Balancer│
+│ Load Balancer│
 ├──────────────┤
 │  API Gateway │
 ├──────────────┤
@@ -1337,7 +1332,3 @@ In the next lecture, we'll dive deep into **FastAPI**, a modern Python framework
 - [RESTful API Design Best Practices](https://restfulapi.net/)
 
 ---
-
-**Estimated Study Time**: 4-5 hours
-**Hands-on Practice**: Complete Exercise 01 to build your first REST API
-**Assessment**: Quiz 01 covers all concepts from this lecture

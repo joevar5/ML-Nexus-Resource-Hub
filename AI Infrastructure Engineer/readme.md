@@ -23,11 +23,9 @@ Most online guides are either **purely theoretical** or **locked behind incredib
 The curriculum is structured into two distinct phases to build your expertise systematically from the ground up:
 
 *   **Phase 1: Core AI Infrastructure & Foundations (Kickstarter Level):** Master ML model deployment, containerization, cluster orchestration, robust data pipelines, and CI/CD.
-
-$$
-\Large\Downarrow
-$$
-
+    
+    <div style="text-align: center; font-size: 26px; margin: 18px 0; color: var(--color-primary); text-shadow: 0 0 8px var(--color-primary), 0 0 15px var(--color-primary); line-height: 1; font-weight: bold;">↓</div>
+    
 *   **Phase 2: Advanced AI Infrastructure:** Deep-dive into advanced cloud provisioning, multi-GPU configurations, and distributed training architectures.
 
 ---
