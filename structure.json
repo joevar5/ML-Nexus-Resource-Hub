@@ -4,131 +4,37 @@
     "type": "directory",
     "children": [
       {
-        "name": "assessments",
+        "name": "Introduction",
         "type": "directory",
         "children": [
           {
-            "name": "practical-exams",
-            "type": "directory",
-            "children": [
-              {
-                "name": "Final Practical Exam",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/assessments/practical-exams/final-practical.md"
-              },
-              {
-                "name": "Midterm Practical Exam",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/assessments/practical-exams/midterm-practical.md"
-              }
-            ]
-          },
-          {
-            "name": "quizzes",
-            "type": "directory",
-            "children": [
-              {
-                "name": "Prerequisites Quiz",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/assessments/quizzes/prerequisites-quiz.md"
-              }
-            ]
-          },
-          {
-            "name": "rubrics",
-            "type": "directory",
-            "children": [
-              {
-                "name": "Project Assessment Rubrics",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/assessments/rubrics/project-rubrics.md"
-              }
-            ]
-          },
-          {
-            "name": "Assessment Overview",
+            "name": "AI Infrastructure Engineer Learning Repository",
             "type": "file",
-            "path": "AI Infrastructure Engineer/assessments/README.md"
+            "path": "AI Infrastructure Engineer/Introduction/readme.md"
           }
         ]
       },
       {
-        "name": "lessons",
+        "name": "Phase 1 - Core AI Infrastructure & Foundations",
         "type": "directory",
         "children": [
           {
-            "name": "mod-001-python-fundamentals",
+            "name": "assessments",
             "type": "directory",
             "children": [
               {
-                "name": "exercises",
+                "name": "practical-exams",
                 "type": "directory",
                 "children": [
                   {
-                    "name": "Exercise 01: Python Environment Setup & Automation",
+                    "name": "Final Practical Exam",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/exercises/exercise-01-environment-setup.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/assessments/practical-exams/final-practical.md"
                   },
                   {
-                    "name": "Exercise 02: Python Data Structures for ML Data",
+                    "name": "Midterm Practical Exam",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/exercises/exercise-02-data-structures.md"
-                  },
-                  {
-                    "name": "Exercise 03: Reusable ML Utilities & Modules",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/exercises/exercise-03-functions-modules.md"
-                  },
-                  {
-                    "name": "Exercise 04: Reading and Writing ML Data Files",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/exercises/exercise-04-file-io.md"
-                  },
-                  {
-                    "name": "Exercise 05: Robust Exception Handling in ML Pipelines",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/exercises/exercise-05-error-handling.md"
-                  },
-                  {
-                    "name": "Exercise 06: Asynchronous Operations in ML Pipelines",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/exercises/exercise-06-async-programming.md"
-                  },
-                  {
-                    "name": "Exercise 07: Testing ML Code with Pytest",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/exercises/exercise-07-testing.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: Python Environment & Dependency Management",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/lecture-notes/01-python-environment.md"
-                  },
-                  {
-                    "name": "Lecture 02: Advanced Python for Infrastructure - Type Hints, Logging, and Configuration",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/lecture-notes/02-advanced-python.md"
-                  },
-                  {
-                    "name": "Lecture 03: Python for DevOps Operations",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/lecture-notes/03-python-devops.md"
-                  },
-                  {
-                    "name": "Lecture 04: Asynchronous Programming in Python",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/lecture-notes/04-async-programming.md"
-                  },
-                  {
-                    "name": "Lecture 05: Testing with pytest & Code Quality",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/lecture-notes/05-testing-code-quality.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/assessments/practical-exams/midterm-practical.md"
                   }
                 ]
               },
@@ -137,1227 +43,1378 @@
                 "type": "directory",
                 "children": [
                   {
-                    "name": "Module 001: Python Fundamentals for Infrastructure - Comprehensive Quiz",
+                    "name": "Prerequisites Quiz",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/quizzes/module-001-quiz.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/assessments/quizzes/prerequisites-quiz.md"
                   }
                 ]
               },
               {
-                "name": "Module 001: Python Fundamentals for AI Infrastructure",
+                "name": "rubrics",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "Project Assessment Rubrics",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/assessments/rubrics/project-rubrics.md"
+                  }
+                ]
+              },
+              {
+                "name": "Assessment Overview",
                 "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-001-python-fundamentals/README.md"
+                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/assessments/README.md"
               }
             ]
           },
           {
-            "name": "mod-002-linux-essentials",
+            "name": "lessons",
             "type": "directory",
             "children": [
               {
-                "name": "exercises",
+                "name": "mod-001-python-fundamentals",
                 "type": "directory",
                 "children": [
                   {
-                    "name": "Exercise 01: Linux Navigation and File System Mastery",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/exercises/exercise-01-navigation.md"
-                  },
-                  {
-                    "name": "Exercise 02: File Permissions and Access Control for ML Teams",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/exercises/exercise-02-permissions.md"
-                  },
-                  {
-                    "name": "Exercise 03: Process Management for ML Training Jobs",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/exercises/exercise-03-processes.md"
-                  },
-                  {
-                    "name": "Exercise 04: Bash Scripting for ML Deployment Automation",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/exercises/exercise-04-scripting.md"
-                  },
-                  {
-                    "name": "Exercise 05: Package Management for ML Stack Installation",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/exercises/exercise-05-package-mgmt.md"
-                  },
-                  {
-                    "name": "Exercise 06: Log File Analysis for ML Systems",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/exercises/exercise-06-logs.md"
-                  },
-                  {
-                    "name": "Exercise 07: Real-World Troubleshooting Scenarios",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/exercises/exercise-07-troubleshooting.md"
-                  },
-                  {
-                    "name": "Exercise 08: System Automation and Maintenance for ML Infrastructure",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/exercises/exercise-08-system-automation.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: Introduction to Linux and Command Line",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/lecture-notes/01-intro-to-linux.md"
-                  },
-                  {
-                    "name": "Lecture 02: File System and Navigation",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/lecture-notes/02-file-system-navigation.md"
-                  },
-                  {
-                    "name": "Lecture 03: Permissions and Security",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/lecture-notes/03-permissions-security.md"
-                  },
-                  {
-                    "name": "Lecture 04: System Administration Basics",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/lecture-notes/04-system-administration.md"
-                  },
-                  {
-                    "name": "Lecture 05: Introduction to Shell Scripting",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/lecture-notes/05-intro-shell-scripting.md"
-                  },
-                  {
-                    "name": "Lecture 06: Advanced Shell Scripting",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/lecture-notes/06-advanced-shell-scripting.md"
-                  },
-                  {
-                    "name": "Lecture 07: Text Processing Tools",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/lecture-notes/07-text-processing.md"
-                  },
-                  {
-                    "name": "Lecture 08: Networking Fundamentals",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/lecture-notes/08-networking-fundamentals.md"
-                  }
-                ]
-              },
-              {
-                "name": "quizzes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 002: Linux Essentials - Comprehensive Quiz",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/quizzes/module-002-quiz.md"
-                  }
-                ]
-              },
-              {
-                "name": "resources",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Linux Essentials - Recommended Resources",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/resources/recommended-reading.md"
-                  }
-                ]
-              },
-              {
-                "name": "Module 002: Linux Essentials for AI Infrastructure",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-002-linux-essentials/README.md"
-              }
-            ]
-          },
-          {
-            "name": "mod-003-git-version-control",
-            "type": "directory",
-            "children": [
-              {
-                "name": "exercises",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Exercise 01: Creating Your First ML Project Repository",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/exercises/exercise-01-first-repo.md"
-                  },
-                  {
-                    "name": "Exercise 02: Working with Commits and History",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/exercises/exercise-02-commits-history.md"
-                  },
-                  {
-                    "name": "Exercise 03: Branching for Feature Development",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/exercises/exercise-03-branching.md"
-                  },
-                  {
-                    "name": "Exercise 04: Merging and Conflict Resolution",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/exercises/exercise-04-merging-conflicts.md"
-                  },
-                  {
-                    "name": "Exercise 05: Collaboration and Pull Requests",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/exercises/exercise-05-collaboration.md"
-                  },
-                  {
-                    "name": "Exercise 06: Git for ML Workflows - DVC and Model Versioning",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/exercises/exercise-06-ml-workflows.md"
-                  },
-                  {
-                    "name": "Exercise 07: Advanced Git Techniques",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/exercises/exercise-07-advanced.md"
-                  },
-                  {
-                    "name": "Exercise 08: Git LFS and Managing Large ML Projects",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/exercises/exercise-08-git-lfs-ml-projects.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: Git Fundamentals",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/lecture-notes/01-git-fundamentals.md"
-                  },
-                  {
-                    "name": "Lecture 02: Branching and Merging",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/lecture-notes/02-branching-merging.md"
-                  },
-                  {
-                    "name": "Lecture 03: Collaboration with Git",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/lecture-notes/03-collaboration.md"
-                  },
-                  {
-                    "name": "Lecture 04: Advanced Git Techniques",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/lecture-notes/04-advanced-git.md"
-                  },
-                  {
-                    "name": "Lecture 05: Git for Large-Scale ML Projects",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/lecture-notes/05-git-for-ml-projects.md"
-                  }
-                ]
-              },
-              {
-                "name": "quizzes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 003: Git & Version Control - Comprehensive Quiz",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/quizzes/module-003-quiz.md"
-                  }
-                ]
-              },
-              {
-                "name": "Module 003: Git and Version Control",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-003-git-version-control/README.md"
-              }
-            ]
-          },
-          {
-            "name": "mod-004-ml-basics",
-            "type": "directory",
-            "children": [
-              {
-                "name": "exercises",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Exercise 01: PyTorch Model Inference",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/exercises/exercise-01-pytorch-inference.md"
-                  },
-                  {
-                    "name": "Exercise 02: TensorFlow Model Inference",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/exercises/exercise-02-tensorflow-inference.md"
-                  },
-                  {
-                    "name": "Exercise 03: Model Format Conversion with ONNX",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/exercises/exercise-03-model-conversion.md"
-                  },
-                  {
-                    "name": "Exercise 04: LLM Basics - Running Your First Language Model",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/exercises/exercise-04-llm-basics.md"
-                  },
-                  {
-                    "name": "Exercise 05: GPU Basics - Accelerating ML Inference",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/exercises/exercise-05-gpu-basics.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: Machine Learning Overview for Infrastructure Engineers",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/lecture-notes/01-ml-overview.md"
-                  },
-                  {
-                    "name": "Lecture 02: PyTorch Basics for Infrastructure Engineers",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/lecture-notes/02-pytorch-basics.md"
-                  },
-                  {
-                    "name": "Lecture 03: TensorFlow Basics for Infrastructure Engineers",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/lecture-notes/03-tensorflow-basics.md"
-                  },
-                  {
-                    "name": "Lecture 04: Model Formats and Deployment Preparation",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/lecture-notes/04-model-formats.md"
-                  }
-                ]
-              },
-              {
-                "name": "quizzes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 004: ML Basics for Infrastructure - Comprehensive Quiz",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/quizzes/quiz-01-ml-basics.md"
-                  }
-                ]
-              },
-              {
-                "name": "Module 004: Machine Learning Basics for Infrastructure Engineers",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-004-ml-basics/README.md"
-              }
-            ]
-          },
-          {
-            "name": "mod-005-docker-containers",
-            "type": "directory",
-            "children": [
-              {
-                "name": "exercises",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Exercise 01: Docker Container Operations",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/exercises/exercise-01-container-operations.md"
-                  },
-                  {
-                    "name": "Exercise 02: Building Custom Docker Images",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/exercises/exercise-02-building-custom-images.md"
-                  },
-                  {
-                    "name": "Exercise 03: Docker Compose Applications",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/exercises/exercise-03-docker-compose.md"
-                  },
-                  {
-                    "name": "Exercise 04: Docker Networking Scenarios",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/exercises/exercise-04-networking-scenarios.md"
-                  },
-                  {
-                    "name": "Exercise 05: Docker Volume Management",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/exercises/exercise-05-volume-management.md"
-                  },
-                  {
-                    "name": "Exercise 06: Production Deployment Strategies",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/exercises/exercise-06-production-deployment.md"
-                  },
-                  {
-                    "name": "Exercise 07: Complete ML Application Containerization",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/exercises/exercise-07-ml-containerization.md"
-                  },
-                  {
-                    "name": "Exercise 08: Production-Ready ML Docker Deployment",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/exercises/exercise-08-production-ml-deployment.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: Docker Fundamentals",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/lecture-notes/01-docker-fundamentals.md"
-                  },
-                  {
-                    "name": "Lecture 02: Dockerfiles and Image Building",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/lecture-notes/02-dockerfiles-basics.md"
-                  },
-                  {
-                    "name": "Lecture 03: Docker Compose",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/lecture-notes/03-docker-compose.md"
-                  },
-                  {
-                    "name": "Lecture 04: Docker Networking and Volumes",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/lecture-notes/04-networking-volumes.md"
-                  },
-                  {
-                    "name": "Lecture 05: Docker Best Practices and Production Readiness",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/lecture-notes/05-best-practices.md"
-                  },
-                  {
-                    "name": "Lecture 06: Advanced Docker Topics for ML Infrastructure",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/lecture-notes/06-advanced-docker-topics.md"
-                  }
-                ]
-              },
-              {
-                "name": "quizzes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 005: Docker & Containerization - Comprehensive Quiz",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/quizzes/module-005-quiz.md"
-                  }
-                ]
-              },
-              {
-                "name": "Module 005: Docker and Containers",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-005-docker-containers/README.md"
-              }
-            ]
-          },
-          {
-            "name": "mod-006-kubernetes-intro",
-            "type": "directory",
-            "children": [
-              {
-                "name": "exercises",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Exercise 01: First Kubernetes Deployment",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/exercises/exercise-01-first-deployment.md"
-                  },
-                  {
-                    "name": "Exercise 02: Create a Helm Chart",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/exercises/exercise-02-helm-chart.md"
-                  },
-                  {
-                    "name": "Exercise 03: Debugging Kubernetes Issues",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/exercises/exercise-03-debugging.md"
-                  },
-                  {
-                    "name": "Exercise 04: StatefulSets and Persistent Storage in Kubernetes",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/exercises/exercise-04-statefulsets-storage.md"
-                  },
-                  {
-                    "name": "Exercise 05: ConfigMaps, Secrets, and Configuration Management",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/exercises/exercise-05-configmaps-secrets.md"
-                  },
-                  {
-                    "name": "Exercise 06: Ingress and Load Balancing",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/exercises/exercise-06-ingress-load-balancing.md"
-                  },
-                  {
-                    "name": "Exercise 07: ML Workloads on Kubernetes",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/exercises/exercise-07-ml-workloads.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: Kubernetes Architecture",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/lecture-notes/01-k8s-architecture.md"
-                  },
-                  {
-                    "name": "Lecture 02: Deploying Applications on Kubernetes",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/lecture-notes/02-deploying-apps.md"
-                  },
-                  {
-                    "name": "Lecture 03: Helm - Kubernetes Package Manager",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/lecture-notes/03-helm.md"
-                  },
-                  {
-                    "name": "Lecture 04: Kubernetes Operations",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/lecture-notes/04-k8s-operations.md"
-                  }
-                ]
-              },
-              {
-                "name": "quizzes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 006: Kubernetes Introduction - Assessment Quiz",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/quizzes/module-006-quiz.md"
-                  }
-                ]
-              },
-              {
-                "name": "resources",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 006: Recommended Reading and Resources",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/resources/recommended-reading.md"
-                  }
-                ]
-              },
-              {
-                "name": "Module 006: Kubernetes Introduction",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-006-kubernetes-intro/README.md"
-              }
-            ]
-          },
-          {
-            "name": "mod-007-apis-web-services",
-            "type": "directory",
-            "children": [
-              {
-                "name": "exercises",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Exercise 01: Build a Basic REST API",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/exercises/exercise-01-basic-rest-api.md"
-                  },
-                  {
-                    "name": "Exercise 02: ML Model Serving API with Authentication",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/exercises/exercise-02-model-serving-api.md"
-                  },
-                  {
-                    "name": "Exercise 03: Rate Limiting and CORS Configuration",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/exercises/exercise-03-rate-limiting-cors.md"
-                  },
-                  {
-                    "name": "Exercise 04: Background Tasks and Async Operations",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/exercises/exercise-04-background-tasks-async.md"
-                  },
-                  {
-                    "name": "Exercise 05: API Documentation and OpenAPI",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/exercises/exercise-05-api-documentation.md"
-                  },
-                  {
-                    "name": "Exercise 06: Building a Production-Ready ML API",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/exercises/exercise-06-production-ml-api.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: API Fundamentals & REST",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/lecture-notes/01-api-fundamentals-rest.md"
-                  },
-                  {
-                    "name": "Lecture 02: FastAPI Framework",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/lecture-notes/02-fastapi-framework.md"
-                  },
-                  {
-                    "name": "Lecture 03: Authentication & Security for APIs",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/lecture-notes/03-authentication-security.md"
-                  },
-                  {
-                    "name": "Lecture 04: Advanced API Patterns and Production Strategies",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/lecture-notes/04-advanced-api-patterns.md"
-                  },
-                  {
-                    "name": "Lecture 05: Flask Framework",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/lecture-notes/05-flask-framework.md"
-                  }
-                ]
-              },
-              {
-                "name": "quizzes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 007 Quiz: APIs & Web Services",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/quizzes/quiz-01-apis-web-services.md"
-                  }
-                ]
-              },
-              {
-                "name": "Module 007: APIs and Web Services",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-007-apis-web-services/README.md"
-              }
-            ]
-          },
-          {
-            "name": "mod-008-databases-sql",
-            "type": "directory",
-            "children": [
-              {
-                "name": "exercises",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Exercise 01: SQL Fundamentals & CRUD Operations",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/exercises/exercise-01-sql-basics-crud.md"
-                  },
-                  {
-                    "name": "Exercise 02: Database Design for ML Model Registry",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/exercises/exercise-02-database-design-ml-registry.md"
-                  },
-                  {
-                    "name": "Exercise 03: Advanced SQL Joins & Analytical Queries",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/exercises/exercise-03-advanced-sql-joins.md"
-                  },
-                  {
-                    "name": "Exercise 04: SQLAlchemy ORM Integration",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/exercises/exercise-04-sqlalchemy-orm-integration.md"
-                  },
-                  {
-                    "name": "Exercise 05: Database Optimization & Indexing",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/exercises/exercise-05-optimization-indexing.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: Database Fundamentals & SQL Basics",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/lecture-notes/01-database-fundamentals-sql-basics.md"
-                  },
-                  {
-                    "name": "Lecture 02: Database Design & Normalization",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/lecture-notes/02-database-design-normalization.md"
-                  },
-                  {
-                    "name": "Lecture 03: Advanced SQL & Query Optimization",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/lecture-notes/03-advanced-sql-query-optimization.md"
-                  },
-                  {
-                    "name": "Lecture 04: ORMs and Database Integration",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/lecture-notes/04-orms-database-integration.md"
-                  },
-                  {
-                    "name": "Lecture 05: Database Scaling and Performance for ML Workloads",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/lecture-notes/05-database-scaling-ml-workloads.md"
-                  },
-                  {
-                    "name": "Lecture 06: NoSQL Basics",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/lecture-notes/06-nosql-basics.md"
-                  }
-                ]
-              },
-              {
-                "name": "quizzes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 008 Quiz: Databases & SQL",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/quizzes/quiz-01-databases-sql.md"
-                  }
-                ]
-              },
-              {
-                "name": "Module 008: Databases and SQL",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-008-databases-sql/README.md"
-              }
-            ]
-          },
-          {
-            "name": "mod-009-monitoring-basics",
-            "type": "directory",
-            "children": [
-              {
-                "name": "exercises",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Exercise 01: Observability Foundations Lab",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/exercises/exercise-01-observability-foundations-lab.md"
-                  },
-                  {
-                    "name": "Exercise 02: Prometheus Monitoring Stack Deployment",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/exercises/exercise-02-prometheus-stack.md"
-                  },
-                  {
-                    "name": "Exercise 03: Grafana Dashboards & Visualization",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/exercises/exercise-03-grafana-dashboards.md"
-                  },
-                  {
-                    "name": "Exercise 04: Logging Pipeline Implementation with Loki",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/exercises/exercise-04-logging-pipeline.md"
-                  },
-                  {
-                    "name": "Exercise 05: Alerting & Incident Response Runbook for AI Infrastructure",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/exercises/exercise-05-alerting-incident-response.md"
-                  },
-                  {
-                    "name": "Exercise 06: Apache Airflow - Workflow Orchestration and Monitoring",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/exercises/exercise-06-airflow-workflow-monitoring.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: Observability Fundamentals for AI Infrastructure",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/lecture-notes/lecture-01-observability-fundamentals.md"
-                  },
-                  {
-                    "name": "Lecture 02: Prometheus Metrics Pipeline for AI Infrastructure",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/lecture-notes/lecture-02-prometheus-metrics-pipeline.md"
-                  },
-                  {
-                    "name": "Lecture 03: Grafana Dashboards & Visualization for AI Infrastructure",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/lecture-notes/lecture-03-grafana-dashboards-visualization.md"
-                  },
-                  {
-                    "name": "Lecture 04: Logging, Alerting, and ML-Focused Monitoring Workflows",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/lecture-notes/lecture-04-logging-alerting-ml-monitoring.md"
-                  }
-                ]
-              },
-              {
-                "name": "quizzes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 009 Quiz: Monitoring & Observability",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/quizzes/quiz-01-monitoring-observability.md"
-                  }
-                ]
-              },
-              {
-                "name": "resources",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 009 Resource Pack (Monitoring & Logging)",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/resources/module-009-resource-pack.md"
-                  }
-                ]
-              },
-              {
-                "name": "Module 009: Monitoring and Observability Basics",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-009-monitoring-basics/README.md"
-              }
-            ]
-          },
-          {
-            "name": "mod-010-cloud-platforms",
-            "type": "directory",
-            "children": [
-              {
-                "name": "exercises",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Exercise 01: AWS Account Setup & IAM Best Practices",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/exercises/exercise-01-aws-account-iam.md"
-                  },
-                  {
-                    "name": "Exercise 02: Compute & Storage Foundations",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/exercises/exercise-02-compute-storage.md"
-                  },
-                  {
-                    "name": "Exercise 03: Production VPC with Multi-Tier Security",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/exercises/exercise-03-networking-security.md"
-                  },
-                  {
-                    "name": "Exercise 04: Deploy Containerized ML Inference Service",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/exercises/exercise-04-containerized-deployment.md"
-                  },
-                  {
-                    "name": "Exercise 05: SageMaker ML Platform & Cost Optimization",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/exercises/exercise-05-sagemaker-cost-optimization.md"
-                  },
-                  {
-                    "name": "Exercise 06: Deploy Complete ML Infrastructure on AWS",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/exercises/exercise-06-ml-infrastructure-aws.md"
-                  },
-                  {
-                    "name": "Exercise 07: Infrastructure as Code with Terraform Basics",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/exercises/exercise-07-terraform-basics.md"
-                  }
-                ]
-              },
-              {
-                "name": "lecture-notes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Lecture 01: Cloud Computing Fundamentals",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/lecture-notes/lecture-01-cloud-fundamentals.md"
-                  },
-                  {
-                    "name": "Lecture 02: AWS Core Services for AI Infrastructure",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/lecture-notes/lecture-02-aws-core-services.md"
-                  },
-                  {
-                    "name": "Lecture 03: AWS Networking and Security for AI Infrastructure",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/lecture-notes/lecture-03-networking-security.md"
-                  },
-                  {
-                    "name": "Lecture 04: Deployment Patterns & ML Workloads on AWS",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/lecture-notes/lecture-04-deployment-ml-workloads.md"
-                  },
-                  {
-                    "name": "Lecture 05: Multi-Cloud Strategies and Cost Optimization",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/lecture-notes/lecture-05-multicloud-cost-optimization.md"
-                  }
-                ]
-              },
-              {
-                "name": "quizzes",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Module 010 Quiz: Cloud Platforms & AWS",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/quizzes/quiz-01-cloud-platforms.md"
-                  }
-                ]
-              },
-              {
-                "name": "Module 010: Cloud Platforms Fundamentals",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/lessons/mod-010-cloud-platforms/README.md"
-              }
-            ]
-          },
-          {
-            "name": "Lessons",
-            "type": "file",
-            "path": "AI Infrastructure Engineer/lessons/README.md"
-          }
-        ]
-      },
-      {
-        "name": "projects",
-        "type": "directory",
-        "children": [
-          {
-            "name": "project-01-simple-model-api",
-            "type": "directory",
-            "children": [
-              {
-                "name": "src",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Source Code Implementation Guide",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-01-simple-model-api/src/README.md"
-                  }
-                ]
-              },
-              {
-                "name": "Project 01: Detailed Requirements Specification",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-01-simple-model-api/requirements.md"
-              },
-              {
-                "name": "Project 01: Simple Model API Deployment",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-01-simple-model-api/README.md"
-              },
-              {
-                "name": "Project 01: System Architecture",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-01-simple-model-api/architecture.md"
-              }
-            ]
-          },
-          {
-            "name": "project-02-kubernetes-serving",
-            "type": "directory",
-            "children": [
-              {
-                "name": "helm",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "model-api",
+                    "name": "exercises",
                     "type": "directory",
                     "children": [
                       {
-                        "name": "model-api Helm Chart",
+                        "name": "Exercise 01: Python Environment Setup & Automation",
                         "type": "file",
-                        "path": "AI Infrastructure Engineer/projects/project-02-kubernetes-serving/helm/model-api/README.md"
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-01-environment-setup.md"
+                      },
+                      {
+                        "name": "Exercise 02: Python Data Structures for ML Data",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-02-data-structures.md"
+                      },
+                      {
+                        "name": "Exercise 03: Reusable ML Utilities & Modules",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-03-functions-modules.md"
+                      },
+                      {
+                        "name": "Exercise 04: Reading and Writing ML Data Files",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-04-file-io.md"
+                      },
+                      {
+                        "name": "Exercise 05: Robust Exception Handling in ML Pipelines",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-05-error-handling.md"
+                      },
+                      {
+                        "name": "Exercise 06: Asynchronous Operations in ML Pipelines",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-06-async-programming.md"
+                      },
+                      {
+                        "name": "Exercise 07: Testing ML Code with Pytest",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-07-testing.md"
                       }
                     ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Python Environment & Dependency Management",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/lecture-notes/01-python-environment.md"
+                      },
+                      {
+                        "name": "Lecture 02: Advanced Python for Infrastructure - Type Hints, Logging, and Configuration",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/lecture-notes/02-advanced-python.md"
+                      },
+                      {
+                        "name": "Lecture 03: Python for DevOps Operations",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/lecture-notes/03-python-devops.md"
+                      },
+                      {
+                        "name": "Lecture 04: Asynchronous Programming in Python",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/lecture-notes/04-async-programming.md"
+                      },
+                      {
+                        "name": "Lecture 05: Testing with pytest & Code Quality",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/lecture-notes/05-testing-code-quality.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 001: Python Fundamentals for Infrastructure - Comprehensive Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/quizzes/module-001-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 001: Python Fundamentals for AI Infrastructure",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-001-python-fundamentals/README.md"
                   }
                 ]
               },
               {
-                "name": "loadtest",
+                "name": "mod-002-linux-essentials",
                 "type": "directory",
                 "children": [
                   {
-                    "name": "Load Testing — Project 02",
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Exercise 01: Linux Navigation and File System Mastery",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/exercises/exercise-01-navigation.md"
+                      },
+                      {
+                        "name": "Exercise 02: File Permissions and Access Control for ML Teams",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/exercises/exercise-02-permissions.md"
+                      },
+                      {
+                        "name": "Exercise 03: Process Management for ML Training Jobs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/exercises/exercise-03-processes.md"
+                      },
+                      {
+                        "name": "Exercise 04: Bash Scripting for ML Deployment Automation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/exercises/exercise-04-scripting.md"
+                      },
+                      {
+                        "name": "Exercise 05: Package Management for ML Stack Installation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/exercises/exercise-05-package-mgmt.md"
+                      },
+                      {
+                        "name": "Exercise 06: Log File Analysis for ML Systems",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/exercises/exercise-06-logs.md"
+                      },
+                      {
+                        "name": "Exercise 07: Real-World Troubleshooting Scenarios",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/exercises/exercise-07-troubleshooting.md"
+                      },
+                      {
+                        "name": "Exercise 08: System Automation and Maintenance for ML Infrastructure",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/exercises/exercise-08-system-automation.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Introduction to Linux and Command Line",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/lecture-notes/01-intro-to-linux.md"
+                      },
+                      {
+                        "name": "Lecture 02: File System and Navigation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/lecture-notes/02-file-system-navigation.md"
+                      },
+                      {
+                        "name": "Lecture 03: Permissions and Security",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/lecture-notes/03-permissions-security.md"
+                      },
+                      {
+                        "name": "Lecture 04: System Administration Basics",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/lecture-notes/04-system-administration.md"
+                      },
+                      {
+                        "name": "Lecture 05: Introduction to Shell Scripting",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/lecture-notes/05-intro-shell-scripting.md"
+                      },
+                      {
+                        "name": "Lecture 06: Advanced Shell Scripting",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/lecture-notes/06-advanced-shell-scripting.md"
+                      },
+                      {
+                        "name": "Lecture 07: Text Processing Tools",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/lecture-notes/07-text-processing.md"
+                      },
+                      {
+                        "name": "Lecture 08: Networking Fundamentals",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/lecture-notes/08-networking-fundamentals.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 002: Linux Essentials - Comprehensive Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/quizzes/module-002-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "resources",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Linux Essentials - Recommended Resources",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/resources/recommended-reading.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 002: Linux Essentials for AI Infrastructure",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-02-kubernetes-serving/loadtest/README.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-002-linux-essentials/README.md"
                   }
                 ]
               },
               {
-                "name": "Project 02: Architecture Documentation",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-02-kubernetes-serving/architecture.md"
+                "name": "mod-003-git-version-control",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Exercise 01: Creating Your First ML Project Repository",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/exercises/exercise-01-first-repo.md"
+                      },
+                      {
+                        "name": "Exercise 02: Working with Commits and History",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/exercises/exercise-02-commits-history.md"
+                      },
+                      {
+                        "name": "Exercise 03: Branching for Feature Development",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/exercises/exercise-03-branching.md"
+                      },
+                      {
+                        "name": "Exercise 04: Merging and Conflict Resolution",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/exercises/exercise-04-merging-conflicts.md"
+                      },
+                      {
+                        "name": "Exercise 05: Collaboration and Pull Requests",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/exercises/exercise-05-collaboration.md"
+                      },
+                      {
+                        "name": "Exercise 06: Git for ML Workflows - DVC and Model Versioning",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/exercises/exercise-06-ml-workflows.md"
+                      },
+                      {
+                        "name": "Exercise 07: Advanced Git Techniques",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/exercises/exercise-07-advanced.md"
+                      },
+                      {
+                        "name": "Exercise 08: Git LFS and Managing Large ML Projects",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/exercises/exercise-08-git-lfs-ml-projects.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Git Fundamentals",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/lecture-notes/01-git-fundamentals.md"
+                      },
+                      {
+                        "name": "Lecture 02: Branching and Merging",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/lecture-notes/02-branching-merging.md"
+                      },
+                      {
+                        "name": "Lecture 03: Collaboration with Git",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/lecture-notes/03-collaboration.md"
+                      },
+                      {
+                        "name": "Lecture 04: Advanced Git Techniques",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/lecture-notes/04-advanced-git.md"
+                      },
+                      {
+                        "name": "Lecture 05: Git for Large-Scale ML Projects",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/lecture-notes/05-git-for-ml-projects.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 003: Git & Version Control - Comprehensive Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/quizzes/module-003-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 003: Git and Version Control",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-003-git-version-control/README.md"
+                  }
+                ]
               },
               {
-                "name": "Project 02: Detailed Requirements",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-02-kubernetes-serving/requirements.md"
+                "name": "mod-004-ml-basics",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Exercise 01: PyTorch Model Inference",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/exercises/exercise-01-pytorch-inference.md"
+                      },
+                      {
+                        "name": "Exercise 02: TensorFlow Model Inference",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/exercises/exercise-02-tensorflow-inference.md"
+                      },
+                      {
+                        "name": "Exercise 03: Model Format Conversion with ONNX",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/exercises/exercise-03-model-conversion.md"
+                      },
+                      {
+                        "name": "Exercise 04: LLM Basics - Running Your First Language Model",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/exercises/exercise-04-llm-basics.md"
+                      },
+                      {
+                        "name": "Exercise 05: GPU Basics - Accelerating ML Inference",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/exercises/exercise-05-gpu-basics.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Machine Learning Overview for Infrastructure Engineers",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/lecture-notes/01-ml-overview.md"
+                      },
+                      {
+                        "name": "Lecture 02: PyTorch Basics for Infrastructure Engineers",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/lecture-notes/02-pytorch-basics.md"
+                      },
+                      {
+                        "name": "Lecture 03: TensorFlow Basics for Infrastructure Engineers",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/lecture-notes/03-tensorflow-basics.md"
+                      },
+                      {
+                        "name": "Lecture 04: Model Formats and Deployment Preparation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/lecture-notes/04-model-formats.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 004: ML Basics for Infrastructure - Comprehensive Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/quizzes/quiz-01-ml-basics.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 004: Machine Learning Basics for Infrastructure Engineers",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-004-ml-basics/README.md"
+                  }
+                ]
               },
               {
-                "name": "Project 02: Kubernetes Model Serving",
+                "name": "mod-005-docker-containers",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Exercise 01: Docker Container Operations",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/exercises/exercise-01-container-operations.md"
+                      },
+                      {
+                        "name": "Exercise 02: Building Custom Docker Images",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/exercises/exercise-02-building-custom-images.md"
+                      },
+                      {
+                        "name": "Exercise 03: Docker Compose Applications",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/exercises/exercise-03-docker-compose.md"
+                      },
+                      {
+                        "name": "Exercise 04: Docker Networking Scenarios",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/exercises/exercise-04-networking-scenarios.md"
+                      },
+                      {
+                        "name": "Exercise 05: Docker Volume Management",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/exercises/exercise-05-volume-management.md"
+                      },
+                      {
+                        "name": "Exercise 06: Production Deployment Strategies",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/exercises/exercise-06-production-deployment.md"
+                      },
+                      {
+                        "name": "Exercise 07: Complete ML Application Containerization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/exercises/exercise-07-ml-containerization.md"
+                      },
+                      {
+                        "name": "Exercise 08: Production-Ready ML Docker Deployment",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/exercises/exercise-08-production-ml-deployment.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Docker Fundamentals",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/lecture-notes/01-docker-fundamentals.md"
+                      },
+                      {
+                        "name": "Lecture 02: Dockerfiles and Image Building",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/lecture-notes/02-dockerfiles-basics.md"
+                      },
+                      {
+                        "name": "Lecture 03: Docker Compose",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/lecture-notes/03-docker-compose.md"
+                      },
+                      {
+                        "name": "Lecture 04: Docker Networking and Volumes",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/lecture-notes/04-networking-volumes.md"
+                      },
+                      {
+                        "name": "Lecture 05: Docker Best Practices and Production Readiness",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/lecture-notes/05-best-practices.md"
+                      },
+                      {
+                        "name": "Lecture 06: Advanced Docker Topics for ML Infrastructure",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/lecture-notes/06-advanced-docker-topics.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 005: Docker & Containerization - Comprehensive Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/quizzes/module-005-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 005: Docker and Containers",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-005-docker-containers/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-006-kubernetes-intro",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Exercise 01: First Kubernetes Deployment",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-01-first-deployment.md"
+                      },
+                      {
+                        "name": "Exercise 02: Create a Helm Chart",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-02-helm-chart.md"
+                      },
+                      {
+                        "name": "Exercise 03: Debugging Kubernetes Issues",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-03-debugging.md"
+                      },
+                      {
+                        "name": "Exercise 04: StatefulSets and Persistent Storage in Kubernetes",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-04-statefulsets-storage.md"
+                      },
+                      {
+                        "name": "Exercise 05: ConfigMaps, Secrets, and Configuration Management",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-05-configmaps-secrets.md"
+                      },
+                      {
+                        "name": "Exercise 06: Ingress and Load Balancing",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-06-ingress-load-balancing.md"
+                      },
+                      {
+                        "name": "Exercise 07: ML Workloads on Kubernetes",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-07-ml-workloads.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Kubernetes Architecture",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/lecture-notes/01-k8s-architecture.md"
+                      },
+                      {
+                        "name": "Lecture 02: Deploying Applications on Kubernetes",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/lecture-notes/02-deploying-apps.md"
+                      },
+                      {
+                        "name": "Lecture 03: Helm - Kubernetes Package Manager",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/lecture-notes/03-helm.md"
+                      },
+                      {
+                        "name": "Lecture 04: Kubernetes Operations",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/lecture-notes/04-k8s-operations.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 006: Kubernetes Introduction - Assessment Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/quizzes/module-006-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "resources",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 006: Recommended Reading and Resources",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/resources/recommended-reading.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 006: Kubernetes Introduction",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-006-kubernetes-intro/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-007-apis-web-services",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Exercise 01: Build a Basic REST API",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/exercises/exercise-01-basic-rest-api.md"
+                      },
+                      {
+                        "name": "Exercise 02: ML Model Serving API with Authentication",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/exercises/exercise-02-model-serving-api.md"
+                      },
+                      {
+                        "name": "Exercise 03: Rate Limiting and CORS Configuration",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/exercises/exercise-03-rate-limiting-cors.md"
+                      },
+                      {
+                        "name": "Exercise 04: Background Tasks and Async Operations",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/exercises/exercise-04-background-tasks-async.md"
+                      },
+                      {
+                        "name": "Exercise 05: API Documentation and OpenAPI",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/exercises/exercise-05-api-documentation.md"
+                      },
+                      {
+                        "name": "Exercise 06: Building a Production-Ready ML API",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/exercises/exercise-06-production-ml-api.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: API Fundamentals & REST",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/lecture-notes/01-api-fundamentals-rest.md"
+                      },
+                      {
+                        "name": "Lecture 02: FastAPI Framework",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/lecture-notes/02-fastapi-framework.md"
+                      },
+                      {
+                        "name": "Lecture 03: Authentication & Security for APIs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/lecture-notes/03-authentication-security.md"
+                      },
+                      {
+                        "name": "Lecture 04: Advanced API Patterns and Production Strategies",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/lecture-notes/04-advanced-api-patterns.md"
+                      },
+                      {
+                        "name": "Lecture 05: Flask Framework",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/lecture-notes/05-flask-framework.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 007 Quiz: APIs & Web Services",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/quizzes/quiz-01-apis-web-services.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 007: APIs and Web Services",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-007-apis-web-services/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-008-databases-sql",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Exercise 01: SQL Fundamentals & CRUD Operations",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/exercises/exercise-01-sql-basics-crud.md"
+                      },
+                      {
+                        "name": "Exercise 02: Database Design for ML Model Registry",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/exercises/exercise-02-database-design-ml-registry.md"
+                      },
+                      {
+                        "name": "Exercise 03: Advanced SQL Joins & Analytical Queries",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/exercises/exercise-03-advanced-sql-joins.md"
+                      },
+                      {
+                        "name": "Exercise 04: SQLAlchemy ORM Integration",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/exercises/exercise-04-sqlalchemy-orm-integration.md"
+                      },
+                      {
+                        "name": "Exercise 05: Database Optimization & Indexing",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/exercises/exercise-05-optimization-indexing.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Database Fundamentals & SQL Basics",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/lecture-notes/01-database-fundamentals-sql-basics.md"
+                      },
+                      {
+                        "name": "Lecture 02: Database Design & Normalization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/lecture-notes/02-database-design-normalization.md"
+                      },
+                      {
+                        "name": "Lecture 03: Advanced SQL & Query Optimization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/lecture-notes/03-advanced-sql-query-optimization.md"
+                      },
+                      {
+                        "name": "Lecture 04: ORMs and Database Integration",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/lecture-notes/04-orms-database-integration.md"
+                      },
+                      {
+                        "name": "Lecture 05: Database Scaling and Performance for ML Workloads",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/lecture-notes/05-database-scaling-ml-workloads.md"
+                      },
+                      {
+                        "name": "Lecture 06: NoSQL Basics",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/lecture-notes/06-nosql-basics.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 008 Quiz: Databases & SQL",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/quizzes/quiz-01-databases-sql.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 008: Databases and SQL",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-008-databases-sql/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-009-monitoring-basics",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Exercise 01: Observability Foundations Lab",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-01-observability-foundations-lab.md"
+                      },
+                      {
+                        "name": "Exercise 02: Prometheus Monitoring Stack Deployment",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-02-prometheus-stack.md"
+                      },
+                      {
+                        "name": "Exercise 03: Grafana Dashboards & Visualization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-03-grafana-dashboards.md"
+                      },
+                      {
+                        "name": "Exercise 04: Logging Pipeline Implementation with Loki",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-04-logging-pipeline.md"
+                      },
+                      {
+                        "name": "Exercise 05: Alerting & Incident Response Runbook for AI Infrastructure",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-05-alerting-incident-response.md"
+                      },
+                      {
+                        "name": "Exercise 06: Apache Airflow - Workflow Orchestration and Monitoring",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-06-airflow-workflow-monitoring.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Observability Fundamentals for AI Infrastructure",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/lecture-notes/lecture-01-observability-fundamentals.md"
+                      },
+                      {
+                        "name": "Lecture 02: Prometheus Metrics Pipeline for AI Infrastructure",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/lecture-notes/lecture-02-prometheus-metrics-pipeline.md"
+                      },
+                      {
+                        "name": "Lecture 03: Grafana Dashboards & Visualization for AI Infrastructure",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/lecture-notes/lecture-03-grafana-dashboards-visualization.md"
+                      },
+                      {
+                        "name": "Lecture 04: Logging, Alerting, and ML-Focused Monitoring Workflows",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/lecture-notes/lecture-04-logging-alerting-ml-monitoring.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 009 Quiz: Monitoring & Observability",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/quizzes/quiz-01-monitoring-observability.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "resources",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 009 Resource Pack (Monitoring & Logging)",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/resources/module-009-resource-pack.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 009: Monitoring and Observability Basics",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-010-cloud-platforms",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Exercise 01: AWS Account Setup & IAM Best Practices",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-01-aws-account-iam.md"
+                      },
+                      {
+                        "name": "Exercise 02: Compute & Storage Foundations",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-02-compute-storage.md"
+                      },
+                      {
+                        "name": "Exercise 03: Production VPC with Multi-Tier Security",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-03-networking-security.md"
+                      },
+                      {
+                        "name": "Exercise 04: Deploy Containerized ML Inference Service",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-04-containerized-deployment.md"
+                      },
+                      {
+                        "name": "Exercise 05: SageMaker ML Platform & Cost Optimization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-05-sagemaker-cost-optimization.md"
+                      },
+                      {
+                        "name": "Exercise 06: Deploy Complete ML Infrastructure on AWS",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-06-ml-infrastructure-aws.md"
+                      },
+                      {
+                        "name": "Exercise 07: Infrastructure as Code with Terraform Basics",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-07-terraform-basics.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Cloud Computing Fundamentals",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-01-cloud-fundamentals.md"
+                      },
+                      {
+                        "name": "Lecture 02: AWS Core Services for AI Infrastructure",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-02-aws-core-services.md"
+                      },
+                      {
+                        "name": "Lecture 03: AWS Networking and Security for AI Infrastructure",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-03-networking-security.md"
+                      },
+                      {
+                        "name": "Lecture 04: Deployment Patterns & ML Workloads on AWS",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-04-deployment-ml-workloads.md"
+                      },
+                      {
+                        "name": "Lecture 05: Multi-Cloud Strategies and Cost Optimization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-05-multicloud-cost-optimization.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 010 Quiz: Cloud Platforms & AWS",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/quizzes/quiz-01-cloud-platforms.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 010: Cloud Platforms Fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-010-cloud-platforms/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "Lessons",
                 "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-02-kubernetes-serving/README.md"
+                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/README.md"
               }
             ]
           },
           {
-            "name": "project-03-ml-pipeline-tracking",
+            "name": "projects",
             "type": "directory",
             "children": [
               {
-                "name": "great_expectations",
+                "name": "project-01-simple-model-api",
                 "type": "directory",
                 "children": [
                   {
-                    "name": "Great Expectations Configuration — Project 03",
+                    "name": "src",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Source Code Implementation Guide",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/src/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Project 01: Detailed Requirements Specification",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-03-ml-pipeline-tracking/great_expectations/README.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/requirements.md"
+                  },
+                  {
+                    "name": "Project 01: Simple Model API Deployment",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/README.md"
+                  },
+                  {
+                    "name": "Project 01: System Architecture",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/architecture.md"
                   }
                 ]
               },
               {
-                "name": "Architecture: ML Pipeline with Experiment Tracking",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-03-ml-pipeline-tracking/architecture.md"
+                "name": "project-02-kubernetes-serving",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "helm",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "model-api",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "model-api Helm Chart",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/README.md"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "loadtest",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Load Testing — Project 02",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/loadtest/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Project 02: Architecture Documentation",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/architecture.md"
+                  },
+                  {
+                    "name": "Project 02: Detailed Requirements",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/requirements.md"
+                  },
+                  {
+                    "name": "Project 02: Kubernetes Model Serving",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/README.md"
+                  }
+                ]
               },
               {
-                "name": "Project 03: ML Pipeline with Experiment Tracking",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-03-ml-pipeline-tracking/README.md"
+                "name": "project-03-ml-pipeline-tracking",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "great_expectations",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Great Expectations Configuration — Project 03",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/great_expectations/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Architecture: ML Pipeline with Experiment Tracking",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/architecture.md"
+                  },
+                  {
+                    "name": "Project 03: ML Pipeline with Experiment Tracking",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/README.md"
+                  },
+                  {
+                    "name": "Project Requirements: ML Pipeline with Experiment Tracking",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/requirements.md"
+                  }
+                ]
               },
               {
-                "name": "Project Requirements: ML Pipeline with Experiment Tracking",
+                "name": "project-04-monitoring-alerting",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "runbooks",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Runbook: HighErrorRate",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/runbooks/high-error-rate.md"
+                      },
+                      {
+                        "name": "Runbook: LogIngestionLag",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/runbooks/log-ingestion-lag.md"
+                      },
+                      {
+                        "name": "Runbook: ModelDriftDetected",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/runbooks/model-drift.md"
+                      },
+                      {
+                        "name": "Runbook: SlowResponse",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/runbooks/slow-response.md"
+                      },
+                      {
+                        "name": "Runbook: TargetDown",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/runbooks/target-down.md"
+                      },
+                      {
+                        "name": "Runbooks",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/runbooks/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Architecture: Monitoring & Alerting System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/architecture.md"
+                  },
+                  {
+                    "name": "Project 04: Monitoring & Alerting System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/README.md"
+                  },
+                  {
+                    "name": "Requirements: Monitoring & Alerting System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/requirements.md"
+                  }
+                ]
+              },
+              {
+                "name": "project-05-production-ml-capstone",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "docs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Deployment Guide: Production ML System",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/docs/DEPLOYMENT.md"
+                      },
+                      {
+                        "name": "Disaster Recovery Plan: Production ML System",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/docs/DISASTER_RECOVERY.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "terraform",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Terraform — Project 05 Capstone",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/terraform/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "velero",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Velero — Cluster Backup & Restore",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/velero/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Architecture Documentation: Production ML System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/architecture.md"
+                  },
+                  {
+                    "name": "Project 05: Production-Ready ML System (Capstone)",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/README.md"
+                  },
+                  {
+                    "name": "Requirements Specification: Production-Ready ML System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/requirements.md"
+                  }
+                ]
+              },
+              {
+                "name": "Projects",
                 "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-03-ml-pipeline-tracking/requirements.md"
+                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/README.md"
               }
             ]
           },
           {
-            "name": "project-04-monitoring-alerting",
+            "name": "resources",
             "type": "directory",
             "children": [
               {
-                "name": "runbooks",
+                "name": "cheat-sheets",
                 "type": "directory",
                 "children": [
                   {
-                    "name": "Runbook: HighErrorRate",
+                    "name": "Docker Cheat Sheet",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-04-monitoring-alerting/runbooks/high-error-rate.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/cheat-sheets/docker-cheat-sheet.md"
                   },
                   {
-                    "name": "Runbook: LogIngestionLag",
+                    "name": "Git Cheat Sheet",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-04-monitoring-alerting/runbooks/log-ingestion-lag.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/cheat-sheets/git-cheat-sheet.md"
                   },
                   {
-                    "name": "Runbook: ModelDriftDetected",
+                    "name": "Kubernetes Cheat Sheet",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-04-monitoring-alerting/runbooks/model-drift.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/cheat-sheets/kubernetes-cheat-sheet.md"
                   },
                   {
-                    "name": "Runbook: SlowResponse",
+                    "name": "Linux / Shell Cheat Sheet — AI Infrastructure Edition",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-04-monitoring-alerting/runbooks/slow-response.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/cheat-sheets/linux-cheat-sheet.md"
                   },
                   {
-                    "name": "Runbook: TargetDown",
+                    "name": "Prometheus + PromQL Cheat Sheet",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-04-monitoring-alerting/runbooks/target-down.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/cheat-sheets/prometheus-cheat-sheet.md"
                   },
                   {
-                    "name": "Runbooks",
+                    "name": "Python Cheat Sheet — AI Infrastructure Edition",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-04-monitoring-alerting/runbooks/README.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/cheat-sheets/python-cheat-sheet.md"
+                  },
+                  {
+                    "name": "SQL Cheat Sheet — PostgreSQL Focus",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/cheat-sheets/sql-cheat-sheet.md"
                   }
                 ]
               },
               {
-                "name": "Architecture: Monitoring & Alerting System",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-04-monitoring-alerting/architecture.md"
+                "name": "reading-lists",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "Beginner Learning Path",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/reading-lists/beginner-path.md"
+                  },
+                  {
+                    "name": "Reading List — Advanced Path",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/reading-lists/advanced-path.md"
+                  },
+                  {
+                    "name": "Reading List — Intermediate Path",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/reading-lists/intermediate-path.md"
+                  }
+                ]
               },
               {
-                "name": "Project 04: Monitoring & Alerting System",
+                "name": "Development Tools Guide",
                 "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-04-monitoring-alerting/README.md"
+                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/tools.md"
               },
               {
-                "name": "Requirements: Monitoring & Alerting System",
+                "name": "Resources",
                 "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-04-monitoring-alerting/requirements.md"
+                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/resources/README.md"
               }
             ]
           },
           {
-            "name": "project-05-production-ml-capstone",
-            "type": "directory",
-            "children": [
-              {
-                "name": "docs",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Deployment Guide: Production ML System",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-05-production-ml-capstone/docs/DEPLOYMENT.md"
-                  },
-                  {
-                    "name": "Disaster Recovery Plan: Production ML System",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-05-production-ml-capstone/docs/DISASTER_RECOVERY.md"
-                  }
-                ]
-              },
-              {
-                "name": "terraform",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Terraform — Project 05 Capstone",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-05-production-ml-capstone/terraform/README.md"
-                  }
-                ]
-              },
-              {
-                "name": "velero",
-                "type": "directory",
-                "children": [
-                  {
-                    "name": "Velero — Cluster Backup & Restore",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/projects/project-05-production-ml-capstone/velero/README.md"
-                  }
-                ]
-              },
-              {
-                "name": "Architecture Documentation: Production ML System",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-05-production-ml-capstone/architecture.md"
-              },
-              {
-                "name": "Project 05: Production-Ready ML System (Capstone)",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-05-production-ml-capstone/README.md"
-              },
-              {
-                "name": "Requirements Specification: Production-Ready ML System",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/projects/project-05-production-ml-capstone/requirements.md"
-              }
-            ]
-          },
-          {
-            "name": "Projects",
+            "name": "Phase 1 Learning Plan: Core AI Infrastructure & Foundations",
             "type": "file",
-            "path": "AI Infrastructure Engineer/projects/README.md"
+            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/phase-1-learning-plan.md"
           }
         ]
       },
       {
-        "name": "resources",
+        "name": "Phase 2 - Advanced AI Infrastructure",
         "type": "directory",
         "children": [
           {
-            "name": "cheat-sheets",
+            "name": "lessons",
             "type": "directory",
             "children": [
               {
-                "name": "Docker Cheat Sheet",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/cheat-sheets/docker-cheat-sheet.md"
-              },
-              {
-                "name": "Git Cheat Sheet",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/cheat-sheets/git-cheat-sheet.md"
-              },
-              {
-                "name": "Kubernetes Cheat Sheet",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/cheat-sheets/kubernetes-cheat-sheet.md"
-              },
-              {
-                "name": "Linux / Shell Cheat Sheet — AI Infrastructure Edition",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/cheat-sheets/linux-cheat-sheet.md"
-              },
-              {
-                "name": "Prometheus + PromQL Cheat Sheet",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/cheat-sheets/prometheus-cheat-sheet.md"
-              },
-              {
-                "name": "Python Cheat Sheet — AI Infrastructure Edition",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/cheat-sheets/python-cheat-sheet.md"
-              },
-              {
-                "name": "SQL Cheat Sheet — PostgreSQL Focus",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/cheat-sheets/sql-cheat-sheet.md"
+                "name": "mod-011-multi-gpu",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "Module 11: Multi-GPU & Distributed Training Foundations",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-011-multi-gpu/README.md"
+                  }
+                ]
               }
             ]
           },
           {
-            "name": "reading-lists",
+            "name": "projects",
             "type": "directory",
             "children": [
               {
-                "name": "Beginner Learning Path",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/reading-lists/beginner-path.md"
-              },
-              {
-                "name": "Reading List — Advanced Path",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/reading-lists/advanced-path.md"
-              },
-              {
-                "name": "Reading List — Intermediate Path",
-                "type": "file",
-                "path": "AI Infrastructure Engineer/resources/reading-lists/intermediate-path.md"
+                "name": "project-06-distributed-training",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "Project 06: Distributed LLM Training Pipeline",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-06-distributed-training/README.md"
+                  }
+                ]
               }
             ]
           },
           {
-            "name": "Development Tools Guide",
+            "name": "Phase 2 Learning Plan: Advanced AI Infrastructure",
             "type": "file",
-            "path": "AI Infrastructure Engineer/resources/tools.md"
-          },
-          {
-            "name": "Resources",
-            "type": "file",
-            "path": "AI Infrastructure Engineer/resources/README.md"
+            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/phase-2-learning-plan.md"
           }
         ]
-      },
-      {
-        "name": "AI Infrastructure Engineer Learning Repository",
-        "type": "file",
-        "path": "AI Infrastructure Engineer/readme.md"
-      },
-      {
-        "name": "Phase 1 Learning Plan: Core AI Infrastructure & Foundations",
-        "type": "file",
-        "path": "AI Infrastructure Engineer/phase-1-learning-plan.md"
       }
     ]
   },

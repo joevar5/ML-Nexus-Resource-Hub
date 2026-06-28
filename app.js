@@ -570,70 +570,114 @@ function renderSidebar(nodes, container, parentPath = '') {
         const currentPath = parentPath ? `${parentPath}/${node.name}` : node.name;
 
         if (node.type === 'directory') {
-            const folderDiv = document.createElement('div');
-            folderDiv.className = 'tree-folder flex items-center justify-between gap-md p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
-            folderDiv.dataset.folderpath = currentPath;
+            if (node.name.startsWith('Phase ') || node.name === 'Introduction') {
+                const isThisPhaseActive = currentFilePath && currentFilePath.startsWith(currentPath);
+                const isDefaultExpanded = (node.name === 'Introduction' || (node.name.includes('Phase 1') && (!currentFilePath || !currentFilePath.startsWith('AI Infrastructure Engineer'))));
+                const isExpanded = isThisPhaseActive || isDefaultExpanded;
 
-            const isModFolder = node.name.startsWith('mod-');
-            let isAllCompleted = false;
-            let labelStyle = '';
-            let bellStyle = 'hidden';
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'sidebar-section-header px-2 py-3 mt-4 text-xs font-bold uppercase tracking-wider text-primary border-b border-outline-variant/30 mb-2 first:mt-0 select-none cursor-pointer flex items-center justify-between hover:text-primary transition-all';
+                headerDiv.innerHTML = `
+                    <span>${node.name}</span>
+                    <span class="material-symbols-outlined text-xs phase-chevron transition-transform">${isExpanded ? 'expand_more' : 'chevron_right'}</span>
+                `;
 
-            if (isModFolder) {
-                const descendantFiles = flattenedFiles.filter(f => f.path.startsWith(currentPath + '/'));
-                isAllCompleted = descendantFiles.length > 0 && descendantFiles.every(f => completedFiles.has(f.path));
-                labelStyle = isAllCompleted ? 'line-through opacity-60' : '';
-                bellStyle = isAllCompleted ? '' : 'hidden';
-            }
+                const childrenDiv = document.createElement('div');
+                childrenDiv.className = `phase-container space-y-1 mt-1 ${isExpanded ? '' : 'hidden'}`;
+                childrenDiv.dataset.phasepath = currentPath;
 
-            const bellHTML = isModFolder ? `
-                        <span class="revise-bell-icon material-symbols-outlined text-md text-amber-500 dark:text-amber-400 hover:scale-110 transition-transform cursor-pointer flex-shrink-0 ${bellStyle} ml-1" title="Revise Now">notifications</span>
-                    ` : '';
-
-            folderDiv.innerHTML = `
-                        <div class="flex items-center gap-2 overflow-hidden flex-1">
-                            <span class="material-symbols-outlined text-md text-on-surface-variant/80 flex-shrink-0">folder</span>
-                            <span class="folder-label whitespace-normal break-words text-left leading-tight ${labelStyle}">${node.name}</span>
-                        </div>
-                        <div class="flex items-center gap-2 flex-shrink-0">
-                            ${bellHTML}
-                            <span class="material-symbols-outlined text-xs tree-folder-chevron transition-transform flex-shrink-0">chevron_right</span>
-                        </div>
-                    `;
-
-            const childrenDiv = document.createElement('div');
-            childrenDiv.className = 'tree-children hidden pl-3 border-l border-outline-variant/40 ml-4 space-y-1 mt-1';
-
-            folderDiv.addEventListener('click', (e) => {
-                childrenDiv.classList.toggle('hidden');
-                const chevron = folderDiv.querySelector('.tree-folder-chevron');
-                chevron.classList.toggle('rotate-90');
-                e.stopPropagation();
-            });
-
-            const bellIcon = folderDiv.querySelector('.revise-bell-icon');
-            if (bellIcon) {
-                bellIcon.addEventListener('click', (e) => {
+                headerDiv.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    // Find README file under this folder
-                    let readmeFile = node.children.find(child => child.type === 'file' && child.path.toLowerCase().endsWith('readme.md'));
-                    if (!readmeFile) {
-                        const descendantFiles = flattenedFiles.filter(f => f.path.startsWith(currentPath + '/'));
-                        readmeFile = descendantFiles.find(f => f.path.toLowerCase().endsWith('readme.md'));
-                    }
+                    const wasHidden = childrenDiv.classList.contains('hidden');
 
-                    if (readmeFile) {
-                        window.location.hash = encodeURIComponent(readmeFile.path);
+                    document.querySelectorAll('.phase-container').forEach(container => {
+                        container.classList.add('hidden');
+                        const header = container.previousElementSibling;
+                        if (header) {
+                            const chevron = header.querySelector('.phase-chevron');
+                            if (chevron) chevron.innerText = 'chevron_right';
+                        }
+                    });
+
+                    if (wasHidden) {
+                        childrenDiv.classList.remove('hidden');
+                        const chevron = headerDiv.querySelector('.phase-chevron');
+                        if (chevron) chevron.innerText = 'expand_more';
                     }
                 });
+
+                item.appendChild(headerDiv);
+                item.appendChild(childrenDiv);
+
+                renderSidebar(node.children, childrenDiv, currentPath);
+            } else {
+                const folderDiv = document.createElement('div');
+                folderDiv.className = 'tree-folder flex items-center justify-between gap-md p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+                folderDiv.dataset.folderpath = currentPath;
+
+                const isModFolder = node.name.startsWith('mod-');
+                let isAllCompleted = false;
+                let labelStyle = '';
+                let bellStyle = 'hidden';
+
+                if (isModFolder) {
+                    const descendantFiles = flattenedFiles.filter(f => f.path.startsWith(currentPath + '/'));
+                    isAllCompleted = descendantFiles.length > 0 && descendantFiles.every(f => completedFiles.has(f.path));
+                    labelStyle = isAllCompleted ? 'line-through opacity-60' : '';
+                    bellStyle = isAllCompleted ? '' : 'hidden';
+                }
+
+                const bellHTML = isModFolder ? `
+                            <span class="revise-bell-icon material-symbols-outlined text-md text-amber-500 dark:text-amber-400 hover:scale-110 transition-transform cursor-pointer flex-shrink-0 ${bellStyle} ml-1" title="Revise Now">notifications</span>
+                        ` : '';
+
+                folderDiv.innerHTML = `
+                            <div class="flex items-center gap-2 overflow-hidden flex-1">
+                                <span class="material-symbols-outlined text-md text-on-surface-variant/80 flex-shrink-0">folder</span>
+                                <span class="folder-label whitespace-normal break-words text-left leading-tight ${labelStyle}">${node.name}</span>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                ${bellHTML}
+                                <span class="material-symbols-outlined text-xs tree-folder-chevron transition-transform flex-shrink-0">chevron_right</span>
+                            </div>
+                        `;
+
+                const childrenDiv = document.createElement('div');
+                childrenDiv.className = 'tree-children hidden pl-3 border-l border-outline-variant/40 ml-4 space-y-1 mt-1';
+
+                folderDiv.addEventListener('click', (e) => {
+                    childrenDiv.classList.toggle('hidden');
+                    const chevron = folderDiv.querySelector('.tree-folder-chevron');
+                    chevron.classList.toggle('rotate-90');
+                    e.stopPropagation();
+                });
+
+                const bellIcon = folderDiv.querySelector('.revise-bell-icon');
+                if (bellIcon) {
+                    bellIcon.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Find README file under this folder
+                        let readmeFile = node.children.find(child => child.type === 'file' && child.path.toLowerCase().endsWith('readme.md'));
+                        if (!readmeFile) {
+                            const descendantFiles = flattenedFiles.filter(f => f.path.startsWith(currentPath + '/'));
+                            readmeFile = descendantFiles.find(f => f.path.toLowerCase().endsWith('readme.md'));
+                        }
+
+                        if (readmeFile) {
+                            window.location.hash = encodeURIComponent(readmeFile.path);
+                        }
+                    });
+                }
+
+                item.appendChild(folderDiv);
+                item.appendChild(childrenDiv);
+
+                renderSidebar(node.children, childrenDiv, currentPath);
             }
-
-            item.appendChild(folderDiv);
-            item.appendChild(childrenDiv);
-
-            renderSidebar(node.children, childrenDiv, currentPath);
         } else {
             const fileLink = document.createElement('a');
             const isCompleted = completedFiles.has(node.path);
@@ -977,6 +1021,25 @@ function highlightActiveFileInSidebar(filePath) {
                     if (chevron) chevron.classList.add('rotate-90');
                 }
                 parent = parentNode ? parentNode.parentElement.closest('.tree-children') : null;
+            }
+
+            const phaseContainer = el.closest('.phase-container');
+            if (phaseContainer && phaseContainer.classList.contains('hidden')) {
+                document.querySelectorAll('.phase-container').forEach(pc => {
+                    pc.classList.add('hidden');
+                    const header = pc.previousElementSibling;
+                    if (header) {
+                        const chevron = header.querySelector('.phase-chevron');
+                        if (chevron) chevron.innerText = 'chevron_right';
+                    }
+                });
+
+                phaseContainer.classList.remove('hidden');
+                const header = phaseContainer.previousElementSibling;
+                if (header) {
+                    const chevron = header.querySelector('.phase-chevron');
+                    if (chevron) chevron.innerText = 'expand_more';
+                }
             }
         } else {
             el.className = "tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label";
