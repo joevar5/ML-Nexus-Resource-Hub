@@ -928,17 +928,6 @@
                     ]
                   },
                   {
-                    "name": "resources",
-                    "type": "directory",
-                    "children": [
-                      {
-                        "name": "Module 009 Resource Pack (Monitoring & Logging)",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/resources/module-009-resource-pack.md"
-                      }
-                    ]
-                  },
-                  {
                     "name": "Module 009: Monitoring and Observability Basics",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/lessons/mod-009-monitoring-basics/README.md"

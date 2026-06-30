@@ -1100,22 +1100,22 @@
         /* ── Quiz Scoreboard ── */
         .quiz-scoreboard {
             position: sticky;
-            top: 0;
+            bottom: 1.5rem;
             z-index: 20;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
             padding: 12px 20px;
-            margin: 0 -4px 1.5rem -4px;
+            margin: 1.5rem -4px 0 -4px;
             border-radius: 12px;
             background: var(--color-surface-container);
             border: 1px solid var(--color-outline-variant);
             backdrop-filter: blur(16px);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         }
         html.dark .quiz-scoreboard {
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
 
         .quiz-scoreboard-left {

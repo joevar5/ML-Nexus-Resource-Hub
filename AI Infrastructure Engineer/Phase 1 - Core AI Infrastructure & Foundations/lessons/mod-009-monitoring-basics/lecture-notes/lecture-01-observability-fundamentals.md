@@ -1,11 +1,21 @@
 # Lecture 01: Observability Fundamentals for AI Infrastructure
 
 ## Lecture Overview
-Monitoring and observability are indispensable for running production-grade AI infrastructure. This lecture establishes the conceptual foundation you will rely on throughout the module: key terminology, mental models, service level objectives (SLOs), observability signals, and the unique challenges involved in operating ML workloads. By the end, you will possess a practical checklist for instrumenting systems and a roadmap for elevating observability maturity inside your organization.
+Monitoring and observability are indispensable for running production-grade AI infrastructure. 
+This lecture establishes the conceptual foundation you will rely on throughout the module: key terminology, mental models, service level objectives (SLOs), observability signals, and the unique challenges involved in operating ML workloads. By the end, you will possess a practical checklist for instrumenting systems and a roadmap for elevating observability maturity inside your organization.
 
-**Estimated Reading Time:** 60–75 minutes  
-**Hands-on Companion Lab:** Exercise 01 – Observability Foundations Lab  
-**Prerequisite Knowledge:** Linux command line, Docker basics, familiarity with REST APIs, introductory AI/ML pipeline concepts.
+## Table of Contents
+1. [Setting the Stage](#1-setting-the-stage)
+2. [Core Concepts and Terminology](#2-core-concepts-and-terminology)
+3. [Building Observability for AI Systems](#3-building-observability-for-ai-systems)
+4. [Designing Effective Dashboards](#4-designing-effective-dashboards)
+5. [Logging Strategies](#5-logging-strategies)
+6. [Alerting Foundations](#6-alerting-foundations)
+7. [Observability for Machine Learning Systems](#7-observability-for-machine-learning-systems)
+8. [Tooling Landscape](#8-tooling-landscape)
+9. [Practical Checklist](#9-practical-checklist)
+10. [Further Reading & Resources](#10-further-reading--resources)
+11. [Summary](#11-summary)
 
 ---
 
@@ -65,6 +75,7 @@ For AI/ML workloads, expand with:
 - **Resource Efficiency** – GPU hours, cost per 1,000 predictions, energy usage.
 
 ### 2.3 Service Level Objectives (SLO), SLIs, and SLAs
+
 - **Service Level Indicator (SLI):** Quantifiable measure of service performance (e.g., “Percentage of inference requests under 200 ms latency”).
 - **Service Level Objective (SLO):** Target value/range for an SLI (e.g., “99% of inferences must complete under 200 ms over a rolling 30-day window”).
 - **Service Level Agreement (SLA):** External contract with consequences if SLOs are missed (e.g., financial penalties, crediting customers).
@@ -84,6 +95,8 @@ Assess where your organization sits to plan improvements.
 ---
 
 ## 3. Building Observability for AI Systems
+
+Building observability for AI systems requires moving beyond traditional software monitoring. It demands a structured, layered approach that spans physical hardware (like GPUs) up to high-level model behaviors, implemented through standardized instrumentation principles across the entire machine learning lifecycle.
 
 ### 3.1 Layered Monitoring Strategy
 1. **Infrastructure Layer:** Physical/virtual hosts, containers, Kubernetes clusters, storage, networking.
@@ -234,6 +247,7 @@ Benefits:
 
 ### 7.3 Model Explainability and Auditing
 - Log feature importance, SHAP values, or counterfactual explanations.
+- Leverage enterprise governance platforms like **watsonx.governance**  to monitor model bias, drift, explainability, and compliance auditing in production.
 - Retain data for reproducing predictions (within compliance boundaries).
 - Monitor compliance: authorized access, PII exposure, GDPR/CCPA requests.
 
@@ -251,7 +265,7 @@ Benefits:
 | Visualization | Grafana | Datadog, New Relic, Chronosphere |
 | Logging | Loki, Elastic Stack, OpenSearch | Splunk, Datadog Logs, Sumo Logic |
 | Tracing | Jaeger, Tempo, OpenTelemetry Collector | Honeycomb, Lightstep, AWS X-Ray |
-| ML Observability | Evidently, Feast + Grafana | Arize AI, WhyLabs, Mona, Fiddler |
+| ML Observability | Evidently, Feast + Grafana | Arize AI, WhyLabs, Mona, Fiddler, watsonx.governance |
 
 **Integration Strategy:** 
 - Start with Prometheus + Grafana + Loki (aka PLG stack) for unified telemetry.
@@ -262,24 +276,14 @@ Benefits:
 
 ## 9. Practical Checklist
 
-### 9.1 Readiness Checklist
-- [ ] Metrics coverage for infrastructure, platform, application, business layers.
-- [ ] SLIs defined with SLO targets and tracked on dashboards.
-- [ ] Logs structured, centralized, and correlated with request IDs.
-- [ ] Trace propagation implemented across HTTP/gRPC boundaries.
-- [ ] Alert thresholds, routing, and escalation policies documented.
-- [ ] Runbooks exist for top 5 failure modes (e.g., GPU starvation, data drift).
-- [ ] Observability data retained according to compliance rules.
-- [ ] Cost of observability tooling monitored (storage, query costs).
-
-### 9.2 Implementation Steps
+### 9.1 Implementation Steps
 1. Inventory current instrumentation; identify gaps vs golden signals.
 2. Prioritize high-impact SLIs (user-facing and compliance-driven).
 3. Standardize logging and metric schemas across teams.
 4. Automate dashboard provisioning via infrastructure-as-code (e.g., Grafana provisioning, Terraform).
 5. Regularly review alerts to prevent fatigue; run monthly observability retro.
 
-### 9.3 Collaboration Tips
+### 9.2 Collaboration Tips
 - Embed observability requirements in Definition of Done (DoD) for new services.
 - Pair data scientists with platform engineers to define ML-specific SLIs.
 - Share observability insights with leadership (trend reports, maturity assessments).
@@ -287,18 +291,7 @@ Benefits:
 
 ---
 
-## 10. Knowledge Check
-
-Test your understanding with these reflection questions (answers at end of module):
-1. Differentiate monitoring from observability using an example from ML operations.
-2. Define three SLIs for a batch inference pipeline and propose SLO targets.
-3. Describe how you would detect and investigate a sudden rise in model false positives.
-4. What steps would you take to reduce alert fatigue while maintaining coverage?
-5. How can you ensure logs, metrics, and traces are correlated during an incident?
-
----
-
-## 11. Further Reading & Resources
+## 10. Further Reading & Resources
 - Google SRE Workbook – Chapters on alerting and SLOs.
 - “Observability Engineering” by Charity Majors, Liz Fong-Jones, George Miranda.
 - OpenTelemetry documentation: instrumentation guides for Python, Go, Java.
@@ -310,7 +303,7 @@ Test your understanding with these reflection questions (answers at end of modul
 
 ---
 
-## 12. Summary
+## 11. Summary
 - Observability enables you to explain system behaviour, not just detect anomalies.
 - AI infrastructure demands expanded observability covering data, model quality, and cost.
 - Adopt SLO-driven observability with layered metrics, structured logging, and trace correlation.

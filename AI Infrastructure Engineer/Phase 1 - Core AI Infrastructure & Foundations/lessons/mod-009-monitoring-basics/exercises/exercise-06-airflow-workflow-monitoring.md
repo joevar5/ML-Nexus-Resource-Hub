@@ -48,13 +48,13 @@ python deploy_model.py
 ### The Solution: Apache Airflow
 
 **Airflow** is a workflow orchestration platform that lets you:
-- - Define workflows as code (Python)
-- - Schedule automated execution
-- - Manage dependencies between tasks
-- - Monitor task execution
-- - Retry failed tasks automatically
-- - View logs and history
-- - Alert on failures
+- Define workflows as code (Python)
+- Schedule automated execution
+- Manage dependencies between tasks
+- Monitor task execution
+- Retry failed tasks automatically
+- View logs and history
+- Alert on failures
 
 ### Key Concepts
 

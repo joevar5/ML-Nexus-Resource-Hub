@@ -1127,21 +1127,8 @@ function makeQuizInteractive() {
                 </div>
             `;
 
-    // Insert scoreboard before the first section heading (h2) above the first question
-    let firstSectionH2 = null;
-    let el = questionHeadings[0];
-    while (el && el.previousElementSibling) {
-        el = el.previousElementSibling;
-        if (el.tagName === 'H2') {
-            firstSectionH2 = el;
-            break;
-        }
-    }
-    if (firstSectionH2) {
-        firstSectionH2.parentNode.insertBefore(scoreboard, firstSectionH2);
-    } else {
-        container.insertBefore(scoreboard, container.firstChild);
-    }
+    // Append scoreboard to the end of the container to enable sticky bottom behavior
+    container.appendChild(scoreboard);
 
     // ── Scoreboard update function ──
     function updateScoreboard() {

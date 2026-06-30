@@ -3,9 +3,18 @@
 ## Lecture Overview
 Logs complete the observability triad by recording contextual events, error details, and audit trails. Combined with alerting pipelines and ML-specific monitoring practices, they enable rapid incident response and continuous assurance of model performance. This lecture covers end-to-end logging architecture (collection, aggregation, storage, query), alerting strategy, incident management, and advanced ML observability patterns, closing the loop for Module 009.
 
-**Estimated Reading Time:** 80–95 minutes  
-**Hands-on Companion Lab:** Exercise 04 – Logging Pipeline, Exercise 05 – Alerting & Incident Response  
-**Prerequisite Knowledge:** Lectures 01–03, familiarity with Prometheus/Grafana, basic knowledge of Kubernetes or containerized deployments.
+## Table of Contents
+1. [Logging Fundamentals for AI Infrastructure](#1-logging-fundamentals-for-ai-infrastructure)
+2. [Logging Architecture Patterns](#2-logging-architecture-patterns)
+3. [Log Enrichment & Context Propagation](#3-log-enrichment--context-propagation)
+4. [Log Querying & Analysis](#4-log-querying--analysis)
+5. [Alerting Pipeline Design](#5-alerting-pipeline-design)
+6. [Incident Response for AI Services](#6-incident-response-for-ai-services)
+7. [ML Observability Deep Dive](#7-ml-observability-deep-dive)
+8. [Logging & Monitoring in Hybrid/Edge Deployments](#8-logging--monitoring-in-hybridedge-deployments)
+9. [Automation & Tooling](#9-automation--tooling)
+10. [Additional Resources](#10-additional-resources)
+11. [Summary](#11-summary)
 
 ---
 
@@ -270,67 +279,7 @@ GET /inference-logs/_search
 
 ---
 
-## 10. Governance, Security, and Compliance
-
-### 10.1 Role-Based Access Control
-- Limit who can query sensitive logs, manage alerts, modify dashboards.
-- Use SSO/identity providers with group mappings.
-- Implement least privilege (view-only vs edit).
-
-### 10.2 Audit Logging
-- Track changes to alert rules, dashboards, retention policies.
-- Maintain tamper-proof logs stored separately (write-once storage).
-- Ensure incident notes are recorded for compliance.
-
-### 10.3 Retention & Deletion Policies
-- Align with legal requirements; define retention for each log class.
-- Automate deletion using lifecycle rules (S3 lifecycle policies, Loki retention).
-- Document processes for “right to be forgotten” requests.
-
-### 10.4 Secure Transport & Storage
-- Encrypt logs in transit (TLS) and at rest (KMS, key management).
-- Segment networks; restrict egress from log aggregation clusters.
-- Harden access with firewall rules, security groups.
-
----
-
-## 11. Practical Checklists
-
-### 11.1 Logging Readiness
-- [ ] Standardized structured logging libraries across services.
-- [ ] Log ingestion pipeline deployed (agents, aggregator, storage).
-- [ ] Correlation IDs included in logs and traces.
-- [ ] Log retention policies documented and enforced.
-- [ ] Redaction/masking of sensitive fields implemented.
-- [ ] Query dashboards built for common scenarios (error logs, audit trail).
-
-### 11.2 Alerting Readiness
-- [ ] SLO-based alerts defined and tested in staging.
-- [ ] Alert routes and escalation policies configured.
-- [ ] On-call schedule documented and accessible.
-- [ ] Runbooks linked in alert annotations.
-- [ ] Alert noise reviewed monthly (post-incident retro).
-- [ ] Synthetic monitoring (blackbox) alerts in place for critical endpoints.
-
-### 11.3 ML Monitoring Readiness
-- [ ] Model performance metrics tracked and visualized.
-- [ ] Data drift detection integrated with monitoring stack.
-- [ ] Fairness and ethics metrics defined for critical models.
-- [ ] Champion-challenger dashboards available.
-- [ ] Incident process includes ML-specific checklists.
-
----
-
-## 12. Knowledge Check
-1. Compare Loki and Elasticsearch for log aggregation in terms of cost, scalability, and feature set.
-2. Outline steps to implement end-to-end tracing and ensure logs carry trace IDs.
-3. Design an alert for model accuracy dropping below threshold due to delayed labels—what signals and thresholds would you use?
-4. Explain how you would detect and mitigate concept drift in production.
-5. Describe the governance measures required to keep logs compliant with data privacy regulations.
-
----
-
-## 13. Additional Resources
+## 10. Additional Resources
 - CNCF Observability Landscape (https://landscape.cncf.io/)
 - Grafana Loki documentation & best practices.
 - OpenTelemetry Collector configuration guides.
@@ -340,11 +289,10 @@ GET /inference-logs/_search
 
 ---
 
-## 14. Summary
+## 11. Summary
 - Logs provide granular context that complements metrics and traces, essential for diagnosing AI infrastructure issues.
 - Structured logging, correlation IDs, and centralized aggregation enable efficient querying.
 - Alerting must align with SLOs and incorporate ML-specific considerations (drift, fairness).
 - Incident response for AI systems includes additional checks for data pipelines and model performance.
 - Governance, security, and compliance are integral to sustainable monitoring and logging practices.
 
-With all four lectures complete, Module 009 now provides a comprehensive foundation for monitoring and observability in AI infrastructure. Proceed to the exercises to cement these concepts hands-on, and finalize the module by assembling the knowledge check quiz.

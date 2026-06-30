@@ -3,13 +3,57 @@
 ## Lecture Overview
 Prometheus has become the de facto standard for metrics collection in cloud-native environments. This lecture explains how to design, deploy, and operate a Prometheus-based metrics stack tailored to AI infrastructure workloads. You will learn the Prometheus data model, configuration patterns, exporter ecosystem, PromQL query design, and strategies for scaling the pipeline in production.
 
-**Estimated Reading Time:** 75–90 minutes  
-**Hands-on Companion Lab:** Exercise 02 – Prometheus Setup & Exporters  
-**Prerequisite Knowledge:** Lecture 01 (observability foundations), Docker basics, familiarity with Linux services.
+## Table of Contents
+1. [Prometheus Architecture Deep Dive](#1-prometheus-architecture-deep-dive)
+2. [Installing and Configuring Prometheus](#2-installing-and-configuring-prometheus)
+3. [Exporters for AI Infrastructure](#3-exporters-for-ai-infrastructure)
+4. [PromQL Essentials](#4-promql-essentials)
+5. [Alerting with Prometheus and Alertmanager](#5-alerting-with-prometheus-and-alertmanager)
+6. [Scaling Prometheus](#6-scaling-prometheus)
+7. [Security and Multi-Tenancy](#7-security-and-multi-tenancy)
+8. [Operational Best Practices](#8-operational-best-practices)
+9. [Prometheus for ML-Specific Metrics](#9-prometheus-for-ml-specific-metrics)
+10. [Additional Resources](#10-additional-resources)
+11. [Summary](#11-summary)
 
 ---
 
 ## 1. Prometheus Architecture Deep Dive
+
+Prometheus is a monitoring system that periodically collects metrics from applications, stores them as time-series data, lets you query them using PromQL, visualizes them through Grafana, and sends alerts through Alertmanager.
+
+
+```mermaid
+graph LR
+    SD["Service Discovery"] -.->|Locates| Targets
+    
+    subgraph Collect ["1. Collect"]
+        Targets["Exporters<br>(Pull /metrics)"]
+        PushGW["Pushgateway<br>(Push buffer)"]
+    end
+
+    subgraph Store ["2. Store & Process"]
+        subgraph PromServer ["Prometheus Server"]
+            Retrieval["Retrieval Engine"]
+            TSDB[("TSDB Storage")]
+            Rules["Rules Engine"]
+            
+            Retrieval --> TSDB
+            Rules --> TSDB
+        end
+    end
+
+    subgraph Consume ["3. Visualize & Alert"]
+        Grafana["Grafana<br>(PromQL)"]
+        Alertmanager["Alertmanager<br>(Alert Routing)"]
+    end
+
+    Targets -->|Scraped by| Retrieval
+    PushGW -->|Scraped by| Retrieval
+    
+    Retrieval -->|Triggers| Alertmanager
+    TSDB -.->|Queried by| Grafana
+```
 
 ### 1.1 Core Components
 - **Prometheus Server:** Scrapes targets, stores time-series data, runs PromQL queries, triggers alerts.
@@ -116,6 +160,14 @@ scrape_configs:
 
 ## 3. Exporters for AI Infrastructure
 
+### What is an Exporter?
+An exporter is simply a small application that:
+- Collects metrics from some system.
+- Converts them into Prometheus format.
+- Exposes them on a `/metrics` HTTP endpoint.
+
+Instead of Prometheus logging into every machine and figuring out how to read CPU, GPU, Redis, PostgreSQL, etc., each exporter gathers the information and presents it in a standard Prometheus format.
+
 ### 3.1 Common Exporters
 - **Node Exporter:** Host-level metrics (CPU, memory, disk). Essential baseline.
 - **cAdvisor / kube-state-metrics:** Container and Kubernetes metrics.
@@ -164,6 +216,8 @@ if __name__ == "__main__":
 ---
 
 ## 4. PromQL Essentials
+
+Prometheus Query Language (PromQL) is the core analytical engine of Prometheus. It allows you to select, filter, aggregate, and compute time-series metrics in real-time. In AI platforms, writing precise PromQL queries is essential for measuring service performance, detecting hardware bottlenecks (such as GPU starvation), and calculating SLO error budgets.
 
 ### 4.1 Data Model Recap
 - Metrics identified by **metric name** + set of **label key/value pairs**.
@@ -233,6 +287,8 @@ Benefits:
 
 ## 5. Alerting with Prometheus and Alertmanager
 
+Collecting metrics is only useful if you can proactively act on failures. Prometheus evaluates alerting rules written in PromQL at a regular interval and forwards active alerts to Alertmanager. Alertmanager then handles deduplication, grouping, silencing, and routing of those notifications to your communication channels (such as Slack, PagerDuty, or email).
+
 ### 5.1 Alerting Rules
 Define alerting expressions using PromQL.
 
@@ -280,22 +336,41 @@ receivers:
 
 ## 6. Scaling Prometheus
 
+As your AI clusters expand, a single Prometheus instance can become a bottleneck due to high memory consumption and disk I/O from millions of active metric series. Scaling Prometheus requires transitioning from a standalone instance to a distributed, highly available architecture—utilizing techniques like federation, horizontal sharding, and remote storage backends like Thanos or Mimir.
+
+```mermaid
+graph LR
+    subgraph Option1 ["1. Federation"]
+        Targets["Targets"] --> Child["Child Prom"] --> Global["Global Prom"]
+    end
+
+    subgraph Option2 ["2. Remote Write"]
+        Prom["Prometheus"] --> Storage[("Long-Term Storage")] --> Grafana["Grafana"]
+    end
+
+    Global -.->|Or| Prom
+```
+
 ### 6.1 Federation
+**Federation** splits the monitoring workload hierarchically. Instead of one massive server scraping every target everywhere, you deploy local "child" Prometheus servers in separate environments (like development, staging, or region-specific clusters) to scrape local workloads. Then, a single "global" Prometheus server scrapes only the aggregated data from these child servers, keeping its workload light and fast.
 - Lower-tier Prometheus servers scrape workloads in specific regions/clusters.
 - Top-level Prometheus federates aggregated metrics (sums, averages).
 - Useful for multi-region, multi-team setups.
 
 ### 6.2 Sharding & Horizontal Scaling
+**Horizontal Scaling & Sharding** splits the workload across multiple parallel servers when a single instance runs out of memory. Instead of routing all metrics to one place, you distribute the targets across multiple instances (sharding). Tools like **Thanos** or **Mimir** aggregate these sharded servers: they receive metrics via *Remote Write*, save them to cheap cloud object storage (S3/GCS) for long-term historical records, and let you query all of them at once from a single dashboard.
 - Use **Prometheus Operator** or **Cortex/Mimir/Thanos** for horizontal scalability, long-term storage, and high availability.
 - **Thanos** adds object-storage backed historical data + query layer across multiple Prometheus instances.
 - **Cortex/Mimir** is fully distributed TSDB supporting massive scale.
 
 ### 6.3 HA Setup Considerations
+**High Availability (HA)** ensures that if one monitoring server goes down, you don't lose visibility. To achieve this, you run Prometheus servers in identical pairs (active-active), where both servers scrape the exact same targets. If one server crashes, the other keeps running. Downstream tools like Thanos deduplicate the duplicate metrics automatically so your dashboards don't show double the data.
 - Run Prometheus in pairs (active-active) scraping the same targets; dedup queries in Thanos.
 - Ensure Alertmanager runs as a cluster of at least three replicas for consensus.
 - Store persistent data on SSD-backed disks; plan backup strategy.
 
 ### 6.4 Retention and Storage Management
+**Retention & Storage Management** is about keeping your server database size under control. As Prometheus scrapes metrics, local disk usage continuously grows. You manage this by setting a retention time (e.g., discard data older than 15 days) and using remote storage engines to automatically offload historical metrics to cheap object storage, keeping local server disks fast and lean.
 - Configure `--storage.tsdb.retention.size` or `--storage.tsdb.retention.time`.
 - Offload long-term metrics to remote storage (Thanos, Cortex, VictoriaMetrics).
 - Monitor cardinality: use `prometheus_tsdb_head_series` and `prometheus_tsdb_head_memory_allocations_bytes`.
@@ -303,6 +378,8 @@ receivers:
 ---
 
 ## 7. Security and Multi-Tenancy
+
+Prometheus was originally designed under the assumption that it would run inside a fully trusted internal network, meaning it lacks built-in authentication, authorization, or strict user access isolation. Operating Prometheus securely in modern, shared cloud-native environments requires wrapping endpoints with reverse proxies (or mutual TLS), defining strict Kubernetes Role-Based Access Control (RBAC), and partitioning metric spaces logically between different engineering teams.
 
 ### 7.1 Securing Prometheus
 - Restrict access to `/` and `/api` endpoints via reverse proxy, mutual TLS, or OAuth proxy.
@@ -365,48 +442,7 @@ receivers:
 
 ---
 
-## 10. Troubleshooting & Common Pitfalls
-
-### 10.1 High Cardinality
-- Avoid labels with unbounded values (user IDs, request IDs).
-- Use cardinality analysis tools (`prometheus_tsdb_cardinality`).
-- Consider dropping labels via relabeling.
-
-### 10.2 Scrape Failures
-- Inspect `up` metric (`up == 0` indicates failure).
-- Check network connectivity, TLS certificate expirations.
-- Watch for exporter resource starvation; add health probes.
-
-### 10.3 Query Performance
-- Use `avg_over_time` or recording rules for long-term calculations.
-- Limit `offset` usage; ensure queries span rational windows.
-- Monitor Prometheus CPU usage; heavy queries can overload server.
-
-### 10.4 Time Synchronization
-- Ensure NTP is enabled across servers; out-of-sync clocks break correlations.
-
----
-
-## 11. Hands-On Checklist
-- [ ] Deploy Prometheus via Docker Compose or Kubernetes manifest.
-- [ ] Configure scrape jobs for node exporter, custom service, and application instrumentation.
-- [ ] Create recording rule for inference latency SLO.
-- [ ] Write promtool unit tests for rules you create.
-- [ ] Trigger a sample alert and verify it routes correctly through Alertmanager.
-- [ ] Document pipeline architecture with diagram ∕ ascii in README.
-
----
-
-## 12. Knowledge Check
-1. Explain the Prometheus data model and why label cardinality matters.
-2. Differentiate between `rate`, `irate`, and `increase` with concrete use cases.
-3. Design a PromQL query that surfaces top 5 models by GPU consumption over a 1-hour window.
-4. Outline the steps to scrape Prometheus metrics from a Kubernetes pod.
-5. Describe two approaches for scaling Prometheus to manage 1 million active series.
-
----
-
-## 13. Additional Resources
+## 10. Additional Resources
 - Prometheus Docs: https://prometheus.io/docs/introduction/overview/
 - Robust Perception blog (Julius Volz, Brian Brazil) – deep dives into Prometheus usage.
 - “Monitoring Distributed Systems” (Cloud Native Patterns series).
@@ -416,7 +452,7 @@ receivers:
 
 ---
 
-## 14. Summary
+## 11. Summary
 - Prometheus offers a flexible pull-based metrics pipeline ideal for cloud-native AI infrastructure.
 - Exporters and service discovery extend coverage across infrastructure, platform, and ML workloads.
 - PromQL enables powerful analytics—recording rules and alerting turn those insights into action.

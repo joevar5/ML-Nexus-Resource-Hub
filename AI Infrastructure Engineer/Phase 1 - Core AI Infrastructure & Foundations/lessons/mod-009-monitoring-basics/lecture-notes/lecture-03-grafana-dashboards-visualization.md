@@ -3,9 +3,21 @@
 ## Lecture Overview
 Grafana transforms raw Prometheus metrics into actionable insights by combining flexible dashboards, rich visualization options, and alerting workflows. This lecture shows how to design dashboards that accelerate on-call response, communicate platform health to stakeholders, and capture the nuances of AI/ML workloads. You will learn dashboard architecture, panel composition, Grafana data modeling, templating, sharing, provisioning, and alert configuration that complements your Prometheus pipeline.
 
-**Estimated Reading Time:** 70–85 minutes  
-**Hands-on Companion Lab:** Exercise 03 – Grafana Dashboards  
-**Prerequisite Knowledge:** Lectures 01–02, familiarity with Prometheus queries, awareness of target SLIs/SLOs.
+## Table of Contents
+1. [Introduction to Grafana](#1-introduction-to-grafana)
+2. [Dashboard Strategy & Information Architecture](#2-dashboard-strategy--information-architecture)
+3. [Data Source Configuration](#3-data-source-configuration)
+4. [Building Panels that Drive Action](#4-building-panels-that-drive-action)
+5. [Dashboard Templating & Variables](#5-dashboard-templating--variables)
+6. [Grafana Alerting](#6-grafana-alerting)
+7. [Provisioning Dashboards as Code](#7-provisioning-dashboards-as-code)
+8. [Enhancing Dashboards with Annotations & Exemplars](#8-enhancing-dashboards-with-annotations--exemplars)
+9. [Case Studies & Panel Recipes](#9-case-studies--panel-recipes)
+10. [Access Control & Collaboration](#10-access-control--collaboration)
+11. [Performance Optimization](#11-performance-optimization)
+12. [Integrating Logs & Traces](#12-integrating-logs--traces)
+13. [Compliance, Auditing & Cost Visibility](#13-compliance-auditing--cost-visibility)
+14. [Additional Resources](#14-additional-resources)
 
 ---
 
@@ -19,6 +31,15 @@ Grafana transforms raw Prometheus metrics into actionable insights by combining 
 - **Infrastructure-as-code:** Provision dashboards via JSON or Grafana provisioning files.
 
 ### 1.2 Grafana Architecture
+
+```mermaid
+graph LR
+    User["User (Web UI)"] -->|Requests Dashboard| Server["Grafana Server"]
+    Server -->|Reads/Writes config| DB[("Internal DB<br>(SQLite/Postgres)")]
+    Server -->|Queries metrics/logs| DS["Data Sources<br>(Prometheus, Loki, Tempo)"]
+    Server -->|Routes notifications| Alerts["Contact Points<br>(Slack, PagerDuty)"]
+```
+
 - **Grafana server:** Handles authentication, data source configuration, dashboard rendering.
 - **Backend data sources:** Prometheus, Loki, etc. Grafana does not store time-series data by default (except for alerting state).
 - **Dashboards & folders:** Stored in Grafana’s database or via provisioned files.
@@ -29,6 +50,34 @@ Grafana can be deployed via Docker, Kubernetes, or managed offerings (Grafana Cl
 ---
 
 ## 2. Dashboard Strategy & Information Architecture
+
+An effective dashboard strategy ensures that engineers and stakeholders get the right information at the right time. Organizing dashboards by information hierarchy—from high-level business health down to specific service and hardware diagnostics—prevents cognitive overload and drastically reduces the Mean Time to Resolution (MTTR) during incidents.
+
+```mermaid
+graph TB
+    subgraph Workspace ["Grafana Workspace"]
+        subgraph FolderExecutive ["Executive Folder"]
+            Landing["Landing Dashboard<br>(SLOs & KPIs)"]
+        end
+
+        subgraph FolderOps ["Operations Folder"]
+            subgraph ServiceDash ["Service Dashboards"]
+                InferenceGateway["Inference Gateway"]
+                
+                subgraph SubsystemDash ["Subsystem Dashboards"]
+                    GPUMetrics["GPU Pool Metrics"]
+                    QueueSize["Request Queue"]
+                end
+            end
+            
+            Runbooks["Operational Runbooks"]
+        end
+
+        subgraph FolderAnalytics ["Analytics Folder"]
+            FinOps["Experimentation & FinOps"]
+        end
+    end
+```
 
 ### 2.1 Dashboard Taxonomy
 1. **Landing Dashboard (Executive Overview):**
@@ -321,41 +370,10 @@ Leverage metrics from Great Expectations / custom checks:
 
 ---
 
-## 14. Practical Checklist
-- [ ] Add Prometheus, Loki, and Tempo data sources with validated connections.
-- [ ] Create template variables for environment, cluster, team, and model.
-- [ ] Build inference gateway dashboard with latency, error rate, saturation, and SLO panels.
-- [ ] Configure Grafana alert for error rate >1% over 10 minutes routed to on-call.
-- [ ] Provision dashboards via code and commit to Git repository.
-- [ ] Document dashboard purpose, owner, and runbook link in panel descriptions.
-- [ ] Schedule monthly dashboard review to prune outdated panels.
-
----
-
-## 15. Knowledge Check
-1. How would you structure dashboards for executives vs on-call engineers? Provide specific examples.
-2. When should you rely on recording rules vs live PromQL queries in Grafana?
-3. Describe the steps to add a variable that filters dashboards by `team`.
-4. Explain how exemplars link metrics to traces and why they matter for latency investigations.
-5. Outline a process for provisioning dashboards-as-code and validating them before deployment.
-
----
-
-## 16. Additional Resources
+## 14. Additional Resources
 - Grafana Labs Tutorials (https://grafana.com/tutorials/)
 - “Building Effective Dashboards” (GrafanaCON talks).
 - Grafana Play (https://play.grafana.org) for live examples.
 - “Observability Engineering” (Chapters on dashboard design).
 - Grafana Terraform provider documentation.
 - Honeycomb + Grafana blog posts on SLO dashboards.
-
----
-
-## 17. Summary
-- Grafana bridges the gap between raw metrics and human decision-making.
-- Design dashboards with clear purpose, audience, and actionable insights.
-- Leverage templating, annotations, and exemplars to enhance situational awareness.
-- Integrate logging, tracing, and cost metrics for comprehensive observability.
-- Treat dashboards as code to ensure reliability and collaboration.
-
-In Lecture 04, we will complete the observability stack by tackling logging pipelines, alerting workflows, and ML-specific monitoring practices.
