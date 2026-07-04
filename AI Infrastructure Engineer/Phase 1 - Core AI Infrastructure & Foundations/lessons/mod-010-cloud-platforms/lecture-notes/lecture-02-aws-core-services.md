@@ -6,9 +6,18 @@ Amazon Web Services offers 200+ services, but mastering a core set of foundation
 
 You'll learn through practical AWS CLI examples how to provision virtual machines, manage object storage, deploy managed databases, and implement least-privilege security policies. By the end, you'll be confident navigating the AWS console, automating tasks via CLI, and architecting basic cloud infrastructure for ML workloads.
 
-**Estimated Reading Time:** 75-90 minutes
-**Hands-on Companion Lab:** Exercise 02 – Compute & Storage Foundations
-**Prerequisites:** AWS account with free tier, AWS CLI installed and configured, basic Linux command line skills
+---
+
+## Table of Contents
+1. [AWS Account Setup and Configuration](#1-aws-account-setup-and-configuration)
+2. [EC2 (Elastic Compute Cloud) - Virtual Machines](#2-ec2-elastic-compute-cloud---virtual-machines)
+3. [S3 (Simple Storage Service) - Object Storage](#3-s3-simple-storage-service---object-storage)
+4. [RDS (Relational Database Service)](#4-rds-relational-database-service)
+5. [IAM (Identity and Access Management)](#5-iam-identity-and-access-management)
+6. [Putting It All Together: ML Inference Architecture](#6-putting-it-all-together-ml-inference-architecture)
+7. [Key Takeaways](#7-key-takeaways)
+8. [What's Next?](#whats-next)
+9. [Further Reading](#further-reading)
 
 ---
 
@@ -62,6 +71,7 @@ aws --version
 aws configure
 
 # Prompts:
+# go to IAM --> Security credentials
 AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
 AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 Default region name [None]: us-east-1
@@ -1150,15 +1160,12 @@ aws iam enable-mfa-device \
 
 **Architecture:**
 
-```
-User Request → [ALB] → [EC2 Auto-Scaling Group]
-                             ├─ EC2 Instance 1 (with IAM role)
-                             ├─ EC2 Instance 2
-                             └─ EC2 Instance 3
-                                   ↓
-                             [S3: model artifacts]
-                                   ↓
-                             [RDS: request logs, predictions]
+```mermaid
+flowchart TD
+    User([User Request]) -->|HTTPS| ALB[Application Load Balancer]
+    ALB --> ASG[EC2 Auto-Scaling Group\nInstances 1-3 with IAM Roles]
+    ASG -->|Download Model| S3[(S3: Model Artifacts)]
+    ASG -->|Log Predictions| RDS[(RDS: Request Logs)]
 ```
 
 **Implementation Steps:**

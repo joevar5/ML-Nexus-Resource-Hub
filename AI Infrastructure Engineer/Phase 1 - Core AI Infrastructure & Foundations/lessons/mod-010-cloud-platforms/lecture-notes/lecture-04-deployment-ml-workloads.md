@@ -1,9 +1,15 @@
 # Lecture 04: Deployment Patterns & ML Workloads on AWS
 
-**Module**: Cloud Platforms
-**Level**: Junior AI Infrastructure Engineer
-**Duration**: 90 minutes
-**Prerequisites**: Lectures 01-03 (Cloud Fundamentals, AWS Core Services, Networking & Security)
+## Table of Contents
+1. [Infrastructure as Code (IaC) with Terraform](#1-infrastructure-as-code-iac-with-terraform)
+2. [Container Orchestration: ECS and EKS](#2-container-orchestration-ecs-and-eks)
+3. [Serverless ML Inference with AWS Lambda](#3-serverless-ml-inference-with-aws-lambda)
+4. [AWS SageMaker for Managed ML](#4-aws-sagemaker-for-managed-ml)
+5. [Cost Optimization for ML Workloads](#5-cost-optimization-for-ml-workloads)
+6. [Production-Ready Deployment Architecture](#6-production-ready-deployment-architecture)
+7. [Summary and Best Practices](#7-summary-and-best-practices)
+8. [Next Steps](#next-steps)
+9. [Exercise Preview](#exercise-preview)
 
 ---
 
@@ -45,26 +51,24 @@ Write Code → Plan Changes → Apply Changes → Infrastructure Created
 ```
 
 **Terraform Architecture**:
-```
-┌──────────────────┐
-│  Terraform Code  │ (.tf files)
-│  (HCL Language)  │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│  Terraform CLI   │ (terraform plan/apply)
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│   AWS Provider   │ (Translates to AWS API calls)
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│   AWS Resources  │ (EC2, S3, VPC, etc.)
-└──────────────────┘
+```mermaid
+graph TD
+    %% Node Declarations & Styles
+    Code["Terraform Code (HCL)"]:::coral
+    CLI["Terraform CLI (plan/apply)"]:::blue
+    Provider["AWS Provider (API Translator)"]:::amber
+    Resources["AWS Resources (EC2, S3, VPC)"]:::green
+
+    %% Connections
+    Code --> CLI
+    CLI --> Provider
+    Provider --> Resources
+
+    %% Class Definitions
+    classDef coral fill:#dc2626,stroke:#b91c1c,color:#fff,font-weight:bold
+    classDef blue fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef amber fill:#b45309,stroke:#92400e,color:#fff,font-weight:bold
+    classDef green fill:#047857,stroke:#065f46,color:#fff,font-weight:bold
 ```
 
 ### 1.3 Terraform Installation & Configuration
@@ -652,28 +656,26 @@ terraform state rm aws_lb.ml_app
 ### 2.1 Amazon ECS (Elastic Container Service)
 
 **ECS Architecture**:
-```
-┌─────────────────────────────────────────────┐
-│         Application Load Balancer           │
-└────────────────┬────────────────────────────┘
-                 │
-      ┌──────────┴──────────┐
-      │                     │
-┌─────▼─────┐         ┌─────▼─────┐
-│  ECS Task │         │  ECS Task │
-│ Container │         │ Container │
-│  Port 5000│         │  Port 5000│
-└───────────┘         └───────────┘
-      │                     │
-┌─────▼──────────────────────▼─────┐
-│        ECS Service               │
-│  (Desired count: 3 tasks)        │
-└──────────────┬───────────────────┘
-               │
-┌──────────────▼───────────────────┐
-│        ECS Cluster               │
-│  (EC2 or Fargate launch type)    │
-└──────────────────────────────────┘
+```mermaid
+graph TD
+    %% Node Declarations
+    ALB["Application Load Balancer"]:::blue
+    Task1["ECS Task Container 1 (Port 5000)"]:::purple
+    Task2["ECS Task Container 2 (Port 5000)"]:::purple
+    Service["ECS Service (Desired Count: 3 Tasks)"]:::green
+    Cluster["ECS Cluster (EC2 / Fargate)"]:::green
+
+    %% Connections
+    ALB --> Task1
+    ALB --> Task2
+    Task1 --> Service
+    Task2 --> Service
+    Service --> Cluster
+
+    %% Class Definitions
+    classDef blue fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef purple fill:#7c3aed,stroke:#6d28d9,color:#fff,font-weight:bold
+    classDef green fill:#047857,stroke:#065f46,color:#fff,font-weight:bold
 ```
 
 **ECS Concepts**:
@@ -996,6 +998,8 @@ kubectl logs -f <pod-name>
 
 ## 3. Serverless ML Inference with AWS Lambda
 
+AWS Lambda provides a serverless execution environment that runs your code in response to events and automatically manages the underlying compute resources. For machine learning, serverless inference allows you to deploy lightweight models without provisioning or scaling servers, offering a cost-effective solution for applications with variable or low-frequency request patterns.
+
 ### 3.1 When to Use Serverless for ML?
 
 **Good Fit for Lambda**:
@@ -1211,26 +1215,32 @@ curl -X POST https://$API_ID.execute-api.us-east-1.amazonaws.com/prod/predict \
 
 ## 4. AWS SageMaker for Managed ML
 
+Amazon SageMaker is a fully managed service that provides every developer and data scientist with the ability to build, train, and deploy machine learning models quickly. It removes the heavy lifting from each step of the machine learning workflow, providing built-in tools for data preparation, model training, version control, and scalable endpoint hosting.
+
 ### 4.1 SageMaker Components
 
-**SageMaker Platform**:
-```
-┌──────────────────────────────────────────────┐
-│           SageMaker Studio                   │  (Jupyter-based IDE)
-└──────────────────┬───────────────────────────┘
-                   │
-    ┌──────────────┼──────────────┐
-    │              │              │
-┌───▼────┐   ┌─────▼─────┐  ┌────▼─────┐
-│Training│   │Processing │  │Inference │
-│  Jobs  │   │   Jobs    │  │Endpoints │
-└────────┘   └───────────┘  └──────────┘
-    │              │              │
-    └──────────────┼──────────────┘
-                   │
-         ┌─────────▼─────────┐
-         │   Model Registry  │
-         └───────────────────┘
+```mermaid
+graph TD
+    %% Node Declarations
+    Studio["SageMaker Studio (Jupyter IDE)"]:::coral
+    Training["Training Jobs"]:::blue
+    Processing["Processing Jobs"]:::blue
+    Inference["Inference Endpoints"]:::purple
+    Registry["Model Registry"]:::green
+
+    %% Connections
+    Studio --> Training
+    Studio --> Processing
+    Studio --> Inference
+    Training --> Registry
+    Processing --> Registry
+    Inference --> Registry
+
+    %% Class Definitions
+    classDef coral fill:#dc2626,stroke:#b91c1c,color:#fff,font-weight:bold
+    classDef blue fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef purple fill:#7c3aed,stroke:#6d28d9,color:#fff,font-weight:bold
+    classDef green fill:#047857,stroke:#065f46,color:#fff,font-weight:bold
 ```
 
 **Key SageMaker Features**:
@@ -1624,52 +1634,51 @@ aws budgets create-budget \
 
 ### 6.1 Complete ML Infrastructure Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Route 53 (DNS)                          │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-┌────────────────────────────▼────────────────────────────────────┐
-│                    CloudFront (CDN)                             │
-│              (Cache predictions, DDoS protection)               │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-                 ┌───────────┴───────────┐
-                 │                       │
-        ┌────────▼────────┐     ┌────────▼────────┐
-        │   VPC (us-east-1)│     │  VPC (us-west-2)│
-        │                  │     │                  │
-        │  ┌────────────┐  │     │  ┌────────────┐ │
-        │  │    ALB     │  │     │  │    ALB     │ │
-        │  └─────┬──────┘  │     │  └─────┬──────┘ │
-        │        │         │     │        │        │
-        │  ┌─────▼──────┐  │     │  ┌─────▼──────┐ │
-        │  │  ECS/EKS   │  │     │  │  ECS/EKS   │ │
-        │  │  (Fargate) │  │     │  │  (Fargate) │ │
-        │  │  3 tasks   │  │     │  │  3 tasks   │ │
-        │  └─────┬──────┘  │     │  └─────┬──────┘ │
-        │        │         │     │        │        │
-        │  ┌─────▼──────┐  │     │  ┌─────▼──────┐ │
-        │  │    RDS     │  │     │  │ RDS Replica│ │
-        │  │ Multi-AZ   │  │     │  │ (Read-only)│ │
-        │  └────────────┘  │     │  └────────────┘ │
-        └──────────────────┘     └──────────────────┘
-                 │                       │
-                 └───────────┬───────────┘
-                             │
-                    ┌────────▼────────┐
-                    │  S3 (Models)    │
-                    │  - Versioning   │
-                    │  - Encryption   │
-                    │  - Lifecycle    │
-                    └─────────────────┘
-                             │
-                    ┌────────▼────────┐
-                    │  CloudWatch     │
-                    │  - Metrics      │
-                    │  - Logs         │
-                    │  - Alarms       │
-                    └─────────────────┘
+```mermaid
+graph TD
+    %% Node Declarations
+    Route53["Route 53 (DNS)"]:::coral
+    CloudFront["CloudFront CDN (Cache & DDoS Protection)"]:::coral
+
+    subgraph VPCEast ["VPC us-east-1"]
+        ALBEast["Public ALB"]:::blue
+        ECSEast["ECS/EKS Fargate (3 Tasks)"]:::purple
+        RDSEast["RDS Multi-AZ Database"]:::amber
+    end
+
+    subgraph VPCWest ["VPC us-west-2"]
+        ALBWest["Public ALB"]:::blue
+        ECSWest["ECS/EKS Fargate (3 Tasks)"]:::purple
+        RDSWest["RDS Replica (Read-Only)"]:::amber
+    end
+
+    S3["S3 Model Storage (Versioning, Encryption, Lifecycle)"]:::green
+    CloudWatch["CloudWatch (Metrics, Logs, Alarms)"]:::green
+
+    %% Traffic Routing
+    Route53 --> CloudFront
+    CloudFront --> ALBEast
+    CloudFront --> ALBWest
+
+    %% In-VPC Application Flow (East)
+    ALBEast --> ECSEast
+    ECSEast --> RDSEast
+
+    %% In-VPC Application Flow (West)
+    ALBWest --> ECSWest
+    ECSWest --> RDSWest
+
+    %% Storage & Monitoring Integration
+    ECSEast --> S3
+    ECSWest --> S3
+    S3 --> CloudWatch
+
+    %% Class Definitions
+    classDef coral fill:#dc2626,stroke:#b91c1c,color:#fff,font-weight:bold
+    classDef blue fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef purple fill:#7c3aed,stroke:#6d28d9,color:#fff,font-weight:bold
+    classDef amber fill:#b45309,stroke:#92400e,color:#fff,font-weight:bold
+    classDef green fill:#047857,stroke:#065f46,color:#fff,font-weight:bold
 ```
 
 ### 6.2 Deployment Strategy: Blue/Green Deployment
@@ -1747,35 +1756,6 @@ aws elbv2 modify-listener \
    - Right-size instances based on actual usage
    - Use S3 lifecycle policies for storage
 
-### Production Checklist
-
-**Infrastructure**:
-- [ ] Multi-AZ deployment for high availability
-- [ ] Auto-scaling configured (CPU and request-based)
-- [ ] Load balancer health checks enabled
-- [ ] VPC with public and private subnets
-- [ ] Security groups following least privilege
-
-**Monitoring**:
-- [ ] CloudWatch metrics for all resources
-- [ ] CloudWatch Alarms for critical metrics
-- [ ] Centralized logging (CloudWatch Logs or ELK)
-- [ ] Cost monitoring and budgets
-- [ ] Performance monitoring (latency, throughput)
-
-**Security**:
-- [ ] IAM roles with minimal permissions
-- [ ] Secrets stored in Secrets Manager
-- [ ] Encryption at rest and in transit
-- [ ] Regular security audits
-- [ ] VPC Flow Logs enabled
-
-**Operations**:
-- [ ] Blue/Green or Canary deployment strategy
-- [ ] Automated rollback on failures
-- [ ] Backup and disaster recovery plan
-- [ ] Documentation for runbooks
-- [ ] On-call rotation and incident response
 
 ---
 

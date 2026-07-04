@@ -1189,6 +1189,7 @@ function makeQuizInteractive() {
         if (questionElements.length === 0) return;
 
         let correctAnswer = '';
+        let correctAnswers = [];
         let answerEl = null;
         let explanationEls = [];
         let questionTextEls = [];
@@ -1199,10 +1200,13 @@ function makeQuizInteractive() {
         for (const elem of questionElements) {
             const text = elem.textContent.trim();
 
-            if (/^(Correct\s+)?Answer:?\s*[A-D]/i.test(text)) {
+            if (/^(Correct\s+)?Answers?:?\s*[A-Z]/i.test(text)) {
                 answerEl = elem;
-                const match = text.match(/(?:Correct\s+)?Answer:?\s*([A-D])/i);
-                if (match) correctAnswer = match[1].toUpperCase();
+                const match = text.match(/(?:Correct\s+)?Answers?:?\s*([A-Z](?:\s*,\s*[A-Z])*)/i);
+                if (match) {
+                    correctAnswer = match[1].toUpperCase().replace(/\s+/g, '');
+                    correctAnswers = correctAnswer.split(',').map(l => l.trim());
+                }
                 foundAnswer = true;
                 continue;
             }
@@ -1220,10 +1224,11 @@ function makeQuizInteractive() {
                 const temp = document.createElement('span');
                 temp.innerHTML = line;
                 const lineText = temp.textContent.trim();
+                const cleanLineText = lineText.replace(/^[-*+\s]*\[[\s*xX]?\]\s*/, '').trim();
 
-                if (/^[A-D][)\].]/i.test(lineText)) {
+                if (/^[A-Z][)\].]/i.test(cleanLineText)) {
                     hasOptions = true;
-                    rawOptionLines.push({ text: lineText, html: line });
+                    rawOptionLines.push({ text: cleanLineText, html: line.replace(/^[-*+\s]*\[[\s*xX]?\]\s*/, '').trim() });
                 }
             }
 
@@ -1234,28 +1239,32 @@ function makeQuizInteractive() {
             }
         }
 
-        if (rawOptionLines.length === 0 || !correctAnswer) return;
+        if (rawOptionLines.length === 0 || correctAnswers.length === 0) return;
 
         // Build interactive options
         const optionsContainer = document.createElement('div');
         optionsContainer.className = 'quiz-options-container';
+        if (correctAnswers.length > 1) {
+            optionsContainer.classList.add('multi-select');
+        }
 
         rawOptionLines.forEach(({ text, html }) => {
-            const letterMatch = text.match(/^([A-D])[)\].]\s*(.*)/is);
+            const letterMatch = text.match(/^([A-Z])[)\].]\s*(.*)/is);
             if (!letterMatch) return;
 
             const letter = letterMatch[1].toUpperCase();
-            const htmlMatch = html.match(/^[A-D][)\].]\s*(.*)/is);
+            const htmlMatch = html.match(/^[A-Z][)\].]\s*(.*)/is);
             const optionContent = htmlMatch ? htmlMatch[1].trim() : letterMatch[2].trim();
-            const isCorrect = letter === correctAnswer;
+            const isCorrect = correctAnswers.includes(letter);
 
             const optionDiv = document.createElement('div');
             optionDiv.className = 'quiz-option';
             optionDiv.dataset.letter = letter;
             optionDiv.dataset.correct = isCorrect.toString();
 
+            const selectorClass = correctAnswers.length > 1 ? 'quiz-option-radio checkbox' : 'quiz-option-radio';
             optionDiv.innerHTML = `
-                        <span class="quiz-option-radio"></span>
+                        <span class="${selectorClass}"></span>
                         <span class="quiz-option-letter">${letter}</span>
                         <span class="quiz-option-text">${optionContent}</span>
                         <span class="quiz-option-result-icon">
@@ -1276,7 +1285,11 @@ function makeQuizInteractive() {
 
         let explanationHTML = '';
         if (answerEl) {
-            explanationHTML += `<strong>✓ Correct Answer: ${correctAnswer}</strong><br>`;
+            if (correctAnswers.length > 1) {
+                explanationHTML += `<strong>✓ Correct Answers: ${correctAnswers.join(', ')}</strong><br>`;
+            } else {
+                explanationHTML += `<strong>✓ Correct Answer: ${correctAnswers[0]}</strong><br>`;
+            }
         }
         explanationEls.forEach(el => {
             explanationHTML += el.innerHTML;
@@ -1304,9 +1317,7 @@ function makeQuizInteractive() {
         const allOptions = optionsContainer.querySelectorAll('.quiz-option');
         allQuestionOptionSets.push({ allOptions, explanationWrapper, retryBtn, qIndex });
 
-        function selectOption(opt, save = true) {
-            const isCorrect = opt.dataset.correct === 'true';
-
+        function gradeQuestion(save = true) {
             // If this question was previously answered (via retry), undo the previous answer
             if (quizState.questionStates[qIndex]) {
                 const prev = quizState.questionStates[qIndex];
@@ -1315,22 +1326,39 @@ function makeQuizInteractive() {
                 quizState.answered--;
             }
 
-            opt.classList.add('quiz-option-selected');
-            allOptions.forEach(o => o.classList.add('quiz-option-disabled'));
+            const selectedOpts = Array.from(optionsContainer.querySelectorAll('.quiz-option-selected'));
+            const selectedLetters = selectedOpts.map(o => o.dataset.letter);
 
-            if (isCorrect) {
-                opt.classList.add('quiz-option-correct');
+            let isFullyCorrect = false;
+            if (correctAnswers.length > 1) {
+                isFullyCorrect = correctAnswers.length === selectedLetters.length &&
+                                 correctAnswers.every(l => selectedLetters.includes(l));
+            } else {
+                isFullyCorrect = selectedLetters.length === 1 && selectedLetters[0] === correctAnswers[0];
+            }
+
+            allOptions.forEach(o => {
+                o.classList.add('quiz-option-disabled');
+                const isOptCorrect = o.dataset.correct === 'true';
+                const isOptSelected = o.classList.contains('quiz-option-selected');
+
+                if (isOptSelected) {
+                    if (isOptCorrect) {
+                        o.classList.add('quiz-option-correct');
+                    } else {
+                        o.classList.add('quiz-option-wrong');
+                    }
+                } else if (isOptCorrect) {
+                    o.classList.add('quiz-option-correct');
+                }
+            });
+
+            if (isFullyCorrect) {
                 quizState.correct++;
                 quizState.questionStates[qIndex] = 'correct';
             } else {
-                opt.classList.add('quiz-option-wrong');
                 quizState.wrong++;
                 quizState.questionStates[qIndex] = 'wrong';
-                allOptions.forEach(o => {
-                    if (o.dataset.correct === 'true') {
-                        o.classList.add('quiz-option-correct');
-                    }
-                });
             }
 
             quizState.answered++;
@@ -1340,7 +1368,7 @@ function makeQuizInteractive() {
             retryBtn.style.display = 'inline-flex';
 
             if (save) {
-                savedAnswers[qIndex] = opt.dataset.letter;
+                savedAnswers[qIndex] = correctAnswers.length > 1 ? selectedLetters.join(',') : selectedLetters[0];
                 try {
                     localStorage.setItem(storageKey, JSON.stringify(savedAnswers));
                 } catch (e) {
@@ -1352,7 +1380,17 @@ function makeQuizInteractive() {
         allOptions.forEach(opt => {
             opt.addEventListener('click', () => {
                 if (opt.classList.contains('quiz-option-disabled')) return;
-                selectOption(opt, true);
+                
+                if (correctAnswers.length > 1) {
+                    opt.classList.toggle('quiz-option-selected');
+                    const selected = optionsContainer.querySelectorAll('.quiz-option-selected');
+                    if (selected.length === correctAnswers.length) {
+                        gradeQuestion(true);
+                    }
+                } else {
+                    opt.classList.add('quiz-option-selected');
+                    gradeQuestion(true);
+                }
             });
         });
 
@@ -1385,10 +1423,21 @@ function makeQuizInteractive() {
 
         // Restore saved option if any
         if (savedAnswers[qIndex] !== undefined) {
-            const savedLetter = savedAnswers[qIndex];
-            const savedOpt = Array.from(allOptions).find(o => o.dataset.letter === savedLetter);
-            if (savedOpt) {
-                selectOption(savedOpt, false);
+            const savedVal = savedAnswers[qIndex];
+            if (correctAnswers.length > 1) {
+                const savedLetters = savedVal.split(',');
+                allOptions.forEach(o => {
+                    if (savedLetters.includes(o.dataset.letter)) {
+                        o.classList.add('quiz-option-selected');
+                    }
+                });
+                gradeQuestion(false);
+            } else {
+                const savedOpt = Array.from(allOptions).find(o => o.dataset.letter === savedVal);
+                if (savedOpt) {
+                    savedOpt.classList.add('quiz-option-selected');
+                    gradeQuestion(false);
+                }
             }
         }
     });
@@ -1403,12 +1452,16 @@ function makeQuizInteractive() {
             questionStates: {}
         };
 
-        allQuestionOptionSets.forEach(({ allOptions, explanationWrapper, retryBtn }) => {
+        allQuestionOptionSets.forEach(({ allOptions, explanationWrapper, retryBtn, submitBtn }) => {
             allOptions.forEach(o => {
                 o.classList.remove('quiz-option-disabled', 'quiz-option-correct', 'quiz-option-wrong', 'quiz-option-selected');
             });
             explanationWrapper.classList.remove('quiz-explanation-visible');
             retryBtn.style.display = 'none';
+            if (submitBtn) {
+                submitBtn.style.display = 'inline-flex';
+                submitBtn.disabled = true;
+            }
         });
 
         // Reset savedAnswers and clear localStorage

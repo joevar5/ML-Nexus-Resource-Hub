@@ -6,9 +6,18 @@ Secure, well-architected network infrastructure is fundamental to production ML 
 
 By the end, you'll understand how to create production-grade VPC architectures, configure security groups following least-privilege principles, implement network segmentation for compliance, and troubleshoot connectivity issues. You'll also learn advanced IAM patterns for cross-account access and service-to-service authentication in microservices architectures.
 
-**Estimated Reading Time:** 75-90 minutes
-**Hands-on Companion Lab:** Exercise 03 – Networking & Security Lab
-**Prerequisites:** Lecture 02 (AWS Core Services), basic understanding of IP addressing and subnetting, familiarity with TCP/IP protocols
+## Table of Contents
+1. [VPC (Virtual Private Cloud) Fundamentals](#1-vpc-virtual-private-cloud-fundamentals)
+2. [Subnets: Network Segmentation](#2-subnets-network-segmentation)
+3. [Internet Gateway and NAT Gateway](#3-internet-gateway-and-nat-gateway)
+4. [Security Groups: Instance-Level Firewalls](#4-security-groups-instance-level-firewalls)
+5. [Network ACLs (NACLs)](#5-network-acls-nacls)
+6. [Advanced IAM for Network Security](#6-advanced-iam-for-network-security)
+7. [Network Troubleshooting](#7-network-troubleshooting)
+8. [Production VPC Architecture Example](#8-production-vpc-architecture-example)
+9. [Key Takeaways](#9-key-takeaways)
+10. [What's Next?](#whats-next)
+11. [Further Reading](#further-reading)
 
 ---
 
@@ -90,12 +99,12 @@ aws ec2 modify-vpc-attribute \
 aws ec2 describe-vpcs --query 'Vpcs[*].[VpcId,CidrBlock,Tags[?Key==`Name`].Value|[0]]' --output table
 
 # Output:
------------------------------------------------------
-|                  DescribeVpcs                     |
-+----------------------+----------------+-----------+
++--------------------+----------------+--------------------+
+|                       DescribeVpcs                       |
++--------------------+----------------+--------------------+
 |  vpc-0abc123       |  10.0.0.0/16   |  ml-production-vpc |
 |  vpc-default456    |  172.31.0.0/16 |  default-vpc       |
-+----------------------+----------------+-----------+
++--------------------+----------------+--------------------+
 ```
 
 ---
@@ -1044,6 +1053,68 @@ telnet ml-metadata-db.abc123.us-east-1.rds.amazonaws.com 5432
 ---
 
 ## 8. Production VPC Architecture Example
+
+This diagram illustrates a production-ready VPC architecture for Machine Learning workloads. It follows the principle of network segmentation with public and private subnets, uses NAT gateways for outbound internet access from private instances, and employs security groups for least-privilege access control.
+
+**Architecture:**
+
+```mermaid
+graph TD
+    %% Node Declarations & Styles
+    Client["Client / Internet"]:::coral
+    IGW["Internet Gateway (IGW)"]:::blue
+    ALB["Public ALB"]:::blue
+    NAT["NAT Gateway"]:::blue
+    App["App Server (EC2/EKS)"]:::purple
+    DB["RDS PostgreSQL"]:::amber
+    S3["S3 Gateway Endpoint"]:::green
+    Iface["Interface Endpoints (ECR, SSM, KMS, CloudWatch)"]:::green
+    AWS["AWS Managed Services"]:::coral
+
+    %% Structural Grouping (Subgraphs)
+    subgraph VPC ["VPC (10.0.0.0/16)"]
+        subgraph PublicSubnet ["Public Subnet (10.0.1.0/24)"]
+            ALB
+            NAT
+        end
+
+        subgraph PrivateSubnet ["Private Subnet (10.0.11.0/24)"]
+            App
+        end
+
+        subgraph DatabaseSubnet ["Database Subnet (10.0.21.0/24)"]
+            DB
+        end
+
+        subgraph VPCEndpoints ["VPC Endpoints (PrivateLink)"]
+            S3
+            Iface
+        end
+    end
+
+    %% Network Flows
+    Client -- HTTPS Ingress --> IGW
+    IGW -- Forward --> ALB
+    ALB -- Target Group Route --> App
+    App -- Database Traffic (Port 5432) --> DB
+    
+    %% Egress Paths (NAT Gateway)
+    App -. Secure Outbound .-> NAT
+    NAT -. NAT Route .-> IGW
+
+    %% AWS Services Private Connectivity
+    App -- Internal VPC Route --> S3
+    App -- Private ENI Access --> Iface
+    S3 --> AWS
+    Iface --> AWS
+
+    %% Class Definitions
+    classDef coral fill:#dc2626,stroke:#b91c1c,color:#fff,font-weight:bold
+    classDef blue fill:#1e40af,stroke:#1e3a8a,color:#fff,font-weight:bold
+    classDef purple fill:#7c3aed,stroke:#6d28d9,color:#fff,font-weight:bold
+    classDef amber fill:#b45309,stroke:#92400e,color:#fff,font-weight:bold
+    classDef green fill:#047857,stroke:#065f46,color:#fff,font-weight:bold
+```
 
 **Complete Terraform Template (Reference):**
 

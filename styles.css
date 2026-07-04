@@ -927,6 +927,7 @@
             border-color: var(--color-primary);
         }
         .quiz-option-selected .quiz-option-radio::after {
+            background: var(--color-primary);
             transform: scale(1);
         }
         .quiz-option-correct .quiz-option-radio {
@@ -1095,6 +1096,58 @@
         }
         html.dark .quiz-retry-btn:hover {
             box-shadow: 0 4px 14px rgba(147, 180, 255, 0.2);
+        }
+
+        /* Multi-select submit button */
+        .quiz-submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 20px;
+            margin-top: 14px;
+            border-radius: 9999px;
+            border: 1.5px solid var(--color-primary);
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+            font-family: 'Public Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(9, 76, 178, 0.15);
+            max-width: fit-content;
+        }
+        .quiz-submit-btn:disabled {
+            background: var(--color-surface-container-low);
+            color: var(--color-on-surface-variant);
+            border-color: var(--color-outline-variant);
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .quiz-submit-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(9, 76, 178, 0.35);
+        }
+        .quiz-submit-btn:active:not(:disabled) {
+            transform: translateY(0px) scale(0.97);
+        }
+        html.dark .quiz-submit-btn {
+            box-shadow: 0 4px 14px rgba(147, 180, 255, 0.1);
+        }
+        html.dark .quiz-submit-btn:hover:not(:disabled) {
+            box-shadow: 0 4px 14px rgba(147, 180, 255, 0.25);
+        }
+
+        /* Checkbox styling */
+        .quiz-option-radio.checkbox {
+            border-radius: 4px;
+        }
+        .quiz-option-radio.checkbox::after {
+            border-radius: 1px;
+            width: 8px;
+            height: 8px;
         }
 
         /* ── Quiz Scoreboard ── */

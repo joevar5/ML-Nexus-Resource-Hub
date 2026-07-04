@@ -25,14 +25,7 @@ By the end of this lecture, you will:
 - Design disaster recovery strategies for ML systems
 - Plan and execute cloud migrations
 - Apply rightsizing, scheduling, and purchasing strategies
-
-### Prerequisites
-- Lectures 01-04 in this module (Cloud fundamentals, AWS services)
-- Understanding of ML workflows (training, inference, data storage)
-- Basic knowledge of cloud pricing models
-
-**Duration**: 90 minutes
-**Difficulty**: Intermediate
+s
 
 ---
 
@@ -43,7 +36,7 @@ By the end of this lecture, you will:
 ```
 Single Cloud Risks:
 ┌────────────────────────────────────┐
-│ All ML infrastructure on AWS      │
+│ All ML infrastructure on AWS       │
 │                                    │
 │ Risks:                             │
 │ ✗ Vendor lock-in                   │
@@ -61,7 +54,7 @@ Multi-Cloud Benefits:
 │ ✓ Best-of-breed services           │
 │ ✓ Negotiating leverage             │
 │ ✓ Disaster recovery                │
-│ ✓ Regulatory compliance (data     │
+│ ✓ Regulatory compliance (data      │
 │   residency across regions)        │
 └────────────────────────────────────┘
 ```
@@ -70,25 +63,27 @@ Multi-Cloud Benefits:
 
 #### 1. Best-of-Breed (Use Each Cloud's Strengths)
 
+This approach leverages the unique strengths and specialized services of different cloud providers (e.g., using GCP for TPUs/analytics and AWS for general hosting). It ensures you use the most efficient and cost-effective service for each component of your ML pipeline.
+
 ```
 Architecture:
 ┌─────────────────────────────────────┐
 │ AWS                                 │
-│ ├── S3: Data lake storage          │
-│ ├── EKS: Model serving (Kubernetes)│
-│ └── RDS: Metadata database         │
+│ ├── S3: Data lake storage           │
+│ ├── EKS: Model serving (Kubernetes) │
+│ └── RDS: Metadata database          │
 └─────────────────────────────────────┘
 
 ┌─────────────────────────────────────┐
 │ GCP                                 │
-│ ├── Vertex AI: Model training      │
-│ ├── BigQuery: Data warehouse       │
-│ └── TPUs: Large model training     │
+│ ├── Vertex AI: Model training       │
+│ ├── BigQuery: Data warehouse        │
+│ └── TPUs: Large model training      │
 └─────────────────────────────────────┘
 
 ┌─────────────────────────────────────┐
 │ Azure                               │
-│ ├── Azure ML: AutoML experiments   │
+│ ├── Azure ML: AutoML experiments    │
 │ └── Cognitive Services: Pre-trained │
 │     models                          │
 └─────────────────────────────────────┘
@@ -100,6 +95,8 @@ Architecture:
 - Azure: Enterprise integration (Active Directory), hybrid cloud
 
 #### 2. Active-Passive Disaster Recovery
+
+In this setup, a primary cloud runs all active production workloads while a secondary cloud acts as a standby resource. Data is continuously replicated from the primary to the secondary cloud, which is scaled up and activated only when an outage occurs in the primary provider.
 
 ```
 Primary: AWS (active)
@@ -114,6 +111,8 @@ Secondary: GCP (passive/warm standby)
 ```
 
 #### 3. Active-Active for High Availability
+
+This strategy distributes active production traffic across multiple cloud providers simultaneously. By serving requests from both clouds based on geographic proximity, it provides the lowest latency and maximum fault tolerance, albeit with higher complexity in data consistency.
 
 ```
 Both clouds handle production traffic:
@@ -132,6 +131,8 @@ Benefits:
 ```
 
 ### Multi-Cloud Challenges
+
+While multi-cloud architectures offer substantial benefits in redundancy, latency, and service choice, they introduce significant complexity. Managing workloads across disparate providers requires resolving challenges in cross-cloud data synchronization, unified identity/access control, network transit costs, and operational overhead.
 
 1. **Data Synchronization**
    ```python
@@ -161,11 +162,15 @@ Benefits:
    ```
 
 2. **Identity and Access Management (IAM)**
-   - AWS IAM ≠ GCP IAM ≠ Azure RBAC
-   - Use centralized identity provider (Okta, Azure AD)
-   - Implement SAML/OIDC for SSO
+   - **Disparate Authorization Schemes**: AWS IAM, GCP IAM, and Azure RBAC employ completely different policy models, inheritance structures, and resource naming conventions (ARNs vs. URIs).
+   - **Centralized Identity Control**: Utilize a centralized Identity Provider (IdP) like Okta or Microsoft Entra ID (Azure AD) to avoid managing separate user credentials across multiple systems.
+   - **Federation via SAML/OIDC**: Implement federated Single Sign-On (SSO) using SAML 2.0 or OpenID Connect (OIDC) to dynamically map corporate identities to administrative roles in each target cloud.
 
 3. **Networking**
+   - **Non-Overlapping IP Spaces**: Subnet CIDR blocks must be carefully designed to prevent overlapping IP ranges across clouds (e.g., AWS on 10.0.0.0/16 and GCP on 10.1.0.0/16) to allow routing.
+   - **Cross-Cloud Connectivity**: Secure transit tunnels must be established using Site-to-Site IPsec VPNs or dedicated enterprise circuits like AWS Direct Connect linked to GCP Cloud Interconnect.
+   - **Data Egress Costs**: Routing high-volume ML datasets or model weights across cloud boundaries incurs significant egress fees, making local caching strategies critical.
+
    ```
    Connect AWS VPC to GCP VPC:
    ┌─────────────┐         ┌─────────────┐
@@ -254,17 +259,14 @@ Commit to $1/hour for 3 years:
 
 ### Major Cost Drivers in ML
 
-```
-Typical ML Infrastructure Costs:
-┌────────────────────────────────────┐
-│ GPU Compute:          60%  $60k/yr │
-│ Storage (data/models): 20%  $20k/yr │
-│ Networking:           10%  $10k/yr │
-│ Managed Services:      7%   $7k/yr │
-│ Data Transfer:         3%   $3k/yr │
-│ Total:               100% $100k/yr │
-└────────────────────────────────────┘
-```
+| Component | Share (%) | Estimated Annual Cost ($100k baseline) |
+| :--- | :---: | :---: |
+| **GPU Compute** | 60% | $60,000 / year |
+| **Storage (Data/Models)** | 20% | $20,000 / year |
+| **Networking** | 10% | $10,000 / year |
+| **Managed Services** | 7% | $7,000 / year |
+| **Data Transfer** | 3% | $3,000 / year |
+| **Total** | **100%** | **$100,000 / year** |
 
 ### Optimization Strategy 1: Right-Sizing
 
@@ -555,105 +557,94 @@ budgets.create_budget(
 
 ### RPO and RTO Targets
 
-```
-RPO (Recovery Point Objective):
-How much data can you afford to lose?
-├── RPO = 1 hour → Lose max 1 hour of data
-└── Requires: Continuous replication or hourly backups
-
-RTO (Recovery Time Objective):
-How quickly must systems be back online?
-├── RTO = 4 hours → System back within 4 hours
-└── Requires: Warm standby or faster
-```
+- **RPO (Recovery Point Objective)**: How much data can you afford to lose?
+  - RPO = 1 hour → Lose max 1 hour of data
+  - Requires: Continuous replication or hourly backups
+- **RTO (Recovery Time Objective)**: How quickly must systems be back online?
+  - RTO = 4 hours → System back within 4 hours
+  - Requires: Warm standby or faster
 
 ### DR Strategies for ML
 
-#### Strategy 1: Backup and Restore (Lowest cost, highest RTO)
+| Strategy | RPO | RTO | Cost | Best For |
+| :--- | :---: | :---: | :---: | :--- |
+| **Backup & Restore** | Hours–Days | Hours–Days | Low | Non-critical systems |
+| **Pilot Light** | Minutes | Hours | Low–Medium | Moderate uptime needs |
+| **Warm Standby** | Seconds | Minutes | Medium | Business-critical ML |
+| **Active-Active** | Near-Zero | Seconds | High | Mission-critical systems |
 
-```
-RPO: Hours to days
-RTO: Hours to days
-Cost: Low ($$$)
+---
 
-Implementation:
+### Strategy 1: Backup and Restore (Lowest cost, highest RTO)
+
+- **RPO**: Hours to days
+- **RTO**: Hours to days
+- **Cost**: Low
+- **Best For**: Non-critical systems
+
+**Implementation**:
 1. Daily model backups to S3
 2. Database backups to S3
 3. Infrastructure as Code in Git
-4. In disaster: Recreate from backups
+4. In disaster: Recreate all resources from backups
 
-Best for: Non-critical systems
-```
+---
 
-#### Strategy 2: Pilot Light (Low cost, medium RTO)
+### Strategy 2: Pilot Light (Low cost, medium RTO)
 
-```
-RPO: Minutes
-RTO: Hours
-Cost: Low-Medium ($$$$)
+- **RPO**: Minutes
+- **RTO**: Hours
+- **Cost**: Low–Medium
+- **Best For**: Important systems with moderate uptime needs
 
-Implementation:
-Primary AWS:
-├── Full production environment
-└── All traffic
+**Implementation**:
+- **Primary (AWS)**: Full production environment handling all traffic
+- **Secondary (GCP — minimal)**:
+  - Database replica (live)
+  - S3 → GCS replication (live)
+  - Infrastructure code ready (not running)
+- **In Disaster**:
+  1. Scale up GCP infrastructure
+  2. Point DNS to GCP
+  3. Resume operations (1–4 hours)
 
-Secondary GCP (minimal):
-├── Database replica (live)
-├── S3 → GCS replication (live)
-└── Infrastructure code ready (not running)
+---
 
-In disaster:
-1. Scale up GCP infrastructure
-2. Point DNS to GCP
-3. Resume operations (1-4 hours)
+### Strategy 3: Warm Standby (Medium cost, low RTO)
 
-Best for: Important systems with moderate uptime needs
-```
+- **RPO**: Seconds
+- **RTO**: Minutes
+- **Cost**: Medium
+- **Best For**: Business-critical ML services
 
-#### Strategy 3: Warm Standby (Medium cost, low RTO)
+**Implementation**:
+- **Primary (AWS)**: Full production (100% traffic)
+- **Secondary (GCP)**:
+  - Scaled-down replicas running at 20% capacity
+  - Live data replication
+  - Ready to scale up instantly
+- **In Disaster**:
+  1. Scale up GCP to 100%
+  2. Redirect traffic via DNS / load balancer
+  3. Fully operational in < 15 minutes
 
-```
-RPO: Seconds
-RTO: Minutes
-Cost: Medium ($$$$$$)
+---
 
-Implementation:
-Primary AWS:
-├── Full production (100% traffic)
+### Strategy 4: Multi-Region Active-Active (Highest cost, lowest RTO)
 
-Secondary GCP:
-├── Scaled-down replicas (running at 20% capacity)
-├── Live data replication
-└── Ready to scale up instantly
+- **RPO**: Near-zero
+- **RTO**: Seconds (automatic failover)
+- **Cost**: High
+- **Best For**: Mission-critical systems
 
-In disaster:
-1. Scale up GCP to 100%
-2. Redirect traffic via DNS/load balancer
-3. Operational in <15 minutes
-
-Best for: Business-critical ML services
-```
-
-#### Strategy 4: Multi-Region Active-Active (Highest cost, lowest RTO)
-
-```
-RPO: Near-zero
-RTO: Seconds (automatic failover)
-Cost: High ($$$$$$$$)
-
-Implementation:
-Both regions handle traffic simultaneously:
-AWS US-East:          AWS US-West:
-├── 50% traffic       ├── 50% traffic
-├── Live data sync ←→ └── Live data sync
-
-In disaster (US-East fails):
-- US-West automatically handles 100% traffic
-- No manual intervention needed
-- Users may not notice outage
-
-Best for: Mission-critical systems
-```
+**Implementation**:
+- Both regions handle production traffic simultaneously
+  - **AWS US-East**: 50% traffic with live data sync
+  - **AWS US-West**: 50% traffic with live data sync
+- **In Disaster (US-East fails)**:
+  - US-West automatically handles 100% of traffic
+  - No manual intervention needed
+  - Users experience zero downtime or data loss
 
 ---
 
