@@ -895,7 +895,7 @@ function initZoomLightbox() {
         if (!svgEl) return null;
         const clone = svgEl.cloneNode(true);
         clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        
+
         // Inject current theme's text color into the SVG so it is preserved in the data URL image
         const computedColor = getComputedStyle(document.documentElement).getPropertyValue('--color-on-background').trim();
         if (computedColor) {
@@ -1343,7 +1343,7 @@ function makeQuizInteractive() {
             let isFullyCorrect = false;
             if (correctAnswers.length > 1) {
                 isFullyCorrect = correctAnswers.length === selectedLetters.length &&
-                                 correctAnswers.every(l => selectedLetters.includes(l));
+                    correctAnswers.every(l => selectedLetters.includes(l));
             } else {
                 isFullyCorrect = selectedLetters.length === 1 && selectedLetters[0] === correctAnswers[0];
             }
@@ -1391,7 +1391,7 @@ function makeQuizInteractive() {
         allOptions.forEach(opt => {
             opt.addEventListener('click', () => {
                 if (opt.classList.contains('quiz-option-disabled')) return;
-                
+
                 if (correctAnswers.length > 1) {
                     opt.classList.toggle('quiz-option-selected');
                     const selected = optionsContainer.querySelectorAll('.quiz-option-selected');
@@ -1892,7 +1892,7 @@ function showToast(message, type = 'info', duration = 3500) {
 
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    
+
     let iconName = 'info';
     if (type === 'error') iconName = 'error';
     else if (type === 'warning') iconName = 'warning';

@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>ML Nexus Hub - ML & GenAI Infrastructure playground</title>
-    <link rel="icon" type="image/png" href="favicon.png"/>
-    <meta name="description" content="A premium interactive index and resource hub for machine learning systems, project scaffolds, and infrastructure engineering modules."/>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta name="description"
+        content="A premium interactive index and resource hub for machine learning systems, project scaffolds, and infrastructure engineering modules." />
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
     <!-- Marked for Markdown Parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
+
     <!-- Mermaid for Rendering Diagrams -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
     <script>
@@ -36,7 +42,7 @@
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    
+
     <!-- KaTeX for LaTeX Math Equation Rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
@@ -99,8 +105,9 @@
     </script>
 
     <!-- Custom CSS variables & Premium Styles -->
-        <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="bg-background text-on-surface overflow-x-hidden min-h-screen flex flex-col pt-16 animate-fade-in">
     <script>
         // Check local storage immediately on script run to prevent visual flashing
@@ -127,32 +134,41 @@
 
 
     <!-- TopNavBar -->
-    <header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface border-b border-outline-variant">
+    <header
+        class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface border-b border-outline-variant">
         <div class="flex items-center gap-md">
             <!-- Mobile Menu Toggle Button -->
-            <button id="menu-toggle-btn" class="md:hidden text-on-surface-variant hover:text-primary transition-colors material-symbols-outlined">menu</button>
-            <span onclick="goHome()" class="font-display text-2xl font-bold text-primary tracking-tight cursor-pointer">ML Nexus Hub</span>
+            <button id="menu-toggle-btn"
+                class="md:hidden text-on-surface-variant hover:text-primary transition-colors material-symbols-outlined">menu</button>
+            <span onclick="goHome()"
+                class="font-display text-2xl font-bold text-primary tracking-tight cursor-pointer">ML Nexus Hub</span>
         </div>
-        
+
         <!-- Live Search Bar -->
         <div class="hidden md:flex items-center flex-1 max-w-xl px-xl">
             <div class="relative w-full">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
-                <input id="search-input" class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-4 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-on-surface placeholder-on-surface-variant/60" placeholder="Search resources..." type="text" autocomplete="off"/>
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+                <input id="search-input"
+                    class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-4 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-on-surface placeholder-on-surface-variant/60"
+                    placeholder="Search resources..." type="text" autocomplete="off" />
             </div>
         </div>
-        
+
         <!-- Navigation Right Panel -->
         <nav class="flex items-center gap-lg">
-            <a class="font-label text-sm text-on-surface hover:text-primary font-semibold py-1 flex items-center gap-1.5 transition-colors" href="https://github.com/joevar5/ML-Nexus-Resource-Hub" target="_blank" rel="noopener noreferrer">
+            <a class="font-label text-sm text-on-surface hover:text-primary font-semibold py-1 flex items-center gap-1.5 transition-colors"
+                href="https://github.com/joevar5/ML-Nexus-Resource-Hub" target="_blank" rel="noopener noreferrer">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
                 <span>GitHub</span>
             </a>
             <div class="flex items-center gap-md ml-md">
                 <!-- Theme toggle button -->
-                <button id="theme-toggle-btn" aria-label="Toggle theme" class="text-on-surface-variant hover:text-primary transition-colors material-symbols-outlined">dark_mode</button>
+                <button id="theme-toggle-btn" aria-label="Toggle theme"
+                    class="text-on-surface-variant hover:text-primary transition-colors material-symbols-outlined">dark_mode</button>
             </div>
         </nav>
     </header>
@@ -161,45 +177,66 @@
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
 
     <!-- SideNavBar -->
-    <aside id="sidebar" class="fixed left-0 top-16 bottom-0 w-[280px] flex flex-col p-lg z-40 bg-surface border-r border-outline-variant overflow-y-auto transition-transform duration-300 -translate-x-full md:translate-x-0">
+    <aside id="sidebar"
+        class="fixed left-0 top-16 bottom-0 w-[280px] flex flex-col p-lg z-40 bg-surface border-r border-outline-variant overflow-y-auto transition-transform duration-300 -translate-x-full md:translate-x-0">
         <div class="mb-lg flex-shrink-0">
             <h3 class="font-display text-lg font-bold text-on-background">Learning Paths</h3>
-            <p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mt-1">Expert Curated Guides</p>
+            <p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mt-1">Expert Curated Guides
+            </p>
         </div>
-        
+
         <!-- Curated Learning Paths Links -->
         <nav class="flex-shrink-0 flex flex-col gap-1" id="sidebar-categories">
-            <button onclick="navigateToCategory('Infrastructure')" class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left" data-category="Infrastructure">
+            <button onclick="navigateToCategory('Infrastructure')"
+                class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
+                data-category="Infrastructure">
                 <span class="material-symbols-outlined text-xl">memory</span>
                 <span class="font-label text-sm">Infrastructure</span>
-                <span class="ml-auto font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
+                <span
+                    class="ml-auto font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In
+                    Progress</span>
             </button>
-            <button onclick="navigateToCategory('Projects')" class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed" data-category="Projects">
+            <button onclick="navigateToCategory('Projects')"
+                class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
+                data-category="Projects">
                 <span class="material-symbols-outlined text-xl">lock</span>
                 <span class="font-label text-sm">Projects</span>
-                <span class="ml-auto font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                <span
+                    class="ml-auto font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
             </button>
-            <button onclick="navigateToCategory('System Design')" class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left" data-category="System Design">
+            <button onclick="navigateToCategory('System Design')"
+                class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
+                data-category="System Design">
                 <span class="material-symbols-outlined text-xl">schema</span>
                 <span class="font-label text-sm">System Design</span>
-                <span class="ml-auto font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
+                <span
+                    class="ml-auto font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In
+                    Progress</span>
             </button>
-            <button onclick="navigateToCategory('Paper Analysis')" class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed" data-category="Paper Analysis">
+            <button onclick="navigateToCategory('Paper Analysis')"
+                class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
+                data-category="Paper Analysis">
                 <span class="material-symbols-outlined text-xl">lock</span>
                 <span class="font-label text-sm">Paper Analysis</span>
-                <span class="ml-auto font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                <span
+                    class="ml-auto font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
             </button>
         </nav>
-        
+
         <!-- Dynamic Tree Navigation (Filtered by Active Category) -->
-        <div class="mt-md pt-md border-t border-outline-variant flex-1 overflow-y-auto" id="sidebar-tree-container" style="display: none;">
+        <div class="mt-md pt-md border-t border-outline-variant flex-1 overflow-y-auto" id="sidebar-tree-container"
+            style="display: none;">
             <div class="flex items-center justify-between mb-2">
-                <h4 class="font-label text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Files & Chapters</h4>
-                <span id="category-progress-text" class="font-label text-[10px] font-semibold text-primary">0% (0/0)</span>
+                <h4 class="font-label text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Files &
+                    Chapters</h4>
+                <span id="category-progress-text" class="font-label text-[10px] font-semibold text-primary">0%
+                    (0/0)</span>
             </div>
             <!-- Progress bar container -->
-            <div class="w-full bg-surface-container-high dark:bg-surface-variant rounded-full h-1.5 mb-4 overflow-hidden">
-                <div id="category-progress-bar" class="bg-primary h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            <div
+                class="w-full bg-surface-container-high dark:bg-surface-variant rounded-full h-1.5 mb-4 overflow-hidden">
+                <div id="category-progress-bar" class="bg-primary h-1.5 rounded-full transition-all duration-300"
+                    style="width: 0%"></div>
             </div>
             <div id="sidebar-menu">
                 <div class="tree-loading p-2 text-on-surface-variant/60 text-xs">Loading resources...</div>
@@ -209,7 +246,9 @@
         <!-- Sidebar footer -->
         <div class="mt-auto pt-lg border-t border-outline-variant flex-shrink-0">
             <div class="flex flex-col gap-1">
-                <a id="about-author-link" class="flex items-center gap-md p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#about">
+                <a id="about-author-link"
+                    class="flex items-center gap-md p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors"
+                    href="#about">
                     <span class="material-symbols-outlined text-xl">person</span>
                     <span class="font-label text-sm">About the Author</span>
                 </a>
@@ -224,7 +263,7 @@
 
     <!-- Main Content Canvas -->
     <main class="flex-1 ml-0 md:ml-[280px]">
-        
+
         <!-- 1. Homepage / Dashboard View -->
         <div id="home-view">
             <!-- Hero Section -->
@@ -243,7 +282,8 @@
                             <span class="dot"></span>
                             Open Curriculum
                         </div>
-                        <span style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:9999px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.35);color:#10b981;font-family:'Public Sans',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">
+                        <span
+                            style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:9999px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.35);color:#10b981;font-family:'Public Sans',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">
                             <span class="material-symbols-outlined" style="font-size:13px;">check_circle</span>
                             100% Free · No Paywalls
                         </span>
@@ -257,7 +297,8 @@
 
                     <!-- Subtitle -->
                     <p class="hero-subtitle">
-                        A structured, hands-on path from zero to production &mdash; covering Docker, Kubernetes, GPU systems, model serving, and GenAI pipelines. Built carefully, shared completely free.
+                        A structured, hands-on path from zero to production &mdash; covering Docker, Kubernetes, GPU
+                        systems, model serving, and GenAI pipelines. Built carefully, shared completely free.
                     </p>
 
                     <!-- CTA -->
@@ -266,15 +307,20 @@
                             <span class="material-symbols-outlined" style="font-size:18px">architecture</span>
                             Start the Path
                         </button>
-                        <button onclick="document.getElementById('inside').scrollIntoView({ behavior: 'smooth' })" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border:1px solid var(--color-outline-variant);border-radius:8px;font-family:'Public Sans',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--color-on-surface);transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='var(--color-primary)';this.style.color='var(--color-primary)'" onmouseout="this.style.borderColor='var(--color-outline-variant)';this.style.color='var(--color-on-surface)'">
+                        <button onclick="document.getElementById('inside').scrollIntoView({ behavior: 'smooth' })"
+                            style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border:1px solid var(--color-outline-variant);border-radius:8px;font-family:'Public Sans',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--color-on-surface);transition:border-color 0.2s,color 0.2s;"
+                            onmouseover="this.style.borderColor='var(--color-primary)';this.style.color='var(--color-primary)'"
+                            onmouseout="this.style.borderColor='var(--color-outline-variant)';this.style.color='var(--color-on-surface)'">
                             <span class="material-symbols-outlined" style="font-size:18px">explore</span>
                             Explore All Modules
                         </button>
                     </div>
 
                     <!-- Trust line -->
-                    <p style="margin-top:1.2rem;font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--color-on-surface-variant);display:flex;align-items:center;gap:6px;">
-                        <span class="material-symbols-outlined" style="font-size:15px;color:var(--color-primary);">auto_awesome</span>
+                    <p
+                        style="margin-top:1.2rem;font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--color-on-surface-variant);display:flex;align-items:center;gap:6px;">
+                        <span class="material-symbols-outlined"
+                            style="font-size:15px;color:var(--color-primary);">auto_awesome</span>
                         No subscription. No course fees. Just open knowledge, structured for real engineers.
                     </p>
 
@@ -285,20 +331,28 @@
             <section class="px-gutter py-xl bg-surface-container-lowest border-b border-outline-variant" id="mission">
                 <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-xl px-gutter md:px-lg">
                     <div class="flex-1">
-                        <span class="font-label text-primary uppercase text-xs font-bold tracking-widest mb-sm block">The Objective</span>
+                        <span
+                            class="font-label text-primary uppercase text-xs font-bold tracking-widest mb-sm block">The
+                            Objective</span>
                         <h2 class="font-display text-3xl mb-md">Why AI Infrastructure?</h2>
-                        <p class="font-display text-xl text-on-surface italic leading-relaxed border-l-4 border-primary/20 pl-6">
-                            "The engineers who own the infrastructure own the future. This is your structured, no-fluff path from foundations to production-grade AI systems."
+                        <p
+                            class="font-display text-xl text-on-surface italic leading-relaxed border-l-4 border-primary/20 pl-6">
+                            "The engineers who own the infrastructure own the future. This is your structured, no-fluff
+                            path from foundations to production-grade AI systems."
                         </p>
                     </div>
                     <div class="flex-none grid grid-cols-2 gap-md w-full md:w-auto mt-6 md:mt-0">
                         <div class="p-lg bg-surface border border-outline-variant rounded-lg shadow-sm text-center">
                             <div class="font-display text-3xl font-bold text-primary">4</div>
-                            <div class="font-label text-[10px] uppercase font-bold text-on-surface-variant opacity-60 mt-1">Learning Tracks</div>
+                            <div
+                                class="font-label text-[10px] uppercase font-bold text-on-surface-variant opacity-60 mt-1">
+                                Learning Tracks</div>
                         </div>
                         <div class="p-lg bg-surface border border-outline-variant rounded-lg shadow-sm text-center">
                             <div class="font-display text-3xl font-bold text-primary">100%</div>
-                            <div class="font-label text-[10px] uppercase font-bold text-on-surface-variant opacity-60 mt-1">Production-Ready</div>
+                            <div
+                                class="font-label text-[10px] uppercase font-bold text-on-surface-variant opacity-60 mt-1">
+                                Production-Ready</div>
                         </div>
                     </div>
                 </div>
@@ -311,30 +365,37 @@
                     <div class="text-center mb-16">
                         <h2 class="font-display text-4xl text-on-surface">Your Path to AI Infrastructure</h2>
                         <p class="font-body text-md text-on-surface-variant mt-3 max-w-xl mx-auto">
-                            Four focused tracks — from infrastructure foundations to advanced research — building the skills that define a world-class AI engineer.
+                            Four focused tracks — from infrastructure foundations to advanced research — building the
+                            skills that define a world-class AI engineer.
                         </p>
                     </div>
 
                     <!-- Timeline Container -->
                     <div class="relative">
                         <!-- Central Timeline Line -->
-                        <div class="absolute left-6 md:left-1/2 top-4 bottom-4 w-0.5 bg-outline-variant -translate-x-1/2"></div>
+                        <div
+                            class="absolute left-6 md:left-1/2 top-4 bottom-4 w-0.5 bg-outline-variant -translate-x-1/2">
+                        </div>
 
                         <!-- Roadmap Nodes -->
                         <div class="space-y-8 relative">
 
                             <!-- Node 01: AI Infrastructure Engineer (RIGHT — primary focus) -->
-                            <div onclick="navigateToCategory('Infrastructure')" class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
+                            <div onclick="navigateToCategory('Infrastructure')"
+                                class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
                                 <!-- Running Border Line -->
-                                <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%" fill="none" stroke-width="2" rx="8" />
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%"
+                                        fill="none" stroke-width="2" rx="8" />
                                 </svg>
 
                                 <!-- Left side spacer (Desktop) -->
                                 <div class="hidden md:block w-[42%] pr-6"></div>
 
                                 <!-- Center badge — larger + brighter for primary node -->
-                                <div class="flex-shrink-0 w-14 h-14 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-xl shadow-primary/40 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform" style="box-shadow:0 0 0 4px rgba(9,76,178,.15), 0 8px 24px rgba(9,76,178,.35);">
+                                <div class="flex-shrink-0 w-14 h-14 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-xl shadow-primary/40 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform"
+                                    style="box-shadow:0 0 0 4px rgba(9,76,178,.15), 0 8px 24px rgba(9,76,178,.35);">
                                     <span class="material-symbols-outlined text-2xl">architecture</span>
                                 </div>
 
@@ -342,61 +403,82 @@
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
                                     <h3 class="font-display text-xl text-on-surface font-bold flex items-center gap-2">
                                         01. AI Infrastructure Engineer
-                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
+                                        <span
+                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In
+                                            Progress</span>
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
-                                        You start by getting models running reliably in production — Docker, Kubernetes, APIs, pipelines. Then you go deeper into multi-GPU setups and distributed training for large-scale AI.
+                                        You start by getting models running reliably in production — Docker, Kubernetes,
+                                        APIs, pipelines. Then you go deeper into multi-GPU setups and distributed
+                                        training for large-scale AI.
                                     </p>
                                 </div>
                             </div>
 
                             <!-- Node 02: ML &amp; GenAI System Design (LEFT) -->
-                            <div onclick="navigateToCategory('System Design')" class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
+                            <div onclick="navigateToCategory('System Design')"
+                                class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
                                 <!-- Running Border Line -->
-                                <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%" fill="none" stroke-width="1.5" rx="8" />
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%"
+                                        fill="none" stroke-width="1.5" rx="8" />
                                 </svg>
 
                                 <!-- Left side text (Desktop only, right-aligned) -->
-                                <div class="hidden md:block w-[42%] text-right pr-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold flex items-center justify-end gap-2">
+                                <div
+                                    class="hidden md:block w-[42%] text-right pr-6 group-hover:scale-[1.01] transition-transform">
+                                    <h3
+                                        class="font-display text-xl text-on-surface font-bold flex items-center justify-end gap-2">
                                         02. ML &amp; GenAI System Design
-                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
+                                        <span
+                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In
+                                            Progress</span>
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
-                                        Scalable ML architectures, recommendation engines, vector search, and end-to-end system design interviews.
+                                        Scalable ML architectures, recommendation engines, vector search, and end-to-end
+                                        system design interviews.
                                     </p>
                                 </div>
 
                                 <!-- Center badge -->
-                                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
+                                <div
+                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
                                     <span class="material-symbols-outlined text-xl">hub</span>
                                 </div>
 
                                 <!-- Right side (Mobile only) -->
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold md:hidden flex items-center gap-2">
+                                    <h3
+                                        class="font-display text-xl text-on-surface font-bold md:hidden flex items-center gap-2">
                                         02. ML &amp; GenAI System Design
-                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
+                                        <span
+                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In
+                                            Progress</span>
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed md:hidden">
-                                        Scalable ML architectures, recommendation engines, vector search, and end-to-end system design interviews.
+                                        Scalable ML architectures, recommendation engines, vector search, and end-to-end
+                                        system design interviews.
                                     </p>
                                 </div>
                             </div>
 
                             <!-- Node 03: ML &amp; GenAI Projects (RIGHT) -->
-                            <div onclick="navigateToCategory('Projects')" class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
+                            <div onclick="navigateToCategory('Projects')"
+                                class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
                                 <!-- Running Border Line -->
-                                <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%" fill="none" stroke-width="1.5" rx="8" />
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%"
+                                        fill="none" stroke-width="1.5" rx="8" />
                                 </svg>
 
                                 <!-- Left side spacer (Desktop) -->
                                 <div class="hidden md:block w-[42%] pr-6"></div>
 
                                 <!-- Center badge -->
-                                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-highest text-on-surface-variant/80 border border-outline-variant flex items-center justify-center shadow z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
+                                <div
+                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-highest text-on-surface-variant/80 border border-outline-variant flex items-center justify-center shadow z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
                                     <span class="material-symbols-outlined text-xl">lock</span>
                                 </div>
 
@@ -404,81 +486,102 @@
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
                                     <h3 class="font-display text-xl text-on-surface font-bold flex items-center gap-2">
                                         03. ML &amp; GenAI Projects
-                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                                        <span
+                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
-                                        From RAG pipelines to fine-tuning Llama-3, build end-to-end production examples that go in your portfolio.
+                                        From RAG pipelines to fine-tuning Llama-3, build end-to-end production examples
+                                        that go in your portfolio.
                                     </p>
                                 </div>
                             </div>
 
                             <!-- Node 04: Paper Analysis (LEFT) -->
-                            <div onclick="navigateToCategory('Paper Analysis')" class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
+                            <div onclick="navigateToCategory('Paper Analysis')"
+                                class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
                                 <!-- Running Border Line -->
-                                <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%" fill="none" stroke-width="1.5" rx="8" />
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%"
+                                        fill="none" stroke-width="1.5" rx="8" />
                                 </svg>
 
                                 <!-- Left side text (Desktop only, right-aligned) -->
-                                <div class="hidden md:block w-[42%] text-right pr-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold flex items-center justify-end gap-2">
+                                <div
+                                    class="hidden md:block w-[42%] text-right pr-6 group-hover:scale-[1.01] transition-transform">
+                                    <h3
+                                        class="font-display text-xl text-on-surface font-bold flex items-center justify-end gap-2">
                                         04. Paper Analysis
-                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                                        <span
+                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
-                                        Breaking down the math and implementation details of breakthrough research papers.
+                                        Breaking down the math and implementation details of breakthrough research
+                                        papers.
                                     </p>
                                 </div>
 
                                 <!-- Center badge -->
-                                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-highest text-on-surface-variant/80 border border-outline-variant flex items-center justify-center shadow z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
+                                <div
+                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-highest text-on-surface-variant/80 border border-outline-variant flex items-center justify-center shadow z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
                                     <span class="material-symbols-outlined text-xl">lock</span>
                                 </div>
 
                                 <!-- Right side (Mobile only) -->
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold md:hidden flex items-center gap-2">
+                                    <h3
+                                        class="font-display text-xl text-on-surface font-bold md:hidden flex items-center gap-2">
                                         04. Paper Analysis
-                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                                        <span
+                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed md:hidden">
-                                        Breaking down the math and implementation details of breakthrough research papers.
+                                        Breaking down the math and implementation details of breakthrough research
+                                        papers.
                                     </p>
                                 </div>
                             </div>
 
-                        </div>               
+                        </div>
                     </div>
                 </div>
             </section>
         </div>
 
         <!-- 2. Document Reader Panel View -->
-        <div id="reader-view" class="max-w-6xl w-full mx-auto grid grid-cols-1 xl:grid-cols-[1fr_240px] gap-xl py-xl px-gutter" style="display: none;">
+        <div id="reader-view"
+            class="max-w-6xl w-full mx-auto grid grid-cols-1 xl:grid-cols-[1fr_240px] gap-xl py-xl px-gutter"
+            style="display: none;">
             <article class="min-w-0">
                 <!-- Dynamic Breadcrumbs -->
-                <div class="breadcrumbs font-label text-xs text-on-surface-variant mb-md flex flex-wrap items-center gap-2" id="breadcrumbs">
+                <div class="breadcrumbs font-label text-xs text-on-surface-variant mb-md flex flex-wrap items-center gap-2"
+                    id="breadcrumbs">
                     <span onclick="goHome()" class="cursor-pointer hover:text-primary transition-colors">Home</span>
                 </div>
-                
+
                 <!-- Markdown Content Container -->
                 <div id="markdown-content" class="markdown-body">
                     <!-- Loaded dynamically -->
                 </div>
 
                 <!-- Lesson Navigation & Done actions -->
-                <div class="mt-12 pt-6 border-t border-outline-variant/60 flex items-center justify-between flex-wrap gap-4" id="reader-done-actions">
-                    <button id="mark-done-page-btn" class="flex items-center gap-2 px-6 py-3 bg-surface-container-high hover:bg-primary hover:text-white text-on-surface font-bold rounded-lg transition-all font-label text-sm uppercase tracking-wide border border-outline-variant">
-                        <span class="material-symbols-outlined text-md" id="mark-done-page-icon">check_box_outline_blank</span>
+                <div class="mt-12 pt-6 border-t border-outline-variant/60 flex items-center justify-between flex-wrap gap-4"
+                    id="reader-done-actions">
+                    <button id="mark-done-page-btn"
+                        class="flex items-center gap-2 px-6 py-3 bg-surface-container-high hover:bg-primary hover:text-white text-on-surface font-bold rounded-lg transition-all font-label text-sm uppercase tracking-wide border border-outline-variant">
+                        <span class="material-symbols-outlined text-md"
+                            id="mark-done-page-icon">check_box_outline_blank</span>
                         <span id="mark-done-page-text">Mark as Done</span>
                     </button>
                 </div>
             </article>
-            
+
             <!-- Table of Contents aside -->
             <aside class="hidden xl:block">
-                <div class="sticky top-24 border-l border-outline-variant/50 pl-5 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2">
-                    <h4 class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-md">On This Page</h4>
+                <div
+                    class="sticky top-24 border-l border-outline-variant/50 pl-5 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2">
+                    <h4 class="font-label text-xs font-bold uppercase tracking-widest text-primary mb-md">On This Page
+                    </h4>
                     <nav class="space-y-1 text-sm font-label flex flex-col" id="toc-nav">
                         <!-- Populated dynamically -->
                     </nav>
@@ -498,11 +601,16 @@
         </div>
 
         <!-- 4. Error/Not Found screen View -->
-        <div id="error-view" class="max-w-md mx-auto px-gutter py-xl flex flex-col items-center justify-center text-center min-h-[50vh]" style="display: none;">
+        <div id="error-view"
+            class="max-w-md mx-auto px-gutter py-xl flex flex-col items-center justify-center text-center min-h-[50vh]"
+            style="display: none;">
             <span class="material-symbols-outlined text-error text-6xl mb-md">error</span>
             <h2 class="font-display text-3xl text-on-surface mb-sm">Resource Not Found</h2>
-            <p class="text-on-surface-variant text-sm leading-relaxed mb-lg">The file you are looking for does not exist, or could not be loaded at this path.</p>
-            <button class="bg-primary text-on-primary px-6 py-2.5 font-bold rounded hover:bg-primary/95 transition-all font-label text-sm uppercase tracking-wide" onclick="goHome()">Go Back Home</button>
+            <p class="text-on-surface-variant text-sm leading-relaxed mb-lg">The file you are looking for does not
+                exist, or could not be loaded at this path.</p>
+            <button
+                class="bg-primary text-on-primary px-6 py-2.5 font-bold rounded hover:bg-primary/95 transition-all font-label text-sm uppercase tracking-wide"
+                onclick="goHome()">Go Back Home</button>
         </div>
 
         <!-- 5. Author Profile View -->
@@ -512,24 +620,38 @@
                 <section class="mb-20">
                     <div class="grid md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <span class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">Machine Learning Engineer & Security Focal</span>
-                            <h1 class="text-6xl md:text-7xl font-headline font-bold text-on-background leading-tight mb-6">Joel Varghese</h1>
-                            <p class="text-xl font-body text-on-surface-variant leading-relaxed mb-8 border-l-4 border-primary pl-6">
-                                I build and secure high-scale AI systems. Focused on scaling APIs, optimizing RAG pipelines, and leading security as the Security Focal for IBM watsonx.governance.
+                            <span
+                                class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">Machine
+                                Learning Engineer & Security Focal</span>
+                            <h1
+                                class="text-6xl md:text-7xl font-headline font-bold text-on-background leading-tight mb-6">
+                                Joel Varghese</h1>
+                            <p
+                                class="text-xl font-body text-on-surface-variant leading-relaxed mb-8 border-l-4 border-primary pl-6">
+                                I build and secure high-scale AI systems. Focused on scaling APIs, optimizing RAG
+                                pipelines, and leading security as the Security Focal for IBM watsonx.governance.
                             </p>
                             <div class="flex gap-4">
-                                <button onclick="document.getElementById('narrative-section').scrollIntoView({ behavior: 'smooth' })" class="px-8 py-4 bg-surface-container-high text-on-surface rounded-full font-bold hover:bg-surface-dim transition-colors">Read Narrative</button>
+                                <button
+                                    onclick="document.getElementById('narrative-section').scrollIntoView({ behavior: 'smooth' })"
+                                    class="px-8 py-4 bg-surface-container-high text-on-surface rounded-full font-bold hover:bg-surface-dim transition-colors">Read
+                                    Narrative</button>
                             </div>
                         </div>
                         <div class="relative group">
-                            <div class="absolute inset-0 nexus-gradient blur-3xl opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                            <div class="aspect-[4/5] rounded-2xl overflow-hidden relative border-8 border-white shadow-2xl">
-                                <img alt="Joel Varghese Portrait" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" src="https://github.com/joevar5.png"/>
+                            <div
+                                class="absolute inset-0 nexus-gradient blur-3xl opacity-10 group-hover:opacity-20 transition-opacity">
+                            </div>
+                            <div
+                                class="aspect-[4/5] rounded-2xl overflow-hidden relative border-8 border-white shadow-2xl">
+                                <img alt="Joel Varghese Portrait"
+                                    class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+                                    src="https://github.com/joevar5.png" />
                             </div>
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Biography Section: Tonal Layering -->
                 <section class="mb-24 grid md:grid-cols-3 gap-12 items-start" id="narrative-section">
                     <div class="md:col-span-1 sticky top-24">
@@ -538,49 +660,73 @@
                     </div>
                     <div class="md:col-span-2 space-y-8 font-body text-lg text-on-surface leading-relaxed">
                         <p>
-                            Joel Varghese is a <span class="text-primary font-semibold">Machine Learning Engineer & Security Focal</span> with 3+ years of experience building, securing, and operating production-grade AI/ML and generative AI systems at scale.
+                            Joel Varghese is a <span class="text-primary font-semibold">Machine Learning Engineer &
+                                Security Focal</span> with 3+ years of experience building, securing, and operating
+                            production-grade AI/ML and generative AI systems at scale.
                         </p>
 
                         <!-- Interactive Focus Cards -->
                         <div class="grid sm:grid-cols-2 gap-6 mt-8 pt-4">
                             <!-- ML Card -->
-                            <div class="flip-card-container w-full group cursor-default" style="height: 460px; min-height: 460px;">
+                            <div class="flip-card-container w-full group cursor-default"
+                                style="height: 460px; min-height: 460px;">
                                 <div class="flip-card-inner" style="height: 460px; min-height: 460px;">
                                     <!-- Front Face -->
-                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center" style="height: 460px; min-height: 460px;">
+                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center"
+                                        style="height: 460px; min-height: 460px;">
                                         <div class="flex flex-col items-center justify-center flex-1">
-                                            <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
+                                            <div
+                                                class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
                                                 <span class="material-symbols-outlined text-4xl">neurology</span>
                                             </div>
-                                            <h3 class="text-3xl font-headline font-bold text-on-surface leading-tight tracking-tight">
+                                            <h3
+                                                class="text-3xl font-headline font-bold text-on-surface leading-tight tracking-tight">
                                                 Machine Learning
-                                                <span class="text-primary block text-sm font-label uppercase tracking-[0.2em] font-bold mt-2">Engineer</span>
+                                                <span
+                                                    class="text-primary block text-sm font-label uppercase tracking-[0.2em] font-bold mt-2">Engineer</span>
                                             </h3>
                                         </div>
                                         <div class="w-full mt-4 pt-4 border-t border-outline-variant/50">
                                             <div class="flex flex-wrap justify-center gap-1.5">
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">PyTorch</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">vLLM</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">FastAPI</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">LangChain</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">RAG</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">Docker</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">K8s</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">PyTorch</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">vLLM</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">FastAPI</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">LangChain</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">RAG</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">Docker</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">K8s</span>
                                             </div>
                                         </div>
                                     </div>
                                     <!-- Back Face -->
-                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between" style="height: 460px; min-height: 460px;">
+                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between"
+                                        style="height: 460px; min-height: 460px;">
                                         <div>
                                             <div class="flex items-center gap-3 mb-3">
-                                                <span class="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
-                                                <h3 class="text-lg font-headline font-bold text-primary">ML Systems Impact</h3>
+                                                <span
+                                                    class="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
+                                                <h3 class="text-lg font-headline font-bold text-primary">ML Systems
+                                                    Impact</h3>
                                             </div>
-                                            <ul class="text-[13px] text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
-                                                <li>Designed and deployed scalable <strong>FastAPI & Python REST APIs</strong>, serving models supporting <strong>10K+ daily requests</strong> with 99.9% uptime.</li>
-                                                <li>Distilled and optimized LLMs on AWS SageMaker, achieving <strong>2.4x faster inference</strong> and 35% lower compute costs.</li>
-                                                <li>Integrated production <strong>RAG pipelines</strong> using FAISS and Chroma DB.</li>
-                                                <li>Architected high-availability deployments on <strong>Docker & Kubernetes</strong> CI/CD infrastructure.</li>
+                                            <ul
+                                                class="text-[13px] text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
+                                                <li>Designed and deployed scalable <strong>FastAPI & Python REST
+                                                        APIs</strong>, serving models supporting <strong>10K+ daily
+                                                        requests</strong> with 99.9% uptime.</li>
+                                                <li>Distilled and optimized LLMs on AWS SageMaker, achieving
+                                                    <strong>2.4x faster inference</strong> and 35% lower compute costs.
+                                                </li>
+                                                <li>Integrated production <strong>RAG pipelines</strong> using FAISS and
+                                                    Chroma DB.</li>
+                                                <li>Architected high-availability deployments on <strong>Docker &
+                                                        Kubernetes</strong> CI/CD infrastructure.</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -588,43 +734,69 @@
                             </div>
 
                             <!-- Security Card -->
-                            <div class="flip-card-container w-full group cursor-default" style="height: 460px; min-height: 460px;">
+                            <div class="flip-card-container w-full group cursor-default"
+                                style="height: 460px; min-height: 460px;">
                                 <div class="flip-card-inner" style="height: 460px; min-height: 460px;">
                                     <!-- Front Face -->
-                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center" style="height: 460px; min-height: 460px;">
+                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center"
+                                        style="height: 460px; min-height: 460px;">
                                         <div class="flex flex-col items-center justify-center flex-1">
-                                            <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
+                                            <div
+                                                class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
                                                 <span class="material-symbols-outlined text-4xl">shield</span>
                                             </div>
-                                            <h3 class="text-3xl font-headline font-bold text-on-surface leading-tight tracking-tight">
+                                            <h3
+                                                class="text-3xl font-headline font-bold text-on-surface leading-tight tracking-tight">
                                                 AI Security
-                                                <span class="text-primary block text-sm font-label uppercase tracking-[0.2em] font-bold mt-2">Focal / Engineer</span>
+                                                <span
+                                                    class="text-primary block text-sm font-label uppercase tracking-[0.2em] font-bold mt-2">Focal
+                                                    / Engineer</span>
                                             </h3>
                                         </div>
                                         <div class="w-full mt-4 pt-4 border-t border-outline-variant/50">
                                             <div class="flex flex-wrap justify-center gap-1.5">
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">STRIDE</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">DevSecOps</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">SAST / DAST</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">SOC 2</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">FedRAMP</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">AI Security</span>
-                                                <span class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">IAM</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">STRIDE</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">DevSecOps</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">SAST
+                                                    / DAST</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">SOC
+                                                    2</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">FedRAMP</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">AI
+                                                    Security</span>
+                                                <span
+                                                    class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">IAM</span>
                                             </div>
                                         </div>
                                     </div>
                                     <!-- Back Face -->
-                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between" style="height: 460px; min-height: 460px;">
+                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between"
+                                        style="height: 460px; min-height: 460px;">
                                         <div>
                                             <div class="flex items-center gap-3 mb-3">
-                                                <span class="material-symbols-outlined text-primary text-2xl">verified_user</span>
-                                                <h3 class="text-lg font-headline font-bold text-primary">Security Impact</h3>
+                                                <span
+                                                    class="material-symbols-outlined text-primary text-2xl">verified_user</span>
+                                                <h3 class="text-lg font-headline font-bold text-primary">Security Impact
+                                                </h3>
                                             </div>
-                                            <ul class="text-[13px] text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
-                                                <li>Serving as <strong>Security Focal for IBM watsonx.governance</strong>, spearheading threat modeling, security reviews, and risk assessments.</li>
-                                                <li>Led <strong>STRIDE-based threat modeling</strong>, annual architecture audits, and secure-by-design audits across cloud-native platforms.</li>
-                                                <li>Implemented <strong>SAST, DAST, dependency</strong>, and container scanning in CI/CD pipelines.</li>
-                                                <li>Drove compliance programs for <strong>FedRAMP, SOC 2, HIPAA</strong>, and FIPS requirements.</li>
+                                            <ul
+                                                class="text-[13px] text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
+                                                <li>Serving as <strong>Security Focal for IBM
+                                                        watsonx.governance</strong>, spearheading threat modeling,
+                                                    security reviews, and risk assessments.</li>
+                                                <li>Led <strong>STRIDE-based threat modeling</strong>, annual
+                                                    architecture audits, and secure-by-design audits across cloud-native
+                                                    platforms.</li>
+                                                <li>Implemented <strong>SAST, DAST, dependency</strong>, and container
+                                                    scanning in CI/CD pipelines.</li>
+                                                <li>Drove compliance programs for <strong>FedRAMP, SOC 2,
+                                                        HIPAA</strong>, and FIPS requirements.</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -633,86 +805,116 @@
                         </div>
                     </div>
                 </section>
-                
 
-                
+
+
                 <!-- Explore Other Works Section -->
                 <section class="mb-24">
                     <div class="text-center mb-16">
                         <h2 class="text-4xl font-headline font-bold mb-4">Explore Other Works</h2>
-                        <p class="font-label text-on-surface-variant tracking-wide">DIVING DEEPER INTO MACHINE LEARNING & SYSTEMS</p>
+                        <p class="font-label text-on-surface-variant tracking-wide">DIVING DEEPER INTO MACHINE LEARNING
+                            & SYSTEMS</p>
                     </div>
                     <div class="grid md:grid-cols-3 gap-8">
-                        <div class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left">
+                        <div
+                            class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left">
                             <div>
-                                <div class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
                                     <span class="material-symbols-outlined text-3xl">developer_board</span>
                                 </div>
                                 <h3 class="text-2xl font-headline font-bold mb-3">ML and GenAI Systems Design</h3>
                                 <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
-                                    Deep dives into building scalable, cost-efficient, and robust architectures for large language models and deep neural networks. Includes system design case studies and architectural blueprints.
+                                    Deep dives into building scalable, cost-efficient, and robust architectures for
+                                    large language models and deep neural networks. Includes system design case studies
+                                    and architectural blueprints.
                                 </p>
                             </div>
-                            <button onclick="navigateToCategory('System Design')" class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label">
+                            <button onclick="navigateToCategory('System Design')"
+                                class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label">
                                 Go to System Design
                             </button>
                         </div>
-                        <div class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left">
+                        <div
+                            class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left">
                             <div>
-                                <div class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
                                     <span class="material-symbols-outlined text-3xl">data_object</span>
                                 </div>
                                 <h3 class="text-2xl font-headline font-bold mb-3">JSON Trace</h3>
                                 <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
-                                    Experience JSON Trace: Lift off with the next-generation JSON visualizer. A highly interactive tool built to parse, format, and interactively trace JSON structures. Received high traffic and user engagement on Netlify.
+                                    Experience JSON Trace: Lift off with the next-generation JSON visualizer. A highly
+                                    interactive tool built to parse, format, and interactively trace JSON structures.
+                                    Received high traffic and user engagement on Netlify.
                                 </p>
                             </div>
-                            <a href="https://json-trace.netlify.app/" target="_blank" rel="noopener noreferrer" class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label flex items-center gap-1.5">
+                            <a href="https://json-trace.netlify.app/" target="_blank" rel="noopener noreferrer"
+                                class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label flex items-center gap-1.5">
                                 <span>Experience JSON Trace</span>
                                 <span class="material-symbols-outlined text-sm">open_in_new</span>
                             </a>
                         </div>
-                        <div class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left">
+                        <div
+                            class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left">
                             <div>
-                                <div class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-3xl">folder_special</span>
+                                <div
+                                    class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-3xl">library_books</span>
                                 </div>
-                                <h3 class="text-2xl font-headline font-bold mb-3">Hands-on ML Projects</h3>
-                                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
-                                    End-to-end applications demonstrating MLOps pipelines, automated evaluation systems, custom fine-tuning scripts, and optimized inference servers.
-                                </p>
+                                <h3 class="text-2xl font-headline font-bold mb-6">Research Papers &amp; Patents</h3>
+                                <div class="space-y-4">
+                                    <a href="https://www.researchgate.net/profile/Joel-Eapen-3" target="_blank" rel="noopener noreferrer" class="group/link block">
+                                        <h4 class="text-base font-label font-bold text-on-surface group-hover/link:text-primary transition-colors flex items-center gap-1.5">
+                                            <span>ResearchGate Profile</span>
+                                            <span class="material-symbols-outlined text-sm">open_in_new</span>
+                                        </h4>
+                                    </a>
+                                    <a href="https://www.ijaresm.com/image-classification-of-white-blood-cells-using-deep-learning-models" target="_blank" rel="noopener noreferrer" class="group/link block">
+                                        <h4 class="text-base font-label font-bold text-on-surface group-hover/link:text-primary transition-colors flex items-center gap-1.5">
+                                            <span>WBC Classification Paper</span>
+                                            <span class="material-symbols-outlined text-sm">open_in_new</span>
+                                        </h4>
+                                    </a>
+                                </div>
                             </div>
-                            <button onclick="navigateToCategory('Projects')" class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label">
-                                View Projects
-                            </button>
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Connect Section: Glassmorphism Card -->
-                <section class="relative overflow-hidden rounded-[2rem] p-12 nexus-gradient text-white flex justify-center text-center">
+                <section
+                    class="relative overflow-hidden rounded-[2rem] p-12 nexus-gradient text-white flex justify-center text-center">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-tertiary/20 rounded-full blur-3xl -ml-24 -mb-24"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-tertiary/20 rounded-full blur-3xl -ml-24 -mb-24">
+                    </div>
                     <div class="relative z-10 max-w-2xl">
                         <h2 class="text-4xl font-headline font-bold mb-6">Let's build the future, bit by bit.</h2>
                         <p class="text-white/80 font-body text-lg mb-8">
-                            Always open to collaborating on open-source ML infrastructure projects, discussing distributed systems, or exploring opportunities in MLOps and systems engineering.
+                            Always open to collaborating on open-source ML infrastructure projects, discussing
+                            distributed systems, or exploring opportunities in MLOps and systems engineering.
                         </p>
                         <div class="flex justify-center gap-8">
-                            <a class="flex flex-col items-center gap-2 group" href="https://github.com/joevar5" target="_blank" rel="noopener noreferrer">
-                                <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all">
+                            <a class="flex flex-col items-center gap-2 group" href="https://github.com/joevar5"
+                                target="_blank" rel="noopener noreferrer">
+                                <div
+                                    class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all">
                                     <span class="material-symbols-outlined font-normal text-xl">hub</span>
                                 </div>
                                 <span class="text-[10px] font-label uppercase tracking-widest opacity-60">GitHub</span>
                             </a>
-                            <a class="flex flex-col items-center gap-2 group" href="https://linkedin.com/in/joel-eapen" target="_blank" rel="noopener noreferrer">
-                                <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all">
+                            <a class="flex flex-col items-center gap-2 group" href="https://linkedin.com/in/joel-eapen"
+                                target="_blank" rel="noopener noreferrer">
+                                <div
+                                    class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all">
                                     <span class="material-symbols-outlined font-normal text-xl">work</span>
                                 </div>
-                                <span class="text-[10px] font-label uppercase tracking-widest opacity-60">LinkedIn</span>
+                                <span
+                                    class="text-[10px] font-label uppercase tracking-widest opacity-60">LinkedIn</span>
                             </a>
                             <a class="flex flex-col items-center gap-2 group" href="mailto:joelvar541@gmail.com">
-                                <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all">
+                                <div
+                                    class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all">
                                     <span class="material-symbols-outlined font-normal text-xl">mail</span>
                                 </div>
                                 <span class="text-[10px] font-label uppercase tracking-widest opacity-60">Email</span>
@@ -734,28 +936,29 @@
     <!-- UI Logic and Rendering Script -->
     <script src="app.js" defer></script>
 
-<!-- Magnifying Glass Lens -->
-<div id="mag-lens" class="mag-lens"></div>
+    <!-- Magnifying Glass Lens -->
+    <div id="mag-lens" class="mag-lens"></div>
 
-<!-- Zoom Lightbox Overlay -->
-<div id="zoom-lightbox" class="zoom-lightbox">
-    <button id="zoom-close" class="zoom-close-btn" title="Close (Esc)">
-        <span class="material-symbols-outlined">close</span>
-    </button>
-    <div id="zoom-lightbox-content" class="zoom-lightbox-content"></div>
-    <div class="zoom-toolbar">
-        <button id="zoom-out-btn" title="Zoom Out">
-            <span class="material-symbols-outlined">remove</span>
+    <!-- Zoom Lightbox Overlay -->
+    <div id="zoom-lightbox" class="zoom-lightbox">
+        <button id="zoom-close" class="zoom-close-btn" title="Close (Esc)">
+            <span class="material-symbols-outlined">close</span>
         </button>
-        <span id="zoom-level" class="zoom-level">100%</span>
-        <button id="zoom-in-btn" title="Zoom In">
-            <span class="material-symbols-outlined">add</span>
-        </button>
-        <button id="zoom-reset-btn" title="Reset Zoom">
-            <span class="material-symbols-outlined">fit_screen</span>
-        </button>
+        <div id="zoom-lightbox-content" class="zoom-lightbox-content"></div>
+        <div class="zoom-toolbar">
+            <button id="zoom-out-btn" title="Zoom Out">
+                <span class="material-symbols-outlined">remove</span>
+            </button>
+            <span id="zoom-level" class="zoom-level">100%</span>
+            <button id="zoom-in-btn" title="Zoom In">
+                <span class="material-symbols-outlined">add</span>
+            </button>
+            <button id="zoom-reset-btn" title="Reset Zoom">
+                <span class="material-symbols-outlined">fit_screen</span>
+            </button>
+        </div>
     </div>
-</div>
 
 </body>
+
 </html>
