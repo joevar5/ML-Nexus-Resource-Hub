@@ -169,21 +169,25 @@
         
         <!-- Curated Learning Paths Links -->
         <nav class="flex-shrink-0 flex flex-col gap-1" id="sidebar-categories">
-            <button onclick="navigateToCategory('Infrastructure')" class="cat-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left" data-category="Infrastructure">
+            <button onclick="navigateToCategory('Infrastructure')" class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left" data-category="Infrastructure">
                 <span class="material-symbols-outlined text-xl">memory</span>
                 <span class="font-label text-sm">Infrastructure</span>
+                <span class="ml-auto font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
             </button>
-            <button onclick="navigateToCategory('Projects')" class="cat-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left" data-category="Projects">
-                <span class="material-symbols-outlined text-xl">terminal</span>
+            <button onclick="navigateToCategory('Projects')" class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed" data-category="Projects">
+                <span class="material-symbols-outlined text-xl">lock</span>
                 <span class="font-label text-sm">Projects</span>
+                <span class="ml-auto font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
             </button>
-            <button onclick="navigateToCategory('System Design')" class="cat-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left" data-category="System Design">
+            <button onclick="navigateToCategory('System Design')" class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left" data-category="System Design">
                 <span class="material-symbols-outlined text-xl">schema</span>
                 <span class="font-label text-sm">System Design</span>
+                <span class="ml-auto font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
             </button>
-            <button onclick="navigateToCategory('Paper Analysis')" class="cat-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left" data-category="Paper Analysis">
-                <span class="material-symbols-outlined text-xl">description</span>
+            <button onclick="navigateToCategory('Paper Analysis')" class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed" data-category="Paper Analysis">
+                <span class="material-symbols-outlined text-xl">lock</span>
                 <span class="font-label text-sm">Paper Analysis</span>
+                <span class="ml-auto font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
             </button>
         </nav>
         
@@ -336,7 +340,10 @@
 
                                 <!-- Right side text -->
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold">01. AI Infrastructure Engineer</h3>
+                                    <h3 class="font-display text-xl text-on-surface font-bold flex items-center gap-2">
+                                        01. AI Infrastructure Engineer
+                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
+                                    </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
                                         You start by getting models running reliably in production — Docker, Kubernetes, APIs, pipelines. Then you go deeper into multi-GPU setups and distributed training for large-scale AI.
                                     </p>
@@ -352,7 +359,10 @@
 
                                 <!-- Left side text (Desktop only, right-aligned) -->
                                 <div class="hidden md:block w-[42%] text-right pr-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold">02. ML &amp; GenAI System Design</h3>
+                                    <h3 class="font-display text-xl text-on-surface font-bold flex items-center justify-end gap-2">
+                                        02. ML &amp; GenAI System Design
+                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
+                                    </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
                                         Scalable ML architectures, recommendation engines, vector search, and end-to-end system design interviews.
                                     </p>
@@ -365,7 +375,10 @@
 
                                 <!-- Right side (Mobile only) -->
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold md:hidden">02. ML &amp; GenAI System Design</h3>
+                                    <h3 class="font-display text-xl text-on-surface font-bold md:hidden flex items-center gap-2">
+                                        02. ML &amp; GenAI System Design
+                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In Progress</span>
+                                    </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed md:hidden">
                                         Scalable ML architectures, recommendation engines, vector search, and end-to-end system design interviews.
                                     </p>
@@ -373,7 +386,7 @@
                             </div>
 
                             <!-- Node 03: ML &amp; GenAI Projects (RIGHT) -->
-                            <div onclick="navigateToCategory('Projects')" class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
+                            <div onclick="navigateToCategory('Projects')" class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
                                 <!-- Running Border Line -->
                                 <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
                                     <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%" fill="none" stroke-width="1.5" rx="8" />
@@ -383,13 +396,16 @@
                                 <div class="hidden md:block w-[42%] pr-6"></div>
 
                                 <!-- Center badge -->
-                                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-xl">rocket_launch</span>
+                                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-highest text-on-surface-variant/80 border border-outline-variant flex items-center justify-center shadow z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-xl">lock</span>
                                 </div>
 
                                 <!-- Right side text -->
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold">03. ML &amp; GenAI Projects</h3>
+                                    <h3 class="font-display text-xl text-on-surface font-bold flex items-center gap-2">
+                                        03. ML &amp; GenAI Projects
+                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                                    </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
                                         From RAG pipelines to fine-tuning Llama-3, build end-to-end production examples that go in your portfolio.
                                     </p>
@@ -397,7 +413,7 @@
                             </div>
 
                             <!-- Node 04: Paper Analysis (LEFT) -->
-                            <div onclick="navigateToCategory('Paper Analysis')" class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
+                            <div onclick="navigateToCategory('Paper Analysis')" class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
                                 <!-- Running Border Line -->
                                 <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
                                     <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%" fill="none" stroke-width="1.5" rx="8" />
@@ -405,20 +421,26 @@
 
                                 <!-- Left side text (Desktop only, right-aligned) -->
                                 <div class="hidden md:block w-[42%] text-right pr-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold">04. Paper Analysis</h3>
+                                    <h3 class="font-display text-xl text-on-surface font-bold flex items-center justify-end gap-2">
+                                        04. Paper Analysis
+                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                                    </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
                                         Breaking down the math and implementation details of breakthrough research papers.
                                     </p>
                                 </div>
 
                                 <!-- Center badge -->
-                                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-xl">analytics</span>
+                                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-highest text-on-surface-variant/80 border border-outline-variant flex items-center justify-center shadow z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-xl">lock</span>
                                 </div>
 
                                 <!-- Right side (Mobile only) -->
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3 class="font-display text-xl text-on-surface font-bold md:hidden">04. Paper Analysis</h3>
+                                    <h3 class="font-display text-xl text-on-surface font-bold md:hidden flex items-center gap-2">
+                                        04. Paper Analysis
+                                        <span class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                                    </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed md:hidden">
                                         Breaking down the math and implementation details of breakthrough research papers.
                                     </p>

@@ -391,6 +391,11 @@ function selectCategory(categoryName) {
 
 // Navigate dynamically to the first file of a category via URL hash
 function navigateToCategory(categoryName) {
+    if (categoryName === 'Projects' || categoryName === 'Paper Analysis') {
+        const displayName = categoryName === 'Projects' ? 'ML & GenAI Projects' : 'Research Paper Analysis';
+        showToast(`The ${displayName} path is currently locked.`, 'warning');
+        return;
+    }
     const cat = categories.find(c => c.name === categoryName);
     if (!cat) return;
 
@@ -753,6 +758,12 @@ function goHome() {
 
     document.querySelectorAll('.tree-file').forEach(el => {
         el.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+    });
+
+    // Reset active category buttons in sidebar
+    activeCategory = null;
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.className = "cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
     });
 
     // Reset About the Author link styles
@@ -1499,6 +1510,12 @@ async function loadFile(filePath) {
     // Auto switch category matching the loading file path
     const matchedCat = categories.find(c => filePath.startsWith(c.dir));
     if (matchedCat) {
+        if (matchedCat.name === 'Projects' || matchedCat.name === 'Paper Analysis') {
+            const displayName = matchedCat.name === 'Projects' ? 'ML & GenAI Projects' : 'Research Paper Analysis';
+            showToast(`The ${displayName} path is currently locked.`, 'warning');
+            goHome();
+            return;
+        }
         selectCategory(matchedCat.name);
         highlightActiveFileInSidebar(filePath);
     }
@@ -1862,3 +1879,42 @@ function handleSearch(query) {
     dot.style.opacity = '0';
     ring.style.opacity = '0';
 })();
+
+// Premium Toast Notification helper
+function showToast(message, type = 'info', duration = 3500) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    let iconName = 'info';
+    if (type === 'error') iconName = 'error';
+    else if (type === 'warning') iconName = 'warning';
+    else if (type === 'success') iconName = 'check_circle';
+
+    toast.innerHTML = `
+        <span class="material-symbols-outlined text-lg">${iconName}</span>
+        <span class="font-label text-sm font-semibold">${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Trigger reflow to start transition
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+
+    // Fade out and remove toast
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, duration);
+}
