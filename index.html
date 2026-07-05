@@ -178,7 +178,7 @@
 
     <!-- SideNavBar -->
     <aside id="sidebar"
-        class="fixed left-0 top-16 bottom-0 w-[280px] flex flex-col p-lg z-40 bg-surface border-r border-outline-variant overflow-y-auto transition-transform duration-300 -translate-x-full md:translate-x-0">
+        class="fixed left-0 top-16 bottom-0 w-[280px] flex flex-col px-md py-lg z-40 bg-surface border-r border-outline-variant overflow-y-auto transition-transform duration-300 -translate-x-full md:translate-x-0">
         <div class="mb-lg flex-shrink-0">
             <h3 class="font-display text-lg font-bold text-on-background">Learning Paths</h3>
             <p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mt-1">Expert Curated Guides
@@ -188,38 +188,46 @@
         <!-- Curated Learning Paths Links -->
         <nav class="flex-shrink-0 flex flex-col gap-1" id="sidebar-categories">
             <button onclick="navigateToCategory('Infrastructure')"
-                class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
+                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
                 data-category="Infrastructure">
-                <span class="material-symbols-outlined text-xl">memory</span>
-                <span class="font-label text-sm">Infrastructure</span>
+                <div class="flex items-center gap-2 overflow-hidden flex-1">
+                    <span class="material-symbols-outlined text-xl flex-shrink-0">memory</span>
+                    <span class="font-label text-sm truncate">Infrastructure</span>
+                </div>
                 <span
-                    class="ml-auto font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In
+                    class="font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In
                     Progress</span>
             </button>
             <button onclick="navigateToCategory('Projects')"
-                class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
+                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
                 data-category="Projects">
-                <span class="material-symbols-outlined text-xl">lock</span>
-                <span class="font-label text-sm">Projects</span>
+                <div class="flex items-center gap-2 overflow-hidden flex-1">
+                    <span class="material-symbols-outlined text-xl flex-shrink-0">lock</span>
+                    <span class="font-label text-sm truncate">Projects</span>
+                </div>
                 <span
-                    class="ml-auto font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                    class="font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
             </button>
             <button onclick="navigateToCategory('System Design')"
-                class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
+                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
                 data-category="System Design">
-                <span class="material-symbols-outlined text-xl">schema</span>
-                <span class="font-label text-sm">System Design</span>
+                <div class="flex items-center gap-2 overflow-hidden flex-1">
+                    <span class="material-symbols-outlined text-xl flex-shrink-0">schema</span>
+                    <span class="font-label text-sm truncate">System Design</span>
+                </div>
                 <span
-                    class="ml-auto font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In
+                    class="font-label text-[9px] bg-amber-500/10 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">In
                     Progress</span>
             </button>
             <button onclick="navigateToCategory('Paper Analysis')"
-                class="cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
+                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
                 data-category="Paper Analysis">
-                <span class="material-symbols-outlined text-xl">lock</span>
-                <span class="font-label text-sm">Paper Analysis</span>
+                <div class="flex items-center gap-2 overflow-hidden flex-1">
+                    <span class="material-symbols-outlined text-xl flex-shrink-0">lock</span>
+                    <span class="font-label text-sm truncate">Paper Analysis</span>
+                </div>
                 <span
-                    class="ml-auto font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                    class="font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
             </button>
         </nav>
 

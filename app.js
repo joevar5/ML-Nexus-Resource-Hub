@@ -369,9 +369,9 @@ function selectCategory(categoryName) {
     const catBtns = document.querySelectorAll('.cat-btn');
     catBtns.forEach(btn => {
         if (btn.dataset.category === categoryName) {
-            btn.className = "cat-btn w-full flex items-center gap-md p-3 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all text-left";
+            btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all text-left";
         } else {
-            btn.className = "cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
+            btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
         }
     });
 
@@ -763,7 +763,7 @@ function goHome() {
     // Reset active category buttons in sidebar
     activeCategory = null;
     document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.className = "cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
+        btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
     });
 
     // Reset About the Author link styles
@@ -791,7 +791,7 @@ function showAuthorPage() {
     // Highlight active category tab in sidebar
     const catBtns = document.querySelectorAll('.cat-btn');
     catBtns.forEach(btn => {
-        btn.className = "cat-btn w-full flex items-center gap-md p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
+        btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
     });
 
     // Highlight About the Author button in sidebar footer
