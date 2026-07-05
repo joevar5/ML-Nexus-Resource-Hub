@@ -1,805 +1,257 @@
-# Project 01: System Architecture
-
-**Project:** Simple Model API Deployment
-**Role:** Junior AI Infrastructure Engineer
-**Version:** 1.0
+# Project 01: High Level System Architecture 
 
 ---
 
 ## Table of Contents
 
 1. [System Overview](#system-overview)
-2. [Architecture Diagram](#architecture-diagram)
+2. [Architecture Diagrams](#architecture-diagrams)
 3. [Component Design](#component-design)
 4. [Data Flow](#data-flow)
-5. [Technology Stack](#technology-stack)
-6. [Deployment Architecture](#deployment-architecture)
-7. [Design Decisions](#design-decisions)
-8. [Scalability Considerations](#scalability-considerations)
+5. [Technology Stack Justifications](#technology-stack-justifications)
+6. [Design Decisions](#design-decisions)
+7. [Scalability Considerations](#scalability-considerations)
+8. [Security Architecture](#security-architecture)
+9. [Monitoring & Observability](#monitoring--observability)
 
 ---
 
 ## System Overview
 
-This project implements a simple REST API for serving predictions from a pre-trained image classification model. The system follows a stateless, containerized microservice architecture pattern that is commonly used in production ML systems.
+This project implements a REST API for serving predictions from a pre-trained image classification model. The system follows a **stateless, containerized microservice architecture pattern** that is commonly used in production ML systems.
 
 ### Key Characteristics
+*   **Stateless:** No server-side session state, enabling seamless horizontal scaling.
+*   **Containerized:** Docker packaging ensures consistency across local and cloud environments.
+*   **Synchronous:** Request-response pattern with blocking inference.
+*   **Single-model:** Serves one model version at a time (no dynamic routing/AB testing).
+*   **CPU-optimized:** Designed for CPU-bound model inference, avoiding costly GPU runtimes.
 
-- **Stateless:** No server-side session state, enabling horizontal scaling
-- **Containerized:** Docker packaging for consistent deployment across environments
-- **Synchronous:** Request-response pattern with blocking inference
-- **Single-model:** Serves one model version at a time (no A/B testing yet)
-- **CPU-optimized:** Designed for CPU inference (GPU support in later projects)
-
-### Design Philosophy
-
-This architecture prioritizes:
-1. **Simplicity:** Easy to understand and debug for beginners
-2. **Reliability:** Graceful error handling and recovery
-3. **Observability:** Comprehensive logging for troubleshooting
-4. **Maintainability:** Clear separation of concerns, modular design
+> [!NOTE]  
+> **Design Philosophy:** We prioritize **Simplicity** (easy to debug), **Reliability** (graceful error recovery), **Observability** (structured logging), and **Maintainability** (clear separation of concerns).
 
 ---
 
-## Architecture Diagram
+## Architecture Diagrams
 
-### High-Level Architecture
+#### High-Level Service Architecture
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                        Cloud Platform                         │
-│                   (AWS / GCP / Azure)                         │
-│                                                                │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │              Virtual Machine Instance                 │   │
-│  │                (t3.medium or equivalent)              │   │
-│  │                                                        │   │
-│  │  ┌──────────────────────────────────────────────┐   │   │
-│  │  │           Docker Container                    │   │   │
-│  │  │                                                │   │   │
-│  │  │  ┌──────────────────────────────────────┐   │   │   │
-│  │  │  │      Flask/FastAPI Application       │   │   │   │
-│  │  │  │                                        │   │   │   │
-│  │  │  │  ┌─────────────┐  ┌──────────────┐  │   │   │   │
-│  │  │  │  │  API Layer  │  │ Model Manager│  │   │   │   │
-│  │  │  │  │             │  │              │  │   │   │   │
-│  │  │  │  │ /predict    │◄─┤ load_model() │  │   │   │   │
-│  │  │  │  │ /health     │  │ predict()    │  │   │   │   │
-│  │  │  │  │ /info       │  │ preprocess() │  │   │   │   │
-│  │  │  │  └─────────────┘  └──────────────┘  │   │   │   │
-│  │  │  │                                        │   │   │   │
-│  │  │  │  ┌─────────────┐  ┌──────────────┐  │   │   │   │
-│  │  │  │  │   Config    │  │   Logging    │  │   │   │   │
-│  │  │  │  │  Manager    │  │   Handler    │  │   │   │   │
-│  │  │  │  └─────────────┘  └──────────────┘  │   │   │   │
-│  │  │  │                                        │   │   │   │
-│  │  │  └──────────────────────────────────────┘   │   │   │
-│  │  │                                                │   │   │
-│  │  │  Port Mapping: 5000:5000                     │   │   │
-│  │  └──────────────────────────────────────────────┘   │   │
-│  │                                                        │   │
-│  │  Security Group / Firewall:                           │   │
-│  │  - Port 5000 (HTTP)                                   │   │
-│  │  - Port 22 (SSH - admin only)                         │   │
-│  └──────────────────────────────────────────────────────┘   │
-│                                                                │
-│  Public IP: X.X.X.X                                           │
-└──────────────────────────────────────────────────────────────┘
-                              ▲
-                              │
-                              │ HTTP Requests
-                              │
-                    ┌─────────┴──────────┐
-                    │                    │
-                ┌───┴────┐         ┌────┴─────┐
-                │ Client │         │ Postman  │
-                │Browser │         │  /cURL   │
-                └────────┘         └──────────┘
+```mermaid
+flowchart TB
+    %% Styling Classes
+    classDef client fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1,font-weight:bold;
+    classDef vm fill:#F8FAFC,stroke:#475569,stroke-width:2px,stroke-dasharray:5 5,color:#334155,font-weight:bold;
+    classDef docker fill:#EFF6FF,stroke:#2563EB,stroke-width:2px,color:#1E4ED8,font-weight:bold;
+    classDef app fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#6D28D9,font-weight:bold;
+    classDef comp fill:#FFFFFF,stroke:#4F46E5,stroke-width:1.5px,color:#1E293B;
+
+    subgraph ClientSpace["Client Space"]
+        Browser["Client Browser<br>(User Interface)"]:::client
+        cURL["Postman / cURL<br>(API Testing)"]:::client
+    end
+
+    subgraph VM["Cloud Virtual Machine (Firewall Ports Locked)"]
+        subgraph Docker["Docker Container (Mapped Port 5000)"]
+            subgraph App["Flask / FastAPI Application"]
+                API["API Layer<br>(/predict, /health, /info)"]:::comp
+                ModelMgr["Model Manager<br>(load_model, preprocess, predict)"]:::comp
+                ConfigMgr["Config Manager"]:::comp
+                LogHandler["Logging Handler"]:::comp
+            end
+        end
+    end
+
+    Browser -->|HTTP Port 5000| API
+    cURL -->|HTTP Port 5000| API
+    API <-->|Route Requests| ModelMgr
+    API <-->|Load Variables| ConfigMgr
+    ModelMgr <-->|Record Performance| LogHandler
+    ConfigMgr <-->|Log Configurations| LogHandler
+
+    %% Subgraph colors
+    style ClientSpace fill:#F0F9FF,stroke:#0EA5E9,stroke-width:2px;
+    style VM fill:#F8FAFC,stroke:#64748B,stroke-width:2px;
+    style Docker fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px;
+    style App fill:#F5F3FF,stroke:#8B5CF6,stroke-width:2px;
 ```
 
 ### Component Architecture
 
-```
-┌────────────────────────────────────────────────────────────┐
-│                   Application Layer                         │
-├────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌────────────────────────────────────────────────────┐   │
-│  │                 app.py (Main Application)           │   │
-│  │                                                      │   │
-│  │  ┌──────────────────────────────────────────────┐  │   │
-│  │  │          API Route Handlers                   │  │   │
-│  │  │                                                │  │   │
-│  │  │  @app.route('/predict')                       │  │   │
-│  │  │  @app.route('/health')                        │  │   │
-│  │  │  @app.route('/info')                          │  │   │
-│  │  └──────────────────────────────────────────────┘  │   │
-│  │                        │                             │   │
-│  │                        ▼                             │   │
-│  │  ┌──────────────────────────────────────────────┐  │   │
-│  │  │         Request Processing Pipeline           │  │   │
-│  │  │                                                │  │   │
-│  │  │  1. Request Validation                        │  │   │
-│  │  │  2. File Upload Handling                      │  │   │
-│  │  │  3. Image Preprocessing                       │  │   │
-│  │  │  4. Model Inference                           │  │   │
-│  │  │  5. Response Formatting                       │  │   │
-│  │  │  6. Error Handling                            │  │   │
-│  │  │  7. Logging                                   │  │   │
-│  │  └──────────────────────────────────────────────┘  │   │
-│  └────────────────────────────────────────────────────┘   │
-│                                                              │
-├────────────────────────────────────────────────────────────┤
-│                  Business Logic Layer                       │
-├────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌──────────────────┐      ┌──────────────────────────┐   │
-│  │  model_loader.py │      │      config.py           │   │
-│  │                  │      │                          │   │
-│  │  ModelLoader     │      │  Configuration           │   │
-│  │  ├─ __init__()   │      │  ├─ MODEL_NAME           │   │
-│  │  ├─ load()       │      │  ├─ MODEL_PATH           │   │
-│  │  ├─ predict()    │      │  ├─ HOST / PORT          │   │
-│  │  ├─ preprocess() │      │  ├─ LOG_LEVEL            │   │
-│  │  └─ get_labels() │      │  └─ MAX_FILE_SIZE        │   │
-│  └──────────────────┘      └──────────────────────────┘   │
-│                                                              │
-├────────────────────────────────────────────────────────────┤
-│                    Infrastructure Layer                     │
-├────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
-│  │   Logging    │  │  Error       │  │   Health     │    │
-│  │   System     │  │  Handler     │  │   Monitor    │    │
-│  └──────────────┘  └──────────────┘  └──────────────┘    │
-│                                                              │
-└────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    %% Styling Classes
+    classDef controller fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px,color:#1E3A8A,font-weight:bold;
+    classDef service fill:#F5F3FF,stroke:#8B5CF6,stroke-width:2px,color:#4C1D95,font-weight:bold;
+    classDef core fill:#FFF7ED,stroke:#F97316,stroke-width:2px,color:#7C2D12,font-weight:bold;
 
-┌────────────────────────────────────────────────────────────┐
-│                      ML Framework Layer                     │
-│                   (PyTorch / TensorFlow)                    │
-└────────────────────────────────────────────────────────────┘
+    subgraph Controller["Application Layer (Controller)"]
+        App["app.py<br>• Routes: /predict, /health, /info<br>• Handles HTTP validation & status codes"]:::controller
+    end
 
-┌────────────────────────────────────────────────────────────┐
-│                     Operating System                        │
-│                    (Linux Container)                        │
-└────────────────────────────────────────────────────────────┘
+    subgraph Service["Business Logic Layer"]
+        Config["config.py<br>• Loads environment settings<br>• Handles type-safe casting"]:::service
+        Model["model_loader.py<br>• Handles preprocessing & inference<br>• Maps output classes"]:::service
+    end
+
+    subgraph Core["Framework Layer"]
+        Frameworks["PyTorch / torchvision<br>(Model weights & graph execution)"]:::core
+        Pillow["Pillow<br>(Image processing & resizing)"]:::core
+        Server["Uvicorn / Gunicorn Server<br>(Production serving runtime)"]:::core
+    end
+
+    %% Subgraph Styling
+    style Controller fill:#F8FAFC,stroke:#3B82F6,stroke-width:1.5px;
+    style Service fill:#F8FAFC,stroke:#8B5CF6,stroke-width:1.5px;
+    style Core fill:#F8FAFC,stroke:#F97316,stroke-width:1.5px;
+
+    App -->|Uses services| Config
+    App -->|Triggers inference| Model
+    Model -->|Uses libraries| Frameworks
+    Model -->|Decodes images| Pillow
+    App -->|Runs on runtime| Server
 ```
 
 ---
 
 ## Component Design
 
-### 1. API Layer (app.py)
+The software modules of the prediction API are decoupled to ensure single responsibility, enabling independent testability and clear separation of concerns. Below are the key classes and structural interfaces that implement the web routing, ML inference, and configuration boundaries:
 
-**Responsibility:** HTTP request/response handling, routing, API contract enforcement
+### 1. API Serving Layer ([app.py](src/app.py))
+Responsible for processing incoming HTTP payloads, enforcing headers, validating media boundaries, and handling response formats.
 
-**Key Components:**
-- Flask/FastAPI application instance
-- Route handlers for each endpoint
-- Request validation middleware
-- Response formatting utilities
-- Error handling middleware
-
-**Design Pattern:** MVC (Model-View-Controller) - API layer acts as the Controller
-
-**Interface:**
 ```python
 class ModelAPI:
-    """Main API application class"""
-
     def __init__(self, model_loader: ModelLoader, config: Config):
-        """Initialize API with dependencies"""
+        """Inject dependencies for serving predictions"""
+        pass
 
-    def predict(self, request) -> Response:
-        """Handle /predict endpoint"""
+    def predict(self) -> Response:
+        """POST /predict - Accepts image files, returns JSON list of top-5 classifications"""
+        pass
 
     def health(self) -> Response:
-        """Handle /health endpoint"""
-
-    def info(self) -> Response:
-        """Handle /info endpoint"""
+        """GET /health - Verifies model loader is active, returns 200 OK or 503 Service Unavailable"""
+        pass
 ```
 
-### 2. Model Manager (model_loader.py)
+### 2. Model Loader ([model_loader.py](src/model_loader.py))
+Responsible for caching model weights, decoding images using Pillow, scaling features, and performing inference.
 
-**Responsibility:** ML model lifecycle management, inference execution
-
-**Key Components:**
-- Model loading from pretrained weights
-- Image preprocessing pipeline
-- Inference execution
-- Result post-processing
-- Class label mapping
-
-**Design Pattern:** Singleton - One model instance per application
-
-**Interface:**
 ```python
 class ModelLoader:
-    """Manages ML model lifecycle"""
-
     def __init__(self, model_name: str, device: str = "cpu"):
-        """Initialize with model configuration"""
+        """Initialize and choose device context"""
+        pass
 
     def load_model(self) -> None:
-        """Load model weights and initialize"""
+        """Load pretrained weight graphs into runtime memory"""
+        pass
 
     def preprocess(self, image: PIL.Image) -> torch.Tensor:
-        """Preprocess image for inference"""
+        """Resize to 224x224 and normalize using ImageNet constants"""
+        pass
 
     def predict(self, image: PIL.Image, top_k: int = 5) -> List[Prediction]:
-        """Generate predictions for image"""
-
-    def get_model_info(self) -> ModelInfo:
-        """Return model metadata"""
+        """Perform forward pass and extract top_k confidence scores"""
+        pass
 ```
 
-### 3. Configuration Manager (config.py)
-
-**Responsibility:** Application configuration management, environment variable handling
-
-**Key Components:**
-- Environment variable loading
-- Configuration validation
-- Default value management
-- Type conversions
-
-**Design Pattern:** Configuration Object
-
-**Interface:**
-```python
-class Config:
-    """Application configuration"""
-
-    # Model settings
-    MODEL_NAME: str
-    MODEL_PATH: str
-    DEVICE: str  # "cpu" or "cuda"
-
-    # API settings
-    HOST: str
-    PORT: int
-    DEBUG: bool
-
-    # Limits
-    MAX_FILE_SIZE: int
-    REQUEST_TIMEOUT: int
-
-    # Logging
-    LOG_LEVEL: str
-    LOG_FORMAT: str
-```
-
-### 4. Logging System
-
-**Responsibility:** Structured logging, request tracking, error reporting
-
-**Key Components:**
-- Logger configuration
-- Correlation ID generation
-- Structured log formatting (JSON)
-- Log level management
-
-**Design Pattern:** Decorator pattern for request logging
+### 3. Configuration Management ([config.py](src/config.py))
+Encapsulates system configuration loaded from [env template](.env.example). Ensure strong type casting.
 
 ---
 
 ## Data Flow
 
-### Prediction Request Flow
+The system processes prediction requests through a linear, synchronous execution pipeline. Incoming binary payload data is progressively validated, decoded, transformed into tensor format, evaluated by the model runtime, and formatted as a JSON response:
 
-```
-┌─────────┐
-│ Client  │
-└────┬────┘
-     │
-     │ 1. POST /predict (multipart/form-data)
-     │    - file: image bytes
-     │    - top_k: 5 (optional)
-     ▼
-┌────────────────┐
-│  API Gateway   │ (Flask/FastAPI)
-│  (Route)       │
-└────┬───────────┘
-     │
-     │ 2. Route to predict() handler
-     ▼
-┌────────────────┐
-│ Request        │
-│ Validation     │ - Check Content-Type
-│                │ - Validate file exists
-│                │ - Check file size
-└────┬───────────┘
-     │
-     │ 3. Valid request
-     ▼
-┌────────────────┐
-│ File Upload    │
-│ Handler        │ - Read file bytes
-│                │ - Parse multipart data
-└────┬───────────┘
-     │
-     │ 4. Image bytes
-     ▼
-┌────────────────┐
-│ Image          │
-│ Loader         │ - Load with PIL
-│                │ - Convert to RGB
-│                │ - Validate format
-└────┬───────────┘
-     │
-     │ 5. PIL.Image object
-     ▼
-┌────────────────┐
-│ Model          │
-│ Preprocessor   │ - Resize to 224x224
-│                │ - Normalize
-│                │ - Convert to tensor
-└────┬───────────┘
-     │
-     │ 6. torch.Tensor [1, 3, 224, 224]
-     ▼
-┌────────────────┐
-│ ML Model       │
-│ (ResNet-50)    │ - Forward pass
-│                │ - Generate logits
-└────┬───────────┘
-     │
-     │ 7. Output tensor [1, 1000]
-     ▼
-┌────────────────┐
-│ Post-          │
-│ Processor      │ - Apply softmax
-│                │ - Get top-K
-│                │ - Map to labels
-└────┬───────────┘
-     │
-     │ 8. List[Prediction]
-     ▼
-┌────────────────┐
-│ Response       │
-│ Formatter      │ - Format JSON
-│                │ - Add metadata
-│                │ - Add timestamps
-└────┬───────────┘
-     │
-     │ 9. JSON response
-     ▼
-┌────────────────┐
-│ Logging        │ - Log request
-│                │ - Record latency
-│                │ - Track errors
-└────┬───────────┘
-     │
-     │ 10. HTTP 200 OK
-     ▼
-┌─────────┐
-│ Client  │ - Receives predictions
-└─────────┘
+```mermaid
+flowchart TD
+    %% Styling Classes
+    classDef client fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1,font-weight:bold;
+    classDef api fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px,color:#1E3A8A;
+    classDef process fill:#F5F3FF,stroke:#8B5CF6,stroke-width:2px,color:#4C1D95;
+    classDef model fill:#FFF7ED,stroke:#F97316,stroke-width:2px,color:#7C2D12;
+
+    Step1["Client Request<br>(POST image to /predict)"]:::client
+    Step2["API Validation<br>(Check size < 10MB & headers)"]:::api
+    Step3["Image Processing<br>(Convert binary to RGB PIL Image)"]:::process
+    Step4["Feature Normalization<br>(Resize to 224x224 & scale tensors)"]:::process
+    Step5["Model Inference<br>(PyTorch forward-pass to get logits)"]:::model
+    Step6["Post-processing<br>(Apply Softmax & map top-5 classes)"]:::process
+    Step7["Client Response<br>(Return JSON prediction results)"]:::client
+
+    Step1 --> Step2
+    Step2 --> Step3
+    Step3 --> Step4
+    Step4 --> Step5
+    Step5 --> Step6
+    Step6 --> Step7
 ```
 
-### Error Handling Flow
-
-```
-     [Any Stage]
-          │
-          │ Exception occurs
-          ▼
-     ┌────────────┐
-     │ Try/Catch  │
-     │ Block      │
-     └────┬───────┘
-          │
-          ├─── ValueError ────────► HTTP 400 (Bad Request)
-          │
-          ├─── MemoryError ───────► HTTP 503 (Service Unavailable)
-          │
-          ├─── TimeoutError ──────► HTTP 504 (Gateway Timeout)
-          │
-          ├─── FileNotFoundError ─► HTTP 400 (Bad Request)
-          │
-          └─── Exception ─────────► HTTP 500 (Internal Server Error)
-                    │
-                    ▼
-          ┌──────────────────┐
-          │ Error Handler    │
-          │ - Format error   │
-          │ - Generate ID    │
-          │ - Log error      │
-          └────┬─────────────┘
-               │
-               ▼
-          [Error Response]
-```
-
----
-
-## Technology Stack
-
-### Programming Language
-- **Python 3.11+**
-  - Justification: Excellent ML ecosystem, readability, productivity
-  - Alternatives considered: Go (lack of ML libraries), Java (verbosity)
-
-### Web Framework
-- **Flask 3.0+** or **FastAPI 0.100+**
-  - Flask: Simpler, more traditional, extensive documentation
-  - FastAPI: Modern, async support, automatic API docs, type validation
-  - Recommendation for beginners: Flask (less complexity)
-
-### ML Framework
-- **PyTorch 2.0+** or **TensorFlow 2.13+**
-  - PyTorch: More intuitive, better debugging, research-friendly
-  - TensorFlow: Production-ready, broader ecosystem, TF Serving integration
-  - Recommendation: PyTorch (easier learning curve)
-
-### Image Processing
-- **Pillow (PIL Fork)**
-  - Industry standard for Python image processing
-  - Alternative: OpenCV (overkill for this use case)
-
-### Configuration
-- **python-dotenv**
-  - Load environment variables from .env files
-  - Alternative: Manual os.environ (less convenient)
-
-### Testing
-- **pytest**
-  - Modern, feature-rich testing framework
-  - Alternative: unittest (more verbose)
-
-### Containerization
-- **Docker 24.0+**
-  - Industry standard for containerization
-  - Base image: python:3.11-slim (smaller, faster)
-
----
-
-## Deployment Architecture
-
-### Container Architecture
-
-```
-┌─────────────────────────────────────────────────┐
-│           Docker Container                       │
-│                                                   │
-│  ┌────────────────────────────────────────┐    │
-│  │  Python 3.11 Runtime Environment       │    │
-│  ├────────────────────────────────────────┤    │
-│  │  System Dependencies:                  │    │
-│  │  - libgomp1 (OpenMP for PyTorch)       │    │
-│  │  - ca-certificates                     │    │
-│  └────────────────────────────────────────┘    │
-│                                                   │
-│  ┌────────────────────────────────────────┐    │
-│  │  Python Dependencies:                  │    │
-│  │  - flask / fastapi                     │    │
-│  │  - torch / torchvision                 │    │
-│  │  - pillow                              │    │
-│  │  - python-dotenv                       │    │
-│  └────────────────────────────────────────┘    │
-│                                                   │
-│  ┌────────────────────────────────────────┐    │
-│  │  Application Code:                     │    │
-│  │  /app/                                 │    │
-│  │  ├── src/                              │    │
-│  │  │   ├── app.py                        │    │
-│  │  │   ├── model_loader.py               │    │
-│  │  │   └── config.py                     │    │
-│  │  └── .env                              │    │
-│  └────────────────────────────────────────┘    │
-│                                                   │
-│  ┌────────────────────────────────────────┐    │
-│  │  Cached Model Weights:                 │    │
-│  │  ~/.cache/torch/hub/                   │    │
-│  │  └── checkpoints/                      │    │
-│  │      └── resnet50.pth (97MB)           │    │
-│  └────────────────────────────────────────┘    │
-│                                                   │
-│  Exposed Ports: 5000                             │
-│  Health Check: GET /health (every 30s)          │
-└─────────────────────────────────────────────────┘
-```
-
-### Cloud Deployment (AWS Example)
-
-```
-┌──────────────────────────────────────────────────────┐
-│                     AWS Cloud                         │
-│                                                        │
-│  ┌────────────────────────────────────────────────┐ │
-│  │              VPC (Virtual Private Cloud)        │ │
-│  │                                                  │ │
-│  │  ┌────────────────────────────────────────┐   │ │
-│  │  │         Public Subnet                   │   │ │
-│  │  │                                          │   │ │
-│  │  │  ┌──────────────────────────────────┐  │   │ │
-│  │  │  │     EC2 Instance (t3.medium)     │  │   │ │
-│  │  │  │     - 2 vCPUs                    │  │   │ │
-│  │  │  │     - 4GB RAM                    │  │   │ │
-│  │  │  │     - Ubuntu 22.04 LTS           │  │   │ │
-│  │  │  │     - Docker Engine              │  │   │ │
-│  │  │  │                                   │  │   │ │
-│  │  │  │  ┌──────────────────────────┐   │  │   │ │
-│  │  │  │  │  Model API Container     │   │  │   │ │
-│  │  │  │  │  (Port 5000)             │   │  │   │ │
-│  │  │  │  └──────────────────────────┘   │  │   │ │
-│  │  │  │                                   │  │   │ │
-│  │  │  │  Public IP: 52.x.x.x             │  │   │ │
-│  │  │  └──────────────────────────────────┘  │   │ │
-│  │  │                                          │   │ │
-│  │  └────────────────────────────────────────┘   │ │
-│  │                                                  │ │
-│  │  ┌────────────────────────────────────────┐   │ │
-│  │  │        Security Group                   │   │ │
-│  │  │  - Inbound: Port 5000 (0.0.0.0/0)      │   │ │
-│  │  │  - Inbound: Port 22 (Admin IP only)    │   │ │
-│  │  │  - Outbound: All traffic               │   │ │
-│  │  └────────────────────────────────────────┘   │ │
-│  └────────────────────────────────────────────────┘ │
-│                                                        │
-│  ┌────────────────────────────────────────────────┐ │
-│  │           CloudWatch Logs                       │ │
-│  │  - Container stdout/stderr                      │ │
-│  │  - Application logs                             │ │
-│  └────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────┘
-```
+### Normal Prediction Execution Trace
+1.  **Client Request:** Client POSTs a binary image file (`multipart/form-data`) to `/predict`.
+2.  **API Validation:** Server checks payload size (< 10MB) and HTTP Content-Type headers.
+3.  **Image Processing:** Converts uploaded binary to RGB PIL Image.
+4.  **Feature Normalization:** Resizes to `224x224` and applies tensor scaling.
+5.  **Model Inference:** Performs PyTorch forward-pass, returning float logits.
+6.  **Post-processing:** Applies Softmax to output, maps predictions to ImageNet classes, and returns JSON.
 
 ---
 
 ## Design Decisions
 
-### 1. Synchronous vs Asynchronous
-
-**Decision:** Synchronous (blocking) request handling
-
-**Rationale:**
-- Simpler implementation for beginners
-- ML inference is CPU-bound (not I/O-bound)
-- Fewer concurrency issues
-- Easier debugging
-
-**Trade-offs:**
-- Lower throughput under high concurrency
-- Request queuing can cause timeouts
-- Not optimal for long-running requests
-
-**Future Consideration:** Move to async (FastAPI) in later projects
-
-### 2. Model Loading Strategy
-
-**Decision:** Load model once at startup, keep in memory
-
-**Rationale:**
-- Faster inference (no loading overhead per request)
-- Simpler code (no caching logic needed)
-- Acceptable memory footprint (<500MB for ResNet-50)
-
-**Trade-offs:**
-- Higher memory usage
-- Slower startup time (20-30 seconds)
-- No model hot-swapping
-
-**Alternative Considered:** Lazy loading (load on first request) - rejected due to poor first-request latency
-
-### 3. Single Model vs Multi-Model
-
-**Decision:** Single model per instance
-
-**Rationale:**
-- Simpler deployment and management
-- Predictable resource usage
-- Easier monitoring and debugging
-
-**Trade-offs:**
-- Cannot A/B test models
-- Requires redeployment for model updates
-
-**Future Path:** Multi-model serving in advanced projects
-
-### 4. CPU vs GPU
-
-**Decision:** CPU-only for this project
-
-**Rationale:**
-- Lower cost (no GPU instances)
-- Simpler setup (no CUDA configuration)
-- Sufficient performance for learning (<1s latency)
-
-**Trade-offs:**
-- Higher latency (300-500ms vs 50-100ms on GPU)
-- Lower throughput
-
-**Future Path:** GPU optimization in later projects
-
-### 5. Image Storage
-
-**Decision:** In-memory only (no disk persistence)
-
-**Rationale:**
-- Faster processing
-- No disk I/O overhead
-- Simpler cleanup (automatic garbage collection)
-- Reduced security risk
-
-**Trade-offs:**
-- Cannot replay requests
-- No audit trail of inputs
-
-### 6. Logging Strategy
-
-**Decision:** Structured logging to stdout/stderr
-
-**Rationale:**
-- Compatible with container orchestration
-- Easy integration with cloud logging (CloudWatch, Stackdriver)
-- No file system dependencies
-
-**Format:** JSON for structured logging, text for development
+| Architectural Tradeoff | Chosen Option | Justification |
+| :--- | :--- | :--- |
+| **Inference Processing** | **Synchronous / Blocking** | Simplifies design. ML inference is CPU-bound, making complex async logic redundant for single requests. |
+| **Model Lifecycle** | **Loaded once at startup** | Maximizes serving speed. Avoids loading models per-request (which takes several seconds). |
+| **Inference Hardware** | **CPU Only** | Minimizes instance costs and driver complexity (no CUDA configurations required for learning). |
+| **State Storage** | **In-memory execution** | Avoids local disk reads/writes. Reduces security risks and enhances performance. |
 
 ---
 
 ## Scalability Considerations
 
-### Horizontal Scaling
+### Horizontal Scaling Design
+Because the API nodes are stateless, you can easily scale them by deploying multiple container instances behind a Load Balancer (such as Nginx or AWS ALB):
+```mermaid
+flowchart TD
+    %% Styling Classes
+    classDef lb fill:#EFF6FF,stroke:#3B82F6,stroke-width:2px,color:#1E3A8A,font-weight:bold;
+    classDef node fill:#F5F3FF,stroke:#8B5CF6,stroke-width:2px,color:#4C1D95;
 
-The application is designed to scale horizontally:
+    LB["Load Balancer<br>(Nginx / AWS ALB)"]:::lb
+    Node1["API Node #1<br>(MobileNet Container)"]:::node
+    Node2["API Node #2<br>(MobileNet Container)"]:::node
+    Node3["API Node #3<br>(MobileNet Container)"]:::node
 
+    LB -->|Distributes Traffic| Node1
+    LB -->|Distributes Traffic| Node2
+    LB -->|Distributes Traffic| Node3
 ```
-                  ┌──────────────┐
-                  │ Load Balancer│
-                  └──────┬───────┘
-                         │
-           ┌─────────────┼─────────────┐
-           │             │             │
-           ▼             ▼             ▼
-      ┌────────┐    ┌────────┐    ┌────────┐
-      │ API    │    │ API    │    │ API    │
-      │ Instance│   │ Instance│   │ Instance│
-      │   #1   │    │   #2   │    │   #3   │
-      └────────┘    └────────┘    └────────┘
-```
 
-**Scaling Characteristics:**
-- Stateless design (no shared state between instances)
-- Independent model loading per instance
-- No database dependencies
-- Session-less authentication (if added)
 
-**Limitations:**
-- No shared cache (each instance loads model independently)
-- Startup time scales linearly (all instances load model)
-- Total memory = memory_per_instance × num_instances
-
-### Vertical Scaling
-
-For higher throughput on a single instance:
-
-**Options:**
-1. **More CPU cores:** Run multiple worker processes (Gunicorn/Uvicorn)
-2. **More memory:** Support larger batch sizes or bigger models
-3. **Add GPU:** 10-20x inference speedup
-
-**Recommendation:** Start with 2 vCPUs, 4GB RAM (t3.medium equivalent)
-
-### Performance Optimization Paths
-
-**Phase 1 (Current):**
-- Single worker, CPU inference
-- Target: 10 requests/second
-
-**Phase 2 (Future):**
-- Multi-worker deployment (4-8 workers)
-- Target: 40-80 requests/second
-
-**Phase 3 (Future):**
-- GPU inference
-- Target: 200-400 requests/second
-
-**Phase 4 (Future):**
-- Model optimization (TensorRT, ONNX)
-- Target: 500-1000 requests/second
+### Performance Bottlenecks & Optimization Paths
+1.  **Network Bandwidth:** High-resolution image payloads will clog network channels. Always compress payloads on the client-side.
+2.  **Memory Consumption:** Serving ResNet-50 requests simultaneously can lead to Out-Of-Memory (OOM) exceptions. Limit concurrent execution processes using Gunicorn or Uvicorn worker settings.
 
 ---
 
 ## Security Architecture
 
-### Defense in Depth
-
-```
-┌─────────────────────────────────────────────┐
-│         Layer 1: Network Security           │
-│  - Security Groups / Firewall Rules         │
-│  - Rate Limiting (optional)                 │
-└─────────────────┬───────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────┐
-│     Layer 2: Application Input Validation   │
-│  - File type validation                     │
-│  - File size limits                         │
-│  - Content-Type checking                    │
-└─────────────────┬───────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────┐
-│     Layer 3: Request Processing             │
-│  - Timeout enforcement                      │
-│  - Memory limits                            │
-│  - No file system persistence               │
-└─────────────────┬───────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────┐
-│        Layer 4: Error Handling              │
-│  - No sensitive data in errors              │
-│  - Sanitized error messages                 │
-│  - Correlation ID tracking                  │
-└─────────────────────────────────────────────┘
-```
+We apply a **Defense-in-Depth** model:
+*   **Network Security:** Limit inbound access via firewalls / VM Security Groups. Only expose Port 5000 to public traffic. Keep SSH (Port 22) locked down to administrator IPs.
+*   **Input Validation:** Enforce payload size limits (< 10MB) to prevent Denial of Service (DoS) memory exhaustion.
+*   **Execution Isolation:** Do not persist upload logs to local storage, and run the container service as a non-root user.
 
 ---
 
-## Monitoring and Observability
+## Monitoring & Observability
 
-### Logging Levels
-
-```python
-# INFO: Normal operations
-"Request received: correlation_id=abc123"
-"Prediction completed: latency=234ms"
-
-# WARNING: Unusual but recoverable
-"File size near limit: 9.8MB"
-"Request took longer than expected: 950ms"
-
-# ERROR: Request failed
-"Invalid image format: correlation_id=abc123"
-"Out of memory during inference"
-
-# CRITICAL: System failure
-"Model failed to load on startup"
-"Health check failing"
-```
-
-### Metrics to Track
-
-**Request Metrics:**
-- Request count (per endpoint)
-- Latency (P50, P95, P99)
-- Error rate (4xx, 5xx)
-- Request size distribution
-
-**Resource Metrics:**
-- CPU usage (%)
-- Memory usage (MB)
-- Memory utilization (%)
-- Disk I/O (minimal)
-
-**Application Metrics:**
-- Model load time
-- Inference time
-- Preprocessing time
-- Queue depth (if async)
-
----
-
-## Future Enhancements
-
-This architecture provides a foundation for future improvements:
-
-1. **Batch Inference:** Accept multiple images per request
-2. **Async Processing:** Use FastAPI + async for better concurrency
-3. **GPU Support:** Add CUDA support for faster inference
-4. **Model Versioning:** Support multiple model versions simultaneously
-5. **Caching:** Add result caching for repeated requests
-6. **Authentication:** Add API key or JWT authentication
-7. **Rate Limiting:** Add per-client rate limiting
-8. **Metrics Export:** Export Prometheus metrics
-9. **Health Checks:** Advanced health checks (model accuracy testing)
-10. **Blue-Green Deployment:** Zero-downtime model updates
-
----
-
-**Document Version:** 1.0
-**Last Updated:** October 2025
-**Maintained by:** AI Infrastructure Curriculum Team
+### Logging Standards
+Log messages must output to standard out in a structured layout (such as JSON) for parsing.
+*   `INFO` – Lifecycle operations (e.g. `Model loaded successfully in 3.4 seconds`) and request completion metrics (e.g. `/predict - status: 200 - latency: 120ms`).
+*   `WARN` – Non-fatal issues (e.g. `File size near limit: 9.8MB`).
+*   `ERROR` – Failed operations (e.g. `Corrupted image structure received`).
+*   `CRITICAL` – Startup blockers (e.g. `Failed to download model weights`).

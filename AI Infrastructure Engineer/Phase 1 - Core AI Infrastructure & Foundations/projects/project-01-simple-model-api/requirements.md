@@ -1,678 +1,206 @@
 # Project 01: Detailed Requirements Specification
 
-**Project:** Simple Model API Deployment
-**Role:** Junior AI Infrastructure Engineer
-**Version:** 1.0
-
 ---
 
 ## Table of Contents
 
-1. [Functional Requirements](#functional-requirements)
-2. [Non-Functional Requirements](#non-functional-requirements)
-3. [API Specifications](#api-specifications)
-4. [Data Models](#data-models)
-5. [Error Handling](#error-handling)
-6. [Security Requirements](#security-requirements)
-7. [Performance Requirements](#performance-requirements)
-8. [Assessment Rubric](#assessment-rubric)
+1. [Model Serving & Inference](#model-serving--inference)
+2. [REST API Serving & Security](#rest-api-serving--security)
+3. [System Error Handling & Observability](#system-error-handling--observability)
+4. [Assessment Rubric](#assessment-rubric)
+5. [Appendix: Integration Examples](#appendix-integration-examples)
+
+## Model Serving & Inference
+
+### Model Selection and Loading
+*   **Description:** The service must successfully instantiate and initialize the pre-trained image classification model in memory during application startup before exposing route listeners.
+
+> [!TIP]
+> **Developer's Thought Process: Slicing Model Selection**
+> 
+> | Architectural Aspect | Key Decision / Options | Senior Rationale & Guidelines |
+> | :--- | :--- | :--- |
+> | **1. Weight Availability** | • **ResNet-50** (~97MB weights)<br>• **MobileNetV2** (~14MB weights) | *Prefer pre-trained weights (`torchvision.models`) over training from scratch.* Use MobileNetV2 for lightweight footprints and fast dev cycles. |
+> | **2. Resource & SLA Bounds** | • **P99 Latency:** < 1000ms<br>• **Memory Budget:** < 2GB RAM | Match your choice to the hosting budget. MobileNetV2 loads and runs in milliseconds, easily meeting memory targets. |
+> | **3. Deployment Flexibility** | • **Hardcoded Model Name** (Anti-pattern)<br>• **Environment Variable Decoupling** (Best practice) | Read `MODEL_NAME` dynamically. Enables instant model swaps in production without rebuilding the container. |
 
 ---
 
-## Functional Requirements
+### Model Inference Pipeline
+*   **Description:** Accept image uploads via HTTP POST, execute preprocessing transformations, run the deep learning model forward pass, and return sorted classifications while intercepting pipeline execution failures.
 
-### FR-1: Model Loading and Inference
-
-#### FR-1.1: Model Selection and Loading
-**Description:** The application must load a pre-trained image classification model on startup.
-
-**Supported Models:**
-- ResNet-50 (recommended for beginners)
-- MobileNetV2 (alternative, lighter model)
-
-**Requirements:**
-- Model must be loaded during application initialization
-- Model weights should be downloaded automatically if not present
-- Loading errors must be caught and logged
-- Model must be set to evaluation mode (no training)
-
-**Acceptance Criteria:**
-- [ ] Model loads successfully within 30 seconds on startup
-- [ ] Application fails gracefully with clear error if model loading fails
-- [ ] Model is cached and not reloaded on each request
-- [ ] Loading progress is logged at INFO level
-
-#### FR-1.2: Image Upload Handling
-**Description:** Accept image uploads via HTTP POST requests.
-
-**Requirements:**
-- Support multipart/form-data file uploads
-- Accept common image formats: JPEG, PNG, BMP, GIF
-- Validate file is an actual image (not just by extension)
-- Enforce maximum file size limit (10MB)
-
-**Acceptance Criteria:**
-- [ ] Endpoint accepts multipart/form-data with 'file' field
-- [ ] Rejects non-image files with HTTP 400
-- [ ] Rejects files > 10MB with HTTP 413
-- [ ] Handles corrupted images gracefully with HTTP 400
-
-#### FR-1.3: Image Preprocessing
-**Description:** Preprocess uploaded images according to model requirements.
-
-**Requirements:**
-- Convert images to RGB format (handle grayscale and RGBA)
-- Resize images to 224x224 pixels
-- Apply ImageNet normalization (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-- Convert to tensor format compatible with the ML framework
-
-**Acceptance Criteria:**
-- [ ] All images converted to RGB successfully
-- [ ] Images resized maintaining aspect ratio (center crop)
-- [ ] Normalization applied correctly
-- [ ] Preprocessing completes in < 50ms for typical images
-
-#### FR-1.4: Prediction Generation
-**Description:** Generate top-K predictions with class names and confidence scores.
-
-**Requirements:**
-- Return top-5 predictions by default
-- Include class name/label for each prediction
-- Include confidence score (probability) for each prediction
-- Apply softmax to convert logits to probabilities
-- Map class indices to human-readable labels (ImageNet classes)
-
-**Acceptance Criteria:**
-- [ ] Returns exactly 5 predictions (unless top_k parameter specified)
-- [ ] Predictions sorted by confidence (highest first)
-- [ ] Confidence scores sum to approximately 1.0 (within 0.01)
-- [ ] Class labels are human-readable (e.g., "golden retriever", not "n02099601")
-
-#### FR-1.5: Error Handling for Model Operations
-**Description:** Handle model-related errors gracefully.
-
-**Requirements:**
-- Catch out-of-memory errors during inference
-- Handle model file corruption or missing weights
-- Detect incompatible input shapes
-- Handle framework-specific errors (PyTorch/TensorFlow)
-
-**Acceptance Criteria:**
-- [ ] OOM errors return HTTP 503 with retry-after header
-- [ ] Missing model weights trigger automatic download or fail gracefully
-- [ ] Invalid input shapes return HTTP 400 with descriptive message
-- [ ] All model errors logged at ERROR level with stack traces
+> [!NOTE]
+> **Developer's Thought Process: Slicing the Inference Steps**
+> 
+> | Pipeline Phase | Primary Security & Technical Challenges | Engineering Rationale & Implementation |
+> | :--- | :--- | :--- |
+> | **1. File Ingestion** | Prevent directory traversal attacks; block corrupted files or malicious script uploads. | • **Process strictly in memory** (`io.BytesIO`).<br>• **Verify magic bytes** (actual content headers), not just file extensions. |
+> | **2. Channel & Aspect Normalization** | Model expects `[3, 224, 224]` RGB. Client uploads can be RGBA, grayscale, or rectangular formats. | • Convert all color spaces to **3-channel RGB**.<br>• Use **center-cropping** to resize to `224x224` without distorting image subjects. |
+> | **3. Gradient & Memory Overhead** | Gradient graph tracing consumes massive CPU/memory during inference passes. | Wrap inference inside a zero-gradient context (`torch.no_grad()`) to keep memory footprints low. |
+> | **4. Framework Exception Safety** | Invalid shapes can cause low-level framework assertions that crash the main API server process. | • **Validate input shapes** (`[1, 3, 224, 224]`) before running prediction calls.<br>• Catch framework-specific execution errors. |
 
 ---
 
-### FR-2: REST API Implementation
+### Operational & Performance Constraints
+*   **Description:** Operational performance metrics, resource bounds, and lifecycle constraints for model serving.
 
-#### FR-2.1: /predict Endpoint
-**Description:** Primary endpoint for single-image inference.
+> [!IMPORTANT]
+> **Developer's Thought Process: Slicing Operational Constraints**
+> 
+> | Constraint Area | Core System SLA Requirements | Implementation Guidelines |
+> | :--- | :--- | :--- |
+> | **1. Concurrency Limits** | Process >= 10 concurrent requests without P95 latency degradation on CPU. | Keep the main prediction thread clean of blocking filesystem actions (I/O) during execution. |
+> | **2. Startup Boot SLA** | Application must be ready to receive requests within **30 seconds** from boot. | **Instaboot Pattern:** Pre-cache and download model weights into the container image during Docker build. |
+> | **3. Graceful Shutdown** | Drain active connections and safely exit within **10 seconds** of termination. | Trap `SIGTERM` signals. Stop accepting network requests but let current inference calls finish. |
 
-**Specification:**
+
+---
+
+## REST API Serving & Security
+
+> [!TIP]
+> **Developer's Thought Process: Slicing the REST API Design**
+> *   **What endpoints do we build?** You need `POST /predict` for running predictions, `GET /health` for load-balancer health monitoring, and `GET /info` to expose model parameters and limits.
+> *   **How do we format responses?** Always return clean JSON with `snake_case` keys and ISO 8601 UTC timestamps. Include headers like `X-Correlation-ID` and `X-Response-Time` to trace request pathways and latency.
+> *   **How do we validate input?** Enforce `multipart/form-data` uploads, check file size limits, and validate that `top_k` query parameters are integers between 1 and 10.
+> *   **How do we secure the routes?** Process all files in-memory (never write to local disk) and inject standard security headers (`X-Frame-Options: DENY` and `X-Content-Type-Options: nosniff`) into all JSON payloads.
+
+**Request Execution Flow:**
+```mermaid
+graph TD
+    Client["Client Payload"] -->|POST /predict| API["REST API Handler"]
+    
+    API --> Validate{"Request Guardrails"}
+    
+    Validate -->|Payload > 10MB or Invalid Params| Err["HTTP 400 / 413 / 415"]
+    Validate -->|Valid Upload| Pipeline["Model Inference Pipeline"]
+    
+    Pipeline --> Preprocess["1. Image Preprocessing"]
+    Pipeline --> ForwardPass["2. Model Inference"]
+    Pipeline --> SoftmaxSort["3. Post-process Predictions"]
+    
+    SoftmaxSort --> JSONEmit["Format JSON Response"]
+    JSONEmit --> Success["HTTP 200 OK (With Trace Headers)"]
 ```
-POST /predict
-Content-Type: multipart/form-data
 
-Request Body:
-- file: image file (required)
-- top_k: number of predictions to return (optional, default=5)
+---
 
-Response (200 OK):
-{
-  "success": true,
-  "predictions": [
+### `/predict` Endpoint
+*   **Description:** Primary interface for running predictions on user-submitted images.
+*   **HTTP Method:** `POST`
+*   **Content-Type:** `multipart/form-data`
+*   **Request Schema:**
+    *   `file`: Binary file payload (Required).
+    *   `top_k`: Integer between 1 and 10 representing predictions count (Optional, Default: 5).
+*   **Success Response (200 OK):**
+    ```json
     {
-      "class": "golden_retriever",
-      "confidence": 0.89,
-      "rank": 1
-    },
-    ...
-  ],
-  "latency_ms": 234,
-  "timestamp": "2025-10-18T10:30:45Z"
-}
+      "success": true,
+      "predictions": [
+        {
+          "class": "golden_retriever",
+          "confidence": 0.89,
+          "rank": 1
+        }
+      ],
+      "latency_ms": 234,
+      "timestamp": "2026-10-18T10:30:45Z"
+    }
+    ```
 
-Error Response (4xx/5xx):
-{
-  "success": false,
-  "error": {
-    "code": "INVALID_IMAGE_FORMAT",
-    "message": "Uploaded file is not a valid image",
-    "correlation_id": "req-12345678"
-  }
-}
-```
+### `/health` Endpoint
+*   **Description:** Health check endpoint for monitoring and load balancers.
+*   **HTTP Method:** `GET`
+*   **Success Response (200 OK):**
+    ```json
+    {
+      "status": "healthy",
+      "model_loaded": true,
+      "model_name": "mobilenet_v2",
+      "uptime_seconds": 3600,
+      "timestamp": "2026-10-18T10:30:45Z"
+    }
+    ```
+*   **Failure Response (503 Service Unavailable):**
+    ```json
+    {
+      "status": "unhealthy",
+      "model_loaded": false,
+      "reason": "Model weights failed to load",
+      "timestamp": "2026-10-18T10:30:45Z"
+    }
+    ```
 
-**Acceptance Criteria:**
-- [ ] Endpoint accessible at POST /predict
-- [ ] Accepts multipart/form-data requests
-- [ ] Returns JSON response
-- [ ] Includes latency measurement
-- [ ] Logs each request with correlation ID
+### `/info` Endpoint
+*   **Description:** Exposes metadata detailing the current deployment and constraints.
+*   **HTTP Method:** `GET`
+*   **Success Response (200 OK):**
+    ```json
+    {
+      "model": {
+        "name": "mobilenet_v2",
+        "framework": "pytorch",
+        "version": "2.0.0",
+        "input_shape": [224, 224, 3],
+        "output_classes": 1000
+      },
+      "api": {
+        "version": "1.0.0",
+        "endpoints": ["/predict", "/health", "/info"]
+      },
+      "limits": {
+        "max_file_size_mb": 10,
+        "max_image_dimension": 4096,
+        "timeout_seconds": 30
+      }
+    }
+    ```
 
-#### FR-2.2: /health Endpoint
-**Description:** Health check endpoint for monitoring and load balancers.
+### Request Validation & Formatting
+*   **Request Inputs:** Verify incoming prediction calls use `multipart/form-data` with a non-empty `file` parameter. Check query limits: if the optional `top_k` parameter is provided, validate it falls strictly in the `1 to 10` range, rejecting anomalies with `HTTP 400 Bad Request`.
+*   **Response Payloads:** Emit all outputs as valid JSON (`Content-Type: application/json`) using `snake_case` keys and ISO 8601 UTC timestamps (e.g. `2026-10-18T10:30:45Z`).
 
-**Specification:**
-```
-GET /health
+### API Security & Operational Constraints
 
-Response (200 OK):
-{
-  "status": "healthy",
-  "model_loaded": true,
-  "model_name": "resnet50",
-  "uptime_seconds": 3600,
-  "timestamp": "2025-10-18T10:30:45Z"
-}
+*   **Security & Sandbox Policies:**
+    *   *Volatile Isolation:* Process uploads entirely in-memory using `BytesIO` streams. Never write payloads to disk to eliminate directory traversal or file injection risks.
+    *   *Payload Guardrails:* Enforce upload size limits strictly under 10MB and reject image dimensions exceeding 10,000x10,000 pixels.
+    *   *Browser Defense:* Inject HTTP security headers (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and `X-XSS-Protection: 1; mode=block`) in all responses.
 
-Response (503 Service Unavailable):
-{
-  "status": "unhealthy",
-  "model_loaded": false,
-  "reason": "Model failed to load",
-  "timestamp": "2025-10-18T10:30:45Z"
-}
-```
+*   **Throughput & Observability:**
+    *   *Target Scaling:* Process at least 10 concurrent requests without P95 latency degradation. Keep execution stateless to support horizontal load scaling.
+    *   *Request Tracing:* Inject custom tracing response headers: `X-Correlation-ID` containing the request UUID, and `X-Response-Time` recording the server processing latency in milliseconds.
 
-**Acceptance Criteria:**
-- [ ] Responds in < 100ms
-- [ ] Returns 200 when application is healthy
-- [ ] Returns 503 when model not loaded or critical error
-- [ ] No authentication required
-- [ ] Can be called frequently (monitoring)
-
-#### FR-2.3: /info Endpoint
-**Description:** Provides model and API metadata.
-
-**Specification:**
-```
-GET /info
-
-Response (200 OK):
-{
-  "model": {
-    "name": "resnet50",
-    "framework": "pytorch",
-    "version": "2.0.0",
-    "input_shape": [224, 224, 3],
-    "output_classes": 1000
-  },
-  "api": {
-    "version": "1.0.0",
-    "endpoints": ["/predict", "/health", "/info"]
-  },
-  "limits": {
-    "max_file_size_mb": 10,
-    "max_image_dimension": 4096,
-    "timeout_seconds": 30
-  }
-}
-```
-
-**Acceptance Criteria:**
-- [ ] Returns complete metadata
-- [ ] Information is accurate and up-to-date
-- [ ] No authentication required
-- [ ] Useful for API discovery
-
-#### FR-2.4: Request Validation
-**Description:** Validate all incoming requests before processing.
-
-**Requirements:**
-- Check Content-Type header for /predict
-- Validate file field exists in multipart form
-- Verify file is not empty
-- Check file size before reading into memory
-- Validate top_k parameter if provided (1-10 range)
-
-**Acceptance Criteria:**
-- [ ] Missing file field returns HTTP 400
-- [ ] Empty files return HTTP 400
-- [ ] Invalid Content-Type returns HTTP 415
-- [ ] Invalid top_k returns HTTP 400 with explanation
-
-#### FR-2.5: Response Format
-**Description:** Consistent JSON response format across all endpoints.
-
-**Requirements:**
-- Use JSON as default content type
-- Include success/error indicator
-- Include timestamp in all responses
-- Use snake_case for field names
-- Pretty-print in development, minified in production
-
-**Acceptance Criteria:**
-- [ ] All responses are valid JSON
-- [ ] Content-Type header set to application/json
-- [ ] Consistent field naming convention
-- [ ] Timestamps in ISO 8601 format
+*   **Clean Code & Configuration:**
+    *   *Standard Alignment:* Follow PEP 8 style guides, using explicit type hints on all functions and Google-style docstrings.
+    *   *Complexity Budgets:* Enforce strict code limits: functions must not exceed 50 lines, and files must not exceed 500 lines.
+    *   *Decoupled Parameters:* Load port bindings, filesystem cache paths, and model names from environment variables; zero hardcoding.
 
 ---
 
-### FR-3: Error Handling
+## System Error Handling & Observability
 
-#### FR-3.1: Structured Error Responses
-**Description:** Return structured, informative error responses.
-
-**Error Response Format:**
-```json
-{
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human-readable error message",
-    "correlation_id": "req-xxxxxxxx",
-    "timestamp": "2025-10-18T10:30:45Z",
-    "details": {}  // Optional additional context
-  }
-}
-```
-
-**Error Codes:**
-- `INVALID_IMAGE_FORMAT` - File is not a valid image
-- `FILE_TOO_LARGE` - File exceeds size limit
-- `MISSING_FILE` - No file in request
-- `MODEL_ERROR` - Model inference failed
-- `OUT_OF_MEMORY` - Insufficient memory for operation
-- `TIMEOUT` - Request processing exceeded timeout
-- `INTERNAL_ERROR` - Unexpected server error
-
-**Acceptance Criteria:**
-- [ ] All errors use this format
-- [ ] Error codes are consistent and documented
-- [ ] Messages are clear and actionable
-- [ ] Correlation IDs enable request tracking
-
-#### FR-3.2: Out-of-Memory Handling
-**Description:** Gracefully handle OOM conditions.
-
-**Requirements:**
-- Catch memory errors during model loading
-- Catch memory errors during inference
-- Return HTTP 503 with Retry-After header
-- Log OOM events for capacity planning
-- Attempt to recover (clear caches, etc.)
-
-**Acceptance Criteria:**
-- [ ] OOM during inference doesn't crash application
-- [ ] Returns HTTP 503 with appropriate message
-- [ ] Retry-After header suggests reasonable delay (60s)
-- [ ] Application continues to serve requests after recovery
-
-#### FR-3.3: Invalid Input Handling
-**Description:** Handle all forms of invalid input.
-
-**Invalid Input Types:**
-- Corrupted image files
-- Non-image files (PDFs, text files, etc.)
-- Images with unsupported formats
-- Extremely large images (> 10000x10000)
-- Empty files
-- Wrong Content-Type
-
-**Acceptance Criteria:**
-- [ ] Each invalid input type has specific error code
-- [ ] No crashes or exceptions reach the user
-- [ ] Error messages help users correct the issue
-- [ ] All invalid inputs logged at WARNING level
-
-#### FR-3.4: Request Timeout Handling
-**Description:** Enforce maximum request processing time.
-
-**Requirements:**
-- Maximum 30 seconds per request
-- Timeout applies to entire request lifecycle
-- Return HTTP 504 on timeout
-- Cancel ongoing inference on timeout
-- Log timeout events
-
-**Acceptance Criteria:**
-- [ ] Requests exceeding 30s return HTTP 504
-- [ ] Timeout message is clear
-- [ ] Resources cleaned up on timeout
-- [ ] Timeout doesn't affect other requests
+> [!NOTE]
+> **Developer's Thought Process: Slicing Error Handling & Observability**
+> *   **How do we handle crashes and errors?** We must prevent raw Python tracebacks from escaping to the user, as they leak backend implementation details. Catch every exception at the route boundary and format it into a standardized JSON structure.
+> *   **How do we deal with resource limits (OOM & Timeouts)?** ML inference is memory and CPU intensive. If memory is exhausted, catch the exception, clear local PyTorch caches, and return an HTTP 503 code. To avoid threads hanging forever, enforce a strict 30-second execution timeout.
+> *   **How do we structure logs for aggregation?** Standard print statements are useless in production. Use structured JSON logging and attach a unique `correlation_id` to every request. This lets you trace a request's logs across multiple server nodes.
 
 ---
 
-## Non-Functional Requirements
-
-### NFR-1: Performance
-
-#### NFR-1.1: Latency Requirements
-- **P50 (median):** < 300ms for 224x224 images on CPU
-- **P95:** < 500ms for 224x224 images on CPU
-- **P99:** < 1000ms for 224x224 images on CPU
-- **Health check:** < 100ms
-
-**Measurement:** Latency measured from request received to response sent, excluding network time.
-
-#### NFR-1.2: Throughput
-- Minimum 10 concurrent requests supported
-- Recommended: 20-30 concurrent requests on t3.medium (AWS) or equivalent
-- No degradation in P95 latency under normal load
-
-#### NFR-1.3: Resource Usage
-- **Memory:** < 2GB under normal load (single worker)
-- **CPU:** Efficient use, no CPU-bound loops
-- **Startup Time:** < 30 seconds from container start to ready
-- **Shutdown Time:** Graceful shutdown within 10 seconds
-
-#### NFR-1.4: Scalability
-- Application must be stateless (no local state)
-- Support horizontal scaling (multiple instances)
-- No file system dependencies (except model weights)
-- Thread-safe or process-safe
-
----
-
-### NFR-2: Reliability
-
-#### NFR-2.1: Availability
-- **Target:** 99% uptime under normal conditions
-- **Recovery:** Automatic restart on crash (via container orchestration)
-- **Graceful Degradation:** Continue serving requests during high load (with increased latency)
-
-#### NFR-2.2: Error Rates
-- **Target:** < 1% error rate under normal conditions
-- **Transient Errors:** Retry-able errors should return appropriate status codes
-- **Permanent Errors:** Clear error messages for unrecoverable errors
-
-#### NFR-2.3: Data Integrity
-- All uploaded images processed correctly
-- No data corruption during preprocessing
-- Predictions deterministic for same input (with eval mode)
-
----
-
-### NFR-3: Security
-
-#### NFR-3.1: Input Validation
-- Validate all user inputs
-- Prevent path traversal attacks
-- Prevent code injection via filenames
-- Sanitize error messages (no sensitive data)
-
-#### NFR-3.2: File Upload Security
-- Maximum file size enforced (10MB)
-- Verify file content matches declared type
-- No execution of uploaded files
-- Files not persisted to disk (memory only)
-
-#### NFR-3.3: Rate Limiting (Optional)
-- Recommended: 100 requests per minute per IP
-- Return HTTP 429 when limit exceeded
-- Include Retry-After header
-
-#### NFR-3.4: Logging Security
-- No sensitive data in logs
-- Log all authentication attempts (if auth added)
-- Correlation IDs for request tracking
-- Log rotation to prevent disk fill
-
----
-
-### NFR-4: Maintainability
-
-#### NFR-4.1: Code Quality
-- Follow PEP 8 style guide (Python)
-- Type hints on all function signatures
-- Docstrings (Google style) on all public functions
-- Maximum function length: 50 lines
-- Maximum file length: 500 lines
-
-#### NFR-4.2: Configuration Management
-- All configuration via environment variables or config file
-- No hardcoded values (ports, URLs, paths, etc.)
-- Default values for optional configurations
-- Configuration validation on startup
-
-#### NFR-4.3: Logging
-- Structured logging (JSON format recommended)
-- Log levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
-- Include timestamp, level, message, correlation_id
-- Log aggregation-friendly format
-
-#### NFR-4.4: Testing
-- Unit test coverage > 80%
-- Integration tests for all endpoints
-- Test error paths, not just happy paths
-- Performance tests for latency validation
-
----
-
-## API Specifications
-
-### Request Headers
-
-**Required:**
-- `Content-Type: multipart/form-data` (for /predict)
-
-**Optional:**
-- `X-Request-ID: <uuid>` - Client-provided correlation ID
-- `Accept: application/json` - Response format (JSON only supported)
-
-### Response Headers
-
-**Always Included:**
-- `Content-Type: application/json`
-- `X-Correlation-ID: <uuid>` - Request tracking ID
-- `X-Response-Time: <ms>` - Processing time in milliseconds
-
-**Conditional:**
-- `Retry-After: <seconds>` - For 503 and 429 responses
-- `Cache-Control: no-cache` - For /predict endpoint
-
----
-
-## Data Models
-
-### Prediction Object
-```python
-from typing import TypedDict
-
-class Prediction(TypedDict):
-    class_name: str        # Human-readable class name
-    confidence: float      # Probability score (0.0 to 1.0)
-    rank: int             # Rank in top-K (1-based)
-```
-
-### Error Object
-```python
-from typing import TypedDict, Optional
-
-class Error(TypedDict):
-    code: str                    # Error code
-    message: str                 # Human-readable message
-    correlation_id: str          # Request tracking ID
-    timestamp: str              # ISO 8601 timestamp
-    details: Optional[dict]      # Additional context (optional)
-```
-
-### Model Info
-```python
-from typing import TypedDict, List
-
-class ModelInfo(TypedDict):
-    name: str                    # Model name
-    framework: str               # ML framework (pytorch/tensorflow)
-    version: str                 # Framework version
-    input_shape: List[int]       # Expected input shape [H, W, C]
-    output_classes: int          # Number of output classes
-```
-
----
-
-## Error Handling
-
-### HTTP Status Codes
-
-| Code | Meaning | Usage |
-|------|---------|-------|
-| 200 | OK | Successful prediction or info request |
-| 400 | Bad Request | Invalid input, malformed request |
-| 413 | Payload Too Large | File exceeds size limit |
-| 415 | Unsupported Media Type | Wrong Content-Type |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Server Error | Unexpected application error |
-| 503 | Service Unavailable | Model not loaded, OOM, overload |
-| 504 | Gateway Timeout | Request processing timeout |
-
-### Error Code Mapping
-
-```python
-ERROR_CODES = {
-    "INVALID_IMAGE_FORMAT": 400,
-    "FILE_TOO_LARGE": 413,
-    "MISSING_FILE": 400,
-    "INVALID_PARAMETER": 400,
-    "MODEL_ERROR": 500,
-    "OUT_OF_MEMORY": 503,
-    "TIMEOUT": 504,
-    "RATE_LIMIT_EXCEEDED": 429,
-    "INTERNAL_ERROR": 500,
-}
-```
-
----
-
-## Security Requirements
-
-### Input Validation Rules
-
-1. **File Size:** Maximum 10MB (10,485,760 bytes)
-2. **File Types:** JPEG, PNG, BMP, GIF (validated by content, not extension)
-3. **Image Dimensions:** Maximum 10,000 x 10,000 pixels
-4. **Filename:** Sanitize to prevent path traversal
-5. **Top-K Parameter:** Integer between 1 and 10
-
-### Security Headers
-
-Include these headers in all responses:
-```
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-X-XSS-Protection: 1; mode=block
-```
-
----
-
-## Performance Requirements
-
-### Latency Targets by Percentile
-
-| Percentile | Target (CPU) | Measurement Method |
-|------------|--------------|-------------------|
-| P50 | < 300ms | Server-side timing |
-| P95 | < 500ms | Server-side timing |
-| P99 | < 1000ms | Server-side timing |
-| P99.9 | < 2000ms | Server-side timing |
-
-### Resource Limits
-
-| Resource | Limit | Monitoring |
-|----------|-------|-----------|
-| Memory | 2GB | Container metrics |
-| CPU | 2 cores (burst) | Container metrics |
-| Disk I/O | Minimal | Logs only |
-| Network | 10 Mbps | Cloud monitoring |
-
----
-
-## Assessment Rubric
-
-### Code Quality (25 points)
-
-| Criteria | Points | Description |
-|----------|--------|-------------|
-| Code Organization | 5 | Well-structured modules, clear separation of concerns |
-| Code Style | 5 | PEP 8 compliant, consistent formatting |
-| Documentation | 5 | Comprehensive docstrings and comments |
-| Error Handling | 5 | Robust error handling, all cases covered |
-| Testing | 5 | >80% coverage, all scenarios tested |
-
-### Functionality (30 points)
-
-| Criteria | Points | Description |
-|----------|--------|-------------|
-| API Endpoints | 6 | All endpoints work correctly |
-| Model Inference | 6 | Accurate predictions, optimal performance |
-| Input Validation | 6 | Comprehensive validation, all edge cases |
-| Error Responses | 6 | Clear, structured error messages |
-| Performance | 6 | Meets all performance targets |
-
-### Containerization (15 points)
-
-| Criteria | Points | Description |
-|----------|--------|-------------|
-| Dockerfile | 5 | Optimized, multi-stage, minimal size |
-| Image Size | 5 | < 2GB, efficient layering |
-| Build Process | 5 | Efficient caching, fast builds |
-
-### Deployment (20 points)
-
-| Criteria | Points | Description |
-|----------|--------|-------------|
-| Cloud Setup | 5 | Correct cloud configuration, best practices |
-| Accessibility | 5 | Public URL, stable, fast |
-| Monitoring | 5 | Comprehensive logging and monitoring |
-| Security | 5 | Excellent security practices |
-
-### Documentation (10 points)
-
-| Criteria | Points | Description |
-|----------|--------|-------------|
-| README | 5 | Comprehensive, clear, professional |
-| API Docs | 5 | Complete spec with examples |
-
-**Total: 100 points**
-**Passing Score: 70 points**
-
----
-
-## Appendix: Example Requests
-
-### cURL Examples
-
-```bash
-# Health check
-curl -X GET http://localhost:5000/health
-
-# Get model info
-curl -X GET http://localhost:5000/info
-
-# Make prediction
-curl -X POST \
-  -F "file=@dog.jpg" \
-  http://localhost:5000/predict
-
-# Make prediction with custom top_k
-curl -X POST \
-  -F "file=@dog.jpg" \
-  -F "top_k=10" \
-  http://localhost:5000/predict
-```
-
-### Python Example
-
-```python
-import requests
-
-# Health check
-response = requests.get('http://localhost:5000/health')
-print(response.json())
-
-# Make prediction
-with open('dog.jpg', 'rb') as f:
-    files = {'file': f}
-    response = requests.post('http://localhost:5000/predict', files=files)
-    print(response.json())
-```
-
----
-
-**Document Version:** 1.0
-**Last Updated:** October 2025
-**Maintained by:** AI Infrastructure Curriculum Team
+### Error Handling & Observability Constraints
+
+*   **Error Responses & Resilience:**
+    *   *Structured Outputs:* Emit all errors using a standard JSON structure containing the error code, message, ISO 8601 timestamp, and request correlation ID.
+    *   *HTTP Mapping:* Map internal anomalies to proper HTTP statuses: `HTTP 400` for invalid files, `HTTP 413` for size limits, `HTTP 503` for OOM, and `HTTP 504` for timeouts.
+    *   *OOM Safeguard:* Intercept memory exceptions during forward passes, clear execution caches, and return `HTTP 503 Service Unavailable` with a 60-second `Retry-After` header.
+    *   *Timeout Ceiling:* Enforce a strict 30-second timeout per request. Cancel model inference calls and return `HTTP 504 Gateway Timeout` if breached.
+
+*   **Observability & Logging:**
+    *   *Structured JSON Logs:* Output all logs in structured JSON format containing log level, ISO timestamp, correlation ID, and message.
+    *   *SLA Error Tracking:* Target a service error rate of < 1% under active load. Ensure logs separate client-driven warnings from actual server failures.
+    *   *Data Leak Protections:* Never log image binary payloads, local machine file paths, or system credentials.
+
+*   **Quality Assurance & Testing:**
+    *   *Unit Coverage:* Achieve `> 80%` code coverage across all helper modules (config, preprocessing, loader).
+    *   *Integration Testing:* Test full API endpoints, validating error responses, timeouts, OOM recovery, and invalid payload formats.

@@ -1,347 +1,135 @@
+#!/usr/bin/env python3
 """
-Configuration Management Module
+Configuration Management for Model API
 
-This module handles all application configuration including environment
-variables, defaults, and validation.
+Manages application configuration using environment variables with validation
+and type safety.
 
-Author: AI Infrastructure Curriculum
-License: MIT
+Usage:
+    from config import settings
+    print(settings.model_name)
 """
 
 import os
 from typing import Optional
-from dotenv import load_dotenv
-
-# TODO: Load environment variables from .env file
-# HINT: Use load_dotenv() to read .env file in project root
-# This allows you to set configuration values without hardcoding them
+from dataclasses import dataclass
+from pathlib import Path
 
 
-class Config:
-    """
-    Application configuration class.
+@dataclass
+class Settings:
+    """Application settings with validation"""
 
-    Loads configuration from environment variables with sensible defaults.
-    All configuration values should be accessed through this class to
-    ensure consistency and ease of testing.
+    # Server Configuration
+    host: str = "0.0.0.0"
+    port: int = 5000
+    debug: bool = False
+    workers: int = 4
 
-    Example:
-        >>> config = Config()
-        >>> print(config.MODEL_NAME)
-        'resnet50'
-        >>> print(config.PORT)
-        5000
-    """
-
-    # =========================================================================
     # Model Configuration
-    # =========================================================================
+    model_name: str = "resnet50"  # Options: resnet50, mobilenet_v2
+    model_device: str = "cpu"  # Options: cpu, cuda
+    batch_size: int = 1
 
-    # TODO: Define MODEL_NAME configuration
-    # - Should read from environment variable 'MODEL_NAME'
-    # - Default to 'resnet50' if not set
-    # - Valid values: 'resnet50', 'mobilenet_v2'
-    # - Type: str
-    MODEL_NAME: str = None  # REPLACE THIS LINE
-
-    # TODO: Define MODEL_PATH configuration
-    # - Should read from environment variable 'MODEL_PATH'
-    # - Default to '~/.cache/torch/hub' (standard PyTorch cache location)
-    # - This is where model weights will be cached
-    # - Type: str
-    MODEL_PATH: str = None  # REPLACE THIS LINE
-
-    # TODO: Define DEVICE configuration
-    # - Should read from environment variable 'DEVICE'
-    # - Default to 'cpu' (GPU support comes later)
-    # - Valid values: 'cpu', 'cuda', 'mps' (for Apple Silicon)
-    # - Type: str
-    DEVICE: str = None  # REPLACE THIS LINE
-
-    # =========================================================================
     # API Configuration
-    # =========================================================================
+    max_file_size: int = 10 * 1024 * 1024  # 10MB
+    allowed_extensions: tuple = ('.jpg', '.jpeg', '.png', '.bmp', '.webp')
+    request_timeout: int = 30
+    max_concurrent_requests: int = 100
 
-    # TODO: Define HOST configuration
-    # - Should read from environment variable 'HOST'
-    # - Default to '0.0.0.0' (listen on all network interfaces)
-    # - For local development only, you might use '127.0.0.1'
-    # - Type: str
-    HOST: str = None  # REPLACE THIS LINE
-
-    # TODO: Define PORT configuration
-    # - Should read from environment variable 'PORT'
-    # - Default to 5000
-    # - Must be converted to integer (env vars are strings!)
-    # - Type: int
-    # HINT: Use int(os.getenv('PORT', '5000')) for type conversion
-    PORT: int = None  # REPLACE THIS LINE
-
-    # TODO: Define DEBUG configuration
-    # - Should read from environment variable 'DEBUG'
-    # - Default to False
-    # - Must be converted to boolean
-    # - Type: bool
-    # HINT: Check if string value is 'true' or '1'
-    DEBUG: bool = None  # REPLACE THIS LINE
-
-    # TODO: Define API_VERSION configuration
-    # - Should read from environment variable 'API_VERSION'
-    # - Default to '1.0.0'
-    # - Follows semantic versioning (MAJOR.MINOR.PATCH)
-    # - Type: str
-    API_VERSION: str = None  # REPLACE THIS LINE
-
-    # =========================================================================
-    # Request Limits
-    # =========================================================================
-
-    # TODO: Define MAX_FILE_SIZE configuration
-    # - Should read from environment variable 'MAX_FILE_SIZE'
-    # - Default to 10MB (10 * 1024 * 1024 bytes)
-    # - Must be converted to integer
-    # - This prevents DOS attacks via huge file uploads
-    # - Type: int
-    MAX_FILE_SIZE: int = None  # REPLACE THIS LINE
-
-    # TODO: Define MAX_IMAGE_DIMENSION configuration
-    # - Should read from environment variable 'MAX_IMAGE_DIMENSION'
-    # - Default to 4096 (pixels)
-    # - Must be converted to integer
-    # - Prevents memory issues from extremely large images
-    # - Type: int
-    MAX_IMAGE_DIMENSION: int = None  # REPLACE THIS LINE
-
-    # TODO: Define REQUEST_TIMEOUT configuration
-    # - Should read from environment variable 'REQUEST_TIMEOUT'
-    # - Default to 30 seconds
-    # - Must be converted to integer
-    # - Type: int
-    REQUEST_TIMEOUT: int = None  # REPLACE THIS LINE
-
-    # TODO: Define DEFAULT_TOP_K configuration
-    # - Should read from environment variable 'DEFAULT_TOP_K'
-    # - Default to 5 (return top-5 predictions)
-    # - Must be converted to integer
-    # - Type: int
-    DEFAULT_TOP_K: int = None  # REPLACE THIS LINE
-
-    # TODO: Define MAX_TOP_K configuration
-    # - Should read from environment variable 'MAX_TOP_K'
-    # - Default to 10 (maximum predictions to return)
-    # - Must be converted to integer
-    # - Prevents abuse by limiting result size
-    # - Type: int
-    MAX_TOP_K: int = None  # REPLACE THIS LINE
-
-    # =========================================================================
     # Logging Configuration
-    # =========================================================================
+    log_level: str = "INFO"  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+    log_format: str = "json"  # Options: json, text
 
-    # TODO: Define LOG_LEVEL configuration
-    # - Should read from environment variable 'LOG_LEVEL'
-    # - Default to 'INFO'
-    # - Valid values: 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
-    # - Type: str
-    LOG_LEVEL: str = None  # REPLACE THIS LINE
+    # Performance Configuration
+    enable_caching: bool = True
+    cache_ttl: int = 3600  # 1 hour
 
-    # TODO: Define LOG_FORMAT configuration
-    # - Should read from environment variable 'LOG_FORMAT'
-    # - Default to 'json'
-    # - Valid values: 'json', 'text'
-    # - JSON format is better for production log aggregation
-    # - Type: str
-    LOG_FORMAT: str = None  # REPLACE THIS LINE
+    def __post_init__(self):
+        """Validate settings after initialization"""
+        self._load_from_env()
+        self._validate()
 
-    # =========================================================================
-    # ImageNet Labels
-    # =========================================================================
+    def _load_from_env(self):
+        """Load settings from environment variables"""
+        # Server settings
+        self.host = os.getenv("API_HOST", self.host)
+        self.port = int(os.getenv("API_PORT", self.port))
+        self.debug = os.getenv("DEBUG", "false").lower() == "true"
+        self.workers = int(os.getenv("WORKERS", self.workers))
 
-    # TODO: Define IMAGENET_LABELS_URL configuration
-    # - URL to download ImageNet class labels
-    # - Default to a reliable source (see resources in project docs)
-    # - Type: str
-    # Example: 'https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt'
-    IMAGENET_LABELS_URL: str = None  # REPLACE THIS LINE
+        # Model settings
+        self.model_name = os.getenv("MODEL_NAME", self.model_name).lower()
+        self.model_device = os.getenv("MODEL_DEVICE", self.model_device).lower()
+        self.batch_size = int(os.getenv("BATCH_SIZE", self.batch_size))
 
-    # =========================================================================
-    # Helper Methods
-    # =========================================================================
+        # API settings
+        self.max_file_size = int(os.getenv("MAX_FILE_SIZE", self.max_file_size))
+        self.request_timeout = int(os.getenv("REQUEST_TIMEOUT", self.request_timeout))
+        self.max_concurrent_requests = int(os.getenv("MAX_CONCURRENT_REQUESTS", self.max_concurrent_requests))
 
-    def __init__(self):
-        """
-        Initialize configuration.
+        # Logging settings
+        self.log_level = os.getenv("LOG_LEVEL", self.log_level).upper()
+        self.log_format = os.getenv("LOG_FORMAT", self.log_format).lower()
 
-        TODO: Implement initialization logic
-        - Call load_dotenv() to load .env file
-        - Optionally validate configuration values
-        - Log configuration (excluding sensitive values)
-        """
-        # TODO: Load environment variables from .env file
-        pass
+        # Performance settings
+        self.enable_caching = os.getenv("ENABLE_CACHING", "true").lower() == "true"
+        self.cache_ttl = int(os.getenv("CACHE_TTL", self.cache_ttl))
 
-    @classmethod
-    def validate(cls) -> bool:
-        """
-        Validate configuration values.
+    def _validate(self):
+        """Validate settings"""
+        # Validate model name
+        valid_models = ["resnet50", "mobilenet_v2"]
+        if self.model_name not in valid_models:
+            raise ValueError(f"Invalid model_name: {self.model_name}. Must be one of {valid_models}")
 
-        TODO: Implement validation logic
-        - Check MODEL_NAME is valid ('resnet50' or 'mobilenet_v2')
-        - Check PORT is in valid range (1024-65535 for non-root)
-        - Check LOG_LEVEL is valid
-        - Check numeric values are positive
-        - Return True if valid, raise ValueError if not
+        # Validate device
+        valid_devices = ["cpu", "cuda"]
+        if self.model_device not in valid_devices:
+            raise ValueError(f"Invalid model_device: {self.model_device}. Must be one of {valid_devices}")
 
-        Returns:
-            True if all configuration is valid
+        # Validate log level
+        valid_log_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        if self.log_level not in valid_log_levels:
+            raise ValueError(f"Invalid log_level: {self.log_level}. Must be one of {valid_log_levels}")
 
-        Raises:
-            ValueError: If any configuration value is invalid
+        # Validate port
+        if not (1 <= self.port <= 65535):
+            raise ValueError(f"Invalid port: {self.port}. Must be between 1 and 65535")
 
-        Example:
-            >>> config = Config()
-            >>> config.validate()
-            True
-        """
-        # TODO: Implement validation
-        # Example validation:
-        # if cls.MODEL_NAME not in ['resnet50', 'mobilenet_v2']:
-        #     raise ValueError(f"Invalid MODEL_NAME: {cls.MODEL_NAME}")
-        pass
+        # Validate batch size
+        if self.batch_size < 1:
+            raise ValueError(f"Invalid batch_size: {self.batch_size}. Must be >= 1")
 
-    @classmethod
-    def to_dict(cls) -> dict:
-        """
-        Convert configuration to dictionary.
+        # Validate workers
+        if self.workers < 1:
+            raise ValueError(f"Invalid workers: {self.workers}. Must be >= 1")
 
-        TODO: Implement conversion to dict
-        - Return all configuration values as a dictionary
-        - Useful for logging and debugging
-        - Exclude sensitive values if any (API keys, secrets, etc.)
-
-        Returns:
-            Dictionary of configuration values
-
-        Example:
-            >>> config = Config()
-            >>> config_dict = config.to_dict()
-            >>> print(config_dict['MODEL_NAME'])
-            'resnet50'
-        """
-        # TODO: Implement conversion
-        # HINT: Use {k: v for k, v in vars(cls).items() if not k.startswith('_')}
-        pass
-
-    def __repr__(self) -> str:
-        """
-        String representation of configuration.
-
-        TODO: Implement __repr__
-        - Return a readable string showing key configuration values
-        - Don't include all values (too verbose)
-        - Include: MODEL_NAME, PORT, LOG_LEVEL
-
-        Example:
-            >>> config = Config()
-            >>> print(config)
-            Config(MODEL_NAME='resnet50', PORT=5000, LOG_LEVEL='INFO')
-        """
-        # TODO: Implement __repr__
-        pass
+    def to_dict(self) -> dict:
+        """Convert settings to dictionary"""
+        return {
+            "host": self.host,
+            "port": self.port,
+            "debug": self.debug,
+            "workers": self.workers,
+            "model_name": self.model_name,
+            "model_device": self.model_device,
+            "batch_size": self.batch_size,
+            "max_file_size": self.max_file_size,
+            "allowed_extensions": self.allowed_extensions,
+            "request_timeout": self.request_timeout,
+            "max_concurrent_requests": self.max_concurrent_requests,
+            "log_level": self.log_level,
+            "log_format": self.log_format,
+            "enable_caching": self.enable_caching,
+            "cache_ttl": self.cache_ttl,
+        }
 
 
-# =========================================================================
-# Helper Functions
-# =========================================================================
-
-def get_env_bool(key: str, default: bool = False) -> bool:
-    """
-    Get boolean value from environment variable.
-
-    TODO: Implement boolean conversion
-    - Get environment variable value
-    - Convert to boolean
-    - Return default if not set
-    - Consider 'true', '1', 'yes', 'on' as True (case-insensitive)
-    - All other values as False
-
-    Args:
-        key: Environment variable name
-        default: Default value if variable not set
-
-    Returns:
-        Boolean value
-
-    Example:
-        >>> os.environ['DEBUG'] = 'true'
-        >>> get_env_bool('DEBUG', False)
-        True
-        >>> get_env_bool('NONEXISTENT', False)
-        False
-    """
-    # TODO: Implement boolean conversion
-    # HINT: value = os.getenv(key, '').lower()
-    #       return value in ('true', '1', 'yes', 'on')
-    pass
+# Global settings instance
+settings = Settings()
 
 
-def get_env_int(key: str, default: int) -> int:
-    """
-    Get integer value from environment variable.
-
-    TODO: Implement integer conversion
-    - Get environment variable value
-    - Convert to integer
-    - Return default if not set or invalid
-    - Handle ValueError for non-numeric values
-
-    Args:
-        key: Environment variable name
-        default: Default value if variable not set or invalid
-
-    Returns:
-        Integer value
-
-    Example:
-        >>> os.environ['PORT'] = '8080'
-        >>> get_env_int('PORT', 5000)
-        8080
-        >>> get_env_int('NONEXISTENT', 5000)
-        5000
-    """
-    # TODO: Implement integer conversion
-    # HINT: Use try/except to handle ValueError
-    pass
-
-
-# =========================================================================
-# Module-level Configuration Instance
-# =========================================================================
-
-# TODO: Create a global configuration instance
-# - Uncomment the line below after implementing Config class
-# - This allows importing as: from config import config
-# config = Config()
-
-
-# =========================================================================
-# Usage Example (for testing during development)
-# =========================================================================
-
-if __name__ == "__main__":
-    """
-    Test configuration loading.
-
-    Run this file directly to test your implementation:
-    $ python config.py
-    """
-    # TODO: Test your implementation
-    # Example:
-    # config = Config()
-    # print(f"Model: {config.MODEL_NAME}")
-    # print(f"Port: {config.PORT}")
-    # print(f"Debug: {config.DEBUG}")
-    # print(f"Configuration: {config}")
-    # config.validate()
-    # print("Configuration is valid!")
-    pass
+def get_settings() -> Settings:
+    """Get application settings instance"""
+    return settings

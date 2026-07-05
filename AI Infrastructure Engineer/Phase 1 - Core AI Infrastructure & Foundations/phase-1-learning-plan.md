@@ -39,18 +39,21 @@ Begin by mastering the foundation. Work through these structured module director
 
 ---
 
-## 2. Hands-on Projects
+## 2. Hands-on Projects & Learning Strategy
 
-Put your knowledge to work by building fully containerized, observed, and automated ML systems:
+Putting theory into practice is the core of this curriculum. Instead of trying to build all projects at the end, you should build them **iteratively** as you progress through the modules.
 
-| Project | Description | Target Technologies | Path |
+### Project Progression Matrix
+
+Below is the recommended sequence, showing exactly which lesson modules prepare you for each project:
+
+| Project | Target Technologies | Prep Modules | Path |
 | :--- | :--- | :--- | :--- |
-| **Project 01** | Simple Model API Deployment | Flask/FastAPI, Docker, AWS/GCP | [project-01-simple-model-api](projects/project-01-simple-model-api/) |
-| **Project 02** | Kubernetes Model Serving | Kubernetes, Helm, Prometheus | [project-02-kubernetes-serving](projects/project-02-kubernetes-serving/) |
-| **Project 03** | ML Pipeline with Experiment Tracking | MLflow, Airflow, DVC | [project-03-ml-pipeline-tracking](projects/project-03-ml-pipeline-tracking/) |
-| **Project 04** | Monitoring & Alerting System | Prometheus, Grafana, ELK Stack | [project-04-monitoring-alerting](projects/project-04-monitoring-alerting/) |
-| **Project 05** | Production-Ready ML System (Capstone) | All above + GitHub Actions CI/CD | [project-05-production-ml-capstone](projects/project-05-production-ml-capstone/) |
-
+| **Project 01**<br>Simple Model API | FastAPI, Flask, Docker, AWS/GCP | **Mod 01** (Python), **Mod 05** (Docker), **Mod 07** (REST APIs) | [project-01-simple-model-api](projects/project-01-simple-model-api/) |
+| **Project 02**<br>Kubernetes Serving | Kubernetes, Helm, Prometheus | **Mod 02** (Linux), **Mod 06** (Kubernetes) | [project-02-kubernetes-serving](projects/project-02-kubernetes-serving/) |
+| **Project 03**<br>ML Pipeline & DVC | MLflow, Airflow, DVC | **Mod 03** (Git), **Mod 04** (ML Basics), **Mod 08** (Databases) | [project-03-ml-pipeline-tracking](projects/project-03-ml-pipeline-tracking/) |
+| **Project 04**<br>Observability & Monitoring | Prometheus, Grafana, ELK Stack | **Mod 09** (System Monitoring & Logging) | [project-04-monitoring-alerting](projects/project-04-monitoring-alerting/) |
+| **Project 05**<br>Capstone Production ML | All above + GitHub Actions & Terraform | **Mod 10** (Cloud Platforms) + All Prior Modules | [project-05-production-ml-capstone](projects/project-05-production-ml-capstone/) |
 ---
 
 ## 3. Assessments & Evaluation

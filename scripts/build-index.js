@@ -3,6 +3,24 @@ const path = require('path');
 
 const IGNORED_DIRS = ['.git', '.github', 'node_modules', 'scripts'];
 
+const ALLOWED_EXTENSIONS = ['.md', '.py', '.js', '.json', '.yaml', '.yml', '.sh', '.txt', '.toml', '.ini', '.cfg', '.env', '.example'];
+const ALLOWED_EXACT_NAMES = ['Dockerfile'];
+
+function shouldIncludeFile(file) {
+    const lower = file.toLowerCase();
+    if (ALLOWED_EXACT_NAMES.some(name => lower === name.toLowerCase())) {
+        return true;
+    }
+    const ext = path.extname(lower);
+    if (ALLOWED_EXTENSIONS.includes(ext)) {
+        return true;
+    }
+    if (lower.endsWith('dockerfile')) {
+        return true;
+    }
+    return false;
+}
+
 function extractTitle(filePath) {
     try {
         const content = fs.readFileSync(filePath, 'utf8');
@@ -57,12 +75,17 @@ function scanDir(dirPath, relativeRoot = '') {
                     children: subItems
                 });
             }
-        } else if (file.endsWith('.md')) {
-            // Skip root level README.md to keep the sidebar clean
-            if (!relativeRoot && file.toLowerCase() === 'readme.md') {
+        } else if (shouldIncludeFile(file)) {
+            // Skip root level files to keep the index clean
+            if (!relativeRoot) {
                 continue;
             }
-            const title = extractTitle(fullPath);
+            let title;
+            if (file.endsWith('.md')) {
+                title = extractTitle(fullPath);
+            } else {
+                title = file;
+            }
             items.push({
                 name: title,
                 type: 'file',

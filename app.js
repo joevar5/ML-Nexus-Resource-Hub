@@ -1,3 +1,4 @@
+const WORKSPACE_PATH = '/Users/joelvarghese/.gemini/antigravity/scratch/ML-Nexus-Resource-Hub';
 let filesTree = [];
 let flattenedFiles = [];
 let currentFilePath = '';
@@ -1493,6 +1494,60 @@ function makeQuizInteractive() {
 
 
 
+function getLanguageFromExtension(filePath) {
+    const lower = filePath.toLowerCase();
+    if (lower.endsWith('dockerfile')) return 'docker';
+    
+    const ext = filePath.substring(filePath.lastIndexOf('.')).toLowerCase();
+    switch (ext) {
+        case '.py': return 'python';
+        case '.js': return 'javascript';
+        case '.json': return 'json';
+        case '.yaml':
+        case '.yml': return 'yaml';
+        case '.sh': return 'bash';
+        case '.toml': return 'toml';
+        case '.ini':
+        case '.cfg': return 'ini';
+        case '.env':
+        case '.example': return 'properties';
+        case '.md': return 'markdown';
+        case '.txt': return 'text';
+        default: return 'text';
+    }
+}
+
+function getIconForFile(filePath) {
+    const lower = filePath.toLowerCase();
+    if (lower.endsWith('dockerfile')) return 'deployed_code';
+    
+    const ext = filePath.substring(filePath.lastIndexOf('.')).toLowerCase();
+    switch (ext) {
+        case '.py': return 'terminal';
+        case '.js': return 'code';
+        case '.json': return 'data_object';
+        case '.yaml':
+        case '.yml': return 'schema';
+        case '.sh': return 'terminal';
+        case '.toml': return 'tune';
+        case '.ini':
+        case '.cfg': return 'settings';
+        case '.env':
+        case '.example': return 'key';
+        case '.md': return 'description';
+        default: return 'description';
+    }
+}
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 async function loadFile(filePath) {
 
     currentFilePath = filePath;
@@ -1543,10 +1598,19 @@ async function loadFile(filePath) {
         const pathClosure = accumulatedPath;
 
         const span = document.createElement('span');
-        const cleanPart = part.endsWith('.md') ? part.substring(0, part.length - 3) : part;
+        const isLast = index === parts.length - 1;
+        let cleanPart = part;
+        if (isLast) {
+            const lastDot = part.lastIndexOf('.');
+            if (lastDot !== -1) {
+                cleanPart = part.substring(0, lastDot);
+            }
+        } else {
+            cleanPart = part.endsWith('.md') ? part.substring(0, part.length - 3) : part;
+        }
         span.innerText = cleanPart.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
-        if (index === parts.length - 1) {
+        if (isLast) {
             span.className = 'text-on-surface font-semibold';
         } else {
             span.className = 'cursor-pointer hover:text-primary transition-colors';
@@ -1560,84 +1624,156 @@ async function loadFile(filePath) {
     try {
         const response = await fetch(filePath);
         if (!response.ok) throw new Error('File not found');
-        let markdown = await response.text();
+        let fileContent = await response.text();
 
-        markdown = parseAlertBlocks(markdown);
-
-        // Protect LaTeX math blocks from being mangled by the markdown parser.
-        // marked.parse() strips/corrupts backslashes (\begin, \boxed, \downarrow, etc.),
-        // so we extract math blocks first, replace with unique placeholders, parse the
-        // markdown, then restore the original LaTeX for KaTeX to render correctly.
-        const mathPlaceholders = [];
-        // Match display math ($$...$$) first, then inline math ($...$)
-        markdown = markdown.replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
-            const id = `%%MATH_BLOCK_${mathPlaceholders.length}%%`;
-            mathPlaceholders.push(match);
-            return id;
-        });
-        markdown = markdown.replace(/(?<!\$)\$(?!\$)(.+?)\$(?!\$)/g, (match) => {
-            const id = `%%MATH_BLOCK_${mathPlaceholders.length}%%`;
-            mathPlaceholders.push(match);
-            return id;
-        });
-
+        const isMarkdown = filePath.toLowerCase().endsWith('.md');
         const markdownContentDiv = document.getElementById('markdown-content');
-        let parsedHtml = marked.parse(markdown);
 
-        // Restore the original LaTeX blocks from placeholders
-        mathPlaceholders.forEach((original, index) => {
-            parsedHtml = parsedHtml.replace(`%%MATH_BLOCK_${index}%%`, original);
-        });
+        if (isMarkdown) {
+            let markdown = fileContent;
+            markdown = parseAlertBlocks(markdown);
 
-        markdownContentDiv.innerHTML = parsedHtml;
+            // Protect LaTeX math blocks from being mangled by the markdown parser.
+            // marked.parse() strips/corrupts backslashes (\begin, \boxed, \downarrow, etc.),
+            // so we extract math blocks first, replace with unique placeholders, parse the
+            // markdown, then restore the original LaTeX for KaTeX to render correctly.
+            const mathPlaceholders = [];
+            // Match display math ($$...$$) first, then inline math ($...$)
+            markdown = markdown.replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
+                const id = `%%MATH_BLOCK_${mathPlaceholders.length}%%`;
+                mathPlaceholders.push(match);
+                return id;
+            });
+            markdown = markdown.replace(/(?<!\$)\$(?!\$)(.+?)\$(?!\$)/g, (match) => {
+                const id = `%%MATH_BLOCK_${mathPlaceholders.length}%%`;
+                mathPlaceholders.push(match);
+                return id;
+            });
 
-        // Convert mermaid code blocks into renderable <pre class="mermaid"> elements
-        // marked outputs: <pre><code class="language-mermaid">...diagram code...</code></pre>
-        // mermaid needs: <pre class="mermaid">...diagram code...</pre>
-        markdownContentDiv.querySelectorAll('pre > code.language-mermaid').forEach(codeEl => {
-            const pre = codeEl.parentElement;
-            const diagramSource = codeEl.textContent;
-            const mermaidPre = document.createElement('pre');
-            mermaidPre.className = 'mermaid';
-            mermaidPre.textContent = diagramSource;
-            pre.replaceWith(mermaidPre);
-        });
+            let parsedHtml = marked.parse(markdown);
 
-        Prism.highlightAllUnder(markdownContentDiv);
+            // Restore the original LaTeX blocks from placeholders
+            mathPlaceholders.forEach((original, index) => {
+                parsedHtml = parsedHtml.replace(`%%MATH_BLOCK_${index}%%`, original);
+            });
 
-        // Render Mermaid Diagrams
-        const mermaidNodes = markdownContentDiv.querySelectorAll('pre.mermaid');
-        if (window.mermaid && mermaidNodes.length > 0) {
-            mermaid.run({ nodes: mermaidNodes })
-                .catch(err => console.error('Mermaid rendering error:', err));
+            markdownContentDiv.innerHTML = parsedHtml;
+
+            // Convert mermaid code blocks into renderable <pre class="mermaid"> elements
+            // marked outputs: <pre><code class="language-mermaid">...diagram code...</code></pre>
+            // mermaid needs: <pre class="mermaid">...diagram code...</pre>
+            markdownContentDiv.querySelectorAll('pre > code.language-mermaid').forEach(codeEl => {
+                const pre = codeEl.parentElement;
+                const diagramSource = codeEl.textContent;
+                const mermaidPre = document.createElement('pre');
+                mermaidPre.className = 'mermaid';
+                mermaidPre.textContent = diagramSource;
+                pre.replaceWith(mermaidPre);
+            });
+
+            Prism.highlightAllUnder(markdownContentDiv);
+
+            // Render Mermaid Diagrams
+            const mermaidNodes = markdownContentDiv.querySelectorAll('pre.mermaid');
+            if (window.mermaid && mermaidNodes.length > 0) {
+                mermaid.run({ nodes: mermaidNodes })
+                    .catch(err => console.error('Mermaid rendering error:', err));
+            }
+
+            addCopyButtons();
+            fixRelativeImages();
+
+            // Wait for mermaid to finish rendering, then init lightbox
+            setTimeout(() => { initZoomLightbox(); }, 500);
+
+            // Math LaTeX Auto-Render
+            renderMathInElement(markdownContentDiv, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '$', right: '$', display: false },
+                    { left: '\\(', right: '\\)', display: false },
+                    { left: '\\[', right: '\\]', display: true }
+                ],
+                throwOnError: false
+            });
+
+            buildTOC();
+            makeQuizInteractive();
+        } else {
+            // Render as code sandbox view
+            const fileName = filePath.split('/').pop();
+            const lang = getLanguageFromExtension(filePath);
+            const icon = getIconForFile(filePath);
+            const escapedCode = escapeHtml(fileContent);
+
+            const sandboxHtml = `
+                <div class="code-sandbox-viewer bg-surface-container-low border border-outline-variant rounded-xl overflow-hidden shadow-lg my-6">
+                    <div class="flex items-center justify-between px-4 py-3 bg-surface-container-high border-b border-outline-variant/60 select-none">
+                        <div class="flex items-center gap-3">
+                            <div class="flex gap-1.5">
+                                <span class="w-3 h-3 rounded-full bg-[#ff5f56]"></span>
+                                <span class="w-3 h-3 rounded-full bg-[#ffbd2e]"></span>
+                                <span class="w-3 h-3 rounded-full bg-[#27c93f]"></span>
+                            </div>
+                            <div class="w-[1px] h-4 bg-outline-variant/60 mx-1"></div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-base text-primary/70">${icon}</span>
+                                <span class="font-label text-sm font-semibold text-on-surface">${fileName}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-0.5 text-[10px] font-bold font-label uppercase tracking-wider rounded bg-primary/10 text-primary border border-primary/20">${lang}</span>
+                            <button class="sandbox-copy-btn flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold font-label bg-surface-container hover:bg-primary hover:text-white border border-outline-variant text-on-surface-variant rounded-md transition-all">
+                                <span class="material-symbols-outlined text-xs">content_copy</span>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="relative max-h-[75vh] overflow-auto">
+                        <pre class="line-numbers !m-0 !bg-transparent font-mono text-sm leading-relaxed"><code class="language-${lang}">${escapedCode}</code></pre>
+                    </div>
+                </div>
+            `;
+            markdownContentDiv.innerHTML = sandboxHtml;
+            
+            // Attach event listener for the copy button
+            const copyBtn = markdownContentDiv.querySelector('.sandbox-copy-btn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(fileContent).then(() => {
+                        const iconSpan = copyBtn.querySelector('.material-symbols-outlined');
+                        const textSpan = copyBtn.querySelector('span:not(.material-symbols-outlined)');
+                        
+                        iconSpan.innerText = 'check';
+                        textSpan.innerText = 'Copied!';
+                        copyBtn.classList.add('bg-success', 'text-white', 'border-success');
+                        
+                        setTimeout(() => {
+                            iconSpan.innerText = 'content_copy';
+                            textSpan.innerText = 'Copy';
+                            copyBtn.classList.remove('bg-success', 'text-white', 'border-success');
+                        }, 2000);
+                    });
+                });
+            }
+
+
+
+            // Highlight the code block
+            Prism.highlightAllUnder(markdownContentDiv);
+
+            // Empty TOC for code files
+            const tocNav = document.getElementById('toc-nav');
+            if (tocNav) tocNav.innerHTML = '';
         }
 
-        addCopyButtons();
-        fixRelativeImages();
-
-        // Wait for mermaid to finish rendering, then init lightbox
-        setTimeout(() => { initZoomLightbox(); }, 500);
-
-        // Math LaTeX Auto-Render
-        renderMathInElement(markdownContentDiv, {
-            delimiters: [
-                { left: '$$', right: '$$', display: true },
-                { left: '$', right: '$', display: false },
-                { left: '\\(', right: '\\)', display: false },
-                { left: '\\[', right: '\\]', display: true }
-            ],
-            throwOnError: false
-        });
-
-        buildTOC();
-        makeQuizInteractive();
         updateReaderDoneBtn();
 
         document.getElementById('reader-view').style.display = 'grid';
         window.scrollTo({ top: 0 });
         document.getElementById('progress-bar').style.width = '0%';
     } catch (err) {
-        console.error(`Error loading markdown file ${filePath}:`, err);
+        console.error(`Error loading file ${filePath}:`, err);
         document.getElementById('error-view').style.display = 'flex';
     }
 }

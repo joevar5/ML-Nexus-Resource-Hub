@@ -1044,9 +1044,45 @@
                 "type": "directory",
                 "children": [
                   {
+                    "name": "docker",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "docker-compose.yml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/docker/docker-compose.yml"
+                      },
+                      {
+                        "name": "Dockerfile",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/docker/Dockerfile"
+                      }
+                    ]
+                  },
+                  {
                     "name": "src",
                     "type": "directory",
                     "children": [
+                      {
+                        "name": "app.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/src/app.py"
+                      },
+                      {
+                        "name": "config.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/src/config.py"
+                      },
+                      {
+                        "name": "model_loader.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/src/model_loader.py"
+                      },
+                      {
+                        "name": "requirement.txt",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/src/requirement.txt"
+                      },
                       {
                         "name": "Source Code Implementation Guide",
                         "type": "file",
@@ -1055,19 +1091,40 @@
                     ]
                   },
                   {
+                    "name": "tests",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "test_app.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/tests/test_app.py"
+                      },
+                      {
+                        "name": "test_model.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/tests/test_model.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": ".env.example",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/.env.example"
+                  },
+                  {
                     "name": "Project 01: Detailed Requirements Specification",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/requirements.md"
                   },
                   {
+                    "name": "Project 01: High Level System Architecture",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/architecture.md"
+                  },
+                  {
                     "name": "Project 01: Simple Model API Deployment",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/README.md"
-                  },
-                  {
-                    "name": "Project 01: System Architecture",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/architecture.md"
                   }
                 ]
               },
@@ -1075,6 +1132,17 @@
                 "name": "project-02-kubernetes-serving",
                 "type": "directory",
                 "children": [
+                  {
+                    "name": "grafana",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "model-api-dashboard.json",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/grafana/model-api-dashboard.json"
+                      }
+                    ]
+                  },
                   {
                     "name": "helm",
                     "type": "directory",
@@ -1084,11 +1152,98 @@
                         "type": "directory",
                         "children": [
                           {
+                            "name": "templates",
+                            "type": "directory",
+                            "children": [
+                              {
+                                "name": "configmap.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/templates/configmap.yaml"
+                              },
+                              {
+                                "name": "deployment.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/templates/deployment.yaml"
+                              },
+                              {
+                                "name": "hpa.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/templates/hpa.yaml"
+                              },
+                              {
+                                "name": "ingress.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/templates/ingress.yaml"
+                              },
+                              {
+                                "name": "service.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/templates/service.yaml"
+                              },
+                              {
+                                "name": "serviceaccount.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/templates/serviceaccount.yaml"
+                              },
+                              {
+                                "name": "servicemonitor.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/templates/servicemonitor.yaml"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "Chart.yaml",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/Chart.yaml"
+                          },
+                          {
                             "name": "model-api Helm Chart",
                             "type": "file",
                             "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/README.md"
+                          },
+                          {
+                            "name": "values.yaml",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/helm/model-api/values.yaml"
                           }
                         ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "kubernetes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "configmap.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/kubernetes/configmap.yaml"
+                      },
+                      {
+                        "name": "deployment.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/kubernetes/deployment.yaml"
+                      },
+                      {
+                        "name": "hpa.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/kubernetes/hpa.yaml"
+                      },
+                      {
+                        "name": "ingress.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/kubernetes/ingress.yaml"
+                      },
+                      {
+                        "name": "secrets.yaml.example",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/kubernetes/secrets.yaml.example"
+                      },
+                      {
+                        "name": "service.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/kubernetes/service.yaml"
                       }
                     ]
                   },
@@ -1100,8 +1255,51 @@
                         "name": "Load Testing — Project 02",
                         "type": "file",
                         "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/loadtest/README.md"
+                      },
+                      {
+                        "name": "locustfile.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/loadtest/locustfile.py"
                       }
                     ]
+                  },
+                  {
+                    "name": "monitoring",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "servicemonitor.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/monitoring/servicemonitor.yaml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "src",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "app.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/src/app.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tests",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "test_k8s.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/tests/test_k8s.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": ".env.example",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/.env.example"
                   },
                   {
                     "name": "Project 02: Architecture Documentation",
@@ -1125,20 +1323,115 @@
                 "type": "directory",
                 "children": [
                   {
+                    "name": "dags",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "ml_pipeline_dag.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/dags/ml_pipeline_dag.py"
+                      },
+                      {
+                        "name": "retraining_dag.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/dags/retraining_dag.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "dvc",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "dvc.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/dvc/dvc.yaml"
+                      },
+                      {
+                        "name": "params.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/dvc/params.yaml"
+                      }
+                    ]
+                  },
+                  {
                     "name": "great_expectations",
                     "type": "directory",
                     "children": [
                       {
+                        "name": "expectations",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "training_data_suite.json",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/great_expectations/expectations/training_data_suite.json"
+                          }
+                        ]
+                      },
+                      {
                         "name": "Great Expectations Configuration — Project 03",
                         "type": "file",
                         "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/great_expectations/README.md"
+                      },
+                      {
+                        "name": "great_expectations.yml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/great_expectations/great_expectations.yml"
                       }
                     ]
+                  },
+                  {
+                    "name": "src",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "data_ingestion.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/src/data_ingestion.py"
+                      },
+                      {
+                        "name": "evaluation.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/src/evaluation.py"
+                      },
+                      {
+                        "name": "preprocessing.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/src/preprocessing.py"
+                      },
+                      {
+                        "name": "training.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/src/training.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tests",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "test_pipeline.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/tests/test_pipeline.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": ".env.example",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/.env.example"
                   },
                   {
                     "name": "Architecture: ML Pipeline with Experiment Tracking",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/architecture.md"
+                  },
+                  {
+                    "name": "docker-compose.yml",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/docker-compose.yml"
                   },
                   {
                     "name": "Project 03: ML Pipeline with Experiment Tracking",
@@ -1156,6 +1449,65 @@
                 "name": "project-04-monitoring-alerting",
                 "type": "directory",
                 "children": [
+                  {
+                    "name": "alertmanager",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "alertmanager.yml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/alertmanager/alertmanager.yml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "grafana",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "dashboards",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "ml-drift.json",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/grafana/dashboards/ml-drift.json"
+                          },
+                          {
+                            "name": "ml-overview.json",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/grafana/dashboards/ml-overview.json"
+                          },
+                          {
+                            "name": "sli-slo.json",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/grafana/dashboards/sli-slo.json"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "datasources.yml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/grafana/datasources.yml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "prometheus",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "alerts.yml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/prometheus/alerts.yml"
+                      },
+                      {
+                        "name": "prometheus.yml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/prometheus/prometheus.yml"
+                      }
+                    ]
+                  },
                   {
                     "name": "runbooks",
                     "type": "directory",
@@ -1193,9 +1545,46 @@
                     ]
                   },
                   {
+                    "name": "src",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "custom_metrics.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/src/custom_metrics.py"
+                      },
+                      {
+                        "name": "instrumentation.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/src/instrumentation.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tests",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "test_metrics.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/tests/test_metrics.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": ".env.example",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/.env.example"
+                  },
+                  {
                     "name": "Architecture: Monitoring & Alerting System",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/architecture.md"
+                  },
+                  {
+                    "name": "docker-compose.yml",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/docker-compose.yml"
                   },
                   {
                     "name": "Project 04: Monitoring & Alerting System",
@@ -1230,6 +1619,100 @@
                     ]
                   },
                   {
+                    "name": "kubernetes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "base",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "kustomization.yaml",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/kubernetes/base/kustomization.yaml"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "overlays",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "dev",
+                            "type": "directory",
+                            "children": [
+                              {
+                                "name": "kustomization.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/kubernetes/overlays/dev/kustomization.yaml"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "production",
+                            "type": "directory",
+                            "children": [
+                              {
+                                "name": "kustomization.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/kubernetes/overlays/production/kustomization.yaml"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "staging",
+                            "type": "directory",
+                            "children": [
+                              {
+                                "name": "kustomization.yaml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/kubernetes/overlays/staging/kustomization.yaml"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "monitoring",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "slos.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/monitoring/slos.yaml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "security",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "cert-manager.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/security/cert-manager.yaml"
+                      },
+                      {
+                        "name": "vault-config.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/security/vault-config.yaml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "src",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "main.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/src/main.py"
+                      }
+                    ]
+                  },
+                  {
                     "name": "terraform",
                     "type": "directory",
                     "children": [
@@ -1241,15 +1724,42 @@
                     ]
                   },
                   {
+                    "name": "tests",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "integration",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "test_e2e.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/tests/integration/test_e2e.py"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
                     "name": "velero",
                     "type": "directory",
                     "children": [
+                      {
+                        "name": "values.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/velero/values.yaml"
+                      },
                       {
                         "name": "Velero — Cluster Backup & Restore",
                         "type": "file",
                         "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/velero/README.md"
                       }
                     ]
+                  },
+                  {
+                    "name": ".env.example",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/.env.example"
                   },
                   {
                     "name": "Architecture Documentation: Production ML System",
@@ -1419,6 +1929,16 @@
             "name": "RecommedX - Intelligent Recommendation Engine",
             "type": "file",
             "path": "ML and GenAI Projects/RecommedX/README.md"
+          },
+          {
+            "name": "recommendation_engine.py",
+            "type": "file",
+            "path": "ML and GenAI Projects/RecommedX/recommendation_engine.py"
+          },
+          {
+            "name": "requirements.txt",
+            "type": "file",
+            "path": "ML and GenAI Projects/RecommedX/requirements.txt"
           }
         ]
       },
