@@ -35,6 +35,19 @@ jobs:
       - name: Compile Resource Index
         run: node scripts/build-index.js
 
+      - name: Prepare Pages Directory
+        run: |
+          rsync -a \
+            --exclude='venv' \
+            --exclude='node_modules' \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='scripts' \
+            --exclude='_site' \
+            --exclude='.pytest_cache' \
+            --exclude='__pycache__' \
+            ./ _site/
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
         with:
@@ -49,7 +62,7 @@ jobs:
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment

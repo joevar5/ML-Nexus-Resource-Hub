@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const IGNORED_DIRS = ['.git', '.github', 'node_modules', 'scripts'];
+const IGNORED_DIRS = ['.git', '.github', 'node_modules', 'scripts', 'venv', '.pytest_cache', '__pycache__'];
 
 const ALLOWED_EXTENSIONS = ['.md', '.py', '.js', '.json', '.yaml', '.yml', '.sh', '.txt', '.toml', '.ini', '.cfg', '.env', '.example'];
 const ALLOWED_EXACT_NAMES = ['Dockerfile'];
