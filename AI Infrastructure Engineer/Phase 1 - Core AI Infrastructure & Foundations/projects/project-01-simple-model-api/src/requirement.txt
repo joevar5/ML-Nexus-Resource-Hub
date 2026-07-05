@@ -6,11 +6,11 @@ werkzeug==3.0.1
 gunicorn==21.2.0
 
 # ML Framework
-torch==2.1.0
-torchvision==0.16.0
+torch>=2.2.0
+torchvision>=0.17.0
 
 # Image Processing
-Pillow==10.1.0
+Pillow>=10.4.0
 
 # Testing
 pytest==7.4.3
