@@ -11,7 +11,7 @@ This directory contains the core application code for the Model API. The code is
 
 1. **`config.py`** - Configuration management and environment variables
 2. **`model_loader.py`** - ML model loading, preprocessing, and inference
-3. **`app.py`** - REST API implementation with Flask/FastAPI
+3. **`app.py`** - REST API implementation with FastAPI
 
 ---
 
@@ -211,28 +211,30 @@ assert all(0 <= p['confidence'] <= 1 for p in predictions)
 
 ### `app.py` - REST API Implementation
 
-**Purpose:** Implement HTTP API endpoints and request handling
+**Purpose:** Implement HTTP API endpoints and request handling using FastAPI
 
 **What to Implement:**
 
 #### 1. Application Setup
 ```python
-# Flask example
-from flask import Flask, request, jsonify
+# FastAPI example
+from fastapi import FastAPI, Request, File, UploadFile, Form, status
+from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
 import logging
 
-app = Flask(__name__)
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Use lifespan context manager to initialize model on startup
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    setup_model()
+    yield
 
-# Initialize model loader
-model_loader = ModelLoader()
-model_loader.load()
+app = FastAPI(title="ML Model Serving API", lifespan=lifespan)
 ```
 
 #### 2. Health Check Endpoint
 ```python
-@app.route('/health', methods=['GET'])
+@app.get('/health')
 def health():
     """
     Health check endpoint.
@@ -240,14 +242,14 @@ def health():
     TODO:
     - Check if model is loaded
     - Return status: "healthy" or "unhealthy"
-    - Include model name
+    - Include model name and loaded status
     - Return 200 if healthy, 503 if not
     """
 ```
 
 #### 3. Info Endpoint
 ```python
-@app.route('/info', methods=['GET'])
+@app.get('/info')
 def info():
     """
     Model information endpoint.
@@ -255,7 +257,6 @@ def info():
     TODO:
     - Get model metadata from model_loader
     - Include API version
-    - Include supported endpoints
     - Include limits (file size, timeout)
     - Return as JSON
     """
@@ -263,99 +264,64 @@ def info():
 
 #### 4. Predict Endpoint
 ```python
-@app.route('/predict', methods=['POST'])
-def predict():
+@app.post('/predict')
+def predict(file: UploadFile = File(...), top_k: int = Form(5)):
     """
     Prediction endpoint.
 
     TODO:
     - Validate request has file
-    - Check Content-Type
     - Validate file size
     - Load image with PIL
-    - Handle image loading errors
     - Call model_loader.predict()
-    - Format response with predictions
-    - Add latency measurement
+    - Format response with predictions and latency
     - Log request with correlation ID
-    - Handle all errors gracefully
     - Return JSON response
     """
 ```
 
 #### 5. Error Handling
 ```python
-@app.errorhandler(400)
-def bad_request(error):
-    """Handle 400 errors."""
+@app.exception_handler(404)
+async def not_found(request: Request, exc: Exception):
+    """Handle 404 errors."""
 
-@app.errorhandler(413)
-def payload_too_large(error):
-    """Handle file too large errors."""
+@app.exception_handler(405)
+async def method_not_allowed(request: Request, exc: Exception):
+    """Handle 405 errors."""
 
-@app.errorhandler(500)
-def internal_error(error):
+@app.exception_handler(Exception)
+async def internal_error(request: Request, exc: Exception):
     """Handle internal server errors."""
 ```
 
 #### 6. Request Validation
 ```python
-def validate_image_file(file) -> Tuple[bool, Optional[str]]:
+def validate_image(file: UploadFile) -> Tuple[bool, str]:
     """
     Validate uploaded image file.
 
     TODO:
     - Check file is not None
-    - Validate file size
-    - Attempt to open with PIL
-    - Verify it's actually an image
+    - Validate file size (via seek/tell)
+    - Verify file extension is allowed
+    - Attempt to open with PIL to verify integrity
     - Return (is_valid, error_message)
     """
 ```
 
-#### 7. Response Formatting
+#### 7. Correlation ID & Latency Timing (Middleware)
 ```python
-def format_success_response(predictions: List[Dict],
-                          latency_ms: float) -> Dict:
-    """Format successful prediction response."""
-
-def format_error_response(error_code: str,
-                         message: str,
-                         correlation_id: str) -> Dict:
-    """Format error response."""
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    """
+    Track processing time, log request/response metrics,
+    and inject unique Correlation ID in headers.
+    """
 ```
 
-#### 8. Correlation ID Generation
-```python
-import uuid
-
-def generate_correlation_id() -> str:
-    """Generate unique correlation ID for request tracking."""
-    return f"req-{uuid.uuid4().hex[:8]}"
-```
-
-**Flask vs FastAPI:**
-
-This guide shows Flask examples, but you can also use FastAPI:
-
-```python
-# FastAPI example
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from typing import List
-
-app = FastAPI()
-
-@app.get("/health")
-async def health():
-    return {"status": "healthy"}
-
-@app.post("/predict")
-async def predict(file: UploadFile = File(...), top_k: int = 5):
-    # Implementation here
-    pass
-```
-
-**Choose one framework and stick with it throughout the project.**
+**Chosen Framework:**
+This project utilizes **FastAPI** as the primary serving framework, which automatically provides interactive OpenAPI documentation (Swagger UI) at `/docs` and automatic request parameter validation.
 
 ---
 

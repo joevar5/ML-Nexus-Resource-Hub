@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-ML Model Serving API
+ML Model Serving API (FastAPI Implementation)
 
-Flask application that serves predictions from a pre-trained image classification model.
+FastAPI application that serves predictions from a pre-trained image classification model.
 
 Usage:
     python app.py
@@ -13,33 +13,28 @@ Usage:
     curl -X POST -F "file=@image.jpg" http://localhost:5000/predict
 """
 
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, Request, File, UploadFile, Form, status, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from contextlib import asynccontextmanager
 from werkzeug.utils import secure_filename
-from werkzeug.exceptions import RequestEntityTooLarge
 from PIL import Image
 import io
 import logging
 import logging.config
 import time
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 import sys
+import uuid
 from pathlib import Path
 
 from config import get_settings
 from model_loader import ModelLoader
 
-
-app = Flask(__name__)
-
-# WHAT: Retrieve the configuration settings for the application.
-# WHY: Decoupling configuration from code keeps settings centralized, customizable via environment variables, and secure (no hardcoded credentials/parameters).
-# HOW: Calling `get_settings()` returns a Config object holding variables like model name, host, port, allowed extensions, and file sizes.
+# Retrieve the configuration settings
 settings = get_settings()
 
 # Configure logging
-# WHAT: Set up root logging configuration for formatting and filtering messages.
-# WHY: Proper logging is critical for production visibility, debugging, and tracing system state and failures under load.
-# HOW: `logging.basicConfig` defines the standard logging format (timestamp, logger name, severity, message) and prints messages with level >= settings.log_level to stdout via `StreamHandler`.
 logging.basicConfig(
     level=getattr(logging, settings.log_level),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -47,87 +42,196 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)
     ]
 )
-
 logger = logging.getLogger(__name__)
 
-# WHAT: Declare a global variable to store the ModelLoader instance.
-# WHY: Machine learning models can be extremely large (hundreds of MBs to GBs). We must load the model weights into memory ONCE during application startup (singleton pattern) rather than on every HTTP request, which would cause severe latency and memory exhaustion.
-# HOW: Initialize `model_loader` to `None` at the module level. It will be populated with a loaded model state in `setup_model()`.
-model_loader: ModelLoader = None
+# Global model loader instance
+model_loader: Optional[ModelLoader] = None
 
 
-def setup_model():
+def setup_model() -> bool:
     """Initialize model loader on startup"""
     global model_loader
 
     logger.info("Starting model initialization...")
     try:
-        # WHAT: Instantiate the helper class that wraps our machine learning model.
-        # WHY: Keeping the PyTorch/DL details separate from Flask makes the code modular, testable, and clean.
-        # HOW: Creates a `ModelLoader` with the specified model architecture and device (CPU or GPU).
         model_loader = ModelLoader(
             model_name=settings.model_name,
             device=settings.model_device
         )
-
-        # WHAT: Run a dummy inference pass through the model.
-        # WHY: PyTorch and neural networks execute initializations, lazy allocations, and memory maps on their first run, causing the first inference request to be extremely slow. "Warming up" the model on startup ensures subsequent user requests experience low latency.
-        # HOW: `model_loader.warmup()` triggers inference with a dummy input (e.g., zeros tensor of correct shape) before accepting real traffic.
         model_loader.warmup()
-
         logger.info("Model initialized successfully")
         return True
-
     except Exception as e:
         logger.error(f"Failed to initialize model: {e}")
         return False
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan context manager for startup and shutdown execution"""
+    logger.info("Starting ML Model API Server...")
+    logger.info(f"Configuration: {settings.to_dict()}")
+
+    if not setup_model():
+        logger.error("Failed to initialize model. Exiting.")
+        sys.exit(1)
+
+    yield
+
+
+app = FastAPI(
+    title="ML Model Serving API",
+    version="1.0.0",
+    lifespan=lifespan
+)
+
+
+# Middleware: Log request/response and measure duration
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    request.state.correlation_id = f"req-{uuid.uuid4().hex[:8]}"
+    start_time = time.time()
+    logger.info(f"Request: {request.method} {request.url.path} [Correlation ID: {request.state.correlation_id}]")
+    
+    response = await call_next(request)
+    
+    duration = time.time() - start_time
+    logger.info(f"Response: {response.status_code} ({duration:.3f}s)")
+    response.headers["X-Correlation-ID"] = request.state.correlation_id
+    return response
+
+
+# Middleware: Enforce maximum upload file size
+@app.middleware("http")
+async def limit_upload_size(request: Request, call_next):
+    if request.method == "POST" and request.url.path == "/predict":
+        content_length = request.headers.get("content-length")
+        if content_length:
+            try:
+                if int(content_length) > settings.max_file_size:
+                    return JSONResponse(
+                        status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                        content={
+                            "success": False,
+                            "status": "error",
+                            "error": {
+                                "code": "FILE_TOO_LARGE",
+                                "message": f"Maximum file size is {settings.max_file_size} bytes"
+                            }
+                        }
+                    )
+            except ValueError:
+                pass
+    return await call_next(request)
+
+
+# Exception Handlers
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = exc.errors()
+    message = errors[0]["msg"] if errors else "Validation error"
+    loc = errors[0]["loc"] if errors else []
+    
+    code = "INVALID_PARAMETER"
+    if "file" in loc:
+        code = "MISSING_FILE"
+        message = "Request must include 'file' field"
+        
+    return JSONResponse(
+        status_code=400,
+        content={
+            "success": False,
+            "status": "error",
+            "error": {
+                "code": code,
+                "message": message
+            }
+        }
+    )
+
+
+@app.exception_handler(404)
+async def not_found_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=404,
+        content={
+            "success": False,
+            "status": "error",
+            "error": {
+                "code": "NOT_FOUND",
+                "message": "The requested URL was not found on the server."
+            }
+        }
+    )
+
+
+@app.exception_handler(405)
+async def method_not_allowed_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=405,
+        content={
+            "success": False,
+            "status": "error",
+            "error": {
+                "code": "METHOD_NOT_ALLOWED",
+                "message": "The method is not allowed for the requested URL."
+            }
+        }
+    )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "status": "error",
+            "error": {
+                "code": "ERROR",
+                "message": exc.detail if isinstance(exc.detail, str) else str(exc.detail)
+            }
+        }
+    )
+
+
+@app.exception_handler(Exception)
+async def custom_500_handler(request: Request, exc: Exception):
+    logger.error(f"Internal error: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={
+            "success": False,
+            "status": "error",
+            "error": {
+                "code": "INTERNAL_SERVER_ERROR",
+                "message": "An unexpected error occurred"
+            }
+        }
+    )
+
+
 def allowed_file(filename: str) -> bool:
-    """
-    Check if file extension is allowed
-
-    Args:
-        filename: Name of the file
-
-    Returns:
-        True if file extension is allowed
-    """
+    """Check if file extension is allowed"""
     return Path(filename).suffix.lower() in settings.allowed_extensions
 
 
-def validate_image(file) -> Tuple[bool, str]:
-    """
-    Validate uploaded image file
-
-    Args:
-        file: Uploaded file object
-
-    Returns:
-        Tuple of (is_valid, error_message)
-    """
-    # Check if file exists
-    if not file:
+def validate_image(file: UploadFile) -> Tuple[bool, str]:
+    """Validate uploaded image file"""
+    if not file or not file.filename:
         return False, "No file provided"
 
-    # Check filename
-    if file.filename == '':
-        return False, "Empty filename"
-
     # Check file extension
-    # WHAT: Check if the file suffix is allowed.
-    # WHY: Prevents users from uploading malicious executable files or scripts.
-    # HOW: Calls allowed_file which matches the file's extension against a whitelist of valid image formats.
     if not allowed_file(file.filename):
         return False, f"Invalid file type. Allowed: {settings.allowed_extensions}"
 
-    # Check file size
-    # WHAT: Programmatically calculate the size of the uploaded file stream.
-    # WHY: Large files consume significant memory and CPU, which can cause out-of-memory crashes or block other users (DoS vulnerability).
-    # HOW: `file.seek(0, 2)` moves the read cursor to the end of the file. `file.tell()` returns the current byte position (the file size). `file.seek(0)` resets the cursor back to the beginning so it can be read later.
-    file.seek(0, 2)  # Seek to end
-    file_size = file.tell()
-    file.seek(0)  # Reset to beginning
+    # Check file size (via seek/tell)
+    try:
+        file.file.seek(0, 2)
+        file_size = file.file.tell()
+        file.file.seek(0)
+    except Exception as e:
+        return False, f"Could not read file size: {e}"
 
     if file_size > settings.max_file_size:
         return False, f"File too large. Max size: {settings.max_file_size} bytes"
@@ -136,261 +240,20 @@ def validate_image(file) -> Tuple[bool, str]:
         return False, "Empty file"
 
     # Try to open as image
-    # WHAT: Verify that the bytes represent a valid, uncorrupted image.
-    # WHY: A file may have a `.jpg` extension but contain arbitrary corrupted bytes that would crash the image library or model during preprocessing.
-    # HOW: PIL's `Image.open` initializes the image representation. `img.verify()` reads and checks the integrity of the file structure without loading all pixel data into memory. We then seek back to 0.
     try:
-        img = Image.open(file)
+        img = Image.open(file.file)
         img.verify()
-        file.seek(0)  # Reset for actual processing
+        file.file.seek(0)
         return True, ""
     except Exception as e:
         return False, f"Invalid image file: {str(e)}"
 
 
-# WHAT: Flask middleware/hook that executes code before each request hits its endpoint route.
-# WHY: Allows logging incoming traffic and starting performance metrics (like latency timing) globally.
-# HOW: Dynamically attaches a `start_time` float property to the request context object, and logs the HTTP method and request path.
-@app.before_request
-def before_request():
-    """Log request information"""
-    request.start_time = time.time()
-    logger.info(f"Request: {request.method} {request.path}")
-
-
-# WHAT: Flask middleware/hook that executes code after the endpoint processes a request but before the response is sent back to the client.
-# WHY: Measures and logs the exact duration of request processing for performance auditing.
-# HOW: Calculates the difference between the current time and the stored `request.start_time`, logs the result along with the HTTP status code, and returns the response.
-@app.after_request
-def after_request(response):
-    """Log response information"""
-    if hasattr(request, 'start_time'):
-        duration = time.time() - request.start_time
-        logger.info(f"Response: {response.status_code} ({duration:.3f}s)")
-    return response
-
-
-# WHAT: Custom exception handlers that catch specific HTTP errors or Python exceptions thrown by the app.
-# WHY: Prevents leaking stack traces to the end user (security hazard) and provides clear, standardized, client-friendly JSON error formats.
-# HOW: Decorated with `@app.errorhandler`. Flask intercepts matching status codes or exceptions and invokes the respective function, returning a JSON response and HTTP status code.
-@app.errorhandler(413)
-@app.errorhandler(RequestEntityTooLarge)
-def handle_file_too_large(e):
-    """Handle file size limit exceeded"""
-    return jsonify({
-        "error": "File too large",
-        "message": f"Maximum file size is {settings.max_file_size} bytes",
-        "status": "error"
-    }), 413
-
-
-@app.errorhandler(400)
-def handle_bad_request(e):
-    """Handle bad request"""
-    return jsonify({
-        "error": "Bad request",
-        "message": str(e),
-        "status": "error"
-    }), 400
-
-
-@app.errorhandler(500)
-def handle_internal_error(e):
-    """Handle internal server error"""
-    logger.error(f"Internal error: {e}")
-    return jsonify({
-        "error": "Internal server error",
-        "message": "An unexpected error occurred",
-        "status": "error"
-    }), 500
-
-
-# WHAT: Liveness and readiness health check endpoint.
-# WHY: Cloud load balancers and orchestrators (like Kubernetes, ECS, or PM2) call health check endpoints regularly to verify if the server is responsive and the model is fully loaded. If it fails, they restart the container or stop routing user traffic to it.
-# HOW: Responds to GET requests. Verifies if `model_loader` is initialized, and returns an appropriate status code (200 OK or 503 Service Unavailable).
-@app.route('/health', methods=['GET'])
-def health() -> Dict[str, Any]:
-    """
-    Health check endpoint
-
-    Returns:
-        JSON with health status
-    """
-    try:
-        # Check if model is loaded
-        if model_loader is None:
-            return jsonify({
-                "status": "unhealthy",
-                "message": "Model not loaded",
-                "timestamp": time.time()
-            }), 503
-
-        # Run a quick inference test
-        return jsonify({
-            "status": "healthy",
-            "model": settings.model_name,
-            "device": settings.model_device,
-            "timestamp": time.time()
-        }), 200
-
-    except Exception as e:
-        logger.error(f"Health check failed: {e}")
-        return jsonify({
-            "status": "unhealthy",
-            "message": str(e),
-            "timestamp": time.time()
-        }), 503
-
-
-@app.route('/info', methods=['GET'])
-def info() -> Dict[str, Any]:
-    """
-    Model information endpoint
-
-    Returns:
-        JSON with model metadata
-    """
-    try:
-        if model_loader is None:
-            return jsonify({
-                "error": "Model not loaded",
-                "status": "error"
-            }), 503
-
-        model_info = model_loader.get_model_info()
-
-        return jsonify({
-            "status": "success",
-            "model": model_info,
-            "config": {
-                "max_file_size": settings.max_file_size,
-                "allowed_extensions": settings.allowed_extensions,
-                "request_timeout": settings.request_timeout
-            }
-        }), 200
-
-    except Exception as e:
-        logger.error(f"Failed to get model info: {e}")
-        return jsonify({
-            "error": "Failed to get model info",
-            "message": str(e),
-            "status": "error"
-        }), 500
-
-
-# WHAT: Primary model inference API endpoint that accepts an image and returns predictions.
-# WHY: Provides the external HTTP interface for client applications to interact with the underlying deep learning model.
-# HOW: Processes a POST request with multipart/form-data. It extracts, validates, processes the image, runs model inference, formats predictions to JSON, and measures inference latency.
-@app.route('/predict', methods=['POST'])
-def predict() -> Dict[str, Any]:
-    """
-    Prediction endpoint
-
-    Accepts image file and returns top-K predictions
-
-    Request:
-        file: Image file (multipart/form-data)
-        top_k: Number of predictions to return (optional, default=5)
-
-    Returns:
-        JSON with predictions
-    """
-    try:
-        # Check if model is loaded
-        if model_loader is None:
-            return jsonify({
-                "error": "Model not loaded",
-                "status": "error"
-            }), 503
-
-        # WHAT: Extract and validate the optional K parameter.
-        # WHY: Clients can specify how many top classes they want to see, but we must cap this number to prevent excessive memory/compute overhead.
-        # HOW: `request.form.get` retrieves values from form data, converts to `int`, and verifies it is within the bounds [1, 10].
-        top_k = request.form.get('top_k', 5, type=int)
-        if not (1 <= top_k <= 10):
-            return jsonify({
-                "error": "Invalid top_k value",
-                "message": "top_k must be between 1 and 10",
-                "status": "error"
-            }), 400
-
-        # Check if file is in request
-        if 'file' not in request.files:
-            return jsonify({
-                "error": "No file provided",
-                "message": "Request must include 'file' field",
-                "status": "error"
-            }), 400
-
-        file = request.files['file']
-
-        # Validate file
-        is_valid, error_msg = validate_image(file)
-        if not is_valid:
-            return jsonify({
-                "error": "Invalid image",
-                "message": error_msg,
-                "status": "error"
-            }), 400
-
-        # WHAT: Load image file bytes into memory and convert to a PIL Image.
-        # WHY: PyTorch / torchvision image transformation pipelines require a standard PIL Image or Tensor as input.
-        # HOW: `file.read()` retrieves raw bytes, `io.BytesIO` wraps them in an in-memory buffer, and `Image.open` loads it. `.convert('RGB')` ensures any transparency channel (alpha) or grayscale is standardized to 3-channel RGB.
-        image_bytes = file.read()
-        image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
-
-        # WHAT: Execute model inference and track latency.
-        # WHY: Monitoring inference time separately from total request latency allows us to distinguish model performance issues from network overhead.
-        # HOW: Captures start/end timestamps around `model_loader.predict()`.
-        start_time = time.time()
-        predictions = model_loader.predict(image, top_k=top_k)
-        inference_time = time.time() - start_time
-
-        # WHAT: Construct the successful response payload.
-        # WHY: Standardized responses with rich metadata (filename, model name, device used, image size, inference time) are crucial for client logging, debugging, and analytics.
-        # HOW: Formats predictions, uses `secure_filename` to sanitize the user-provided filename, and returns the dictionary as a JSON response with status 200.
-        response = {
-            "status": "success",
-            "predictions": predictions,
-            "metadata": {
-                "filename": secure_filename(file.filename),
-                "inference_time": round(inference_time, 3),
-                "model": settings.model_name,
-                "device": settings.model_device,
-                "image_size": image.size
-            }
-        }
-
-        logger.info(f"Prediction successful: {predictions[0]['class']} ({predictions[0]['confidence']:.3f})")
-
-        return jsonify(response), 200
-
-    except ValueError as e:
-        logger.error(f"Validation error: {e}")
-        return jsonify({
-            "error": "Validation error",
-            "message": str(e),
-            "status": "error"
-        }), 400
-
-    except Exception as e:
-        logger.error(f"Prediction failed: {e}")
-        return jsonify({
-            "error": "Prediction failed",
-            "message": str(e),
-            "status": "error"
-        }), 500
-
-
-@app.route('/', methods=['GET'])
+# Endpoints
+@app.get("/")
 def root() -> Dict[str, Any]:
-    """
-    Root endpoint with API documentation
-
-    Returns:
-        JSON with API information
-    """
-    return jsonify({
+    """Root endpoint with API documentation"""
+    return {
         "name": "ML Model Serving API",
         "version": "1.0.0",
         "endpoints": {
@@ -401,38 +264,213 @@ def root() -> Dict[str, Any]:
         },
         "model": settings.model_name,
         "status": "running"
-    }), 200
+    }
 
 
-# Flask configuration
-# WHAT: Restrict the maximum size of incoming client requests.
-# WHY: Flask handles incoming requests by reading data into memory. If there's no limit, an attacker could stream gigabytes of data to exhaust server resources (causing a Denial of Service).
-# HOW: Setting `app.config['MAX_CONTENT_LENGTH']` configures Flask to automatically reject requests larger than settings.max_file_size with a HTTP 413 Payload Too Large error.
-app.config['MAX_CONTENT_LENGTH'] = settings.max_file_size
+@app.get("/health")
+def health() -> Dict[str, Any]:
+    """Health check endpoint"""
+    if model_loader is None:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "status": "unhealthy",
+                "model_loaded": False,
+                "message": "Model not loaded",
+                "timestamp": time.time()
+            }
+        )
+
+    return {
+        "status": "healthy",
+        "model": settings.model_name,
+        "model_name": settings.model_name,
+        "model_loaded": True,
+        "device": settings.model_device,
+        "timestamp": time.time()
+    }
+
+
+@app.get("/info")
+def info() -> Dict[str, Any]:
+    """Model information endpoint"""
+    if model_loader is None:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "error": "Model not loaded",
+                "status": "error"
+            }
+        )
+
+    try:
+        model_info = model_loader.get_model_info()
+        return {
+            "status": "success",
+            "model": model_info,
+            "api": {
+                "version": "1.0.0"
+            },
+            "limits": {
+                "max_file_size_mb": settings.max_file_size / (1024 * 1024),
+                "timeout_seconds": settings.request_timeout
+            },
+            "config": {
+                "max_file_size": settings.max_file_size,
+                "allowed_extensions": settings.allowed_extensions,
+                "request_timeout": settings.request_timeout
+            }
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to get model info: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": "Failed to get model info",
+                "message": str(e),
+                "status": "error"
+            }
+        )
+
+
+@app.post("/predict")
+def predict(
+    request: Request,
+    file: Optional[UploadFile] = File(None),
+    top_k: Optional[str] = Form(None)
+) -> Dict[str, Any]:
+    """
+    Prediction endpoint that accepts an image and returns predictions
+    """
+    if model_loader is None:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "error": "Model not loaded",
+                "status": "error"
+            }
+        )
+
+    # 1. Validate 'file' parameter
+    if file is None or file.filename == '':
+        return JSONResponse(
+            status_code=400,
+            content={
+                "success": False,
+                "status": "error",
+                "error": {
+                    "code": "MISSING_FILE",
+                    "message": "Request must include 'file' field"
+                }
+            }
+        )
+
+    # 2. Parse and Validate 'top_k' parameter
+    parsed_top_k = 5
+    if top_k is not None:
+        try:
+            parsed_top_k = int(top_k)
+            if not (1 <= parsed_top_k <= 10):
+                raise ValueError()
+        except ValueError:
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "success": False,
+                    "status": "error",
+                    "error": {
+                        "code": "INVALID_PARAMETER",
+                        "message": "top_k must be an integer between 1 and 10"
+                    }
+                }
+            )
+
+    # 3. Validate image content
+    is_valid, error_msg = validate_image(file)
+    if not is_valid:
+        code = "INVALID_IMAGE_FORMAT"
+        if "File too large" in error_msg:
+            return JSONResponse(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                content={
+                    "success": False,
+                    "status": "error",
+                    "error": {
+                        "code": "FILE_TOO_LARGE",
+                        "message": error_msg
+                    }
+                }
+            )
+        return JSONResponse(
+            status_code=400,
+            content={
+                "success": False,
+                "status": "error",
+                "error": {
+                    "code": code,
+                    "message": error_msg
+                }
+            }
+        )
+
+    try:
+        # Load image bytes and convert to RGB
+        image_bytes = file.file.read()
+        image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+
+        # Run inference
+        start_time = time.time()
+        predictions = model_loader.predict(image, top_k=parsed_top_k)
+        inference_time = time.time() - start_time
+        latency_ms = round(inference_time * 1000, 3)
+
+        # Retrieve correlation ID from request state
+        correlation_id = getattr(request.state, "correlation_id", "req-unknown")
+
+        response = {
+            "success": True,
+            "status": "success",
+            "predictions": predictions,
+            "latency_ms": latency_ms,
+            "correlation_id": correlation_id,
+            "metadata": {
+                "filename": secure_filename(file.filename),
+                "inference_time": round(inference_time, 3),
+                "model": settings.model_name,
+                "device": settings.model_device,
+                "image_size": image.size
+            }
+        }
+
+        logger.info(f"Prediction successful: {predictions[0]['class']} ({predictions[0]['confidence']:.3f})")
+        return response
+
+    except Exception as e:
+        logger.error(f"Prediction failed: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "status": "error",
+                "error": {
+                    "code": "INTERNAL_SERVER_ERROR",
+                    "message": str(e)
+                }
+            }
+        )
 
 
 def main():
     """Main entry point"""
-    logger.info("Starting ML Model API Server...")
-    logger.info(f"Configuration: {settings.to_dict()}")
-
-    # WHAT: Load the machine learning model weights on startup.
-    # WHY: We must ensure the model load is successful BEFORE starting the web server. If it fails, the server should fail-fast and exit, alerting the infrastructure.
-    # HOW: Calls `setup_model()` and exits with code 1 if it returns False.
-    if not setup_model():
-        logger.error("Failed to initialize model. Exiting.")
-        sys.exit(1)
-
-    # Run Flask app
-    # WHAT: Start the WSGI web server to accept incoming connections.
-    # WHY: This starts the main loop, listening for incoming TCP requests on the host/port.
-    # HOW: `app.run` configures Flask's built-in development server with custom network options. Setting `threaded=True` allows the server to handle concurrent requests in different threads.
-    logger.info(f"Starting Flask server on {settings.host}:{settings.port}")
-    app.run(
+    import uvicorn
+    # Serve the app directly
+    logger.info(f"Starting FastAPI server on {settings.host}:{settings.port}")
+    uvicorn.run(
+        app,
         host=settings.host,
         port=settings.port,
-        debug=settings.debug,
-        threaded=True
+        log_config=None
     )
 
 
