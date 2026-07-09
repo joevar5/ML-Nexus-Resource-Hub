@@ -1091,22 +1091,6 @@
                     ]
                   },
                   {
-                    "name": "tests",
-                    "type": "directory",
-                    "children": [
-                      {
-                        "name": "test_app.py",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/tests/test_app.py"
-                      },
-                      {
-                        "name": "test_model.py",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/tests/test_model.py"
-                      }
-                    ]
-                  },
-                  {
                     "name": ".env.example",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/.env.example"
@@ -1282,6 +1266,16 @@
                         "name": "app.py",
                         "type": "file",
                         "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/src/app.py"
+                      },
+                      {
+                        "name": "model.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/src/model.py"
+                      },
+                      {
+                        "name": "requirements.txt",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/src/requirements.txt"
                       }
                     ]
                   },
@@ -1302,19 +1296,29 @@
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/.env.example"
                   },
                   {
+                    "name": "Dockerfile",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/Dockerfile"
+                  },
+                  {
+                    "name": "Kubernetes Model Serving: Step-by-Step Execution & Hosting Guide",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/how-to-execute-this-solution-and-host-pods.md"
+                  },
+                  {
                     "name": "Project 02: Architecture Documentation",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/architecture.md"
                   },
                   {
-                    "name": "Project 02: Detailed Requirements",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/requirements.md"
-                  },
-                  {
                     "name": "Project 02: Kubernetes Model Serving",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/README.md"
+                  },
+                  {
+                    "name": "Project 02: Kubernetes Serving Requirements",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/requirements.md"
                   }
                 ]
               },

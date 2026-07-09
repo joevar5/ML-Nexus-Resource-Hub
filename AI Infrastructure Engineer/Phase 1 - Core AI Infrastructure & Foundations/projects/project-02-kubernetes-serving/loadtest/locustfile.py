@@ -39,13 +39,12 @@ class ModelAPIUser(HttpUser):
     @task(10)
     def predict(self) -> None:
         payload = {
-            "features": random_features(),
-            "model_version": random.choice(MODEL_VERSIONS),
+            "instances": [random_features()],
         }
         with self.client.post(
-            "/v1/predict",
+            "/predict",
             json=payload,
-            name="POST /v1/predict",
+            name="POST /predict",
             catch_response=True,
         ) as response:
             if response.status_code != 200:
@@ -56,17 +55,15 @@ class ModelAPIUser(HttpUser):
             except ValueError:
                 response.failure("response body was not JSON")
                 return
-            if "prediction" not in body:
-                response.failure("missing 'prediction' in response")
+            if "predictions" not in body:
+                response.failure("missing 'predictions' in response")
 
     @task(2)
     def predict_batch(self) -> None:
         payload = {
-            "items": [
-                {"features": random_features()} for _ in range(8)
-            ]
+            "instances": [random_features() for _ in range(8)]
         }
-        self.client.post("/v1/predict/batch", json=payload, name="POST /v1/predict/batch")
+        self.client.post("/predict", json=payload, name="POST /predict (batch)")
 
     @task(1)
     def health(self) -> None:

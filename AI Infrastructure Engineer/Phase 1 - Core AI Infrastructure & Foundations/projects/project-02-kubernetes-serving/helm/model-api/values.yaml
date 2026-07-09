@@ -21,7 +21,7 @@ serviceAccount:
 service:
   type: ClusterIP
   port: 80
-  targetPort: 8000
+  targetPort: 5000
 
 ingress:
   enabled: true
@@ -54,7 +54,10 @@ autoscaling:
 env:
   LOG_LEVEL: "INFO"
   MODEL_PATH: "/models/current"
-  WORKERS: "4"
+  WORKERS: "1"
+  GUNICORN_CMD_ARGS: "--workers 1 --worker-tmp-dir /tmp"
+  TORCH_HOME: "/tmp/torch"
+  HOME: "/tmp"
 
 envFromSecret: ""   # name of an existing Secret with extra env vars
 
@@ -66,17 +69,17 @@ config:
 
 probes:
   liveness:
-    path: /health
+    path: /health/live
     initialDelaySeconds: 30
     periodSeconds: 10
   readiness:
-    path: /ready
+    path: /health/ready
     initialDelaySeconds: 10
     periodSeconds: 5
 
 podAnnotations:
   prometheus.io/scrape: "true"
-  prometheus.io/port: "8000"
+  prometheus.io/port: "5000"
   prometheus.io/path: "/metrics"
 
 podSecurityContext:

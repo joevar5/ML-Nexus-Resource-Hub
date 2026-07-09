@@ -620,7 +620,7 @@ function renderSidebar(nodes, container, parentPath = '') {
                 renderSidebar(node.children, childrenDiv, currentPath);
             } else {
                 const folderDiv = document.createElement('div');
-                folderDiv.className = 'tree-folder flex items-center justify-between gap-md p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+                folderDiv.className = 'tree-folder select-none flex items-center justify-between gap-md p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
                 folderDiv.dataset.folderpath = currentPath;
 
                 const isModFolder = node.name.startsWith('mod-');
@@ -688,7 +688,7 @@ function renderSidebar(nodes, container, parentPath = '') {
             const fileLink = document.createElement('a');
             const isCompleted = completedFiles.has(node.path);
 
-            fileLink.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+            fileLink.className = 'tree-file select-none flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
             fileLink.href = `#${encodeURIComponent(node.path)}`;
             fileLink.dataset.filepath = node.path;
 
@@ -709,9 +709,9 @@ function renderSidebar(nodes, container, parentPath = '') {
 
             fileLink.addEventListener('click', () => {
                 document.querySelectorAll('.tree-file').forEach(el => {
-                    el.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+                    el.className = 'tree-file select-none flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
                 });
-                fileLink.className = 'tree-file active flex items-start gap-2 p-2 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all cursor-pointer text-sm font-label';
+                fileLink.className = 'tree-file active select-none flex items-start gap-2 p-2 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all cursor-pointer text-sm font-label';
             });
 
             item.appendChild(fileLink);

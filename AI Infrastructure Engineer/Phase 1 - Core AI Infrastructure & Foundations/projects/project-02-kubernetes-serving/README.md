@@ -1,14 +1,8 @@
 # Project 02: Kubernetes Model Serving
 
-**Duration:** 80 hours (2 weeks full-time, 3-4 weeks part-time)
-**Complexity:** Beginner+
-**Prerequisites:** Project 01 (Simple Model API Deployment)
-
----
-
 ## Overview
 
-Transform your basic Flask/FastAPI model serving application from Project 01 into a production-grade, scalable Kubernetes deployment. This project teaches container orchestration fundamentals, auto-scaling, load balancing, rolling updates, and comprehensive monitoring using industry-standard tools.
+Transform your basic FastAPI model serving application from Project 01 into a production-grade, scalable Kubernetes deployment. This project teaches container orchestration fundamentals, auto-scaling, load balancing, rolling updates, and comprehensive monitoring using industry-standard tools.
 
 ### Real-World Scenario
 
@@ -43,71 +37,66 @@ By completing this project, you will be able to:
 
 ### High-Level Architecture
 
-```
-                    Internet
-                       │
-                       ▼
-              ┌─────────────────┐
-              │  LoadBalancer   │ ← External IP
-              │    Service      │
-              └────────┬────────┘
-                       │
-                       ▼
-              ┌─────────────────┐
-              │     Ingress     │ ← NGINX Controller
-              │  /predict       │
-              │  /health        │
-              └────────┬────────┘
-                       │
-                       ▼
-              ┌─────────────────┐
-              │  ClusterIP      │ ← Internal Load Balancer
-              │   Service       │
-              └─────────────────┘
-                       │
-        ┌──────────────┼──────────────┐
-        │              │              │
-        ▼              ▼              ▼
-   ┌────────┐     ┌────────┐     ┌────────┐
-   │ Pod 1  │     │ Pod 2  │     │ Pod 3  │
-   │ API v1 │     │ API v1 │     │ API v1 │
-   └────────┘     └────────┘     └────────┘
-        │              │              │
-        └──────────────┴──────────────┘
-                       │
-                       ▼
-              ┌─────────────────┐
-              │      HPA        │ ← Auto-scaler
-              │  Min: 3         │
-              │  Max: 10        │
-              │  Target: 70% CPU│
-              └─────────────────┘
+```mermaid
+graph TD
+    classDef external fill:#f3f4f6,stroke:#9ca3af,stroke-width:2px,color:#111827;
+    classDef service fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a;
+    classDef ingress fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95;
+    classDef pod fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#064e3b;
+    classDef hpa fill:#fff7ed,stroke:#f97316,stroke-width:2px,color:#7c2d12;
+
+    Internet([Internet]):::external
+    LB["LoadBalancer Service<br>(External IP)"]:::service
+    Ingress["NGINX Ingress Controller<br>(/predict | /health)"]:::ingress
+    ClusterIP["ClusterIP Service<br>(Internal Load Balancer)"]:::service
+    
+    subgraph Cluster["Kubernetes Cluster"]
+        Ingress --> ClusterIP
+        ClusterIP --> Pods
+        
+        subgraph Pods["Pod Replica Set"]
+            Pod1["Pod 1<br>(API v1)"]:::pod
+            Pod2["Pod 2<br>(API v1)"]:::pod
+            Pod3["Pod 3<br>(API v1)"]:::pod
+        end
+
+        HPA["Horizontal Pod Autoscaler<br>(Min: 3 | Max: 10 | Target: 70% CPU)"]:::hpa
+        HPA -.-> |Scales| Pods
+    end
+
+    Internet --> LB
+    LB --> Ingress
 ```
 
 ### Monitoring Architecture
 
-```
-┌─────────────────────────────────────┐
-│           Prometheus                │
-│  ┌─────────────────────────────┐   │
-│  │ Scrapes metrics from:       │   │
-│  │ • Pods (via /metrics)       │   │
-│  │ • Kubernetes API            │   │
-│  │ • Node exporter             │   │
-│  └─────────────────────────────┘   │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────┐
-│            Grafana                  │
-│  ┌─────────────────────────────┐   │
-│  │ Dashboards:                 │   │
-│  │ • Pod count & health        │   │
-│  │ • CPU/Memory usage          │   │
-│  │ • Request rate & latency    │   │
-│  │ • Error rates               │   │
-│  └─────────────────────────────┘   │
-└─────────────────────────────────────┘
+```mermaid
+graph LR
+    classDef prometheus fill:#fff7ed,stroke:#ea580c,stroke-width:2px,color:#7c2d12;
+    classDef source fill:#ecfdf5,stroke:#059669,stroke-width:2px,color:#064e3b;
+    classDef grafana fill:#faf5ff,stroke:#7c3aed,stroke-width:2px,color:#4c1d95;
+
+    subgraph Targets["Scrape Targets"]
+        Pods["API Pods<br>(/metrics)"]:::source
+        K8sAPI["Kubernetes API"]:::source
+        NodeExp["Node Exporter"]:::source
+    end
+
+    Prom["Prometheus Server"]:::prometheus
+    Graf["Grafana Dashboards"]:::grafana
+
+    Pods --> |Scrapes metrics| Prom
+    K8sAPI --> |Scrapes metrics| Prom
+    NodeExp --> |Scrapes metrics| Prom
+
+    Prom --> |Queries Data| Graf
+
+    subgraph Dashboards["Visualizations"]
+        Graf --> D1["Pod count & health"]
+        Graf --> D2["CPU/Memory usage"]
+        Graf --> D3["Request rate & latency"]
+        Graf --> D4["Error rates"]
+    end
 ```
 
 ---
@@ -176,63 +165,9 @@ project-02-kubernetes-serving/
 
 ---
 
-## Requirements
+## Requirements & Architecture
 
-### Functional Requirements
-
-#### FR-1: Kubernetes Deployment
-- Deploy model API as Kubernetes Deployment with 3 replicas
-- Configure resource requests (CPU: 500m, Memory: 1Gi) and limits (CPU: 1000m, Memory: 2Gi)
-- Implement liveness probe checking `/health` endpoint
-- Implement readiness probe ensuring model is loaded before traffic
-- Use ConfigMap for application configuration (model name, log level)
-
-#### FR-2: Service & Load Balancing
-- Create ClusterIP Service for internal access
-- Create LoadBalancer Service for external access
-- Implement Ingress for HTTP routing with path-based routing
-- Verify load distribution across all pods
-
-#### FR-3: Auto-Scaling
-- Configure HPA to scale from 3 to 10 pods
-- Set target CPU utilization at 70%
-- Define scale-up and scale-down policies
-- Test auto-scaling under load
-
-#### FR-4: Rolling Updates
-- Implement RollingUpdate strategy
-- Configure maxSurge=1 and maxUnavailable=0 for zero-downtime
-- Test update from v1.0 to v1.1
-- Implement rollback capability
-
-#### FR-5: Monitoring & Observability
-- Deploy Prometheus for metrics collection
-- Deploy Grafana for visualization
-- Create dashboard showing pod count, CPU, memory, request rate
-- Configure alerts for high error rates or pod failures
-
-### Non-Functional Requirements
-
-#### NFR-1: Performance
-- Support 1000+ requests/second across cluster
-- P99 latency < 500ms under load
-- Auto-scaling responds within 2 minutes
-
-#### NFR-2: Reliability
-- 99.9% uptime (< 43 minutes downtime/month)
-- Zero downtime during deployments
-- Automatic pod recovery within 30 seconds
-
-#### NFR-3: Scalability
-- Support 3-10 pod replicas
-- Handle 10x traffic spikes gracefully
-- Resource-efficient scaling
-
-#### NFR-4: Security
-- Secrets stored in Kubernetes Secrets (not ConfigMaps)
-- Pod Security Standards applied
-- Network policies restricting pod communication
-- RBAC configured for least-privilege access
+For the complete list of functional and non-functional requirements, please see the dedicated [requirements.md](requirements.md) file. Detailed system designs and network layouts are documented in the [architecture.md](architecture.md) file.
 
 ---
 
@@ -242,7 +177,7 @@ project-02-kubernetes-serving/
 
 Before starting this project, ensure you have:
 
-1. **Completed Project 01**: Understanding of Flask/FastAPI model serving
+1. **Completed Project 01**: Understanding of FastAPI model serving
 2. **Docker installed**: For building container images
 3. **Basic Linux/Unix knowledge**: Command line proficiency
 4. **Git**: Version control basics

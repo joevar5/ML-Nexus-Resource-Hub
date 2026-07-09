@@ -35,74 +35,40 @@ Transform a simple model serving API into a production-grade, highly available, 
 
 ### High-Level Architecture Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          Internet / Users                           │
-└────────────────────────────┬────────────────────────────────────────┘
-                             │
-                             │ HTTPS/HTTP
-                             ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                   Cloud Load Balancer (AWS/GCP/Azure)               │
-│                   External IP: x.x.x.x                              │
-└────────────────────────────┬────────────────────────────────────────┘
-                             │
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                    Kubernetes Cluster                               │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │                 Ingress Controller (NGINX)                    │  │
-│  │  Rules:                                                       │  │
-│  │  - model-api.example.com/predict  → model-api-service       │  │
-│  │  - model-api.example.com/health   → model-api-service       │  │
-│  │  - model-api.example.com/metrics  → model-api-service       │  │
-│  └─────────────────────────┬─────────────────────────────────────┘  │
-│                            │                                         │
-│                            ▼                                         │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │         Service: model-api-service (ClusterIP)                │  │
-│  │         Type: ClusterIP                                       │  │
-│  │         Port: 80 → TargetPort: 5000                          │  │
-│  │         Selector: app=model-api                              │  │
-│  └─────────────────────────┬─────────────────────────────────────┘  │
-│                            │                                         │
-│           ┌────────────────┼────────────────┐                       │
-│           │                │                │                       │
-│           ▼                ▼                ▼                       │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐             │
-│  │   Pod 1      │  │   Pod 2      │  │   Pod 3      │             │
-│  │              │  │              │  │              │             │
-│  │ Container:   │  │ Container:   │  │ Container:   │             │
-│  │ model-api    │  │ model-api    │  │ model-api    │             │
-│  │ v1.0         │  │ v1.0         │  │ v1.0         │             │
-│  │              │  │              │  │              │             │
-│  │ Port: 5000   │  │ Port: 5000   │  │ Port: 5000   │             │
-│  │              │  │              │  │              │             │
-│  │ Resources:   │  │ Resources:   │  │ Resources:   │             │
-│  │ CPU: 500m-1  │  │ CPU: 500m-1  │  │ CPU: 500m-1  │             │
-│  │ Mem: 1-2Gi   │  │ Mem: 1-2Gi   │  │ Mem: 1-2Gi   │             │
-│  └──────────────┘  └──────────────┘  └──────────────┘             │
-│         │                 │                 │                       │
-│         └─────────────────┴─────────────────┘                       │
-│                           │                                         │
-│                           ▼                                         │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │      Horizontal Pod Autoscaler (HPA)                          │  │
-│  │      - Min Replicas: 3                                        │  │
-│  │      - Max Replicas: 10                                       │  │
-│  │      - Target CPU: 70%                                        │  │
-│  │      - Target Memory: 80%                                     │  │
-│  └───────────────────────────────────────────────────────────────┘  │
-│                                                                      │
-│  ┌───────────────────────────────────────────────────────────────┐  │
-│  │      ConfigMap: model-config                                  │  │
-│  │      - model_name: "resnet50"                                 │  │
-│  │      - log_level: "INFO"                                      │  │
-│  │      - max_batch_size: "32"                                   │  │
-│  └───────────────────────────────────────────────────────────────┘  │
-│                                                                      │
-└──────────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    classDef external fill:#f3f4f6,stroke:#9ca3af,stroke-width:2px,color:#111827;
+    classDef service fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a;
+    classDef ingress fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95;
+    classDef pod fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#064e3b;
+    classDef control fill:#fff7ed,stroke:#f97316,stroke-width:2px,color:#7c2d12;
+    classDef config fill:#faf5ff,stroke:#a78bfa,stroke-width:2px,color:#4c1d95;
+
+    User([Internet / Users]):::external
+    LB["Cloud Load Balancer<br>(AWS/GCP/Azure)"]:::service
+
+    subgraph Cluster["Kubernetes Cluster"]
+        Ingress["NGINX Ingress Controller<br>(Host: model-api.example.com<br>Paths: /predict, /health, /metrics)"]:::ingress
+        
+        Service["Service: model-api-service<br>(Type: ClusterIP<br>Port: 80 -> TargetPort: 5000)"]:::service
+        
+        subgraph Pods["Pod Replica Set"]
+            Pod1["Pod 1<br>(Container: model-api v1.0<br>Port: 5000<br>CPU: 500m-1 | Mem: 1-2Gi)"]:::pod
+            Pod2["Pod 2<br>(Container: model-api v1.0<br>Port: 5000<br>CPU: 500m-1 | Mem: 1-2Gi)"]:::pod
+            Pod3["Pod 3<br>(Container: model-api v1.0<br>Port: 5000<br>CPU: 500m-1 | Mem: 1-2Gi)"]:::pod
+        end
+
+        HPA["Horizontal Pod Autoscaler (HPA)<br>(Min: 3 | Max: 10<br>Target: 70% CPU | 80% Mem)"]:::control
+        Config["ConfigMap: model-config<br>(model_name: 'resnet50'<br>log_level: 'INFO'<br>max_batch_size: '32')"]:::config
+        
+        Ingress --> Service
+        Service --> Pods
+        HPA -.-> |Scales| Pods
+        Config -.-> |Configures| Pods
+    end
+
+    User --> |HTTPS/HTTP| LB
+    LB --> Ingress
 ```
 
 ---
@@ -235,7 +201,7 @@ spec:
 **Ingress Controller Architecture:**
 ```
 ┌────────────────────────────────────────┐
-│   Ingress Controller (NGINX Pod)      │
+│   Ingress Controller (NGINX Pod)       │
 │                                        │
 │   - Watches Ingress resources          │
 │   - Generates nginx.conf               │
@@ -256,18 +222,18 @@ spec:
 │                    HPA Control Loop                         │
 │                                                             │
 │  1. Every 15 seconds:                                       │
-│     - Query Metrics Server for current CPU/Memory          │
-│     - Calculate: current / target = ratio                  │
+│     - Query Metrics Server for current CPU/Memory           │
+│     - Calculate: current / target = ratio                   │
 │                                                             │
-│  2. Calculate desired replicas:                            │
-│     desiredReplicas = ceil(currentReplicas * ratio)        │
+│  2. Calculate desired replicas:                             │
+│     desiredReplicas = ceil(currentReplicas * ratio)         │
 │                                                             │
-│  3. Apply scaling policies:                                │
-│     - Check min/max limits (3-10)                          │
-│     - Apply stabilization window                           │
-│     - Apply scale-up/down policies                         │
+│  3. Apply scaling policies:                                 │
+│     - Check min/max limits (3-10)                           │
+│     - Apply stabilization window                            │
+│     - Apply scale-up/down policies                          │
 │                                                             │
-│  4. Update Deployment if needed                            │
+│  4. Update Deployment if needed                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -425,53 +391,36 @@ Pod Lifecycle:
 
 ### Three-Tier Network Model
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                  Tier 1: External Access                    │
-│                                                             │
-│  ┌────────────────────────────────────────────────────┐    │
-│  │  Cloud Load Balancer                               │    │
-│  │  - Public IP: x.x.x.x                             │    │
-│  │  - SSL/TLS Termination                            │    │
-│  │  - Health Checks                                  │    │
-│  │  - DDoS Protection                                │    │
-│  └────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Tier 2: Ingress Layer                      │
-│                                                             │
-│  ┌────────────────────────────────────────────────────┐    │
-│  │  Ingress Controller (NGINX)                        │    │
-│  │  - Host-based routing                              │    │
-│  │  - Path-based routing                              │    │
-│  │  - Rate limiting                                   │    │
-│  │  - Request buffering                               │    │
-│  └────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Tier 3: Service Layer                      │
-│                                                             │
-│  ┌────────────────────────────────────────────────────┐    │
-│  │  ClusterIP Service                                 │    │
-│  │  - Internal load balancing                         │    │
-│  │  - Service discovery (DNS)                         │    │
-│  │  - Endpoint management                             │    │
-│  └────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Tier 4: Pod Network                        │
-│                                                             │
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐            │
-│  │  Pod 1   │    │  Pod 2   │    │  Pod 3   │            │
-│  │ 10.1.1.5 │    │ 10.1.2.3 │    │ 10.1.3.8 │            │
-│  └──────────┘    └──────────┘    └──────────┘            │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    classDef t1 fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a;
+    classDef t2 fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95;
+    classDef t3 fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#064e3b;
+    classDef t4 fill:#fff7ed,stroke:#f97316,stroke-width:2px,color:#7c2d12;
+
+    subgraph Tier1["Tier 1: External Access"]
+        LB["Cloud Load Balancer<br>(Public IP: x.x.x.x<br>SSL/TLS Termination<br>Health Checks | DDoS Protection)"]:::t1
+    end
+
+    subgraph Tier2["Tier 2: Ingress Layer"]
+        Ingress["Ingress Controller (NGINX)<br>(Host/Path Routing<br>Rate Limiting | Buffering)"]:::t2
+    end
+
+    subgraph Tier3["Tier 3: Service Layer"]
+        Service["ClusterIP Service<br>(Internal Load Balancing<br>DNS Service Discovery<br>Endpoint Management)"]:::t3
+    end
+
+    subgraph Tier4["Tier 4: Pod Network"]
+        Pod1["Pod 1<br>(10.1.1.5)"]:::t4
+        Pod2["Pod 2<br>(10.1.2.3)"]:::t4
+        Pod3["Pod 3<br>(10.1.3.8)"]:::t4
+    end
+
+    LB --> Ingress
+    Ingress --> Service
+    Service --> Pod1
+    Service --> Pod2
+    Service --> Pod3
 ```
 
 ### Network Policies
@@ -512,100 +461,67 @@ spec:
 
 ### Prometheus Architecture
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                    Prometheus Server                         │
-│  ┌────────────────────────────────────────────────────┐      │
-│  │             Time Series Database                   │      │
-│  │  - Stores metrics with labels                     │      │
-│  │  - Retention: 7 days                              │      │
-│  │  - Compression: ~3.5 bytes/sample                 │      │
-│  └────────────────────────────────────────────────────┘      │
-│                                                              │
-│  ┌────────────────────────────────────────────────────┐      │
-│  │             Scrape Configuration                   │      │
-│  │  - Scrape interval: 30s                           │      │
-│  │  - Scrape timeout: 10s                            │      │
-│  │  - Targets: 50+                                   │      │
-│  └────────────────────────────────────────────────────┘      │
-└──────────────────────────────────────────────────────────────┘
-                          │
-        ┌─────────────────┼─────────────────┐
-        │                 │                 │
-        ▼                 ▼                 ▼
-┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-│ Kubernetes   │  │ Node         │  │ Application  │
-│ API Server   │  │ Exporters    │  │ /metrics     │
-│              │  │              │  │              │
-│ - Pod metrics│  │ - CPU stats  │  │ - Custom     │
-│ - Deployment │  │ - Memory     │  │   metrics    │
-│ - HPA        │  │ - Disk I/O   │  │ - Counters   │
-└──────────────┘  └──────────────┘  └──────────────┘
+```mermaid
+graph TD
+    classDef main fill:#fff7ed,stroke:#ea580c,stroke-width:2px,color:#7c2d12;
+    classDef sub fill:#faf5ff,stroke:#a78bfa,stroke-width:2px,color:#4c1d95;
+    classDef target fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a;
+
+    subgraph PromServer["Prometheus Server"]
+        TSDB["Time Series Database (TSDB)<br>(Stores metrics | Retention: 7 days<br>Compression: ~3.5 bytes/sample)"]:::sub
+        Scrape["Scrape Configuration<br>(Interval: 30s | Timeout: 10s<br>Targets: 50+)"]:::sub
+    end
+
+    K8sAPI["Kubernetes API Server<br>(Pod metrics | Deployment | HPA)"]:::target
+    NodeExp["Node Exporters<br>(CPU stats | Memory | Disk I/O)"]:::target
+    AppMetrics["Application /metrics<br>(Counters | Latency | Custom)"]:::target
+
+    Scrape --> |Scrapes| K8sAPI
+    Scrape --> |Scrapes| NodeExp
+    Scrape --> |Scrapes| AppMetrics
+    Scrape -.-> |Writes| TSDB
+
+    class PromServer main;
 ```
 
 ### Metrics Collection Flow
 
-```
-1. Service Discovery
-   ┌────────────────────────────────────────┐
-   │ Prometheus queries Kubernetes API      │
-   │ - Finds pods matching ServiceMonitor   │
-   │ - Gets pod IPs and ports               │
-   │ - Updates target list dynamically      │
-   └────────────────────────────────────────┘
+```mermaid
+graph LR
+    classDef step fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#0f172a;
 
-2. Scraping
-   ┌────────────────────────────────────────┐
-   │ Every 30 seconds:                      │
-   │ - HTTP GET to /metrics endpoint        │
-   │ - Parse Prometheus format              │
-   │ - Add labels (pod, namespace, etc.)    │
-   │ - Store in TSDB                        │
-   └────────────────────────────────────────┘
+    Step1["1. Service Discovery<br>(Prometheus queries Kubernetes API<br>Finds pods matching ServiceMonitor<br>Gets dynamic pod IPs & ports)"]:::step
+    Step2["2. Scraping<br>(Every 30s: HTTP GET to /metrics<br>Parses Prometheus format<br>Injects labels & stores in TSDB)"]:::step
+    Step3["3. Querying<br>(Run PromQL queries:<br>rate() for counters<br>percentiles & aggregations)"]:::step
 
-3. Querying
-   ┌────────────────────────────────────────┐
-   │ PromQL queries:                        │
-   │ - rate() for counter rates             │
-   │ - histogram_quantile() for percentiles │
-   │ - aggregations (sum, avg, max)         │
-   └────────────────────────────────────────┘
+    Step1 --> Step2
+    Step2 --> Step3
 ```
 
 ### Grafana Architecture
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                     Grafana Server                           │
-│                                                              │
-│  ┌────────────────────────────────────────────────────┐      │
-│  │                Data Sources                        │      │
-│  │  - Prometheus (primary)                           │      │
-│  │  - Query caching: 5 minutes                       │      │
-│  └────────────────────────────────────────────────────┘      │
-│                                                              │
-│  ┌────────────────────────────────────────────────────┐      │
-│  │                Dashboards                          │      │
-│  │  ┌──────────────────────────────────────────┐      │      │
-│  │  │  Cluster Overview                        │      │      │
-│  │  │  - Node count, CPU, memory               │      │      │
-│  │  └──────────────────────────────────────────┘      │      │
-│  │  ┌──────────────────────────────────────────┐      │      │
-│  │  │  Application Metrics                     │      │      │
-│  │  │  - Request rate, latency, errors         │      │      │
-│  │  └──────────────────────────────────────────┘      │      │
-│  │  ┌──────────────────────────────────────────┐      │      │
-│  │  │  Pod Metrics                             │      │      │
-│  │  │  - Pod count, restarts, resources        │      │      │
-│  │  └──────────────────────────────────────────┘      │      │
-│  └────────────────────────────────────────────────────┘      │
-│                                                              │
-│  ┌────────────────────────────────────────────────────┐      │
-│  │                Alerting                            │      │
-│  │  - Alert rules                                    │      │
-│  │  - Notification channels (Email, Slack)           │      │
-│  └────────────────────────────────────────────────────┘      │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    classDef main fill:#faf5ff,stroke:#7c3aed,stroke-width:2px,color:#4c1d95;
+    classDef config fill:#f8fafc,stroke:#475569,stroke-width:2px,color:#0f172a;
+    classDef db fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a;
+
+    subgraph GrafServer["Grafana Server"]
+        Source["Data Sources<br>(Prometheus primary<br>Query caching: 5 minutes)"]:::config
+        
+        subgraph Dashboards["Dashboards"]
+            D1["Cluster Overview<br>(Node count, CPU, memory)"]:::db
+            D2["Application Metrics<br>(Request rate, latency, errors)"]:::db
+            D3["Pod Metrics<br>(Pod count, restarts, resources)"]:::db
+        end
+
+        Alert["Alerting<br>(Alert rules | Notification channels)"]:::config
+    end
+
+    Source --> Dashboards
+    Dashboards --> Alert
+
+    class GrafServer main;
 ```
 
 ---
@@ -614,36 +530,42 @@ spec:
 
 ### Rolling Update Process
 
-```
-Initial State: 3 pods running v1.0
-┌──────────┐  ┌──────────┐  ┌──────────┐
-│  Pod 1   │  │  Pod 2   │  │  Pod 3   │
-│  v1.0    │  │  v1.0    │  │  v1.0    │
-│  Ready   │  │  Ready   │  │  Ready   │
-└──────────┘  └──────────┘  └──────────┘
+```mermaid
+graph TD
+    classDef state fill:#f8fafc,stroke:#475569,stroke-width:2px,color:#0f172a;
+    classDef podOld fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a;
+    classDef podNew fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#064e3b;
+    classDef podTerm fill:#fff1f2,stroke:#f43f5e,stroke-width:2px,color:#9f1239;
 
-Step 1: Create new pod (maxSurge=1)
-┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-│  Pod 1   │  │  Pod 2   │  │  Pod 3   │  │  Pod 4   │
-│  v1.0    │  │  v1.0    │  │  v1.0    │  │  v1.1    │
-│  Ready   │  │  Ready   │  │  Ready   │  │  Starting│
-└──────────┘  └──────────┘  └──────────┘  └──────────┘
+    subgraph Initial["Initial State: 3 pods running v1.0"]
+        I1["Pod 1 (v1.0)<br>Ready"]:::podOld
+        I2["Pod 2 (v1.0)<br>Ready"]:::podOld
+        I3["Pod 3 (v1.0)<br>Ready"]:::podOld
+    end
 
-Step 2: Wait for readiness, then terminate old pod
-┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-│  Pod 1   │  │  Pod 2   │  │  Pod 3   │  │  Pod 4   │
-│  v1.0    │  │  v1.0    │  │  v1.0    │  │  v1.1    │
-│  Ready   │  │  Ready   │  │ Terminating│ │  Ready   │
-└──────────┘  └──────────┘  └──────────┘  └──────────┘
+    subgraph Step1["Step 1: Create new pod (maxSurge=1)"]
+        S1_1["Pod 1 (v1.0)<br>Ready"]:::podOld
+        S1_2["Pod 2 (v1.0)<br>Ready"]:::podOld
+        S1_3["Pod 3 (v1.0)<br>Ready"]:::podOld
+        S1_4["Pod 4 (v1.1)<br>Starting"]:::podNew
+    end
 
-Step 3: Repeat until all pods updated
-┌──────────┐  ┌──────────┐  ┌──────────┐
-│  Pod 5   │  │  Pod 6   │  │  Pod 4   │
-│  v1.1    │  │  v1.1    │  │  v1.1    │
-│  Ready   │  │  Ready   │  │  Ready   │
-└──────────┘  └──────────┘  └──────────┘
+    subgraph Step2["Step 2: Wait for readiness, terminate old pod"]
+        S2_1["Pod 1 (v1.0)<br>Ready"]:::podOld
+        S2_2["Pod 2 (v1.0)<br>Ready"]:::podOld
+        S2_3["Pod 3 (v1.0)<br>Terminating"]:::podTerm
+        S2_4["Pod 4 (v1.1)<br>Ready"]:::podNew
+    end
 
-Result: Zero downtime, always 3+ pods ready
+    subgraph Step3["Step 3: Repeat until all pods updated"]
+        S3_1["Pod 5 (v1.1)<br>Ready"]:::podNew
+        S3_2["Pod 6 (v1.1)<br>Ready"]:::podNew
+        S3_4["Pod 4 (v1.1)<br>Ready"]:::podNew
+    end
+
+    Initial --> |kubectl set image| Step1
+    Step1 --> |Pod 4 passes readiness| Step2
+    Step2 --> |Gradual replacement| Step3
 ```
 
 ### Update Timeline
@@ -668,39 +590,40 @@ Result: Zero downtime, always 3+ pods ready
 
 ### Auto-Scaling Decision Tree
 
-```
-┌──────────────────────────────────────────────┐
-│    HPA checks metrics (every 15 seconds)     │
-└──────────────┬───────────────────────────────┘
-               │
-               ▼
-      ┌────────────────────┐
-      │ Current CPU > 70%? │
-      └────────┬───────────┘
-               │
-        ┌──────┴──────┐
-        │             │
-       Yes            No
-        │             │
-        ▼             ▼
-┌────────────────┐  ┌────────────────┐
-│ Scale Up       │  │ Current        │
-│ Decision       │  │ CPU < 70%?     │
-└───────┬────────┘  └───────┬────────┘
-        │                   │
-        ▼            ┌──────┴──────┐
-┌────────────────┐  │             │
-│ At max (10)?   │ Yes            No
-└───────┬────────┘  │             │
-        │           ▼             ▼
-   ┌────┴────┐  ┌────────────┐  ┌────────────┐
-   │         │  │ Wait 5 min │  │ No action  │
-  Yes        No  │ then scale │  └────────────┘
-   │         │  │ down       │
-   ▼         ▼  └────────────┘
-┌─────────┐  ┌────────────┐
-│ No action│ │ Add pods   │
-└─────────┘  └────────────┘
+```mermaid
+graph TD
+    classDef hpa fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a;
+    classDef decision fill:#fff7ed,stroke:#ea580c,stroke-width:2px,color:#7c2d12;
+    classDef action fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#064e3b;
+    classDef noaction fill:#f3f4f6,stroke:#9ca3af,stroke-width:2px,color:#111827;
+
+    Start["HPA checks metrics<br>(Every 15 seconds)"]:::hpa
+    Cond1{"Current CPU > 70%?"}:::decision
+    
+    Cond2{"At Max Replicas (10)?"}:::decision
+    ScaleUp["Scale Up Decision:<br>Add Pods"]:::action
+    NoAction1["No Action<br>(At max capacity)"]:::noaction
+    
+    Cond3{"Current CPU < 70%?"}:::decision
+    Cond4{"Wait Period Elapsed<br>(5-minute stabilization)?"}:::decision
+    ScaleDown["Scale Down Decision:<br>Remove Pods"]:::action
+    NoAction2["No Action<br>(Cooldown active)"]:::noaction
+    
+    NoAction3["No Action<br>(Traffic stable)"]:::noaction
+
+    Start --> Cond1
+    
+    Cond1 -- Yes --> Cond2
+    Cond1 -- No --> Cond3
+    
+    Cond2 -- Yes --> NoAction1
+    Cond2 -- No --> ScaleUp
+    
+    Cond3 -- Yes --> Cond4
+    Cond3 -- No --> NoAction3
+    
+    Cond4 -- Yes --> ScaleDown
+    Cond4 -- No --> NoAction2
 ```
 
 ### Scaling Capacity Planning
@@ -844,9 +767,3 @@ Far exceeds 99.9% SLA requirement
 2. **GitOps with ArgoCD:** Declarative deployment pipeline
 3. **Custom Metrics Scaling:** Scale on inference queue depth
 4. **Spot Instance Integration:** Cost optimization
-
----
-
-**Document Version:** 1.0
-**Last Updated:** October 2025
-**Architecture Owner:** AI Infrastructure Curriculum Team
