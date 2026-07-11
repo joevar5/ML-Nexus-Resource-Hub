@@ -55,9 +55,7 @@ services:
   # Central experiment tracking and model registry
   # ============================================================================
   mlflow:
-    build:
-      context: ./mlflow
-      dockerfile: Dockerfile
+    image: python:3.11-slim
     container_name: ml_pipeline_mlflow
     ports:
       - "5000:5000"
@@ -72,11 +70,12 @@ services:
       minio:
         condition: service_healthy
     command: >
-      mlflow server
-      --backend-store-uri postgresql://mlflow:mlflow@postgres:5432/mlflow
-      --default-artifact-root s3://mlflow/
-      --host 0.0.0.0
-      --port 5000
+      sh -c "pip install mlflow==2.8.1 psycopg2-binary boto3 &&
+             mlflow server
+             --backend-store-uri postgresql://mlflow:mlflow@postgres:5432/mlflow
+             --default-artifact-root s3://mlflow/
+             --host 0.0.0.0
+             --port 5000"
     networks:
       - ml_pipeline_network
 
@@ -102,9 +101,7 @@ services:
   # UI and REST API for workflow management
   # ============================================================================
   airflow-webserver:
-    build:
-      context: ./airflow
-      dockerfile: Dockerfile
+    image: apache/airflow:2.7.3
     container_name: ml_pipeline_airflow_webserver
     ports:
       - "8080:8080"
@@ -113,16 +110,17 @@ services:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://mlflow:mlflow@postgres:5432/airflow
       AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://mlflow:mlflow@postgres:5432/airflow
-      AIRFLOW__CORE__FERNET_KEY: 'your-fernet-key-here'  # TODO: Generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+      AIRFLOW__CORE__FERNET_KEY: '46BKJoZhc1tTny23EBYmH51k167t340tL_L84I144eE='
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__WEBSERVER__SECRET_KEY: 'your-secret-key-here'  # TODO: Generate random secret
+      AIRFLOW__WEBSERVER__SECRET_KEY: 'airflow-secret-key-321'
+      _PIP_ADDITIONAL_REQUIREMENTS: 'mlflow==2.8.1 dvc==3.30.1 great-expectations==0.18.3 pandas pyarrow scikit-learn psycopg2-binary boto3 requests'
     volumes:
-      - ./dags:/opt/airflow/dags
-      - ./src:/opt/airflow/src
-      - ./data:/opt/airflow/data
-      - ./models:/opt/airflow/models
-      - ./artifacts:/opt/airflow/artifacts
+      - ../dags:/opt/airflow/dags
+      - ../src:/opt/airflow/src
+      - ../data:/opt/airflow/data
+      - ../models:/opt/airflow/models
+      - ../artifacts:/opt/airflow/artifacts
       - airflow_logs:/opt/airflow/logs
     depends_on:
       postgres:
@@ -138,24 +136,23 @@ services:
   # Schedules and triggers DAG runs
   # ============================================================================
   airflow-scheduler:
-    build:
-      context: ./airflow
-      dockerfile: Dockerfile
+    image: apache/airflow:2.7.3
     container_name: ml_pipeline_airflow_scheduler
     environment:
       AIRFLOW__CORE__EXECUTOR: CeleryExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://mlflow:mlflow@postgres:5432/airflow
       AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://mlflow:mlflow@postgres:5432/airflow
-      AIRFLOW__CORE__FERNET_KEY: 'your-fernet-key-here'  # TODO: Must match webserver
+      AIRFLOW__CORE__FERNET_KEY: '46BKJoZhc1tTny23EBYmH51k167t340tL_L84I144eE='
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      _PIP_ADDITIONAL_REQUIREMENTS: 'mlflow==2.8.1 dvc==3.30.1 great-expectations==0.18.3 pandas pyarrow scikit-learn psycopg2-binary boto3 requests'
     volumes:
-      - ./dags:/opt/airflow/dags
-      - ./src:/opt/airflow/src
-      - ./data:/opt/airflow/data
-      - ./models:/opt/airflow/models
-      - ./artifacts:/opt/airflow/artifacts
+      - ../dags:/opt/airflow/dags
+      - ../src:/opt/airflow/src
+      - ../data:/opt/airflow/data
+      - ../models:/opt/airflow/models
+      - ../artifacts:/opt/airflow/artifacts
       - airflow_logs:/opt/airflow/logs
     depends_on:
       postgres:
@@ -171,22 +168,21 @@ services:
   # Executes tasks from the queue
   # ============================================================================
   airflow-worker:
-    build:
-      context: ./airflow
-      dockerfile: Dockerfile
+    image: apache/airflow:2.7.3
     container_name: ml_pipeline_airflow_worker
     environment:
       AIRFLOW__CORE__EXECUTOR: CeleryExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://mlflow:mlflow@postgres:5432/airflow
       AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://mlflow:mlflow@postgres:5432/airflow
-      AIRFLOW__CORE__FERNET_KEY: 'your-fernet-key-here'  # TODO: Must match webserver
+      AIRFLOW__CORE__FERNET_KEY: '46BKJoZhc1tTny23EBYmH51k167t340tL_L84I144eE='
+      _PIP_ADDITIONAL_REQUIREMENTS: 'mlflow==2.8.1 dvc==3.30.1 great-expectations==0.18.3 pandas pyarrow scikit-learn psycopg2-binary boto3 requests'
     volumes:
-      - ./dags:/opt/airflow/dags
-      - ./src:/opt/airflow/src
-      - ./data:/opt/airflow/data
-      - ./models:/opt/airflow/models
-      - ./artifacts:/opt/airflow/artifacts
+      - ../dags:/opt/airflow/dags
+      - ../src:/opt/airflow/src
+      - ../data:/opt/airflow/data
+      - ../models:/opt/airflow/models
+      - ../artifacts:/opt/airflow/artifacts
       - airflow_logs:/opt/airflow/logs
     depends_on:
       postgres:

@@ -1,0 +1,11 @@
+pandas
+pyarrow
+scikit-learn
+mlflow==2.8.1
+dvc==3.30.1
+great-expectations==0.18.3
+psycopg2-binary
+boto3
+apache-airflow==2.7.3
+requests
+pytest

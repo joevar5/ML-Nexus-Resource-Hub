@@ -1044,22 +1044,6 @@
                 "type": "directory",
                 "children": [
                   {
-                    "name": "docker",
-                    "type": "directory",
-                    "children": [
-                      {
-                        "name": "docker-compose.yml",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/docker/docker-compose.yml"
-                      },
-                      {
-                        "name": "Dockerfile",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/docker/Dockerfile"
-                      }
-                    ]
-                  },
-                  {
                     "name": "src",
                     "type": "directory",
                     "children": [
@@ -1091,24 +1075,19 @@
                     ]
                   },
                   {
-                    "name": ".env.example",
+                    "name": "1.0: README - Simple Model API Deployment",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/.env.example"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/1.0-README.md"
                   },
                   {
-                    "name": "Project 01: Detailed Requirements Specification",
+                    "name": "1.1: Detailed Requirements Specification",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/requirements.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/1.1-requirements.md"
                   },
                   {
-                    "name": "Project 01: High Level System Architecture",
+                    "name": "1.2: High Level System Architecture",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/architecture.md"
-                  },
-                  {
-                    "name": "Project 01: Simple Model API Deployment",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/README.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-01-simple-model-api/1.2-architecture.md"
                   }
                 ]
               },
@@ -1291,34 +1270,24 @@
                     ]
                   },
                   {
-                    "name": ".env.example",
+                    "name": "2.0: README - Kubernetes Model Serving",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/.env.example"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/2.0-README.md"
                   },
                   {
-                    "name": "Dockerfile",
+                    "name": "2.1: Kubernetes Serving Requirements",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/Dockerfile"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/2.1-requirements.md"
                   },
                   {
-                    "name": "Kubernetes Model Serving: Step-by-Step Execution & Hosting Guide",
+                    "name": "2.2: Architecture Documentation",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/how-to-execute-this-solution-and-host-pods.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/2.2-architecture.md"
                   },
                   {
-                    "name": "Project 02: Architecture Documentation",
+                    "name": "2.3: Step-by-Step Execution & Hosting Guide",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/architecture.md"
-                  },
-                  {
-                    "name": "Project 02: Kubernetes Model Serving",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/README.md"
-                  },
-                  {
-                    "name": "Project 02: Kubernetes Serving Requirements",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/requirements.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-02-kubernetes-serving/2.3-how-to-execute-this-solution-and-host-pods.md"
                   }
                 ]
               },
@@ -1346,6 +1315,11 @@
                     "name": "dvc",
                     "type": "directory",
                     "children": [
+                      {
+                        "name": "docker-compose.yml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/dvc/docker-compose.yml"
+                      },
                       {
                         "name": "dvc.yaml",
                         "type": "file",
@@ -1405,6 +1379,11 @@
                         "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/src/preprocessing.py"
                       },
                       {
+                        "name": "requirements.txt",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/src/requirements.txt"
+                      },
+                      {
                         "name": "training.py",
                         "type": "file",
                         "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/src/training.py"
@@ -1423,29 +1402,24 @@
                     ]
                   },
                   {
-                    "name": ".env.example",
+                    "name": "3.0: README - ML Pipeline with Experiment Tracking",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/.env.example"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/3.0-README.md"
                   },
                   {
-                    "name": "Architecture: ML Pipeline with Experiment Tracking",
+                    "name": "3.1: Project Requirements",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/architecture.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/3.1-requirements.md"
                   },
                   {
-                    "name": "docker-compose.yml",
+                    "name": "3.2: Architecture Deep Dive",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/docker-compose.yml"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/3.2-architecture.md"
                   },
                   {
-                    "name": "Project 03: ML Pipeline with Experiment Tracking",
+                    "name": "3.3: Step-by-Step Execution Guide",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/README.md"
-                  },
-                  {
-                    "name": "Project Requirements: ML Pipeline with Experiment Tracking",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/requirements.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-03-ml-pipeline-tracking/3.3-how-to-execute-this-solution-and-run-pipeline.md"
                   }
                 ]
               },
