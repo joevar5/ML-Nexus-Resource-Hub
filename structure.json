@@ -1932,6 +1932,17 @@
     "type": "directory",
     "children": [
       {
+        "name": "GENAI SD",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Gmail Smart Compose System Design",
+            "type": "file",
+            "path": "ML and GenAI System Design/GENAI SD/Gmail Smart Compose.md"
+          }
+        ]
+      },
+      {
         "name": "MLSD",
         "type": "directory",
         "children": [
@@ -1951,56 +1962,6 @@
             "type": "directory",
             "children": [
               {
-                "name": "Event Recommendation System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Event Recommendation System.md"
-              },
-              {
-                "name": "Instagram Explore System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Instagram Explore.md"
-              },
-              {
-                "name": "Netflix Top Picks System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Netflix Top Picks.md"
-              },
-              {
-                "name": "People You May Know System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/People You May Know.md"
-              },
-              {
-                "name": "Personalized News Feed System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Personalized News Feed.md"
-              },
-              {
-                "name": "Product Recommendation System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Product Recommendation System.md"
-              },
-              {
-                "name": "Restaurant Recommendation on Google Maps System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Restaurant Recommendation on Google Maps.md"
-              },
-              {
-                "name": "Similar Artists on Spotify System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Similar Artists on Spotify.md"
-              },
-              {
-                "name": "Similar Listings on Vacation Rental Platforms System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Similar Listings on Vacation Rental Platforms.md"
-              },
-              {
-                "name": "TikTok For You System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/TikTok For You.md"
-              },
-              {
                 "name": "Video Recommendation System System Design",
                 "type": "file",
                 "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Video Recommendation System.md"
@@ -2011,36 +1972,6 @@
             "name": "2. Search & Retrieval",
             "type": "directory",
             "children": [
-              {
-                "name": "E-commerce Search System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/2. Search & Retrieval/E-commerce Search.md"
-              },
-              {
-                "name": "Enterprise Search System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/2. Search & Retrieval/Enterprise Search.md"
-              },
-              {
-                "name": "Podcast Search Engine System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/2. Search & Retrieval/Podcast Search Engine.md"
-              },
-              {
-                "name": "Semantic Search System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/2. Search & Retrieval/Semantic Search.md"
-              },
-              {
-                "name": "Type-Ahead Search (Amazon) System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/2. Search & Retrieval/Type-Ahead Search (Amazon).md"
-              },
-              {
-                "name": "Visual Search System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/2. Search & Retrieval/Visual Search System.md"
-              },
               {
                 "name": "YouTube Video Search System Design",
                 "type": "file",
@@ -2053,39 +1984,9 @@
             "type": "directory",
             "children": [
               {
-                "name": "Ad Click Prediction on Social Platforms System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/3. Ranking & Prediction/Ad Click Prediction on Social Platforms.md"
-              },
-              {
                 "name": "Ads Ranking System System Design",
                 "type": "file",
                 "path": "ML and GenAI System Design/MLSD/3. Ranking & Prediction/Ads Ranking System.md"
-              },
-              {
-                "name": "Amazon Product Ranking System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/3. Ranking & Prediction/Amazon Product Ranking.md"
-              },
-              {
-                "name": "Conversion Prediction System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/3. Ranking & Prediction/Conversion Prediction System.md"
-              },
-              {
-                "name": "CTR Prediction System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/3. Ranking & Prediction/CTR Prediction System.md"
-              },
-              {
-                "name": "News Feed Ranking System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/3. Ranking & Prediction/News Feed Ranking.md"
-              },
-              {
-                "name": "Personalized News Feed (Ranking Component) System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/3. Ranking & Prediction/Personalized News Feed (Ranking Component).md"
               }
             ]
           },
@@ -2094,44 +1995,9 @@
             "type": "directory",
             "children": [
               {
-                "name": "Bot Detection System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Bot Detection.md"
-              },
-              {
-                "name": "Comment Moderation System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Comment Moderation.md"
-              },
-              {
-                "name": "Fake Account Detection System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Fake Account Detection.md"
-              },
-              {
                 "name": "Fraud Detection (Stripe) System Design",
                 "type": "file",
                 "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Fraud Detection (Stripe).md"
-              },
-              {
-                "name": "Harmful Content Detection System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Harmful Content Detection.md"
-              },
-              {
-                "name": "Offensive Content Filtering System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Offensive Content Filtering.md"
-              },
-              {
-                "name": "Spam Detection System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Spam Detection.md"
-              },
-              {
-                "name": "Weapon Selling Detection System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Weapon Selling Detection.md"
               }
             ]
           },
@@ -2140,34 +2006,9 @@
             "type": "directory",
             "children": [
               {
-                "name": "Face Detection System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/5. Computer Vision/Face Detection System.md"
-              },
-              {
-                "name": "Google Street View Blurring System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/5. Computer Vision/Google Street View Blurring System.md"
-              },
-              {
                 "name": "Object Detection System System Design",
                 "type": "file",
                 "path": "ML and GenAI System Design/MLSD/5. Computer Vision/Object Detection System.md"
-              },
-              {
-                "name": "OCR System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/5. Computer Vision/OCR System.md"
-              },
-              {
-                "name": "Shape Detection System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/5. Computer Vision/Shape Detection System.md"
-              },
-              {
-                "name": "Visual Search System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/5. Computer Vision/Visual Search System.md"
               }
             ]
           },
@@ -2179,31 +2020,6 @@
                 "name": "Demand Forecasting System Design",
                 "type": "file",
                 "path": "ML and GenAI System Design/MLSD/6. Forecasting & Time Series/Demand Forecasting.md"
-              },
-              {
-                "name": "Ride Demand Prediction System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/6. Forecasting & Time Series/Ride Demand Prediction.md"
-              },
-              {
-                "name": "Sales Forecasting System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/6. Forecasting & Time Series/Sales Forecasting.md"
-              },
-              {
-                "name": "Stock Price Prediction System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/6. Forecasting & Time Series/Stock Price Prediction.md"
-              },
-              {
-                "name": "Traffic Prediction System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/6. Forecasting & Time Series/Traffic Prediction.md"
-              },
-              {
-                "name": "Uber Dynamic Pricing System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/6. Forecasting & Time Series/Uber Dynamic Pricing.md"
               }
             ]
           },
