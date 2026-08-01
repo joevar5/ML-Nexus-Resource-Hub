@@ -124,9 +124,16 @@ const categories = [
     { name: 'Paper Analysis', dir: 'Research Paper Analysis', icon: 'description' }
 ];
 
-// Check if the current device is mobile (Tailwind's md breakpoint = 768px)
+// Check if the current device is mobile
+// Uses both User Agent detection AND viewport width for maximum reliability
+// This catches large-screen phones (e.g. Samsung S24 Ultra) even in landscape
 function isMobile() {
-    return window.innerWidth < 768;
+    const ua = navigator.userAgent || '';
+    const hasMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Samsung|Mobile|Windows Phone|Tablet|Kindle|Silk|PlayBook|Nokia|SonyEricsson|Motorola|LG|HTC|ZTE|Alcatel|Huawei|Xiaomi|Redmi|Oppo|Vivo|Realme|OnePlus/i.test(ua);
+    const hasMobileViewport = window.innerWidth < 768;
+    const hasTouch = (navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window;
+    const isTouchAndSmall = hasTouch && window.innerWidth < 1024;
+    return hasMobileUA || hasMobileViewport || isTouchAndSmall;
 }
 
 // Show the mobile "Best Viewed on Desktop" warning screen
@@ -203,6 +210,27 @@ function setupEventListeners() {
 
     // Handle browser navigation (back/forward)
     window.addEventListener('hashchange', handleRouting);
+
+    // Re-evaluate mobile state on resize / orientation change
+    // Ensures the warning screen appears when rotating a large phone (e.g. S24 Ultra)
+    window.addEventListener('resize', () => {
+        const isOnContent = window.location.hash &&
+            decodeURIComponent(window.location.hash.substring(1)) !== 'about' &&
+            decodeURIComponent(window.location.hash.substring(1)) !== 'README.md';
+        if (isOnContent && isMobile()) {
+            showMobileWarning();
+        }
+    });
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            const isOnContent = window.location.hash &&
+                decodeURIComponent(window.location.hash.substring(1)) !== 'about' &&
+                decodeURIComponent(window.location.hash.substring(1)) !== 'README.md';
+            if (isOnContent && isMobile()) {
+                showMobileWarning();
+            }
+        }, 200);
+    });
 
     // Handle Live Search
     const searchInput = document.getElementById('search-input');
