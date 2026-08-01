@@ -124,6 +124,24 @@ const categories = [
     { name: 'Paper Analysis', dir: 'Research Paper Analysis', icon: 'description' }
 ];
 
+// Check if the current device is mobile (Tailwind's md breakpoint = 768px)
+function isMobile() {
+    return window.innerWidth < 768;
+}
+
+// Show the mobile "Best Viewed on Desktop" warning screen
+function showMobileWarning() {
+    document.getElementById('home-view').style.display = 'none';
+    document.getElementById('reader-view').style.display = 'none';
+    document.getElementById('search-view').style.display = 'none';
+    document.getElementById('error-view').style.display = 'none';
+    document.getElementById('author-view').style.display = 'none';
+    document.getElementById('sidebar-tree-container').style.display = 'none';
+    document.getElementById('mobile-warning-view').style.display = 'flex';
+    document.getElementById('progress-bar').style.width = '0%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
     setupTheme();
@@ -395,6 +413,11 @@ function navigateToCategory(categoryName) {
     if (categoryName === 'Projects' || categoryName === 'Paper Analysis') {
         const displayName = categoryName === 'Projects' ? 'ML & GenAI Projects' : 'Research Paper Analysis';
         showToast(`The ${displayName} path is currently locked.`, 'warning');
+        return;
+    }
+    // On mobile, show desktop-only warning instead of navigating to content
+    if (isMobile()) {
+        showMobileWarning();
         return;
     }
     const cat = categories.find(c => c.name === categoryName);
@@ -742,6 +765,12 @@ function handleRouting() {
         return;
     }
 
+    // On mobile, intercept content file navigation and show desktop-only warning
+    if (isMobile()) {
+        showMobileWarning();
+        return;
+    }
+
     loadFile(decodedPath);
 }
 
@@ -756,6 +785,7 @@ function goHome() {
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
+    document.getElementById('mobile-warning-view').style.display = 'none';
 
     document.querySelectorAll('.tree-file').forEach(el => {
         el.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
@@ -783,6 +813,7 @@ function showAuthorPage() {
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'block';
     document.getElementById('sidebar-tree-container').style.display = 'none';
+    document.getElementById('mobile-warning-view').style.display = 'none';
 
     // Reset files highlights
     document.querySelectorAll('.tree-file').forEach(el => {
@@ -1497,7 +1528,7 @@ function makeQuizInteractive() {
 function getLanguageFromExtension(filePath) {
     const lower = filePath.toLowerCase();
     if (lower.endsWith('dockerfile')) return 'docker';
-    
+
     const ext = filePath.substring(filePath.lastIndexOf('.')).toLowerCase();
     switch (ext) {
         case '.py': return 'python';
@@ -1520,7 +1551,7 @@ function getLanguageFromExtension(filePath) {
 function getIconForFile(filePath) {
     const lower = filePath.toLowerCase();
     if (lower.endsWith('dockerfile')) return 'deployed_code';
-    
+
     const ext = filePath.substring(filePath.lastIndexOf('.')).toLowerCase();
     switch (ext) {
         case '.py': return 'terminal';
@@ -1557,6 +1588,7 @@ async function loadFile(filePath) {
     document.getElementById('search-view').style.display = 'none';
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
+    document.getElementById('mobile-warning-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'block';
 
     // Reset About the Author link styles
@@ -1735,7 +1767,7 @@ async function loadFile(filePath) {
                 </div>
             `;
             markdownContentDiv.innerHTML = sandboxHtml;
-            
+
             // Attach event listener for the copy button
             const copyBtn = markdownContentDiv.querySelector('.sandbox-copy-btn');
             if (copyBtn) {
@@ -1743,11 +1775,11 @@ async function loadFile(filePath) {
                     navigator.clipboard.writeText(fileContent).then(() => {
                         const iconSpan = copyBtn.querySelector('.material-symbols-outlined');
                         const textSpan = copyBtn.querySelector('span:not(.material-symbols-outlined)');
-                        
+
                         iconSpan.innerText = 'check';
                         textSpan.innerText = 'Copied!';
                         copyBtn.classList.add('bg-success', 'text-white', 'border-success');
-                        
+
                         setTimeout(() => {
                             iconSpan.innerText = 'content_copy';
                             textSpan.innerText = 'Copy';

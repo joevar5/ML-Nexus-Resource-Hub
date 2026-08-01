@@ -40,7 +40,8 @@
 
     <!-- Prism.js for Code Syntax Highlighting -->
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
@@ -623,6 +624,24 @@
                 onclick="goHome()">Go Back Home</button>
         </div>
 
+        <!-- 5. Mobile Desktop-Only Warning View -->
+        <div id="mobile-warning-view"
+            class="flex flex-col items-center justify-center text-center min-h-[70vh] px-gutter py-xl"
+            style="display: none;">
+            <div class="relative mb-lg">
+                <div class="absolute inset-0 bg-primary/10 blur-3xl rounded-full"></div>
+                <span class="material-symbols-outlined text-primary text-7xl relative z-10">desktop_windows</span>
+            </div>
+            <h2 class="font-display text-3xl text-on-surface mb-md">Best Viewed on Desktop</h2>
+            <p class="text-on-surface-variant text-sm leading-relaxed mb-lg max-w-md">
+                This content is optimized for larger screens with full access to interactive features, code blocks,
+                diagrams, and quizzes. Please switch to a desktop or tablet for the best experience.
+            </p>
+            <button
+                class="bg-primary text-on-primary px-6 py-2.5 font-bold rounded-lg hover:bg-primary/95 transition-all font-label text-sm uppercase tracking-wide"
+                onclick="goHome()">Back to Home</button>
+        </div>
+
         <!-- 5. Author Profile View -->
         <div id="author-view" style="display: none;">
             <div class="max-w-5xl mx-auto px-8 py-12">
@@ -874,14 +893,18 @@
                                 </div>
                                 <h3 class="text-2xl font-headline font-bold mb-6">Research Papers &amp; Patents</h3>
                                 <div class="space-y-4">
-                                    <a href="https://www.researchgate.net/profile/Joel-Eapen-3" target="_blank" rel="noopener noreferrer" class="group/link block">
-                                        <h4 class="text-base font-label font-bold text-on-surface group-hover/link:text-primary transition-colors flex items-center gap-1.5">
+                                    <a href="https://www.researchgate.net/profile/Joel-Eapen-3" target="_blank"
+                                        rel="noopener noreferrer" class="group/link block">
+                                        <h4
+                                            class="text-base font-label font-bold text-on-surface group-hover/link:text-primary transition-colors flex items-center gap-1.5">
                                             <span>ResearchGate Profile</span>
                                             <span class="material-symbols-outlined text-sm">open_in_new</span>
                                         </h4>
                                     </a>
-                                    <a href="https://www.ijaresm.com/image-classification-of-white-blood-cells-using-deep-learning-models" target="_blank" rel="noopener noreferrer" class="group/link block">
-                                        <h4 class="text-base font-label font-bold text-on-surface group-hover/link:text-primary transition-colors flex items-center gap-1.5">
+                                    <a href="https://www.ijaresm.com/image-classification-of-white-blood-cells-using-deep-learning-models"
+                                        target="_blank" rel="noopener noreferrer" class="group/link block">
+                                        <h4
+                                            class="text-base font-label font-bold text-on-surface group-hover/link:text-primary transition-colors flex items-center gap-1.5">
                                             <span>WBC Classification Paper</span>
                                             <span class="material-symbols-outlined text-sm">open_in_new</span>
                                         </h4>
