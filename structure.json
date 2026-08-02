@@ -1550,29 +1550,24 @@
                     ]
                   },
                   {
-                    "name": ".env.example",
+                    "name": "4.0: README - Monitoring & Alerting System",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/.env.example"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/4.0-README.md"
                   },
                   {
-                    "name": "Architecture: Monitoring & Alerting System",
+                    "name": "4.1: Project Requirements",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/architecture.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/4.1-requirements.md"
                   },
                   {
-                    "name": "docker-compose.yml",
+                    "name": "4.2: Architecture Deep Dive",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/docker-compose.yml"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/4.2-architecture.md"
                   },
                   {
-                    "name": "Project 04: Monitoring & Alerting System",
+                    "name": "4.3: Step-by-Step Execution Guide",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/README.md"
-                  },
-                  {
-                    "name": "Requirements: Monitoring & Alerting System",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/requirements.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/4.3-how-to-execute-this-solution.md"
                   }
                 ]
               },
