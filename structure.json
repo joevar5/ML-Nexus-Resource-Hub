@@ -1550,6 +1550,11 @@
                     ]
                   },
                   {
+                    "name": ".env.example",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/.env.example"
+                  },
+                  {
                     "name": "4.0: README - Monitoring & Alerting System",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/4.0-README.md"
@@ -1568,6 +1573,21 @@
                     "name": "4.3: Step-by-Step Execution Guide",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/4.3-how-to-execute-this-solution.md"
+                  },
+                  {
+                    "name": "docker-compose.yml",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/docker-compose.yml"
+                  },
+                  {
+                    "name": "Project 04: Monitoring & Alerting System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/README.md"
+                  },
+                  {
+                    "name": "Requirements: Monitoring & Alerting System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/requirements.md"
                   }
                 ]
               },
@@ -1960,61 +1980,6 @@
                 "name": "Video Recommendation System System Design",
                 "type": "file",
                 "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Video Recommendation System.md"
-              }
-            ]
-          },
-          {
-            "name": "2. Search & Retrieval",
-            "type": "directory",
-            "children": [
-              {
-                "name": "YouTube Video Search System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/2. Search & Retrieval/YouTube Video Search.md"
-              }
-            ]
-          },
-          {
-            "name": "3. Ranking & Prediction",
-            "type": "directory",
-            "children": [
-              {
-                "name": "Ads Ranking System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/3. Ranking & Prediction/Ads Ranking System.md"
-              }
-            ]
-          },
-          {
-            "name": "4. Trust & Safety",
-            "type": "directory",
-            "children": [
-              {
-                "name": "Fraud Detection (Stripe) System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Fraud Detection (Stripe).md"
-              }
-            ]
-          },
-          {
-            "name": "5. Computer Vision",
-            "type": "directory",
-            "children": [
-              {
-                "name": "Object Detection System System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/5. Computer Vision/Object Detection System.md"
-              }
-            ]
-          },
-          {
-            "name": "6. Forecasting & Time Series",
-            "type": "directory",
-            "children": [
-              {
-                "name": "Demand Forecasting System Design",
-                "type": "file",
-                "path": "ML and GenAI System Design/MLSD/6. Forecasting & Time Series/Demand Forecasting.md"
               }
             ]
           },

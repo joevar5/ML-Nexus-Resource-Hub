@@ -3,6 +3,12 @@ const path = require('path');
 
 const IGNORED_DIRS = ['.git', '.github', 'node_modules', 'scripts', 'venv', '.pytest_cache', '__pycache__'];
 
+// Marker file name used to mark a folder as a "draft" (in-progress / not ready to publish).
+// Any directory that contains a file with this name will be skipped entirely by the indexer,
+// along with all of its contents. To publish a folder later, simply delete the marker file
+// and re-run `npm run build-index`.
+const DRAFT_MARKER = '.draft';
+
 const ALLOWED_EXTENSIONS = ['.md', '.py', '.js', '.json', '.yaml', '.yml', '.sh', '.txt', '.toml', '.ini', '.cfg', '.env', '.example'];
 const ALLOWED_EXACT_NAMES = ['Dockerfile'];
 
@@ -42,6 +48,17 @@ function extractTitle(filePath) {
         .join(' ');
 }
 
+// Returns true if the given directory contains a draft marker file,
+// meaning it (and everything inside it) should be excluded from the index.
+function isDraftDir(dirPath) {
+    try {
+        const entries = fs.readdirSync(dirPath);
+        return entries.includes(DRAFT_MARKER);
+    } catch (err) {
+        return false;
+    }
+}
+
 function scanDir(dirPath, relativeRoot = '') {
     const items = [];
     let files;
@@ -57,7 +74,7 @@ function scanDir(dirPath, relativeRoot = '') {
 
         const fullPath = path.join(dirPath, file);
         const relPath = relativeRoot ? path.join(relativeRoot, file) : file;
-        
+
         let stat;
         try {
             stat = fs.statSync(fullPath);
@@ -67,6 +84,10 @@ function scanDir(dirPath, relativeRoot = '') {
         }
 
         if (stat.isDirectory()) {
+            // Skip directories marked as draft (in-progress / not ready to publish)
+            if (isDraftDir(fullPath)) {
+                continue;
+            }
             const subItems = scanDir(fullPath, relPath);
             if (subItems.length > 0) {
                 items.push({
