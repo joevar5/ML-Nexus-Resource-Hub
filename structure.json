@@ -1439,6 +1439,17 @@
                     ]
                   },
                   {
+                    "name": "docker",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "docker-compose.yml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/docker/docker-compose.yml"
+                      }
+                    ]
+                  },
+                  {
                     "name": "grafana",
                     "type": "directory",
                     "children": [
@@ -1573,21 +1584,6 @@
                     "name": "4.3: Step-by-Step Execution Guide",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/4.3-how-to-execute-this-solution.md"
-                  },
-                  {
-                    "name": "docker-compose.yml",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/docker-compose.yml"
-                  },
-                  {
-                    "name": "Project 04: Monitoring & Alerting System",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/README.md"
-                  },
-                  {
-                    "name": "Requirements: Monitoring & Alerting System",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-04-monitoring-alerting/requirements.md"
                   }
                 ]
               },
