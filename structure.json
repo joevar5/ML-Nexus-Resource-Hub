@@ -1592,22 +1592,6 @@
                 "type": "directory",
                 "children": [
                   {
-                    "name": "docs",
-                    "type": "directory",
-                    "children": [
-                      {
-                        "name": "Deployment Guide: Production ML System",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/docs/DEPLOYMENT.md"
-                      },
-                      {
-                        "name": "Disaster Recovery Plan: Production ML System",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/docs/DISASTER_RECOVERY.md"
-                      }
-                    ]
-                  },
-                  {
                     "name": "kubernetes",
                     "type": "directory",
                     "children": [
@@ -1751,19 +1735,24 @@
                     "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/.env.example"
                   },
                   {
-                    "name": "Architecture Documentation: Production ML System",
+                    "name": "5.0: Production-Ready ML System (Capstone)",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/architecture.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/5.0-README.md"
                   },
                   {
-                    "name": "Project 05: Production-Ready ML System (Capstone)",
+                    "name": "5.1: Requirements Specification",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/README.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/5.1-requirements.md"
                   },
                   {
-                    "name": "Requirements Specification: Production-Ready ML System",
+                    "name": "5.2: Architecture Documentation",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/requirements.md"
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/5.2-architecture.md"
+                  },
+                  {
+                    "name": "5.3: Deployment & Recovery Guide",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/projects/project-05-production-ml-capstone/5.3-how-to-execute-and-deploy.md"
                   }
                 ]
               },
