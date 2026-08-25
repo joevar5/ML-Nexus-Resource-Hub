@@ -202,14 +202,12 @@
                     Progress</span>
             </button>
             <button onclick="navigateToCategory('Projects')"
-                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
+                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
                 data-category="Projects">
                 <div class="flex items-center gap-2 overflow-hidden flex-1">
-                    <span class="material-symbols-outlined text-xl flex-shrink-0">lock</span>
+                    <span class="material-symbols-outlined text-xl flex-shrink-0">terminal</span>
                     <span class="font-label text-sm truncate">Projects</span>
                 </div>
-                <span
-                    class="font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
             </button>
             <button onclick="navigateToCategory('System Design')"
                 class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
@@ -476,7 +474,7 @@
 
                             <!-- Node 03: ML &amp; GenAI Projects (RIGHT) -->
                             <div onclick="navigateToCategory('Projects')"
-                                class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
+                                class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
                                 <!-- Running Border Line -->
                                 <svg class="absolute inset-0 w-full h-full pointer-events-none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -489,8 +487,8 @@
 
                                 <!-- Center badge -->
                                 <div
-                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-highest text-on-surface-variant/80 border border-outline-variant flex items-center justify-center shadow z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-xl">lock</span>
+                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-xl">terminal</span>
                                 </div>
 
                                 <!-- Right side text -->
@@ -498,7 +496,7 @@
                                     <h3 class="font-display text-xl text-on-surface font-bold flex items-center gap-2">
                                         03. ML &amp; GenAI Projects
                                         <span
-                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Live</span>
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
                                         From RAG pipelines to fine-tuning Llama-3, build end-to-end production examples
@@ -846,43 +844,48 @@
                     </div>
                     <div class="grid md:grid-cols-3 gap-8">
                         <div
-                            class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left">
+                            class="explore-track-card p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary flex flex-col justify-between group text-left">
                             <div>
                                 <div
-                                    class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                                    class="explore-track-icon w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6">
                                     <span class="material-symbols-outlined text-3xl">developer_board</span>
                                 </div>
-                                <h3 class="text-2xl font-headline font-bold mb-3">ML and GenAI Systems Design</h3>
+                                <h3 class="text-2xl font-headline font-bold mb-3">ML Learning Track</h3>
                                 <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
-                                    Deep dives into building scalable, cost-efficient, and robust architectures for
-                                    large language models and deep neural networks. Includes system design case studies
-                                    and architectural blueprints.
+                                    A structured track for hands-on ML — infrastructure lessons paired with
+                                    production-level system design you can apply in real-world development.
                                 </p>
                             </div>
-                            <button onclick="navigateToCategory('System Design')"
-                                class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label">
-                                Go to System Design
-                            </button>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="navigateToCategory('Infrastructure')" class="explore-track-btn">
+                                    <span class="material-symbols-outlined text-base">memory</span>
+                                    <span>Infrastructure</span>
+                                    <span class="material-symbols-outlined text-sm explore-track-btn-arrow">arrow_forward</span>
+                                </button>
+                                <button onclick="navigateToCategory('System Design')" class="explore-track-btn">
+                                    <span class="material-symbols-outlined text-base">schema</span>
+                                    <span>System Design</span>
+                                    <span class="material-symbols-outlined text-sm explore-track-btn-arrow">arrow_forward</span>
+                                </button>
+                            </div>
                         </div>
                         <div
                             class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left">
                             <div>
                                 <div
                                     class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-3xl">data_object</span>
+                                    <span class="material-symbols-outlined text-3xl">terminal</span>
                                 </div>
-                                <h3 class="text-2xl font-headline font-bold mb-3">JSON Trace</h3>
+                                <h3 class="text-2xl font-headline font-bold mb-3">Projects</h3>
                                 <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
-                                    Experience JSON Trace: Lift off with the next-generation JSON visualizer. A highly
-                                    interactive tool built to parse, format, and interactively trace JSON structures.
-                                    Received high traffic and user engagement on Netlify.
+                                    Hands-on, production-grade builds spanning the full ML lifecycle — an end-to-end
+                                    pipeline covering model APIs, Kubernetes serving, and monitoring.
                                 </p>
                             </div>
-                            <a href="https://json-trace.netlify.app/" target="_blank" rel="noopener noreferrer"
-                                class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label flex items-center gap-1.5">
-                                <span>Experience JSON Trace</span>
-                                <span class="material-symbols-outlined text-sm">open_in_new</span>
-                            </a>
+                            <button onclick="navigateToCategory('Projects')"
+                                class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label">
+                                Go to Projects
+                            </button>
                         </div>
                         <div
                             class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left">
@@ -958,6 +961,53 @@
             </div>
         </div>
 
+        <!-- 6. ML and GenAI Projects View -->
+        <div id="projects-view" style="display: none;">
+            <div class="max-w-6xl mx-auto px-8 py-12">
+                <div class="projects-hero mb-16 -mx-8 px-8 pt-4 pb-2">
+                    <div class="projects-hero-orb projects-hero-orb-1"></div>
+                    <div class="projects-hero-orb projects-hero-orb-2"></div>
+                    <div class="projects-fade-item max-w-2xl" style="animation-delay: 0s;">
+                        <span
+                            class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">Portfolio</span>
+                        <h1 class="text-5xl font-headline font-bold text-on-background mb-4">Projects</h1>
+                        <p class="text-lg font-body text-on-surface-variant leading-relaxed">
+                            Production-grade projects built for enterprise and real-world use — from production ML
+                            systems to smaller side experiments.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="projects-fade-item mb-6 max-w-2xl" style="animation-delay: 0.06s;">
+                    <span
+                        class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">Hands-on
+                        Builds</span>
+                    <h2 class="text-3xl font-headline font-bold text-on-background mb-3">ML and GenAI Builds</h2>
+                    <p class="text-base font-body text-on-surface-variant leading-relaxed">
+                        Real-world builds that put ML and GenAI concepts into production. Pick a project, follow the
+                        linked track, and ship something working end-to-end.
+                    </p>
+                </div>
+
+                <div class="projects-fade-item flex flex-wrap gap-2 mb-8" id="projects-filter-bar"
+                    data-filter-group="#projects-live-grid" style="animation-delay: 0.12s;"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20" id="projects-live-grid"></div>
+
+                <div class="projects-fade-item mb-8 max-w-2xl" style="animation-delay: 0.18s;">
+                    <span
+                        class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">Community
+                        & Ideas</span>
+                    <h2 class="text-3xl font-headline font-bold text-on-background mb-3">Side Experiments</h2>
+                    <p class="text-base font-body text-on-surface-variant leading-relaxed">
+                        Ideas born from curiosity, and from moments of getting stuck on a real problem — seeing
+                        something interesting, hitting a wall, and thinking "let me try building that myself."
+                        Lighter in scope than the main project track, and a good place to experiment with a single
+                        new tool or technique.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="projects-side-grid"></div>
+            </div>
+        </div>
 
     </main>
 

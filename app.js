@@ -117,12 +117,42 @@ function updateReaderDoneBtn() {
     }
 }
 
+// `customView`, when set, names a hand-built view (see showProjectsView etc.) that this
+// category opens to instead of loading a markdown file — used for card/UI-driven sections
+// that aren't backed by content files at all.
 const categories = [
     { name: 'Infrastructure', dir: 'AI Infrastructure Engineer', icon: 'memory' },
-    { name: 'Projects', dir: 'ML and GenAI Projects', icon: 'terminal' },
+    { name: 'Projects', dir: 'ML and GenAI Projects', icon: 'terminal', customView: 'projects' },
     { name: 'System Design', dir: 'ML and GenAI System Design', icon: 'schema' },
     { name: 'Paper Analysis', dir: 'Research Paper Analysis', icon: 'description' }
 ];
+
+// Card data for the hand-built Projects view (#projects). Edit this array to add/remove cards —
+// no markdown files involved, so layout and behavior stay fully under UI control.
+const mlProjects = [
+    {
+        title: 'End-to-End ML Pipeline: Phase 1 Project Track',
+        description: 'Build a complete ML pipeline from data ingestion through deployment, following the Phase 1 project track — model API, Kubernetes serving, pipeline tracking, monitoring, and the production capstone.',
+        icon: 'rocket_launch',
+        status: 'Live',
+        tags: ['mlops', 'pipelines', 'deployment'],
+        link: 'AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/phase-1-learning-plan.md'
+    }
+];
+
+const sideProjects = [
+    {
+        title: 'JSON Trace',
+        description: 'Lift off with the next-generation JSON visualizer. A highly interactive tool built to parse, format, and interactively trace JSON structures. Received high traffic and user engagement on Netlify.',
+        icon: 'data_object',
+        status: 'Live',
+        tags: ['tools'],
+        link: 'https://json-trace.netlify.app/',
+        external: true
+    }
+];
+
+const PROJECT_TAG_LABELS = { mlops: 'MLOps', pipelines: 'Pipelines', deployment: 'Deployment', idea: 'Idea', tools: 'Tools' };
 
 // Check if the current device is mobile
 // Uses both User Agent detection AND viewport width for maximum reliability
@@ -438,8 +468,8 @@ function selectCategory(categoryName) {
 
 // Navigate dynamically to the first file of a category via URL hash
 function navigateToCategory(categoryName) {
-    if (categoryName === 'Projects' || categoryName === 'Paper Analysis') {
-        const displayName = categoryName === 'Projects' ? 'ML & GenAI Projects' : 'Research Paper Analysis';
+    if (categoryName === 'Paper Analysis') {
+        const displayName = 'Research Paper Analysis';
         showToast(`The ${displayName} path is currently locked.`, 'warning');
         return;
     }
@@ -450,6 +480,11 @@ function navigateToCategory(categoryName) {
     }
     const cat = categories.find(c => c.name === categoryName);
     if (!cat) return;
+
+    if (cat.customView) {
+        window.location.hash = cat.customView;
+        return;
+    }
 
     const targetNode = filesTree.find(node => node.name === cat.dir);
     if (targetNode && targetNode.children) {
@@ -799,6 +834,11 @@ function handleRouting() {
         return;
     }
 
+    if (decodedPath === 'projects') {
+        showProjectsView();
+        return;
+    }
+
     loadFile(decodedPath);
 }
 
@@ -861,6 +901,106 @@ function showAuthorPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// Navigate from a hand-built view (e.g. Projects cards) into a real content file
+function openDoc(path) {
+    if (isMobile()) {
+        showMobileWarning();
+        return;
+    }
+    window.location.hash = encodeURIComponent(path);
+}
+
+// Build a project card's inner HTML from its data object (see mlProjects / sideProjects).
+// `delay` staggers the card's entrance animation (seconds).
+function projectCardHtml(p, delay = 0) {
+    const isLive = p.status === 'Live';
+    const badgeClasses = isLive
+        ? 'bg-primary/10 text-primary border border-primary/30'
+        : 'bg-amber-500/10 text-amber-500 border border-amber-500/30';
+    const iconWrapClasses = isLive ? 'bg-primary-container/10 text-primary' : 'bg-amber-500/10 text-amber-500';
+
+    let ctaHtml = '';
+    if (p.external && p.link) {
+        ctaHtml = `<a href="${p.link}" target="_blank" rel="noopener noreferrer" class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label flex items-center gap-1.5">
+                <span>Learn More</span>
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+            </a>`;
+    } else if (p.link) {
+        const escapedLink = p.link.replace(/'/g, "\\'");
+        ctaHtml = `<button onclick="openDoc('${escapedLink}')" class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label flex items-center gap-1.5">
+                <span>Learn More</span>
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>`;
+    }
+
+    return `
+        <div class="project-card projects-fade-item p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left" data-tags="${p.tags.join(',')}" style="animation-delay: ${delay}s;">
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <div class="project-card-icon w-12 h-12 rounded-xl ${iconWrapClasses} flex items-center justify-center">
+                        <span class="material-symbols-outlined text-3xl">${p.icon}</span>
+                    </div>
+                    <span class="font-label text-[9px] ${badgeClasses} px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">${p.status}</span>
+                </div>
+                <h3 class="text-2xl font-headline font-bold mb-3">${escapeHtml(p.title)}</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">${escapeHtml(p.description)}</p>
+            </div>
+            ${ctaHtml}
+        </div>`;
+}
+
+// Populate the Projects view's filter bar and card grids from mlProjects / sideProjects
+function renderProjectsView() {
+    const liveGrid = document.getElementById('projects-live-grid');
+    const sideGrid = document.getElementById('projects-side-grid');
+    const filterBar = document.getElementById('projects-filter-bar');
+
+    liveGrid.innerHTML = mlProjects.map((p, i) => projectCardHtml(p, 0.2 + i * 0.08)).join('');
+    sideGrid.innerHTML = sideProjects.map((p, i) => projectCardHtml(p, 0.2 + i * 0.08)).join('');
+
+    const allTags = [...new Set(mlProjects.flatMap(p => p.tags))];
+    filterBar.innerHTML = ['all', ...allTags].map(tag => {
+        const label = tag === 'all' ? 'All' : (PROJECT_TAG_LABELS[tag] || tag);
+        const className = tag === 'all' ? FILTER_TAG_ACTIVE : FILTER_TAG_INACTIVE;
+        return `<button data-tag="${tag}" class="${className}">${label}</button>`;
+    }).join('');
+
+    setupProjectCardFilters(document.getElementById('projects-view'));
+}
+
+// Display the hand-built ML and GenAI Projects view
+function showProjectsView() {
+    currentFilePath = '';
+
+    document.getElementById('home-view').style.display = 'none';
+    document.getElementById('reader-view').style.display = 'none';
+    document.getElementById('search-view').style.display = 'none';
+    document.getElementById('error-view').style.display = 'none';
+    document.getElementById('author-view').style.display = 'none';
+    document.getElementById('mobile-warning-view').style.display = 'none';
+    document.getElementById('projects-view').style.display = 'block';
+    document.getElementById('sidebar-tree-container').style.display = 'none';
+
+    document.querySelectorAll('.tree-file').forEach(el => {
+        el.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+    });
+
+    const catBtns = document.querySelectorAll('.cat-btn');
+    catBtns.forEach(btn => {
+        if (btn.dataset.category === 'Projects') {
+            btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all text-left";
+        } else {
+            btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
+        }
+    });
+    document.getElementById('about-author-link').className = 'flex items-center gap-md p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors';
+
+    renderProjectsView();
+
+    document.getElementById('progress-bar').style.width = '0%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // Parsing custom alert quote blocks
 function parseAlertBlocks(markdown) {
     const alertRegex = /^>\s*\[\!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*\n((?:^>.*\n?)*)/gim;
@@ -886,6 +1026,37 @@ function parseAlertBlocks(markdown) {
 }
 
 // Copy buttons code blocks
+// Wire up tag-filter bars for project card grids embedded in markdown.
+// A filter bar is a container with [data-filter-group="<selector of the card grid>"],
+// holding buttons with [data-tag="..."]. Cards inside the grid carry [data-tags="a,b,c"].
+// Clicking a tag button shows only cards whose data-tags include it ("all" resets).
+const FILTER_TAG_ACTIVE = 'filter-tag inline-flex items-center px-3 py-1.5 rounded-full text-xs font-label font-semibold border border-primary bg-primary text-on-primary transition-colors cursor-pointer';
+const FILTER_TAG_INACTIVE = 'filter-tag inline-flex items-center px-3 py-1.5 rounded-full text-xs font-label font-semibold border border-outline-variant text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer';
+
+function setupProjectCardFilters(scope) {
+    scope.querySelectorAll('[data-filter-group]').forEach(group => {
+        const cardsContainer = scope.querySelector(group.dataset.filterGroup);
+        if (!cardsContainer) return;
+
+        const cards = cardsContainer.querySelectorAll('[data-tags]');
+        const buttons = group.querySelectorAll('[data-tag]');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                buttons.forEach(b => b.className = FILTER_TAG_INACTIVE);
+                btn.className = FILTER_TAG_ACTIVE;
+
+                const tag = btn.dataset.tag;
+                cards.forEach(card => {
+                    const tags = (card.dataset.tags || '').split(',').map(t => t.trim());
+                    const show = tag === 'all' || tags.includes(tag);
+                    card.classList.toggle('project-card-hidden', !show);
+                });
+            });
+        });
+    });
+}
+
 function addCopyButtons() {
     const preBlocks = document.querySelectorAll('.markdown-body pre');
     preBlocks.forEach(pre => {
@@ -1625,8 +1796,8 @@ async function loadFile(filePath) {
     // Auto switch category matching the loading file path
     const matchedCat = categories.find(c => filePath.startsWith(c.dir));
     if (matchedCat) {
-        if (matchedCat.name === 'Projects' || matchedCat.name === 'Paper Analysis') {
-            const displayName = matchedCat.name === 'Projects' ? 'ML & GenAI Projects' : 'Research Paper Analysis';
+        if (matchedCat.name === 'Paper Analysis') {
+            const displayName = 'Research Paper Analysis';
             showToast(`The ${displayName} path is currently locked.`, 'warning');
             goHome();
             return;
@@ -1659,16 +1830,14 @@ async function loadFile(filePath) {
 
         const span = document.createElement('span');
         const isLast = index === parts.length - 1;
-        let cleanPart = part;
+
         if (isLast) {
-            const lastDot = part.lastIndexOf('.');
-            if (lastDot !== -1) {
-                cleanPart = part.substring(0, lastDot);
-            }
+            const matchedFile = flattenedFiles.find(f => f.path === pathClosure);
+            span.innerText = matchedFile ? matchedFile.name : part;
         } else {
-            cleanPart = part.endsWith('.md') ? part.substring(0, part.length - 3) : part;
+            const cleanPart = part.endsWith('.md') ? part.substring(0, part.length - 3) : part;
+            span.innerText = cleanPart.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
         }
-        span.innerText = cleanPart.split(/[-_]+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
         if (isLast) {
             span.className = 'text-on-surface font-semibold';
@@ -1742,6 +1911,7 @@ async function loadFile(filePath) {
 
             addCopyButtons();
             fixRelativeImages();
+            setupProjectCardFilters(markdownContentDiv);
 
             // Wait for mermaid to finish rendering, then init lightbox
             setTimeout(() => { initZoomLightbox(); }, 500);
@@ -2026,9 +2196,11 @@ function handleSearch(query) {
     function isCursorViewActive() {
         const hv = document.getElementById('home-view');
         const av = document.getElementById('author-view');
+        const pv = document.getElementById('projects-view');
         const isHome = hv && hv.style.display !== 'none';
         const isAuthor = av && av.style.display !== 'none';
-        return isHome || isAuthor;
+        const isProjects = pv && pv.style.display !== 'none';
+        return isHome || isAuthor || isProjects;
     }
 
     function enableCursor() {
@@ -2054,7 +2226,7 @@ function handleSearch(query) {
     });
 
     // Expand ring on interactive elements
-    const hoverTargets = 'button, a, [onclick], .roadmap-row, .hero-cta-primary';
+    const hoverTargets = 'button, a, [onclick], .roadmap-row, .hero-cta-primary, .project-card, .filter-tag';
     document.addEventListener('mouseover', e => {
         if (e.target.closest(hoverTargets) && isCursorViewActive()) {
             ring.classList.add('expanded');

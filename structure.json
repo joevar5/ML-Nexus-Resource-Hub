@@ -1896,38 +1896,6 @@
     ]
   },
   {
-    "name": "ML and GenAI Projects",
-    "type": "directory",
-    "children": [
-      {
-        "name": "RecommedX",
-        "type": "directory",
-        "children": [
-          {
-            "name": "RecommedX - Intelligent Recommendation Engine",
-            "type": "file",
-            "path": "ML and GenAI Projects/RecommedX/README.md"
-          },
-          {
-            "name": "recommendation_engine.py",
-            "type": "file",
-            "path": "ML and GenAI Projects/RecommedX/recommendation_engine.py"
-          },
-          {
-            "name": "requirements.txt",
-            "type": "file",
-            "path": "ML and GenAI Projects/RecommedX/requirements.txt"
-          }
-        ]
-      },
-      {
-        "name": "Test",
-        "type": "file",
-        "path": "ML and GenAI Projects/test.md"
-      }
-    ]
-  },
-  {
     "name": "ML and GenAI System Design",
     "type": "directory",
     "children": [
