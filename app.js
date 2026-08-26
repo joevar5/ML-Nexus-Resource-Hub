@@ -131,12 +131,21 @@ const categories = [
 // no markdown files involved, so layout and behavior stay fully under UI control.
 const mlProjects = [
     {
-        title: 'End-to-End ML Pipeline: Phase 1 Project Track',
-        description: 'Build a complete ML pipeline from data ingestion through deployment, following the Phase 1 project track — model API, Kubernetes serving, pipeline tracking, monitoring, and the production capstone.',
+        title: 'MLForge',
+        description: 'A hands-on project that takes a model from a notebook to a real production server — its own FastAPI service, served on Kubernetes, every pipeline run tracked, and monitored like production, end to end.',
         icon: 'rocket_launch',
         status: 'Live',
         tags: ['mlops', 'pipelines', 'deployment'],
-        link: 'AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/phase-1-learning-plan.md'
+        link: 'AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/phase-1-learning-plan.md',
+        ctaLabel: 'See the Full Journey',
+        featured: true,
+        journey: [
+            { icon: 'api', label: 'Model API' },
+            { icon: 'hub', label: 'Kubernetes' },
+            { icon: 'timeline', label: 'Pipeline' },
+            { icon: 'monitoring', label: 'Monitoring' },
+            { icon: 'military_tech', label: 'Capstone' }
+        ]
     }
 ];
 
@@ -917,24 +926,42 @@ function projectCardHtml(p, delay = 0) {
     const badgeClasses = isLive
         ? 'bg-primary/10 text-primary border border-primary/30'
         : 'bg-amber-500/10 text-amber-500 border border-amber-500/30';
-    const iconWrapClasses = isLive ? 'bg-primary-container/10 text-primary' : 'bg-amber-500/10 text-amber-500';
+    const iconWrapClasses = p.featured
+        ? 'bg-gradient-to-br from-primary to-indigo-500 text-white shadow-lg shadow-primary/30'
+        : (isLive ? 'bg-primary-container/10 text-primary' : 'bg-amber-500/10 text-amber-500');
 
+    const ctaLabel = p.ctaLabel || 'Learn More';
     let ctaHtml = '';
     if (p.external && p.link) {
         ctaHtml = `<a href="${p.link}" target="_blank" rel="noopener noreferrer" class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label flex items-center gap-1.5">
-                <span>Learn More</span>
+                <span>${escapeHtml(ctaLabel)}</span>
                 <span class="material-symbols-outlined text-sm">open_in_new</span>
             </a>`;
     } else if (p.link) {
         const escapedLink = p.link.replace(/'/g, "\\'");
         ctaHtml = `<button onclick="openDoc('${escapedLink}')" class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label flex items-center gap-1.5">
-                <span>Learn More</span>
+                <span>${escapeHtml(ctaLabel)}</span>
                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
             </button>`;
     }
 
+    let journeyHtml = '';
+    if (Array.isArray(p.journey) && p.journey.length) {
+        const steps = p.journey.map((step, i) => `
+                    <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                        <div class="flex flex-col items-center gap-1.5 shrink-0">
+                            <div class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[15px]">${step.icon}</span>
+                            </div>
+                            <span class="text-[10px] font-label text-on-surface-variant text-center leading-tight whitespace-nowrap">${escapeHtml(step.label)}</span>
+                        </div>
+                        ${i < p.journey.length - 1 ? '<div class="h-px flex-1 bg-outline-variant mb-4"></div>' : ''}
+                    </div>`).join('');
+        journeyHtml = `<div class="flex items-start mb-6">${steps}</div>`;
+    }
+
     return `
-        <div class="project-card projects-fade-item p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left" data-tags="${p.tags.join(',')}" style="animation-delay: ${delay}s;">
+        <div class="project-card projects-fade-item p-8 bg-surface-container-low rounded-2xl border ${p.featured ? 'border-primary/40' : 'border-outline-variant'} hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left" data-tags="${p.tags.join(',')}" style="animation-delay: ${delay}s;">
             <div>
                 <div class="flex items-center justify-between mb-6">
                     <div class="project-card-icon w-12 h-12 rounded-xl ${iconWrapClasses} flex items-center justify-center">
@@ -944,6 +971,7 @@ function projectCardHtml(p, delay = 0) {
                 </div>
                 <h3 class="text-2xl font-headline font-bold mb-3">${escapeHtml(p.title)}</h3>
                 <p class="text-on-surface-variant text-sm leading-relaxed mb-6">${escapeHtml(p.description)}</p>
+                ${journeyHtml}
             </div>
             ${ctaHtml}
         </div>`;
