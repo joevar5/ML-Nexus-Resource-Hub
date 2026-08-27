@@ -135,9 +135,8 @@ const mlProjects = [
         description: 'A hands-on project that takes a model from a notebook to a real production server — its own FastAPI service, served on Kubernetes, every pipeline run tracked, and monitored like production, end to end.',
         icon: 'rocket_launch',
         status: 'Live',
-        tags: ['mlops', 'pipelines', 'deployment'],
+        tags: ['classical-ml'],
         link: 'AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations/phase-1-learning-plan.md',
-        ctaLabel: 'See the Full Journey',
         featured: true,
         journey: [
             { icon: 'api', label: 'Model API' },
@@ -146,6 +145,14 @@ const mlProjects = [
             { icon: 'monitoring', label: 'Monitoring' },
             { icon: 'military_tech', label: 'Capstone' }
         ]
+    },
+    {
+        title: 'Retrievo',
+        description: 'An enterprise-grade Retrieval-Augmented Generation system for querying internal document repositories at scale: AI-based document parsing and chunking, vector-based indexing, CLIP-powered retrieval, optional RAFT fine-tuning, and a full 4-part evaluation framework to keep answers grounded and cited.',
+        icon: 'find_in_page',
+        status: 'Live',
+        tags: ['genai'],
+        link: 'ML and GenAI System Design/GENAI SD/Retrieval-Augmented Generation.md'
     }
 ];
 
@@ -161,7 +168,7 @@ const sideProjects = [
     }
 ];
 
-const PROJECT_TAG_LABELS = { mlops: 'MLOps', pipelines: 'Pipelines', deployment: 'Deployment', idea: 'Idea', tools: 'Tools' };
+const PROJECT_TAG_LABELS = { 'classical-ml': 'Classical ML', genai: 'Gen-AI', idea: 'Idea', tools: 'Tools' };
 
 // Check if the current device is mobile
 // Uses both User Agent detection AND viewport width for maximum reliability
@@ -921,11 +928,13 @@ function openDoc(path) {
 
 // Build a project card's inner HTML from its data object (see mlProjects / sideProjects).
 // `delay` staggers the card's entrance animation (seconds).
-function projectCardHtml(p, delay = 0) {
+function projectCardHtml(p, delay = 0, isSideProject = false) {
     const isLive = p.status === 'Live';
     const badgeClasses = isLive
         ? 'bg-primary/10 text-primary border border-primary/30'
         : 'bg-amber-500/10 text-amber-500 border border-amber-500/30';
+    const statusIcon = isLive ? 'bolt' : 'hourglass_top';
+    const badgeTitle = isSideProject ? `${p.status} Experiment` : p.status;
     const iconWrapClasses = p.featured
         ? 'bg-gradient-to-br from-primary to-indigo-500 text-white shadow-lg shadow-primary/30'
         : (isLive ? 'bg-primary-container/10 text-primary' : 'bg-amber-500/10 text-amber-500');
@@ -933,13 +942,13 @@ function projectCardHtml(p, delay = 0) {
     const ctaLabel = p.ctaLabel || 'Learn More';
     let ctaHtml = '';
     if (p.external && p.link) {
-        ctaHtml = `<a href="${p.link}" target="_blank" rel="noopener noreferrer" class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label flex items-center gap-1.5">
+        ctaHtml = `<a href="${p.link}" target="_blank" rel="noopener noreferrer" class="self-start px-4 py-2 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-xs font-label flex items-center gap-1.5">
                 <span>${escapeHtml(ctaLabel)}</span>
                 <span class="material-symbols-outlined text-sm">open_in_new</span>
             </a>`;
     } else if (p.link) {
         const escapedLink = p.link.replace(/'/g, "\\'");
-        ctaHtml = `<button onclick="openDoc('${escapedLink}')" class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label flex items-center gap-1.5">
+        ctaHtml = `<button onclick="openDoc('${escapedLink}')" class="self-start px-4 py-2 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-xs font-label flex items-center gap-1.5">
                 <span>${escapeHtml(ctaLabel)}</span>
                 <span class="material-symbols-outlined text-sm">arrow_forward</span>
             </button>`;
@@ -961,16 +970,18 @@ function projectCardHtml(p, delay = 0) {
     }
 
     return `
-        <div class="project-card projects-fade-item p-8 bg-surface-container-low rounded-2xl border ${p.featured ? 'border-primary/40' : 'border-outline-variant'} hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left" data-tags="${p.tags.join(',')}" style="animation-delay: ${delay}s;">
+        <div class="project-card projects-fade-item p-6 bg-surface-container-low rounded-2xl border ${p.featured ? 'border-primary/40' : 'border-outline-variant'} hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left" data-tags="${p.tags.join(',')}" style="animation-delay: ${delay}s;">
             <div>
-                <div class="flex items-center justify-between mb-6">
-                    <div class="project-card-icon w-12 h-12 rounded-xl ${iconWrapClasses} flex items-center justify-center">
-                        <span class="material-symbols-outlined text-3xl">${p.icon}</span>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="project-card-icon w-10 h-10 rounded-xl ${iconWrapClasses} flex items-center justify-center">
+                        <span class="material-symbols-outlined text-xl">${p.icon}</span>
                     </div>
-                    <span class="font-label text-[9px] ${badgeClasses} px-2 py-0.5 rounded-full uppercase font-bold tracking-wider">${p.status}</span>
+                    <span class="w-6 h-6 rounded-full ${badgeClasses} flex items-center justify-center" title="${badgeTitle}">
+                        <span class="material-symbols-outlined text-sm">${statusIcon}</span>
+                    </span>
                 </div>
-                <h3 class="text-2xl font-headline font-bold mb-3">${escapeHtml(p.title)}</h3>
-                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">${escapeHtml(p.description)}</p>
+                <h3 class="text-lg font-headline font-bold mb-2">${escapeHtml(p.title)}</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-4">${escapeHtml(p.description)}</p>
                 ${journeyHtml}
             </div>
             ${ctaHtml}
@@ -984,7 +995,7 @@ function renderProjectsView() {
     const filterBar = document.getElementById('projects-filter-bar');
 
     liveGrid.innerHTML = mlProjects.map((p, i) => projectCardHtml(p, 0.2 + i * 0.08)).join('');
-    sideGrid.innerHTML = sideProjects.map((p, i) => projectCardHtml(p, 0.2 + i * 0.08)).join('');
+    sideGrid.innerHTML = sideProjects.map((p, i) => projectCardHtml(p, 0.2 + i * 0.08, true)).join('');
 
     const allTags = [...new Set(mlProjects.flatMap(p => p.tags))];
     filterBar.innerHTML = ['all', ...allTags].map(tag => {

@@ -1511,8 +1511,9 @@
             transform: rotate(-6deg) scale(1.12);
         }
         #projects-view .project-card.project-card-hidden {
-            opacity: 0;
-            transform: scale(0.92) translateY(6px);
+            animation: none !important;
+            opacity: 0 !important;
+            transform: scale(0.92) translateY(6px) !important;
             pointer-events: none;
             position: absolute;
         }

@@ -1907,6 +1907,11 @@
             "name": "Gmail Smart Compose System Design",
             "type": "file",
             "path": "ML and GenAI System Design/GENAI SD/Gmail Smart Compose.md"
+          },
+          {
+            "name": "Retrieval-Augmented Generation (RAG) System Design",
+            "type": "file",
+            "path": "ML and GenAI System Design/GENAI SD/Retrieval-Augmented Generation.md"
           }
         ]
       },
