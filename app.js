@@ -189,6 +189,7 @@ function showMobileWarning() {
     document.getElementById('search-view').style.display = 'none';
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
+    document.getElementById('projects-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
     document.getElementById('mobile-warning-view').style.display = 'flex';
     document.getElementById('progress-bar').style.width = '0%';
@@ -868,6 +869,7 @@ function goHome() {
     document.getElementById('search-view').style.display = 'none';
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
+    document.getElementById('projects-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
     document.getElementById('mobile-warning-view').style.display = 'none';
 
@@ -896,6 +898,7 @@ function showAuthorPage() {
     document.getElementById('search-view').style.display = 'none';
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'block';
+    document.getElementById('projects-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
     document.getElementById('mobile-warning-view').style.display = 'none';
 
@@ -1827,6 +1830,7 @@ async function loadFile(filePath) {
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
     document.getElementById('mobile-warning-view').style.display = 'none';
+    document.getElementById('projects-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'block';
 
     // Reset About the Author link styles
