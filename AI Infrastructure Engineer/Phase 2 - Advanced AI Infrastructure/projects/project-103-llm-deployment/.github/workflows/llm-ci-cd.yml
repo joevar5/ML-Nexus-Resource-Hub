@@ -1,0 +1,104 @@
+name: LLM Platform CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # TODO: Lint and format check
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install black flake8 mypy
+      - name: Run black
+        run: black --check src/ tests/
+      - name: Run flake8
+        run: flake8 src/ tests/
+      - name: Run mypy
+        run: mypy src/
+
+  # TODO: Run tests
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio
+      - name: Run tests
+        run: |
+          pytest tests/ --cov=src --cov-report=xml
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+
+  # TODO: Build Docker image
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in to registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  # TODO: Deploy to staging (on main branch)
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure kubectl
+        run: |
+          # TODO: Add kubectl configuration
+          echo "Configure kubectl for staging cluster"
+      - name: Deploy to staging
+        run: |
+          # TODO: Add deployment commands
+          kubectl apply -f kubernetes/
+          kubectl rollout status deployment/llm-server
+
+  # TODO: Run integration tests
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run integration tests
+        run: |
+          # TODO: Add integration test commands
+          echo "Running integration tests"

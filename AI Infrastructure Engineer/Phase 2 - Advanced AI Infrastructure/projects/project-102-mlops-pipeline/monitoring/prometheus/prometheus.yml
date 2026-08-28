@@ -1,0 +1,122 @@
+# Prometheus Configuration for MLOps Pipeline Monitoring
+
+global:
+  scrape_interval: 15s  # How often to scrape targets
+  evaluation_interval: 15s  # How often to evaluate rules
+  external_labels:
+    cluster: 'mlops-cluster'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # TODO: Add Alertmanager endpoint
+          # - alertmanager:9093
+
+# Rule files for alerts
+rule_files:
+  # TODO: Add alert rules files
+  # - "alerts/*.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # MLflow tracking server metrics
+  - job_name: 'mlflow'
+    static_configs:
+      - targets: ['mlflow:5000']
+    metrics_path: '/metrics'
+
+  # Model server metrics (Kubernetes service discovery)
+  - job_name: 'model-server'
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - default
+    relabel_configs:
+      # Only scrape pods with prometheus.io/scrape annotation
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+
+      # Use port from annotation
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        target_label: __address__
+        regex: ([^:]+)(?::\d+)?
+        replacement: $1:8000
+
+      # Use path from annotation
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+
+      # Add pod labels
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        target_label: app
+      - source_labels: [__meta_kubernetes_pod_label_version]
+        target_label: version
+
+  # Airflow metrics
+  - job_name: 'airflow'
+    static_configs:
+      - targets:
+        # TODO: Configure Airflow metrics endpoint
+        # - 'airflow-webserver:8080'
+        # - 'airflow-scheduler:8080'
+    metrics_path: '/admin/metrics'
+
+  # PostgreSQL metrics (for MLflow and Airflow databases)
+  - job_name: 'postgres'
+    static_configs:
+      - targets:
+        # TODO: Add PostgreSQL exporter
+        # - 'postgres-exporter:9187'
+
+  # Node metrics (Kubernetes nodes)
+  - job_name: 'kubernetes-nodes'
+    kubernetes_sd_configs:
+      - role: node
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_node_name]
+        target_label: node
+
+  # Kubernetes API server
+  - job_name: 'kubernetes-apiserver'
+    kubernetes_sd_configs:
+      - role: endpoints
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: default;kubernetes;https
+
+  # Custom metrics for model performance
+  # TODO: Add custom metrics exporters
+  # - job_name: 'model-performance-metrics'
+  #   static_configs:
+  #     - targets: ['model-metrics-exporter:9090']
+
+# TODO: Add remote write configuration for long-term storage
+# remote_write:
+#   - url: "http://thanos:10902/api/v1/receive"
+#   - url: "https://prometheus-remote-storage.example.com/api/v1/write"
+
+# TODO: Add remote read configuration
+# remote_read:
+#   - url: "http://thanos:10902/api/v1/receive"

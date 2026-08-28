@@ -1,0 +1,341 @@
+# Kubernetes Deployment for ML Model Serving
+# This file defines how to deploy the model serving application on Kubernetes
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # TODO: Set deployment name
+  # Convention: {app-name}-deployment
+  name: ml-model-serving-deployment
+
+  # TODO: Add labels for organization and selection
+  # Labels are key-value pairs for identifying and selecting objects
+  labels:
+    app: ml-model-serving
+    version: v1.0
+    tier: serving
+    component: api
+
+spec:
+  # TODO: Set number of replicas
+  # Start with 2-3 replicas for high availability
+  # Will be overridden by HorizontalPodAutoscaler if enabled
+  replicas: 2
+
+  # TODO: Define selector to match pods
+  # Must match the labels in pod template
+  selector:
+    matchLabels:
+      app: ml-model-serving
+      tier: serving
+
+  # TODO: Define deployment strategy
+  # RollingUpdate: Gradually replace old pods with new ones (zero downtime)
+  # Recreate: Kill all old pods, then create new ones (downtime but simpler)
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # Maximum number of pods that can be unavailable during update
+      maxUnavailable: 1
+      # Maximum number of pods that can be created above desired replicas
+      maxSurge: 1
+
+  # TODO: Define pod template
+  template:
+    metadata:
+      # TODO: Add labels to pods
+      # These must match the selector above
+      labels:
+        app: ml-model-serving
+        version: v1.0
+        tier: serving
+        component: api
+
+      # TODO: Add annotations for additional metadata
+      # Annotations are not used for selection, just metadata
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+
+    spec:
+      # TODO: Define containers
+      containers:
+      - name: ml-api
+
+        # TODO: Set container image
+        # Format: registry/repository:tag
+        # Examples:
+        # - docker.io/username/ml-model-serving:v1.0
+        # - gcr.io/project-id/ml-model-serving:v1.0
+        # - your-registry.com/ml-model-serving:v1.0
+        #
+        # For development, can use local image with imagePullPolicy: Never
+        image: ml-model-serving:v1.0
+
+        # TODO: Set image pull policy
+        # - Always: Always pull the image
+        # - IfNotPresent: Pull if not cached locally (default)
+        # - Never: Never pull, use local only
+        imagePullPolicy: IfNotPresent
+
+        # TODO: Define container ports
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+
+        # TODO: Set environment variables
+        # Can reference ConfigMap or Secrets
+        env:
+        - name: MODEL_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: ml-model-config
+              key: model_name
+        - name: DEVICE
+          value: "cpu"
+        - name: PORT
+          value: "8000"
+        - name: LOG_LEVEL
+          value: "info"
+        # TODO: Add more environment variables as needed
+
+        # TODO: Define resource requests and limits
+        # Requests: Guaranteed resources
+        # Limits: Maximum resources allowed
+        #
+        # For CPU-only model serving:
+        # - CPU: 500m-1000m (0.5-1 CPU cores)
+        # - Memory: 1-2Gi
+        #
+        # For GPU model serving:
+        # - Add nvidia.com/gpu: 1
+        resources:
+          requests:
+            cpu: 500m        # Request 0.5 CPU cores
+            memory: 1Gi      # Request 1GB memory
+          limits:
+            cpu: 1000m       # Max 1 CPU core
+            memory: 2Gi      # Max 2GB memory
+
+        # TODO: For GPU, uncomment:
+        # resources:
+        #   limits:
+        #     nvidia.com/gpu: 1  # Request 1 GPU
+
+        # TODO: Define liveness probe
+        # Checks if container is alive (restart if fails)
+        # If liveness fails, Kubernetes will restart the pod
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60    # Wait 60s before first check
+          periodSeconds: 10           # Check every 10s
+          timeoutSeconds: 5           # Timeout after 5s
+          successThreshold: 1         # 1 success = healthy
+          failureThreshold: 3         # 3 failures = restart
+
+        # TODO: Define readiness probe
+        # Checks if container is ready to serve traffic
+        # If readiness fails, pod is removed from service endpoints
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30    # Wait 30s before first check
+          periodSeconds: 5            # Check every 5s
+          timeoutSeconds: 3           # Timeout after 3s
+          successThreshold: 1         # 1 success = ready
+          failureThreshold: 3         # 3 failures = not ready
+
+        # TODO: Define startup probe (optional)
+        # For applications with slow startup
+        # While startup probe fails, liveness/readiness probes are disabled
+        # startupProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 8000
+        #   initialDelaySeconds: 0
+        #   periodSeconds: 10
+        #   timeoutSeconds: 3
+        #   failureThreshold: 30      # 30 * 10s = 5 minutes max startup time
+
+        # TODO: Mount volumes (if needed)
+        # volumeMounts:
+        # - name: model-storage
+        #   mountPath: /app/models
+        #   readOnly: true
+        # - name: config
+        #   mountPath: /app/config
+        #   readOnly: true
+
+      # TODO: Define volumes (if needed)
+      # volumes:
+      # - name: model-storage
+      #   persistentVolumeClaim:
+      #     claimName: model-storage-pvc
+      # - name: config
+      #   configMap:
+      #     name: ml-model-config
+
+      # TODO: Set restart policy
+      # - Always: Always restart on failure (default)
+      # - OnFailure: Restart only on failure
+      # - Never: Never restart
+      restartPolicy: Always
+
+      # TODO: Set termination grace period
+      # Time to wait before forcefully killing pod
+      terminationGracePeriodSeconds: 30
+
+      # TODO: Add node selector (optional)
+      # Select nodes with specific labels
+      # nodeSelector:
+      #   workload-type: ml-serving
+      #   node-size: medium
+
+      # TODO: Add tolerations (optional)
+      # Allow pods to schedule on nodes with matching taints
+      # tolerations:
+      # - key: "nvidia.com/gpu"
+      #   operator: "Exists"
+      #   effect: "NoSchedule"
+
+      # TODO: Add affinity rules (optional)
+      # Control pod placement based on node or pod characteristics
+      # affinity:
+      #   podAntiAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 100
+      #       podAffinityTerm:
+      #         labelSelector:
+      #           matchExpressions:
+      #           - key: app
+      #             operator: In
+      #             values:
+      #             - ml-model-serving
+      #         topologyKey: kubernetes.io/hostname
+      # This spreads pods across different nodes
+
+      # TODO: Set security context (optional but recommended)
+      # securityContext:
+      #   runAsNonRoot: true
+      #   runAsUser: 1000
+      #   fsGroup: 1000
+
+---
+# ==============================================================================
+# Deployment Instructions
+# ==============================================================================
+# To deploy:
+# kubectl apply -f deployment.yaml
+#
+# To check deployment status:
+# kubectl get deployments
+# kubectl describe deployment ml-model-serving-deployment
+#
+# To check pods:
+# kubectl get pods -l app=ml-model-serving
+# kubectl logs -l app=ml-model-serving -f
+#
+# To scale:
+# kubectl scale deployment ml-model-serving-deployment --replicas=5
+#
+# To update image:
+# kubectl set image deployment/ml-model-serving-deployment ml-api=ml-model-serving:v2.0
+#
+# To rollback:
+# kubectl rollout undo deployment/ml-model-serving-deployment
+#
+# To check rollout status:
+# kubectl rollout status deployment/ml-model-serving-deployment
+#
+# ==============================================================================
+
+# ==============================================================================
+# Best Practices Checklist
+# ==============================================================================
+# ✅ Resource requests and limits defined
+# ✅ Liveness and readiness probes configured
+# ✅ Multiple replicas for high availability
+# ✅ RollingUpdate strategy for zero-downtime updates
+# ✅ Labels for organization and selection
+# ✅ Prometheus annotations for monitoring
+# ✅ Non-root user (defined in Dockerfile)
+# ✅ Environment variables externalized
+# ⚠️  Secrets management (use Kubernetes Secrets)
+# ⚠️  Resource monitoring (use metrics-server)
+# ⚠️  Autoscaling (configure HPA)
+# ==============================================================================
+
+# ==============================================================================
+# Common Issues and Solutions
+# ==============================================================================
+#
+# Issue: Pods in CrashLoopBackOff
+# Solution: Check logs with kubectl logs, verify health endpoints
+#
+# Issue: Pods not receiving traffic
+# Solution: Check readiness probe, verify service selector
+#
+# Issue: OOMKilled (Out of Memory)
+# Solution: Increase memory limits, optimize application memory usage
+#
+# Issue: Image pull errors
+# Solution: Verify image name, check imagePullSecrets for private registries
+#
+# Issue: Slow startup
+# Solution: Add startupProbe, increase initialDelaySeconds
+#
+# ==============================================================================
+
+# ==============================================================================
+# Resource Sizing Guidelines
+# ==============================================================================
+#
+# Small Model (ResNet-18, MobileNet):
+#   CPU: 500m-1000m
+#   Memory: 1-2Gi
+#   Replicas: 2-3
+#
+# Medium Model (ResNet-50, BERT Base):
+#   CPU: 1000m-2000m
+#   Memory: 2-4Gi
+#   Replicas: 2-3
+#
+# Large Model (ResNet-152, BERT Large):
+#   CPU: 2000m-4000m
+#   Memory: 4-8Gi
+#   Replicas: 2-3
+#
+# LLM (7B parameters):
+#   GPU: 1x A10/T4
+#   CPU: 4000m
+#   Memory: 32Gi
+#   Replicas: 1-2 (expensive!)
+#
+# Adjust based on:
+# - Traffic volume
+# - Latency requirements
+# - Cost constraints
+# - Model complexity
+# ==============================================================================
+
+# ==============================================================================
+# Production Enhancements
+# ==============================================================================
+#
+# 1. Add HorizontalPodAutoscaler (see hpa.yaml)
+# 2. Use PodDisruptionBudget for availability during updates
+# 3. Add network policies for security
+# 4. Use service mesh (Istio/Linkerd) for advanced traffic management
+# 5. Implement distributed tracing
+# 6. Add pod security policies
+# 7. Use init containers for setup tasks
+# 8. Implement circuit breakers
+# 9. Add rate limiting
+# 10. Use admission controllers for policy enforcement
+#
+# ==============================================================================

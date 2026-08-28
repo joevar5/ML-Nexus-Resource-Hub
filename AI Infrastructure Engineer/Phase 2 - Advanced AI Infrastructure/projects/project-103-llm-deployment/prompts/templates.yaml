@@ -1,0 +1,63 @@
+# Prompt Templates for LLM System
+# TODO: Add and customize prompt templates for different use cases
+
+# Standard completion template
+completion:
+  system: |
+    You are a helpful AI assistant.
+  template: |
+    {prompt}
+
+# RAG-augmented template
+rag:
+  system: |
+    You are a helpful AI assistant. Answer questions based on the provided context.
+    If the context doesn't contain relevant information, say so.
+  template: |
+    Context:
+    {context}
+
+    Question: {query}
+
+    Answer:
+
+# Chat template (with history)
+chat:
+  system: |
+    You are a helpful AI assistant in a conversation.
+  template: |
+    {chat_history}
+
+    Human: {message}
+
+    Assistant:
+
+# Code generation template
+code:
+  system: |
+    You are an expert programmer. Generate clean, well-documented code.
+  template: |
+    Task: {task}
+
+    Requirements:
+    {requirements}
+
+    Code:
+
+# Summarization template
+summarize:
+  system: |
+    You are an expert at summarizing text concisely while retaining key information.
+  template: |
+    Summarize the following text:
+
+    {text}
+
+    Summary:
+
+# TODO: Add more templates for:
+# - Question answering
+# - Classification
+# - Entity extraction
+# - Translation
+# - Creative writing

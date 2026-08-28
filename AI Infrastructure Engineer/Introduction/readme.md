@@ -26,7 +26,7 @@ The curriculum is structured into two distinct phases to build your expertise sy
     
     <div style="text-align: center; font-size: 26px; margin: 18px 0; color: var(--color-primary); text-shadow: 0 0 8px var(--color-primary), 0 0 15px var(--color-primary); line-height: 1; font-weight: bold;">↓</div>
     
-*   **Phase 2: Advanced AI Infrastructure:** Deep-dive into advanced cloud provisioning, multi-GPU configurations, and distributed training architectures.
+*   **Phase 2: Advanced AI Infrastructure:** Deep-dive into multi-cloud provisioning, GPU computing, MLOps, infrastructure as code, and LLM infrastructure.
 
 ---
 
@@ -43,9 +43,12 @@ Master the tools and workflows required to bring models to production, from cont
 
 ---
 
-## Phase 2: Advanced AI Infrastructure (Coming Soon)
+## Phase 2: Advanced AI Infrastructure
 
-Stay tuned! The second phase will cover advanced enterprise-level infrastructure, focusing on:
-*   **Multi-Cloud & Hybrid Architectures:** Seamless deployments across AWS, GCP, and Azure.
-*   **High-Performance Compute & GPU Clusters:** Provisioning, scaling, and managing GPU resources for deep learning.
-*   **Distributed Training:** Designing pipelines for large language models (LLMs) and foundation models.
+Build on Phase 1's foundations and level up to enterprise-scale infrastructure: multi-cloud deployments, GPU computing, MLOps pipelines, infrastructure as code, and LLM serving platforms.
+
+**[Start Learning: Phase 2 Learning Plan](../Phase%202%20-%20Advanced%20AI%20Infrastructure/phase-2-learning-plan.md)**
+
+*   **Learn**: Study advanced modules covering Cloud Computing, Containerization, Kubernetes, Data Pipelines, MLOps, GPU Computing, Monitoring & Observability, Infrastructure as Code, and LLM Infrastructure.
+*   **Build**: Apply knowledge in projects including basic model serving, an end-to-end MLOps pipeline, and an LLM deployment platform.
+*   **Assess**: Take coding challenges, practical exams, and grade projects using industry-standard rubrics.

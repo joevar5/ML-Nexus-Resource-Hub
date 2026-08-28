@@ -122,8 +122,9 @@ function updateReaderDoneBtn() {
 // that aren't backed by content files at all.
 const categories = [
     { name: 'Infrastructure', dir: 'AI Infrastructure Engineer', icon: 'memory' },
-    { name: 'Projects', dir: 'ML and GenAI Projects', icon: 'terminal', customView: 'projects' },
     { name: 'System Design', dir: 'ML and GenAI System Design', icon: 'schema' },
+    { name: 'Coding', dir: 'Coding', icon: 'code', customView: 'coding' },
+    { name: 'Projects', dir: 'ML and GenAI Projects', icon: 'terminal', customView: 'projects' },
     { name: 'Paper Analysis', dir: 'Research Paper Analysis', icon: 'description' }
 ];
 
@@ -170,6 +171,129 @@ const sideProjects = [
 
 const PROJECT_TAG_LABELS = { 'classical-ml': 'Classical ML', genai: 'Gen-AI', idea: 'Idea', tools: 'Tools' };
 
+// Card data for the hand-built Coding view (#coding). Edit these arrays to add/remove tool
+// cards — no markdown files involved, so layout and behavior stay fully under UI control.
+// Each entry: { title, description, icon (Material Symbols name), link (external URL) }
+const mlCodingTools = [
+    {
+        title: 'LeetGPU',
+        description: 'Write and optimize GPU/CUDA kernels in the browser — the go-to place to get hands-on with the low-level, hardware side of ML performance.',
+        icon: 'developer_board',
+        link: 'https://leetgpu.com/joevar'
+    },
+    {
+        title: 'Grind75 ML',
+        description: 'A wide-ranging, curated problem set spanning ML, LLM, and enterprise coding — the kind of ML problems real companies actually ask.',
+        icon: 'checklist',
+        link: 'https://123ofai.com/qnalab/lists/Grind75ML'
+    },
+    {
+        title: 'AI Offerly — Career Guide',
+        description: 'Real ML interview questions collected from different companies, organized to prep for actual interview loops.',
+        icon: 'business_center',
+        link: 'https://www.aiofferly.com/career-guide'
+    },
+    {
+        title: 'AgenticPrep',
+        description: 'Solve Python agent-loop, tool-calling, memory, RAG, and eval problems used in real AI engineering interviews.',
+        icon: 'smart_toy',
+        link: 'https://www.agenticprep.io/'
+    }
+];
+
+const genericCodingTools = [
+    {
+        title: 'LeetCode',
+        description: 'Classic data structures & algorithms practice — the baseline every coding interview still comes back to.',
+        icon: 'code_blocks',
+        link: 'https://leetcode.com/u/joevarghese/'
+    },
+    {
+        title: 'AlgoMaster — Low-Level Design',
+        description: 'Object-oriented and low-level system design interview practice, with worked-through case studies.',
+        icon: 'account_tree',
+        link: 'https://algomaster.io/interview/low-level-design'
+    },
+    {
+        title: 'Hello Interview — AI Coding',
+        description: 'Learn the latest AI-coding interview format that companies targeting AI roles are actually using.',
+        icon: 'psychology',
+        link: 'https://www.hellointerview.com/learn/ai-coding/overview/introduction'
+    }
+];
+
+// Build a coding-tool card's inner HTML from its data object (see mlCodingTools / genericCodingTools).
+function codingToolCardHtml(t, delay = 0) {
+    return `
+        <div class="project-card projects-fade-item p-6 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left" style="animation-delay: ${delay}s;">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="project-card-icon w-10 h-10 rounded-xl bg-primary-container/10 text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined text-xl">${t.icon || 'code'}</span>
+                    </div>
+                </div>
+                <h3 class="text-lg font-headline font-bold mb-2">${escapeHtml(t.title)}</h3>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-4">${escapeHtml(t.description || '')}</p>
+            </div>
+            <a href="${t.link}" target="_blank" rel="noopener noreferrer" class="self-start px-4 py-2 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-xs font-label flex items-center gap-1.5">
+                <span>Visit</span>
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+            </a>
+        </div>`;
+}
+
+// Render a grid of coding-tool cards, or a placeholder note if the array is empty.
+function renderCodingToolGrid(gridEl, tools) {
+    if (!tools.length) {
+        gridEl.innerHTML = `
+            <div class="col-span-full p-6 rounded-2xl border border-dashed border-outline-variant text-on-surface-variant text-sm">
+                No tools added here yet.
+            </div>`;
+        return;
+    }
+    gridEl.innerHTML = tools.map((t, i) => codingToolCardHtml(t, 0.2 + i * 0.08)).join('');
+}
+
+// Populate the Coding view's card grids from mlCodingTools / genericCodingTools
+function renderCodingView() {
+    renderCodingToolGrid(document.getElementById('coding-ml-grid'), mlCodingTools);
+    renderCodingToolGrid(document.getElementById('coding-generic-grid'), genericCodingTools);
+}
+
+// Display the hand-built Coding Toolkit view
+function showCodingView() {
+    currentFilePath = '';
+
+    document.getElementById('home-view').style.display = 'none';
+    document.getElementById('reader-view').style.display = 'none';
+    document.getElementById('search-view').style.display = 'none';
+    document.getElementById('error-view').style.display = 'none';
+    document.getElementById('author-view').style.display = 'none';
+    document.getElementById('mobile-warning-view').style.display = 'none';
+    document.getElementById('projects-view').style.display = 'none';
+    document.getElementById('coding-view').style.display = 'block';
+    document.getElementById('sidebar-tree-container').style.display = 'none';
+
+    document.querySelectorAll('.tree-file').forEach(el => {
+        el.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
+    });
+
+    const catBtns = document.querySelectorAll('.cat-btn');
+    catBtns.forEach(btn => {
+        if (btn.dataset.category === 'Coding') {
+            btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all text-left";
+        } else {
+            btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
+        }
+    });
+    document.getElementById('about-author-link').className = 'flex items-center gap-md p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors';
+
+    renderCodingView();
+
+    document.getElementById('progress-bar').style.width = '0%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // Check if the current device is mobile
 // Uses both User Agent detection AND viewport width for maximum reliability
 // This catches large-screen phones (e.g. Samsung S24 Ultra) even in landscape
@@ -190,6 +314,7 @@ function showMobileWarning() {
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
     document.getElementById('projects-view').style.display = 'none';
+    document.getElementById('coding-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
     document.getElementById('mobile-warning-view').style.display = 'flex';
     document.getElementById('progress-bar').style.width = '0%';
@@ -856,7 +981,56 @@ function handleRouting() {
         return;
     }
 
+    if (decodedPath === 'coding') {
+        showCodingView();
+        return;
+    }
+
+    if (shouldShowPhase2PrereqModal(decodedPath)) {
+        showPhase2PrereqModal(decodedPath);
+        return;
+    }
+
     loadFile(decodedPath);
+}
+
+// ── Phase 2 prerequisite reminder ──
+const PHASE1_DIR = 'AI Infrastructure Engineer/Phase 1 - Core AI Infrastructure & Foundations';
+const PHASE2_DIR = 'AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure';
+const PHASE2_PREREQ_KEY = 'phase2_prereq_ack';
+
+function getPhase1Progress() {
+    const files = flattenedFiles.filter(f => f.path.startsWith(PHASE1_DIR + '/'));
+    const total = files.length;
+    const completed = files.filter(f => completedFiles.has(f.path)).length;
+    return { completed, total, pct: total ? Math.round((completed / total) * 100) : 0 };
+}
+
+function shouldShowPhase2PrereqModal(decodedPath) {
+    if (!decodedPath.startsWith(PHASE2_DIR + '/')) return false;
+    if (localStorage.getItem(PHASE2_PREREQ_KEY) === 'true') return false;
+    return getPhase1Progress().pct < 100;
+}
+
+function showPhase2PrereqModal(decodedPath) {
+    const { completed, total, pct } = getPhase1Progress();
+    document.getElementById('phase2-prereq-progress-text').textContent =
+        `${completed} / ${total} · ${pct}%`;
+    document.getElementById('phase2-prereq-progress-bar').style.width = `${pct}%`;
+
+    const modal = document.getElementById('phase2-prereq-modal');
+    modal.style.display = 'flex';
+
+    document.getElementById('phase2-prereq-continue-btn').onclick = () => {
+        localStorage.setItem(PHASE2_PREREQ_KEY, 'true');
+        modal.style.display = 'none';
+        loadFile(decodedPath);
+    };
+
+    document.getElementById('phase2-prereq-back-btn').onclick = () => {
+        modal.style.display = 'none';
+        window.location.hash = encodeURIComponent(PHASE1_DIR + '/phase-1-learning-plan.md');
+    };
 }
 
 // Go home / Dashboard view
@@ -870,6 +1044,7 @@ function goHome() {
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
     document.getElementById('projects-view').style.display = 'none';
+    document.getElementById('coding-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
     document.getElementById('mobile-warning-view').style.display = 'none';
 
@@ -899,6 +1074,7 @@ function showAuthorPage() {
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'block';
     document.getElementById('projects-view').style.display = 'none';
+    document.getElementById('coding-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
     document.getElementById('mobile-warning-view').style.display = 'none';
 
@@ -1021,6 +1197,7 @@ function showProjectsView() {
     document.getElementById('author-view').style.display = 'none';
     document.getElementById('mobile-warning-view').style.display = 'none';
     document.getElementById('projects-view').style.display = 'block';
+    document.getElementById('coding-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
 
     document.querySelectorAll('.tree-file').forEach(el => {
@@ -1831,6 +2008,7 @@ async function loadFile(filePath) {
     document.getElementById('author-view').style.display = 'none';
     document.getElementById('mobile-warning-view').style.display = 'none';
     document.getElementById('projects-view').style.display = 'none';
+    document.getElementById('coding-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'block';
 
     // Reset About the Author link styles
@@ -2240,10 +2418,12 @@ function handleSearch(query) {
         const hv = document.getElementById('home-view');
         const av = document.getElementById('author-view');
         const pv = document.getElementById('projects-view');
+        const cv = document.getElementById('coding-view');
         const isHome = hv && hv.style.display !== 'none';
         const isAuthor = av && av.style.display !== 'none';
         const isProjects = pv && pv.style.display !== 'none';
-        return isHome || isAuthor || isProjects;
+        const isCoding = cv && cv.style.display !== 'none';
+        return isHome || isAuthor || isProjects || isCoding;
     }
 
     function enableCursor() {

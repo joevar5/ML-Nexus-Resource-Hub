@@ -1,0 +1,323 @@
+# Kubernetes Service for ML Model Serving
+# This file defines how to expose the deployment as a network service
+
+apiVersion: v1
+kind: Service
+metadata:
+  # TODO: Set service name
+  # Convention: {app-name}-service or just {app-name}
+  name: ml-model-serving-service
+
+  # TODO: Add labels
+  labels:
+    app: ml-model-serving
+    tier: serving
+    component: api
+
+  # TODO: Add annotations
+  # Used by cloud providers and service meshes
+  annotations:
+    # For AWS Load Balancer
+    # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+
+    # For GCP Load Balancer
+    # cloud.google.com/load-balancer-type: "Internal"
+
+    # For Prometheus monitoring
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8000"
+    prometheus.io/path: "/metrics"
+
+spec:
+  # TODO: Define service type
+  # Options:
+  # - ClusterIP: Only accessible within cluster (default)
+  # - NodePort: Accessible via <NodeIP>:<NodePort>
+  # - LoadBalancer: Creates cloud load balancer (AWS ELB, GCP LB, etc.)
+  # - ExternalName: Maps to external DNS name
+  #
+  # For development (minikube): Use NodePort or LoadBalancer with minikube tunnel
+  # For production: Use LoadBalancer or ClusterIP with Ingress
+  type: LoadBalancer
+
+  # TODO: Define selector
+  # Must match labels in deployment pod template
+  # Service will route traffic to pods with these labels
+  selector:
+    app: ml-model-serving
+    tier: serving
+
+  # TODO: Define ports
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80              # Port exposed by the service
+    targetPort: 8000      # Port on the container (matches deployment)
+    # nodePort: 30080     # Optional: specific NodePort (30000-32767)
+
+  # TODO: Configure session affinity (optional)
+  # ClientIP: Route requests from same client to same pod
+  # None: Round-robin load balancing (default)
+  sessionAffinity: None
+
+  # TODO: For ClientIP affinity, configure timeout
+  # sessionAffinityConfig:
+  #   clientIP:
+  #     timeoutSeconds: 10800  # 3 hours
+
+  # TODO: Configure external traffic policy
+  # Cluster: Distributes traffic to all nodes (may add extra hop)
+  # Local: Only routes to pods on receiving node (preserves source IP)
+  externalTrafficPolicy: Cluster
+
+  # TODO: Configure internal traffic policy (Kubernetes 1.22+)
+  # Similar to externalTrafficPolicy but for cluster-internal traffic
+  # internalTrafficPolicy: Cluster
+
+---
+# ==============================================================================
+# Alternative: ClusterIP Service (for internal access)
+# ==============================================================================
+# If you only need internal cluster access (e.g., accessed via Ingress):
+#
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: ml-model-serving-service
+#   labels:
+#     app: ml-model-serving
+# spec:
+#   type: ClusterIP
+#   selector:
+#     app: ml-model-serving
+#   ports:
+#   - port: 8000
+#     targetPort: 8000
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Alternative: NodePort Service (for development)
+# ==============================================================================
+# For local development without load balancer:
+#
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: ml-model-serving-service
+#   labels:
+#     app: ml-model-serving
+# spec:
+#   type: NodePort
+#   selector:
+#     app: ml-model-serving
+#   ports:
+#   - port: 8000
+#     targetPort: 8000
+#     nodePort: 30080  # Access via <NodeIP>:30080
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Optional: Headless Service
+# ==============================================================================
+# For direct pod-to-pod communication without load balancing:
+#
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: ml-model-serving-headless
+#   labels:
+#     app: ml-model-serving
+# spec:
+#   clusterIP: None  # Makes it headless
+#   selector:
+#     app: ml-model-serving
+#   ports:
+#   - port: 8000
+#     targetPort: 8000
+#
+# DNS will return individual pod IPs instead of service IP
+# Useful for stateful applications or peer discovery
+# ==============================================================================
+
+---
+# ==============================================================================
+# Deployment Instructions
+# ==============================================================================
+# To deploy service:
+# kubectl apply -f service.yaml
+#
+# To check service:
+# kubectl get services
+# kubectl describe service ml-model-serving-service
+#
+# To get service URL (LoadBalancer):
+# kubectl get service ml-model-serving-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+#
+# For minikube:
+# minikube service ml-model-serving-service --url
+# minikube tunnel  # For LoadBalancer type
+#
+# To test service:
+# curl http://<SERVICE-IP>/health
+# curl -X POST http://<SERVICE-IP>/predict -F "file=@image.jpg"
+#
+# ==============================================================================
+
+# ==============================================================================
+# Service Discovery
+# ==============================================================================
+# Pods can access this service via:
+#
+# 1. DNS (recommended):
+#    http://ml-model-serving-service:80
+#    http://ml-model-serving-service.default.svc.cluster.local:80
+#
+# 2. Environment variables (legacy):
+#    ML_MODEL_SERVING_SERVICE_SERVICE_HOST
+#    ML_MODEL_SERVING_SERVICE_SERVICE_PORT
+#
+# 3. For headless service, pods get individual DNS entries:
+#    <pod-name>.<service-name>.<namespace>.svc.cluster.local
+#
+# ==============================================================================
+
+# ==============================================================================
+# Load Balancing Behavior
+# ==============================================================================
+#
+# Type: ClusterIP
+# - Load balancing: kube-proxy (iptables or IPVS)
+# - Access: Internal only
+# - Use case: Internal microservices
+#
+# Type: NodePort
+# - Load balancing: External load balancer → Node → kube-proxy → Pod
+# - Access: <any-node-ip>:<node-port>
+# - Use case: Development, small deployments
+#
+# Type: LoadBalancer
+# - Load balancing: Cloud LB → Node → kube-proxy → Pod
+# - Access: Cloud load balancer IP/hostname
+# - Use case: Production external access
+# - Note: Creates cloud load balancer (costs money!)
+#
+# ==============================================================================
+
+# ==============================================================================
+# Service Types Comparison
+# ==============================================================================
+#
+# | Type         | External Access | Cost | Use Case              |
+# |--------------|-----------------|------|-----------------------|
+# | ClusterIP    | No              | Free | Internal services     |
+# | NodePort     | Yes (via Node)  | Free | Development, testing  |
+# | LoadBalancer | Yes (via LB)    | $$$  | Production            |
+# | ExternalName | N/A             | Free | External service DNS  |
+#
+# ==============================================================================
+
+# ==============================================================================
+# Health Checks and Readiness
+# ==============================================================================
+# Service automatically routes traffic only to ready pods
+# - Pods must pass readiness probe
+# - Service endpoints updated automatically
+# - No traffic sent to pods that are:
+#   - Not ready (failing readiness probe)
+#   - Terminating (being deleted)
+#   - Not selected (labels don't match)
+#
+# Check endpoints:
+# kubectl get endpoints ml-model-serving-service
+# ==============================================================================
+
+# ==============================================================================
+# Session Affinity Use Cases
+# ==============================================================================
+#
+# Use sessionAffinity: ClientIP when:
+# - Application has client-side state/cache
+# - Warm-up is expensive (model loading, connection pooling)
+# - Debugging specific pod issues
+#
+# Don't use when:
+# - Applications are stateless (ML serving usually is)
+# - Need even load distribution
+# - Pods are frequently restarted
+#
+# For ML serving: Usually None (round-robin) is best
+# ==============================================================================
+
+# ==============================================================================
+# Production Considerations
+# ==============================================================================
+#
+# 1. Use Ingress instead of LoadBalancer for:
+#    - Multiple services on one load balancer
+#    - TLS termination
+#    - Path-based routing
+#    - Virtual hosting
+#
+# 2. Add service mesh (Istio, Linkerd) for:
+#    - Advanced traffic management
+#    - Mutual TLS
+#    - Observability
+#    - Circuit breaking
+#
+# 3. Implement rate limiting:
+#    - At API Gateway level
+#    - Using Ingress annotations
+#    - In application code
+#
+# 4. Configure proper DNS TTL:
+#    - Short TTL for faster failover
+#    - Longer TTL for better performance
+#
+# ==============================================================================
+
+# ==============================================================================
+# Troubleshooting
+# ==============================================================================
+#
+# Issue: Can't access service
+# Check:
+# - kubectl get svc (is EXTERNAL-IP assigned?)
+# - kubectl get endpoints (are there endpoints?)
+# - kubectl get pods -l app=ml-model-serving (are pods running and ready?)
+# - Security groups/firewall rules
+#
+# Issue: Service has no endpoints
+# Check:
+# - Service selector matches pod labels
+# - Pods are passing readiness probe
+# - Pods exist in same namespace
+#
+# Issue: Uneven load distribution
+# Check:
+# - Session affinity settings
+# - Pod resource limits (some pods might be slower)
+# - Consider using HPA for scaling
+#
+# ==============================================================================
+
+# ==============================================================================
+# Cost Optimization
+# ==============================================================================
+#
+# LoadBalancer services cost money:
+# - AWS ELB: ~$20-30/month + data transfer
+# - GCP Load Balancer: ~$18/month + data transfer
+# - Azure Load Balancer: ~$18/month + data transfer
+#
+# To reduce costs:
+# 1. Use one LoadBalancer with Ingress for multiple services
+# 2. Use NodePort for development
+# 3. Use ClusterIP with Ingress for production
+# 4. Consider API Gateway instead of multiple LoadBalancers
+#
+# ==============================================================================

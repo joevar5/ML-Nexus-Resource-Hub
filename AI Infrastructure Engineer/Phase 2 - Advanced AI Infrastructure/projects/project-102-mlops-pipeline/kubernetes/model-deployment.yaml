@@ -1,0 +1,213 @@
+---
+# Kubernetes Deployment for ML Model Server
+# This manifest deploys the model serving application
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlops-model-deployment
+  namespace: default
+  labels:
+    app: mlops-model
+    component: model-server
+    version: v1
+spec:
+  replicas: 3  # TODO: Adjust based on load requirements
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0  # Zero-downtime deployment
+
+  selector:
+    matchLabels:
+      app: mlops-model
+      component: model-server
+
+  template:
+    metadata:
+      labels:
+        app: mlops-model
+        component: model-server
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+
+    spec:
+      # TODO: Add node affinity if GPU nodes required
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: node-type
+      #           operator: In
+      #           values:
+      #           - gpu
+
+      containers:
+      - name: model-server
+        # TODO: Replace with actual image from deployment pipeline
+        image: localhost:5000/mlops-model-server:latest
+        imagePullPolicy: Always
+
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        - name: metrics
+          containerPort: 8000
+          protocol: TCP
+
+        env:
+        - name: MODEL_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: model-config
+              key: model_name
+        - name: MODEL_VERSION
+          valueFrom:
+            configMapKeyRef:
+              name: model-config
+              key: model_version
+        - name: MLFLOW_TRACKING_URI
+          valueFrom:
+            configMapKeyRef:
+              name: model-config
+              key: mlflow_tracking_uri
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: WORKERS
+          value: "4"  # TODO: Adjust based on CPU cores
+
+        resources:
+          # TODO: Adjust resource requests and limits based on model requirements
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+            # nvidia.com/gpu: "1"  # Uncomment if GPU required
+
+        # Liveness probe: Is the container running?
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        # Readiness probe: Is the container ready to serve traffic?
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+        # Startup probe: Has the container finished starting?
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 30  # 5 minutes total
+
+        volumeMounts:
+        - name: model-cache
+          mountPath: /models
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+
+      volumes:
+      - name: model-cache
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+
+      # TODO: Add image pull secrets if using private registry
+      # imagePullSecrets:
+      # - name: registry-secret
+
+---
+# HorizontalPodAutoscaler for automatic scaling
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mlops-model-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mlops-model-deployment
+
+  minReplicas: 3
+  maxReplicas: 10
+
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+  # TODO: Add custom metrics for model-specific scaling
+  # - type: Pods
+  #   pods:
+  #     metric:
+  #       name: prediction_latency_p99
+  #     target:
+  #       type: AverageValue
+  #       averageValue: "200m"
+
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 30
+      - type: Pods
+        value: 2
+        periodSeconds: 30
+      selectPolicy: Max
+
+---
+# PodDisruptionBudget to ensure availability during updates
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: mlops-model-pdb
+  namespace: default
+spec:
+  minAvailable: 2  # Always keep at least 2 pods running
+  selector:
+    matchLabels:
+      app: mlops-model
+      component: model-server

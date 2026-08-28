@@ -1,0 +1,320 @@
+# Kubernetes ConfigMap for ML Model Serving
+# ConfigMaps store non-confidential configuration data as key-value pairs
+# Pods can consume ConfigMaps as environment variables, command-line arguments, or configuration files
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  # TODO: Set ConfigMap name
+  name: ml-model-config
+
+  # TODO: Add labels for organization
+  labels:
+    app: ml-model-serving
+    component: configuration
+
+  # TODO: Add annotations for documentation
+  annotations:
+    description: "Configuration for ML model serving application"
+    version: "1.0"
+
+data:
+  # ==============================================================================
+  # TODO: Model Configuration
+  # ==============================================================================
+  # Define which model to load and how to configure it
+
+  model_name: "resnet18"
+  # Options: resnet18, resnet50, mobilenet_v2
+
+  device: "cpu"
+  # Options: cpu, cuda, cuda:0, cuda:1
+
+  batch_size: "1"
+  # Number of samples to process in one batch
+
+  warmup_iterations: "10"
+  # Number of warmup inferences on startup
+
+  # ==============================================================================
+  # TODO: Server Configuration
+  # ==============================================================================
+  # Configure the web server behavior
+
+  port: "8000"
+  # Port the API server listens on
+
+  workers: "1"
+  # Number of worker processes (recommend 1 for ML serving to avoid loading model multiple times)
+
+  log_level: "info"
+  # Logging level: debug, info, warning, error
+
+  log_format: "json"
+  # Log format: json or text
+
+  # ==============================================================================
+  # TODO: Inference Configuration
+  # ==============================================================================
+  # Configure inference behavior
+
+  max_image_size_mb: "10"
+  # Maximum allowed image size in MB
+
+  default_top_k: "5"
+  # Default number of top predictions to return
+
+  confidence_threshold: "0.0"
+  # Minimum confidence threshold for predictions
+
+  allowed_image_types: "image/jpeg,image/png,image/jpg"
+  # Comma-separated list of allowed MIME types
+
+  # ==============================================================================
+  # TODO: Feature Flags
+  # ==============================================================================
+  # Enable/disable features
+
+  enable_metrics: "true"
+  # Enable Prometheus metrics endpoint
+
+  enable_cache: "false"
+  # Enable prediction caching (not recommended for production without Redis)
+
+  enable_cors: "true"
+  # Enable Cross-Origin Resource Sharing
+
+  enable_rate_limit: "false"
+  # Enable rate limiting (requires Redis or similar)
+
+  # ==============================================================================
+  # TODO: Monitoring Configuration
+  # ==============================================================================
+  # Configure monitoring and observability
+
+  metrics_port: "8000"
+  # Port for Prometheus metrics (usually same as app port)
+
+  health_check_interval: "30"
+  # Seconds between health checks
+
+  # ==============================================================================
+  # TODO: Cache Configuration (if enabled)
+  # ==============================================================================
+  # Configure caching behavior
+
+  cache_size: "1000"
+  # Maximum number of cached predictions
+
+  cache_ttl_seconds: "300"
+  # Cache time-to-live in seconds (5 minutes)
+
+  # ==============================================================================
+  # TODO: Rate Limiting Configuration (if enabled)
+  # ==============================================================================
+  # Configure rate limiting
+
+  rate_limit_requests: "100"
+  # Maximum requests per time window
+
+  rate_limit_window_seconds: "60"
+  # Time window for rate limiting (1 minute)
+
+---
+# ==============================================================================
+# TODO: Optional - ImageNet Class Labels as ConfigMap
+# ==============================================================================
+# If you want to include class labels in ConfigMap instead of in container
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: imagenet-classes
+  labels:
+    app: ml-model-serving
+    component: data
+
+data:
+  # This is a small subset - full list has 1000 classes
+  # In practice, you might load this from a volume or include in container
+  classes.txt: |
+    tench
+    goldfish
+    great_white_shark
+    tiger_shark
+    hammerhead
+    electric_ray
+    stingray
+    cock
+    hen
+    ostrich
+    # ... (987 more classes)
+
+---
+# ==============================================================================
+# Usage Instructions
+# ==============================================================================
+# To use this ConfigMap in your Deployment:
+#
+# 1. As environment variables (see deployment.yaml):
+#
+#    env:
+#    - name: MODEL_NAME
+#      valueFrom:
+#        configMapKeyRef:
+#          name: ml-model-config
+#          key: model_name
+#
+# 2. As environment variables from all keys:
+#
+#    envFrom:
+#    - configMapRef:
+#        name: ml-model-config
+#
+# 3. As a volume mount (for file-based config):
+#
+#    volumes:
+#    - name: config
+#      configMap:
+#        name: ml-model-config
+#
+#    volumeMounts:
+#    - name: config
+#      mountPath: /app/config
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Management Commands
+# ==============================================================================
+# Create ConfigMap:
+# kubectl apply -f configmap.yaml
+#
+# View ConfigMap:
+# kubectl get configmap ml-model-config
+# kubectl describe configmap ml-model-config
+#
+# Edit ConfigMap:
+# kubectl edit configmap ml-model-config
+#
+# Update ConfigMap from file:
+# kubectl apply -f configmap.yaml
+#
+# Delete ConfigMap:
+# kubectl delete configmap ml-model-config
+#
+# Get ConfigMap as YAML:
+# kubectl get configmap ml-model-config -o yaml
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Important Notes
+# ==============================================================================
+#
+# 1. ConfigMap vs Secrets:
+#    - ConfigMaps: Non-sensitive configuration data
+#    - Secrets: Sensitive data (passwords, tokens, keys)
+#    - DO NOT put sensitive data in ConfigMaps!
+#
+# 2. Size Limits:
+#    - ConfigMaps are limited to 1MB
+#    - For larger configuration, use volumes
+#
+# 3. Updates:
+#    - Updating ConfigMap doesn't automatically restart pods
+#    - Environment variables are set at pod creation time
+#    - Volume-mounted configs are eventually updated (may take minutes)
+#    - To apply changes: kubectl rollout restart deployment/ml-model-serving-deployment
+#
+# 4. Immutability:
+#    - You can make ConfigMaps immutable for better performance:
+#      immutable: true
+#    - Immutable ConfigMaps cannot be updated
+#
+# 5. Namespaces:
+#    - ConfigMaps are namespace-scoped
+#    - Pods can only reference ConfigMaps in the same namespace
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Advanced: Environment-Specific ConfigMaps
+# ==============================================================================
+# You might want different configs for different environments:
+#
+# configmap-dev.yaml:
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: ml-model-config
+#   namespace: development
+# data:
+#   model_name: "resnet18"
+#   log_level: "debug"
+#   enable_cache: "false"
+#
+# configmap-prod.yaml:
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: ml-model-config
+#   namespace: production
+# data:
+#   model_name: "resnet50"
+#   log_level: "warning"
+#   enable_cache: "true"
+#
+# Apply to specific namespace:
+# kubectl apply -f configmap-dev.yaml -n development
+# kubectl apply -f configmap-prod.yaml -n production
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Alternative: Create ConfigMap from Files
+# ==============================================================================
+# Instead of YAML, you can create ConfigMap from files/directories:
+#
+# From file:
+# kubectl create configmap ml-model-config --from-file=config.ini
+#
+# From directory:
+# kubectl create configmap ml-model-config --from-file=config-dir/
+#
+# From literal values:
+# kubectl create configmap ml-model-config \
+#   --from-literal=model_name=resnet18 \
+#   --from-literal=device=cpu \
+#   --from-literal=port=8000
+#
+# From env file:
+# kubectl create configmap ml-model-config --from-env-file=.env
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Troubleshooting
+# ==============================================================================
+#
+# Issue: Pod can't find ConfigMap
+# Solution: Ensure ConfigMap exists in same namespace
+# kubectl get configmap -n <namespace>
+#
+# Issue: Changes to ConfigMap not reflected in pod
+# Solution: Restart deployment
+# kubectl rollout restart deployment/ml-model-serving-deployment
+#
+# Issue: ConfigMap too large
+# Solution: Use a PersistentVolume for large config files
+#
+# Issue: Need to update config frequently
+# Solution: Consider using a proper configuration management system
+# (e.g., Consul, etcd) or external config service
+#
+# ==============================================================================

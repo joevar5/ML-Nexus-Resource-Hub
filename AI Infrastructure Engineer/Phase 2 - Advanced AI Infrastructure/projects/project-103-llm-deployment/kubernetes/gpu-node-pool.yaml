@@ -1,0 +1,91 @@
+# GKE GPU Node Pool Configuration
+# TODO: This is GKE-specific, adapt for your cloud provider
+
+# For GKE, create node pool with:
+# gcloud container node-pools create gpu-pool \
+#   --cluster=your-cluster \
+#   --machine-type=n1-standard-4 \
+#   --accelerator=type=nvidia-tesla-a10,count=1 \
+#   --num-nodes=1 \
+#   --min-nodes=0 \
+#   --max-nodes=3 \
+#   --enable-autoscaling \
+#   --node-taints=nvidia.com/gpu=present:NoSchedule
+
+---
+# AWS EKS - Node Group Example
+# TODO: Create node group with GPU instances
+# eksctl create nodegroup \
+#   --cluster=your-cluster \
+#   --name=gpu-nodes \
+#   --node-type=g5.xlarge \
+#   --nodes=1 \
+#   --nodes-min=0 \
+#   --nodes-max=3 \
+#   --node-ami-family=AmazonLinux2
+
+---
+# NVIDIA Device Plugin DaemonSet
+# Required for GPU support in Kubernetes
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvidia-device-plugin-daemonset
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: nvidia-device-plugin-ds
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: nvidia-device-plugin-ds
+    spec:
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+      priorityClassName: system-node-critical
+      containers:
+      - image: nvcr.io/nvidia/k8s-device-plugin:v0.14.0
+        name: nvidia-device-plugin-ctr
+        args:
+          - --fail-on-init-error=false
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        volumeMounts:
+        - name: device-plugin
+          mountPath: /var/lib/kubelet/device-plugins
+      volumes:
+      - name: device-plugin
+        hostPath:
+          path: /var/lib/kubelet/device-plugins
+
+---
+# TODO: Node Affinity Rules
+# Ensure GPU workloads only on GPU nodes
+# Add to deployment spec:
+#   affinity:
+#     nodeAffinity:
+#       requiredDuringSchedulingIgnoredDuringExecution:
+#         nodeSelectorTerms:
+#           - matchExpressions:
+#               - key: cloud.google.com/gke-accelerator
+#                 operator: Exists
+
+---
+# TODO: Pod Disruption Budget
+# Ensure availability during node maintenance
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: llm-server-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: llm-server

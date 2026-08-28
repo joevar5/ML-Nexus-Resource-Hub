@@ -1,0 +1,402 @@
+# Kubernetes Horizontal Pod Autoscaler (HPA) for ML Model Serving
+# HPA automatically scales the number of pods based on observed metrics
+# This ensures your service can handle variable load while optimizing costs
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  # TODO: Set HPA name
+  name: ml-model-serving-hpa
+
+  # TODO: Add labels
+  labels:
+    app: ml-model-serving
+    component: autoscaling
+
+  # TODO: Add annotations
+  annotations:
+    description: "Auto-scaling for ML model serving based on CPU and custom metrics"
+
+spec:
+  # ==============================================================================
+  # TODO: Define Target Deployment
+  # ==============================================================================
+  # Specify which deployment to scale
+
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ml-model-serving-deployment
+
+  # ==============================================================================
+  # TODO: Define Scaling Limits
+  # ==============================================================================
+  # Set minimum and maximum number of replicas
+
+  minReplicas: 2
+  # Minimum number of pods (for high availability)
+  # Recommendation: At least 2 for redundancy
+
+  maxReplicas: 10
+  # Maximum number of pods
+  # Consider:
+  # - Available cluster resources
+  # - Cost constraints
+  # - Model memory footprint
+  # - GPU availability (if using GPUs)
+
+  # ==============================================================================
+  # TODO: Define Scaling Metrics
+  # ==============================================================================
+  # Specify metrics to trigger scaling
+
+  metrics:
+  # --------------------------------------------------
+  # CPU-based scaling
+  # --------------------------------------------------
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+        # Scale up when average CPU usage exceeds 70%
+        # Scale down when below 70%
+        #
+        # Considerations:
+        # - ML inference is often CPU-intensive
+        # - Lower threshold (50-60%) for more responsive scaling
+        # - Higher threshold (80-90%) for cost optimization
+        # - Leave headroom for traffic spikes
+
+  # --------------------------------------------------
+  # Memory-based scaling
+  # --------------------------------------------------
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+        # Scale up when average memory usage exceeds 80%
+        #
+        # Considerations:
+        # - ML models can be memory-intensive
+        # - Higher threshold OK since memory doesn't spike like CPU
+        # - Watch for memory leaks
+
+  # --------------------------------------------------
+  # TODO (Advanced): Custom metrics from Prometheus
+  # --------------------------------------------------
+  # Uncomment and configure for production deployments
+  #
+  # - type: Pods
+  #   pods:
+  #     metric:
+  #       name: http_requests_per_second
+  #     target:
+  #       type: AverageValue
+  #       averageValue: "100"
+  #   # Scale based on requests per second per pod
+  #   # Requires Prometheus Adapter
+  #
+  # - type: Pods
+  #   pods:
+  #     metric:
+  #       name: inference_latency_p95
+  #     target:
+  #       type: AverageValue
+  #       averageValue: "500m"
+  #   # Scale when p95 latency exceeds 500ms
+  #   # Ensures good user experience
+  #
+  # - type: Pods
+  #   pods:
+  #     metric:
+  #       name: model_queue_length
+  #     target:
+  #       type: AverageValue
+  #       averageValue: "10"
+  #   # Scale when inference queue gets too long
+
+  # ==============================================================================
+  # TODO: Define Scaling Behavior
+  # ==============================================================================
+  # Control how quickly scaling happens
+
+  behavior:
+    scaleUp:
+      # Scaling up policy (adding pods)
+      stabilizationWindowSeconds: 60
+      # Wait 60s before scaling up again (prevents flapping)
+
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 60
+        # Can double the number of pods every 60 seconds
+        # Example: 2 pods → 4 pods → 8 pods
+
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+        # Or add 2 pods every 60 seconds
+        # Whichever is larger applies
+
+      selectPolicy: Max
+      # Use the policy that scales up fastest
+
+    scaleDown:
+      # Scaling down policy (removing pods)
+      stabilizationWindowSeconds: 300
+      # Wait 5 minutes before scaling down (prevents flapping)
+      # Longer wait for scale-down to avoid premature pod removal
+
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+        # Can remove up to 50% of pods every 60 seconds
+        # Example: 8 pods → 4 pods → 2 pods
+
+      - type: Pods
+        value: 1
+        periodSeconds: 60
+        # Or remove 1 pod every 60 seconds
+        # Whichever is smaller applies
+
+      selectPolicy: Min
+      # Use the policy that scales down most conservatively
+
+---
+# ==============================================================================
+# Alternative: Simple HPA (v1 API - deprecated but still works)
+# ==============================================================================
+# Simpler configuration for basic CPU-based scaling
+
+# apiVersion: autoscaling/v1
+# kind: HorizontalPodAutoscaler
+# metadata:
+#   name: ml-model-serving-hpa
+# spec:
+#   scaleTargetRef:
+#     apiVersion: apps/v1
+#     kind: Deployment
+#     name: ml-model-serving-deployment
+#   minReplicas: 2
+#   maxReplicas: 10
+#   targetCPUUtilizationPercentage: 70
+
+---
+# ==============================================================================
+# Deployment Instructions
+# ==============================================================================
+# Prerequisites:
+# 1. Metrics Server must be installed in cluster:
+#    kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+#
+# 2. Verify metrics server is running:
+#    kubectl get deployment metrics-server -n kube-system
+#
+# 3. Check if metrics are available:
+#    kubectl top nodes
+#    kubectl top pods
+#
+# Deploy HPA:
+# kubectl apply -f hpa.yaml
+#
+# Check HPA status:
+# kubectl get hpa
+# kubectl describe hpa ml-model-serving-hpa
+#
+# Watch HPA in action:
+# kubectl get hpa ml-model-serving-hpa --watch
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Testing Autoscaling
+# ==============================================================================
+# Test scaling behavior by generating load:
+#
+# 1. Deploy the application:
+#    kubectl apply -f deployment.yaml
+#    kubectl apply -f service.yaml
+#    kubectl apply -f hpa.yaml
+#
+# 2. Generate load (using Apache Bench):
+#    # Get service IP
+#    SERVICE_IP=$(kubectl get svc ml-model-serving-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+#
+#    # Generate load
+#    ab -n 10000 -c 50 http://$SERVICE_IP/health
+#
+# 3. Watch pods scale up:
+#    kubectl get hpa --watch
+#    kubectl get pods -l app=ml-model-serving --watch
+#
+# 4. Stop load and watch scale down (takes 5+ minutes):
+#    kubectl get hpa --watch
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Monitoring HPA
+# ==============================================================================
+# Check current metrics:
+# kubectl get hpa ml-model-serving-hpa
+#
+# Output shows:
+# NAME                     REFERENCE                                TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+# ml-model-serving-hpa     Deployment/ml-model-serving-deployment   45%/70%         2         10        3          5m
+#                                                                    ↑       ↑
+#                                                    Current    Target
+#
+# Detailed metrics:
+# kubectl describe hpa ml-model-serving-hpa
+#
+# Shows:
+# - Current replicas
+# - Desired replicas
+# - Current metrics values
+# - Scaling events
+# - Conditions
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Important Considerations for ML Serving
+# ==============================================================================
+#
+# 1. Model Loading Time:
+#    - ML models take time to load (10-60 seconds)
+#    - New pods aren't ready immediately
+#    - Set appropriate initialDelaySeconds in readiness probe
+#    - Consider pre-warming instances
+#
+# 2. Resource Requests/Limits:
+#    - HPA uses resource requests for percentage calculation
+#    - Set accurate requests in deployment.yaml
+#    - CPU request: What model actually needs
+#    - Memory request: Model size + inference overhead
+#
+# 3. GPU Considerations:
+#    - HPA doesn't support GPU metrics by default
+#    - Use custom metrics for GPU utilization
+#    - Each pod typically uses 1 GPU
+#    - Scale by requests/sec rather than GPU utilization
+#
+# 4. Cold Start Problem:
+#    - Maintain minimum replicas (minReplicas: 2)
+#    - Use PodDisruptionBudget to ensure availability
+#    - Consider pre-scaling before expected traffic
+#
+# 5. Cost Optimization:
+#    - Higher minReplicas = better availability but higher cost
+#    - Lower maxReplicas = lower max cost but might not handle peaks
+#    - Tune scale-down delay to avoid flapping
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Advanced: Custom Metrics with Prometheus Adapter
+# ==============================================================================
+# To scale based on custom metrics (requests/sec, latency, etc.):
+#
+# 1. Install Prometheus Adapter:
+#    helm install prometheus-adapter prometheus-community/prometheus-adapter
+#
+# 2. Configure custom metrics:
+#    # In Prometheus Adapter config
+#    rules:
+#    - seriesQuery: 'http_requests_total{job="ml-model-serving"}'
+#      resources:
+#        overrides:
+#          namespace: {resource: "namespace"}
+#          pod: {resource: "pod"}
+#      name:
+#        matches: "^(.*)_total"
+#        as: "${1}_per_second"
+#      metricsQuery: 'rate(<<.Series>>{<<.LabelMatchers>>}[2m])'
+#
+# 3. Use in HPA:
+#    metrics:
+#    - type: Pods
+#      pods:
+#        metric:
+#          name: http_requests_per_second
+#        target:
+#          type: AverageValue
+#          averageValue: "100"
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Troubleshooting
+# ==============================================================================
+#
+# Issue: HPA shows "unknown" for metrics
+# Solution:
+# - Check metrics-server is running: kubectl get pods -n kube-system | grep metrics-server
+# - Check resource requests are set in deployment
+# - Wait a few minutes for metrics to become available
+#
+# Issue: HPA not scaling
+# Solution:
+# - Check current metrics: kubectl describe hpa ml-model-serving-hpa
+# - Verify metrics exceed threshold
+# - Check for resource constraints (max replicas reached, cluster full)
+# - Review HPA events: kubectl describe hpa ml-model-serving-hpa
+#
+# Issue: HPA scales too aggressively
+# Solution:
+# - Increase stabilizationWindowSeconds
+# - Adjust target utilization threshold
+# - Use more conservative scaling policies
+#
+# Issue: HPA causes flapping (up/down repeatedly)
+# Solution:
+# - Increase stabilizationWindowSeconds for both up and down
+# - Increase difference between scaleUp and scaleDown policies
+# - Check if metrics are noisy
+#
+# ==============================================================================
+
+---
+# ==============================================================================
+# Production Best Practices
+# ==============================================================================
+#
+# 1. Set Appropriate Limits:
+#    minReplicas: 2-3 (high availability)
+#    maxReplicas: 10-20 (based on load testing)
+#
+# 2. Multiple Metrics:
+#    - Use both CPU and custom metrics
+#    - Scale on whichever hits threshold first
+#
+# 3. Conservative Scale-Down:
+#    - Longer stabilizationWindowSeconds for scale-down (300s)
+#    - Slower scale-down rate
+#    - Prevents premature pod removal
+#
+# 4. PodDisruptionBudget:
+#    - Ensure minimum available pods during updates
+#    - Prevents all pods from being removed
+#
+# 5. Monitoring:
+#    - Alert on max replicas reached
+#    - Track HPA decisions in Grafana
+#    - Monitor scaling events
+#
+# 6. Load Testing:
+#    - Test scaling behavior under realistic load
+#    - Measure time to scale up/down
+#    - Verify no service disruption during scaling
+#
+# ==============================================================================

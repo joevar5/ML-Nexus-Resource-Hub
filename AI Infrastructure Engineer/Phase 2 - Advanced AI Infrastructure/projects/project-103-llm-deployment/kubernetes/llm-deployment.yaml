@@ -1,0 +1,164 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-server
+  labels:
+    app: llm-server
+    component: inference
+spec:
+  # TODO: Configure replica count
+  # For GPU workloads, typically start with 1-2 replicas
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: llm-server
+
+  template:
+    metadata:
+      labels:
+        app: llm-server
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+
+    spec:
+      # TODO: Add node selector for GPU nodes
+      # Ensure pods scheduled on nodes with GPUs
+      nodeSelector:
+        # cloud.google.com/gke-accelerator: nvidia-tesla-a10
+        # node.kubernetes.io/instance-type: g5.xlarge
+        kubernetes.io/role: gpu-node
+
+      # TODO: Configure tolerations for GPU taints
+      # Allow scheduling on tainted GPU nodes
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+
+      containers:
+      - name: llm-server
+        # TODO: Specify your container image
+        image: your-registry/llm-server:latest
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+
+        # TODO: Configure environment variables
+        env:
+          - name: MODEL_NAME
+            value: "meta-llama/Llama-2-7b-chat-hf"
+          - name: MODEL_PATH
+            value: "/models"
+          - name: MAX_BATCH_SIZE
+            value: "8"
+          - name: GPU_MEMORY_UTILIZATION
+            value: "0.9"
+          - name: QUANTIZATION
+            value: "fp16"  # Options: fp16, int8, int4
+          - name: LOG_LEVEL
+            value: "INFO"
+          # TODO: Add secrets for API keys
+          # - name: HUGGINGFACE_TOKEN
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: llm-secrets
+          #       key: hf-token
+
+        # TODO: Configure resource requests and limits
+        # Critical for GPU scheduling
+        resources:
+          requests:
+            memory: "16Gi"
+            cpu: "4"
+            nvidia.com/gpu: "1"  # Request 1 GPU
+          limits:
+            memory: "24Gi"
+            cpu: "8"
+            nvidia.com/gpu: "1"
+
+        # TODO: Configure health checks
+        # Important for ensuring model is loaded
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 300  # Model loading takes time
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        # TODO: Configure volume mounts
+        # For model cache and persistent storage
+        volumeMounts:
+          - name: model-cache
+            mountPath: /models
+          - name: shm
+            mountPath: /dev/shm  # Shared memory for PyTorch
+
+      # TODO: Configure volumes
+      volumes:
+        # Model cache volume (use PVC for persistence)
+        - name: model-cache
+          persistentVolumeClaim:
+            claimName: llm-model-cache
+
+        # Shared memory volume (required for multi-processing)
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 8Gi
+
+      # TODO: Configure init containers (optional)
+      # For model downloading or pre-warming
+      # initContainers:
+      #   - name: model-downloader
+      #     image: your-registry/model-downloader:latest
+      #     command: ["/download-model.sh"]
+      #     volumeMounts:
+      #       - name: model-cache
+      #         mountPath: /models
+
+---
+# TODO: Create PersistentVolumeClaim for model storage
+# This stores downloaded models across pod restarts
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: llm-model-cache
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi  # Adjust based on model size
+  # TODO: Specify storage class
+  # storageClassName: fast-ssd
+
+---
+# TODO: Create Secret for API keys
+# Store sensitive credentials
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: llm-secrets
+# type: Opaque
+# data:
+#   # Base64 encoded values
+#   hf-token: <base64-encoded-token>
+#   pinecone-api-key: <base64-encoded-key>

@@ -1,0 +1,175 @@
+{
+  "dashboard": {
+    "title": "MLOps Pipeline Dashboard",
+    "tags": ["mlops", "machine-learning", "model-serving"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "30s",
+
+    "annotations": {
+      "list": [
+        {
+          "name": "Model Deployments",
+          "datasource": "Prometheus",
+          "enable": true,
+          "iconColor": "rgba(255, 96, 96, 1)",
+          "tags": ["deployment"]
+        }
+      ]
+    },
+
+    "panels": [
+      {
+        "id": 1,
+        "title": "Model Prediction Rate",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "rate(model_predictions_total[5m])",
+            "legendFormat": "Predictions/sec",
+            "refId": "A"
+          }
+        ],
+        "description": "TODO: Add PromQL query for prediction rate"
+      },
+
+      {
+        "id": 2,
+        "title": "Prediction Latency (P99)",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.99, rate(model_prediction_latency_bucket[5m]))",
+            "legendFormat": "P99 Latency",
+            "refId": "A"
+          }
+        ],
+        "description": "TODO: Add PromQL query for latency percentiles"
+      },
+
+      {
+        "id": 3,
+        "title": "Model Accuracy Over Time",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "model_accuracy",
+            "legendFormat": "Accuracy",
+            "refId": "A"
+          }
+        ],
+        "description": "TODO: Add PromQL query for model performance metrics"
+      },
+
+      {
+        "id": 4,
+        "title": "Error Rate",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "rate(model_errors_total[5m])",
+            "legendFormat": "Errors/sec",
+            "refId": "A"
+          }
+        ],
+        "description": "TODO: Add PromQL query for error rates"
+      },
+
+      {
+        "id": 5,
+        "title": "Active Pods",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "count(kube_pod_status_phase{pod=~\"mlops-model.*\", phase=\"Running\"})",
+            "legendFormat": "Running Pods",
+            "refId": "A"
+          }
+        ],
+        "description": "TODO: Add PromQL query for pod count"
+      },
+
+      {
+        "id": 6,
+        "title": "Current Model Version",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 16},
+        "targets": [
+          {
+            "expr": "model_version_info",
+            "legendFormat": "Version: {{version}}",
+            "refId": "A"
+          }
+        ],
+        "description": "TODO: Add metric for current model version"
+      },
+
+      {
+        "id": 7,
+        "title": "CPU Usage",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20},
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{pod=~\"mlops-model.*\"}[5m])",
+            "legendFormat": "{{pod}}",
+            "refId": "A"
+          }
+        ]
+      },
+
+      {
+        "id": 8,
+        "title": "Memory Usage",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20},
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{pod=~\"mlops-model.*\"}",
+            "legendFormat": "{{pod}}",
+            "refId": "A"
+          }
+        ]
+      }
+    ],
+
+    "templating": {
+      "list": [
+        {
+          "name": "namespace",
+          "type": "query",
+          "query": "label_values(kube_pod_info, namespace)",
+          "current": {
+            "text": "default",
+            "value": "default"
+          }
+        },
+        {
+          "name": "pod",
+          "type": "query",
+          "query": "label_values(kube_pod_info{namespace=\"$namespace\"}, pod)",
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "multi": true
+        }
+      ]
+    },
+
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+
+    "timepicker": {
+      "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h"]
+    }
+  }
+}

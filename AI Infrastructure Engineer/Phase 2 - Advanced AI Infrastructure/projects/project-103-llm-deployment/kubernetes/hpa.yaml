@@ -1,0 +1,77 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: llm-server-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: llm-server
+
+  # TODO: Configure min/max replicas
+  # GPU nodes are expensive - balance cost vs availability
+  minReplicas: 1
+  maxReplicas: 3
+
+  # TODO: Configure scaling metrics
+  metrics:
+    # CPU-based scaling
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+
+    # Memory-based scaling
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
+    # TODO: Custom metrics (requests per second, queue length)
+    # Requires metrics-server and custom metrics API
+    # - type: Pods
+    #   pods:
+    #     metric:
+    #       name: requests_per_second
+    #     target:
+    #       type: AverageValue
+    #       averageValue: "100"
+
+  # TODO: Configure scaling behavior
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300  # Wait 5min before scaling down
+      policies:
+        - type: Percent
+          value: 50  # Scale down max 50% at a time
+          periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60  # Quick scale up
+      policies:
+        - type: Percent
+          value: 100  # Double capacity quickly
+          periodSeconds: 60
+        - type: Pods
+          value: 2  # Or add 2 pods
+          periodSeconds: 60
+      selectPolicy: Max  # Use most aggressive policy
+
+---
+# TODO: Optional - Vertical Pod Autoscaler
+# Adjusts resource requests/limits automatically
+# Uncomment if VPA is installed in cluster
+# apiVersion: autoscaling.k8s.io/v1
+# kind: VerticalPodAutoscaler
+# metadata:
+#   name: llm-server-vpa
+# spec:
+#   targetRef:
+#     apiVersion: apps/v1
+#     kind: Deployment
+#     name: llm-server
+#   updatePolicy:
+#     updateMode: "Auto"  # or "Off" for recommendations only

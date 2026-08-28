@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # ML API Service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ml-api
+    ports:
+      - "8000:8000"
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - MODEL_PATH=/app/models/resnet18.pth
+      - PROMETHEUS_ENABLED=true
+    volumes:
+      - ./models:/app/models:ro
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - ml-network
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+    restart: unless-stopped
+    networks:
+      - ml-network
+    depends_on:
+      - api
+
+  # Grafana Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - ml-network
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  ml-network:
+    driver: bridge
+
+# TODO: Uncomment if you need a database for logging or metadata
+#   postgres:
+#     image: postgres:15-alpine
+#     container_name: ml-postgres
+#     environment:
+#       - POSTGRES_USER=${POSTGRES_USER:-mluser}
+#       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mlpass}
+#       - POSTGRES_DB=${POSTGRES_DB:-mldb}
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     ports:
+#       - "5432:5432"
+#     networks:
+#       - ml-network
+
+# TODO: Add Redis for caching if needed
+#   redis:
+#     image: redis:7-alpine
+#     container_name: ml-redis
+#     ports:
+#       - "6379:6379"
+#     networks:
+#       - ml-network

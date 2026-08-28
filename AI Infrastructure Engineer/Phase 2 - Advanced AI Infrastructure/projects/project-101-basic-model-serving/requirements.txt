@@ -1,0 +1,164 @@
+# Python Dependencies for ML Model Serving
+# Project 01: Basic Model Serving System
+
+# ==============================================================================
+# Core Dependencies
+# ==============================================================================
+
+# Web Framework
+fastapi==0.104.1          # Modern, fast web framework for building APIs
+uvicorn[standard]==0.24.0 # ASGI server for running FastAPI
+python-multipart==0.0.6   # For handling file uploads
+
+# ML Framework (PyTorch)
+# Note: For CPU-only, install with: pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch==2.1.0              # Deep learning framework
+torchvision==0.16.0       # Computer vision models and utilities
+
+# Image Processing
+Pillow==10.1.0            # Image manipulation library
+
+# Data Handling
+numpy==1.26.2             # Numerical computing
+pydantic==2.5.0           # Data validation using Python type hints
+
+# HTTP Client (for URL-based predictions)
+httpx==0.25.2             # Async HTTP client
+requests==2.31.0          # HTTP library for Python
+
+# ==============================================================================
+# Monitoring and Observability
+# ==============================================================================
+
+# Prometheus metrics
+prometheus-client==0.19.0 # Prometheus instrumentation library
+
+# Logging
+python-json-logger==2.0.7 # JSON logging for structured logs
+
+# ==============================================================================
+# Configuration
+# ==============================================================================
+
+# Environment variables
+python-dotenv==1.0.0      # Load environment variables from .env
+
+# Configuration parsing
+pyyaml==6.0.1             # YAML parser
+
+# ==============================================================================
+# Development Dependencies (move to requirements-dev.txt for production)
+# ==============================================================================
+
+# Testing
+pytest==7.4.3             # Testing framework
+pytest-asyncio==0.21.1    # Async test support
+pytest-cov==4.1.0         # Coverage reporting
+httpx==0.25.2             # For testing FastAPI endpoints
+
+# Code Quality
+black==23.12.0            # Code formatter
+flake8==6.1.0             # Linting
+mypy==1.7.1               # Type checking
+isort==5.13.2             # Import sorting
+
+# Load Testing
+locust==2.20.0            # Load testing tool
+
+# ==============================================================================
+# Optional Dependencies
+# ==============================================================================
+
+# Uncomment if needed:
+
+# TorchServe (alternative to FastAPI for serving)
+# torchserve==0.9.0
+# torch-model-archiver==0.9.0
+
+# Distributed Tracing
+# opentelemetry-api==1.21.0
+# opentelemetry-sdk==1.21.0
+# opentelemetry-instrumentation-fastapi==0.42b0
+
+# Caching
+# redis==5.0.1
+# aioredis==2.0.1
+
+# Database (for request logging)
+# sqlalchemy==2.0.23
+# asyncpg==0.29.0
+
+# GPU Optimization
+# tensorrt==8.6.1  # NVIDIA TensorRT for optimization
+# onnx==1.15.0     # ONNX format support
+# onnxruntime-gpu==1.16.3  # ONNX runtime with GPU
+
+# ==============================================================================
+# Version Constraints
+# ==============================================================================
+
+# Pin major versions to avoid breaking changes
+# Use ~= for compatible release (patch updates allowed)
+# Use == for exact version (most strict)
+# Use >= for minimum version (least strict)
+
+# ==============================================================================
+# Installation Instructions
+# ==============================================================================
+
+# Install all dependencies:
+# pip install -r requirements.txt
+
+# Install with CPU-only PyTorch (recommended for most cases):
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+# pip install -r requirements.txt
+
+# Install with CUDA 11.8 support:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+# pip install -r requirements.txt
+
+# Install with CUDA 12.1 support:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+# pip install -r requirements.txt
+
+# For Apple Silicon (M1/M2):
+# pip install torch torchvision
+# pip install -r requirements.txt
+
+# ==============================================================================
+# Dependency Management Best Practices
+# ==============================================================================
+
+# 1. Keep requirements.txt minimal (only what's needed for production)
+# 2. Use requirements-dev.txt for development tools
+# 3. Pin versions for reproducibility
+# 4. Regular updates for security patches
+# 5. Test thoroughly after updating dependencies
+# 6. Consider using pip-tools for dependency resolution:
+#    pip install pip-tools
+#    pip-compile requirements.in -o requirements.txt
+
+# ==============================================================================
+# Security Scanning
+# ==============================================================================
+
+# Scan for vulnerabilities:
+# pip install safety
+# safety check -r requirements.txt
+
+# Or use:
+# pip-audit
+
+# ==============================================================================
+# Docker Optimization
+# ==============================================================================
+
+# In Dockerfile, install in this order for better caching:
+# 1. System dependencies
+# 2. Python dependencies (this file)
+# 3. Application code
+
+# For faster builds, consider:
+# pip install --no-cache-dir -r requirements.txt
+
+# ==============================================================================

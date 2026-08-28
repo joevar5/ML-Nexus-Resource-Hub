@@ -198,20 +198,28 @@
                     <span class="font-label text-sm truncate">Infrastructure</span>
                 </div>
             </button>
-            <button onclick="navigateToCategory('Projects')"
-                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
-                data-category="Projects">
-                <div class="flex items-center gap-2 overflow-hidden flex-1">
-                    <span class="material-symbols-outlined text-xl flex-shrink-0">terminal</span>
-                    <span class="font-label text-sm truncate">Projects</span>
-                </div>
-            </button>
             <button onclick="navigateToCategory('System Design')"
                 class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
                 data-category="System Design">
                 <div class="flex items-center gap-2 overflow-hidden flex-1">
                     <span class="material-symbols-outlined text-xl flex-shrink-0">schema</span>
                     <span class="font-label text-sm truncate">System Design</span>
+                </div>
+            </button>
+            <button onclick="navigateToCategory('Coding')"
+                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
+                data-category="Coding">
+                <div class="flex items-center gap-2 overflow-hidden flex-1">
+                    <span class="material-symbols-outlined text-xl flex-shrink-0">code</span>
+                    <span class="font-label text-sm truncate">Coding</span>
+                </div>
+            </button>
+            <button onclick="navigateToCategory('Projects')"
+                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
+                data-category="Projects">
+                <div class="flex items-center gap-2 overflow-hidden flex-1">
+                    <span class="material-symbols-outlined text-xl flex-shrink-0">terminal</span>
+                    <span class="font-label text-sm truncate">Projects</span>
                 </div>
             </button>
             <button onclick="navigateToCategory('Paper Analysis')"
@@ -979,6 +987,49 @@
             </div>
         </div>
 
+        <!-- 7. Coding Tools View -->
+        <div id="coding-view" style="display: none;">
+            <div class="max-w-6xl mx-auto px-8 py-12">
+                <div class="projects-fade-item mb-6 max-w-2xl" style="animation-delay: 0.06s;">
+                    <span
+                        class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">Tooling
+                        Up</span>
+                    <h2 class="text-3xl font-headline font-bold text-on-background mb-3">Coding Toolkit</h2>
+                    <p class="text-base font-body text-on-surface-variant leading-relaxed">
+                        Curated coding practice and interview-prep platforms — the ML &amp; LLM-specific ones to
+                        excel at ML &amp; GenAI coding, plus the general-purpose ones to sharpen core coding
+                        interview skills.
+                    </p>
+                </div>
+
+                <div class="projects-fade-item mb-8 max-w-2xl" style="animation-delay: 0.1s;">
+                    <span
+                        class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">ML
+                        &amp; LLM Coding</span>
+                    <h2 class="text-2xl font-headline font-bold text-on-background mb-3">Practice for ML &amp; GenAI
+                        Work</h2>
+                    <p class="text-base font-body text-on-surface-variant leading-relaxed">
+                        GPU/CUDA kernel practice, curated ML &amp; LLM problem sets, and real interview questions
+                        from ML and AI engineering roles.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" id="coding-ml-grid"></div>
+
+                <div class="projects-fade-item mb-8 max-w-2xl" style="animation-delay: 0.14s;">
+                    <span
+                        class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">Generic
+                        Coding</span>
+                    <h2 class="text-2xl font-headline font-bold text-on-background mb-3">Core Coding Interview
+                        Practice</h2>
+                    <p class="text-base font-body text-on-surface-variant leading-relaxed">
+                        DSA practice, low-level design, and the latest AI-coding interview formats — the
+                        general-purpose skills every engineer still needs.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="coding-generic-grid"></div>
+            </div>
+        </div>
+
     </main>
 
     <!-- Scroll to Top floating button -->
@@ -991,6 +1042,43 @@
 
     <!-- Magnifying Glass Lens -->
     <div id="mag-lens" class="mag-lens"></div>
+
+    <!-- Phase 2 Prerequisite Check Modal -->
+    <div id="phase2-prereq-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm px-gutter" style="display: none;">
+        <div class="bg-surface-container-high rounded-2xl shadow-2xl max-w-sm w-full p-7 relative border border-outline-variant/30">
+            <div class="w-11 h-11 rounded-xl bg-primary-container flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-on-primary-container text-2xl">flag</span>
+            </div>
+
+            <h3 class="font-display text-xl text-on-surface mb-2 leading-snug">Ready for Phase 2?</h3>
+
+            <p class="text-on-surface-variant text-sm leading-relaxed mb-5">
+                Phase 2 builds directly on Phase 1's foundations. Make sure you're comfortable with the
+                core modules before diving in.
+            </p>
+
+            <div class="mb-6">
+                <div class="flex justify-between items-baseline mb-1.5">
+                    <span class="text-xs font-label uppercase tracking-wide text-on-surface-variant/70">Phase 1 progress</span>
+                    <span id="phase2-prereq-progress-text" class="text-xs font-label font-semibold text-on-surface">0 / 0 · 0%</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-outline-variant/25 overflow-hidden">
+                    <div id="phase2-prereq-progress-bar" class="h-full rounded-full bg-primary transition-all duration-300" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <div class="flex gap-2.5">
+                <button id="phase2-prereq-back-btn"
+                    class="flex-1 px-4 py-2.5 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container-highest transition-colors font-label text-sm font-bold">
+                    Go Back to Phase 1
+                </button>
+                <button id="phase2-prereq-continue-btn"
+                    class="flex-1 px-4 py-2.5 rounded-lg bg-primary text-on-primary hover:bg-primary/90 transition-colors font-label text-sm font-bold">
+                    Continue to Phase 2
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Zoom Lightbox Overlay -->
     <div id="zoom-lightbox" class="zoom-lightbox">

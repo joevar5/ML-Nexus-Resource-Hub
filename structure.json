@@ -1853,17 +1853,2399 @@
         "type": "directory",
         "children": [
           {
+            "name": "assessments",
+            "type": "directory",
+            "children": [
+              {
+                "name": "coding-challenges",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "Coding Challenge 01: Build a Model Serving API",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/coding-challenges/challenge-01-model-api.md"
+                  }
+                ]
+              },
+              {
+                "name": "practical-exams",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "Midterm Practical Exam: AI Infrastructure Engineer",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/practical-exams/midterm-practical-exam.md"
+                  }
+                ]
+              },
+              {
+                "name": "quizzes",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "answer-keys",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 02: Cloud Computing for ML — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-02-answers.md"
+                      },
+                      {
+                        "name": "Module 03: Containerization — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-03-answers.md"
+                      },
+                      {
+                        "name": "Module 04: Kubernetes — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-04-answers.md"
+                      },
+                      {
+                        "name": "Module 05: Data Pipelines — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-05-answers.md"
+                      },
+                      {
+                        "name": "Module 06: MLOps — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-06-answers.md"
+                      },
+                      {
+                        "name": "Module 07: GPU Computing — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-07-answers.md"
+                      },
+                      {
+                        "name": "Module 08: Monitoring & Observability — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-08-answers.md"
+                      },
+                      {
+                        "name": "Module 09: Infrastructure as Code — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-09-answers.md"
+                      },
+                      {
+                        "name": "Module 10: LLM Infrastructure — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-10-answers.md"
+                      },
+                      {
+                        "name": "Module 101: Foundations — Answer Key",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/module-01-answers.md"
+                      },
+                      {
+                        "name": "Quiz Answer Keys",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/quizzes/answer-keys/README.md"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "rubrics",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "Project Assessment Rubric",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/rubrics/project-assessment-rubric.md"
+                  }
+                ]
+              },
+              {
+                "name": "Assessments",
+                "type": "file",
+                "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/assessments/README.md"
+              }
+            ]
+          },
+          {
             "name": "lessons",
             "type": "directory",
             "children": [
               {
-                "name": "mod-011-multi-gpu",
+                "name": "mod-02-cloud-computing",
                 "type": "directory",
                 "children": [
                   {
-                    "name": "Module 11: Multi-GPU & Distributed Training Foundations",
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-01-multi-cloud-cost-analyzer",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 01: Multi-Cloud Cost Analyzer",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-01-multi-cloud-cost-analyzer/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-02-cloud-ml-infrastructure",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 02: Cloud ML Infrastructure Deployment",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-02-cloud-ml-infrastructure/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-03-disaster-recovery",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 03: Cloud Disaster Recovery System",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-03-disaster-recovery/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-04-cross-region-replication",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 04: Cross-Region Replication for ML Artifacts",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-04-cross-region-replication/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-cloud-networking-for-ml",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 05: Cloud Networking for ML Workloads",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-05-cloud-networking-for-ml/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-managed-ml-services-comparison",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 06: Managed ML Services Comparison",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-06-managed-ml-services-comparison/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-07-multi-account-security",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 07: Multi-Account / Multi-Project Security Architecture",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-07-multi-account-security/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-08-finops-automation",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 08: FinOps Automation for ML Infrastructure",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-08-finops-automation/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Module 02 Exercises: Cloud Computing for ML",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/exercises/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "labs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lab 01: Provision an ML-Ready AWS Environment",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/lab-01-aws-ml-infra.md"
+                      },
+                      {
+                        "name": "Lab 02: Provision an ML-Ready GCP Environment",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/lab-02-gcp-ml-infra.md"
+                      },
+                      {
+                        "name": "Lab 03: Provision an ML-Ready Azure Environment",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/lab-03-azure-ml-infra.md"
+                      },
+                      {
+                        "name": "Lab 04: Multi-Cloud Deployment with a Single Tool",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/lab-04-multi-cloud-deployment.md"
+                      },
+                      {
+                        "name": "Module 02 — Labs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 02 Quiz: Cloud Computing for ML",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/quizzes/module-quiz.md"
+                      },
+                      {
+                        "name": "Module 02: Cloud Computing - Final Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/quizzes/final-quiz.md"
+                      },
+                      {
+                        "name": "Module 02: Cloud Computing - Mid-Module Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/quizzes/mid-module-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Lesson 01: Cloud Architecture for ML",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-011-multi-gpu/README.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/01-cloud-architecture.md"
+                  },
+                  {
+                    "name": "Lesson 02: AWS for ML Infrastructure",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/02-aws-ml-infrastructure.md"
+                  },
+                  {
+                    "name": "Lesson 03: Google Cloud Platform for ML Infrastructure",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/03-gcp-ml-infrastructure.md"
+                  },
+                  {
+                    "name": "Lesson 04: Azure for ML Infrastructure",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/04-azure-ml-infrastructure.md"
+                  },
+                  {
+                    "name": "Lesson 05: Cloud Storage for ML",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/05-cloud-storage.md"
+                  },
+                  {
+                    "name": "Lesson 06: Cloud Networking for ML",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/06-cloud-networking.md"
+                  },
+                  {
+                    "name": "Lesson 07: Managed ML Services Comparison",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/07-managed-ml-services.md"
+                  },
+                  {
+                    "name": "Lesson 08: Multi-Cloud & Cost Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/08-multi-cloud-cost-optimization.md"
+                  },
+                  {
+                    "name": "Module 02 Resources: Cloud Computing for ML",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/resources.md"
+                  },
+                  {
+                    "name": "Module 02: Cloud Computing for ML Infrastructure",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-03-containerization",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-04-container-security",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 04: Container Security Scanner",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-04-container-security/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-image-optimizer",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 05: Multi-Stage Build Optimizer",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-05-image-optimizer/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-registry-manager",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 06: Container Registry Manager",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-06-registry-manager/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-07-buildkit-cache-optimization",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 07: BuildKit Cache Optimization",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-07-buildkit-cache-optimization/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-08-multi-arch-builds",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 08: Multi-Architecture Builds (amd64 + arm64)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-08-multi-arch-builds/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-09-runtime-debugging",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 09: Container Runtime Debugging",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-09-runtime-debugging/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-10-sbom-and-supply-chain",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 10: SBOM and Container Supply Chain",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-10-sbom-and-supply-chain/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-11-ml-container-patterns",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 11: ML-Specific Container Patterns",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-11-ml-container-patterns/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-12-vulnerability-remediation",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 12: Container Vulnerability Remediation Workflow",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-12-vulnerability-remediation/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Exercise 01: Build Your First ML Dockerfile",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-01-dockerfile.md"
+                      },
+                      {
+                        "name": "Exercise 02: Multi-Container ML Application",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-02-multi-container.md"
+                      },
+                      {
+                        "name": "Exercise 03: GPU-Accelerated ML Container",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-03-gpu-container.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "labs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lab 01: Dockerfile Optimization for ML Workloads",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/labs/lab-01-dockerfile-optimization.md"
+                      },
+                      {
+                        "name": "Lab 02: Multi-Stage Builds for Slim Production Images",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/labs/lab-02-multi-stage-builds.md"
+                      },
+                      {
+                        "name": "Lab 03: Compose a Multi-Service Stack",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/labs/lab-03-docker-compose-stack.md"
+                      },
+                      {
+                        "name": "Lab 04: Run a GPU Container with PyTorch CUDA",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/labs/lab-04-gpu-docker.md"
+                      },
+                      {
+                        "name": "Lab 05: Stand Up a Private Container Registry",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/labs/lab-05-private-registry.md"
+                      },
+                      {
+                        "name": "Lab 06: Security-Scan Images with Trivy",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/labs/lab-06-container-security-scanning.md"
+                      },
+                      {
+                        "name": "Module 03 — Labs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/labs/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 03 Quiz: Containerization with Docker",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/quizzes/module-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Lesson 01: Docker Introduction",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/01-docker-introduction.md"
+                  },
+                  {
+                    "name": "Lesson 02: Dockerfiles for ML Applications",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/02-dockerfile-ml-apps.md"
+                  },
+                  {
+                    "name": "Lesson 03: Image Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/03-image-optimization.md"
+                  },
+                  {
+                    "name": "Lesson 04: Docker Networking and Volumes",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/04-docker-networking-volumes.md"
+                  },
+                  {
+                    "name": "Lesson 05: Docker Compose for ML Applications",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/05-docker-compose.md"
+                  },
+                  {
+                    "name": "Lesson 06: Container Registries",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/06-container-registries.md"
+                  },
+                  {
+                    "name": "Lesson 07: GPU Support in Docker",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/07-gpu-docker.md"
+                  },
+                  {
+                    "name": "Lesson 08: Production Best Practices",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/08-production-best-practices.md"
+                  },
+                  {
+                    "name": "Module 03 Resources: Containerization with Docker",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/resources.md"
+                  },
+                  {
+                    "name": "Module 03: Containerization with Docker",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-04-kubernetes",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-01-k8s-fundamentals",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 01: Kubernetes Fundamentals — Build a Working Service",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-01-k8s-fundamentals/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-02-control-plane-tour",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 02: Control Plane Tour",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-02-control-plane-tour/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-03-core-resources-mastery",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 03: Core Resources Mastery",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-03-core-resources-mastery/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-04-k8s-cluster-autoscaler",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 04: Kubernetes Cluster Autoscaler with Custom Metrics",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-04-k8s-cluster-autoscaler/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-service-mesh-observability",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 05: Service Mesh Observability with Istio",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-05-service-mesh-observability/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-k8s-operator-framework",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 06: Kubernetes Operator for ML Model Lifecycle",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-06-k8s-operator-framework/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-07-helm-chart-authoring",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 07: Author a Production-Grade Helm Chart",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-07-helm-chart-authoring/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-08-gpu-scheduling",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 08: GPU Scheduling Patterns",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-08-gpu-scheduling/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-09-monitoring-troubleshooting",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 09: Kubernetes Monitoring and Troubleshooting Mastery",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-09-monitoring-troubleshooting/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-10-multi-cluster-federation",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 10: Multi-Cluster Federation",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-10-multi-cluster-federation/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-11-custom-operator",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 11: Build a Custom Kubernetes Operator",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-11-custom-operator/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-12-stateful-postgres",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 12: Stateful Postgres on Kubernetes",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-12-stateful-postgres/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-13-cluster-upgrade",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 13: Cluster Upgrade Procedure",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-13-cluster-upgrade/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-14-resource-quotas-multitenancy",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 14: Resource Quotas and Multi-Tenancy",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-14-resource-quotas-multitenancy/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-15-cluster-cost-optimization",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 15: Kubernetes Cluster Cost Optimization",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-15-cluster-cost-optimization/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Module 04: Kubernetes - Exercises",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/exercises/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "labs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lab 01: Your First Pod and Deployment",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/labs/lab-01-pod-deployment.md"
+                      },
+                      {
+                        "name": "Lab 02: Service Discovery — ClusterIP, NodePort, LoadBalancer",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/labs/lab-02-service-discovery.md"
+                      },
+                      {
+                        "name": "Lab 03: ConfigMaps and Secrets",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/labs/lab-03-configmaps-secrets.md"
+                      },
+                      {
+                        "name": "Lab 04: Persistent Volumes for Stateful Workloads",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/labs/lab-04-persistent-volumes.md"
+                      },
+                      {
+                        "name": "Lab 05: Package an App with Helm",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/labs/lab-05-helm-chart.md"
+                      },
+                      {
+                        "name": "Lab 06: Horizontal Pod Autoscaler under Load",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/labs/lab-06-hpa.md"
+                      },
+                      {
+                        "name": "Lab 07: NetworkPolicies for East-West Isolation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/labs/lab-07-network-policies.md"
+                      },
+                      {
+                        "name": "Lab 08: Debug a Broken Deployment from Scratch",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/labs/lab-08-debugging.md"
+                      },
+                      {
+                        "name": "Module 04 — Labs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/labs/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 04 Quiz: Kubernetes Fundamentals",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/quizzes/module-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Lesson 01: Kubernetes Introduction",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/01-k8s-introduction.md"
+                  },
+                  {
+                    "name": "Lesson 02: Kubernetes Architecture",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/02-k8s-architecture.md"
+                  },
+                  {
+                    "name": "Lesson 03: Core Kubernetes Resources",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/03-core-resources.md"
+                  },
+                  {
+                    "name": "Lesson 04: Deployments and Services Deep Dive",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/04-deployments-services.md"
+                  },
+                  {
+                    "name": "Lesson 05: Kubernetes Networking and Ingress",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/05-networking-ingress.md"
+                  },
+                  {
+                    "name": "Lesson 06: Storage and Persistence in Kubernetes",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/06-storage-persistence.md"
+                  },
+                  {
+                    "name": "Lesson 07: Helm Package Manager",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/07-helm-package-manager.md"
+                  },
+                  {
+                    "name": "Lesson 08: GPU Scheduling in Kubernetes",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/08-gpu-scheduling.md"
+                  },
+                  {
+                    "name": "Lesson 09: Monitoring and Troubleshooting Kubernetes",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/09-monitoring-troubleshooting.md"
+                  },
+                  {
+                    "name": "Module 04 Resources: Kubernetes Fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/resources.md"
+                  },
+                  {
+                    "name": "Module 04: Kubernetes Fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/README.md"
+                  },
+                  {
+                    "name": "Module 04: Kubernetes Fundamentals - Completion Status",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-04-kubernetes/MODULE_COMPLETION_STATUS.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-05-data-pipelines",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-01-pipeline-architecture-design",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 01: Data Pipeline Architecture Design",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-01-pipeline-architecture-design/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-02-airflow-fundamentals",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 02: Airflow Fundamentals — Build a Real DAG",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-02-airflow-fundamentals/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-03-streaming-pipeline-kafka",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 03: Real-Time ML Feature Pipeline with Kafka",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-03-streaming-pipeline-kafka/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-04-workflow-orchestration-airflow",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 04: ML Workflow Orchestration with Airflow",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-04-workflow-orchestration-airflow/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-spark-batch-processing",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 05: Spark Batch Processing for ML",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-05-spark-batch-processing/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-data-versioning-dvc",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 06: Data and Model Versioning with DVC",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-06-data-versioning-dvc/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-07-data-quality-great-expectations",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 07: Data Quality Validation with Great Expectations",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-07-data-quality-great-expectations/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-08-pipeline-monitoring-lineage",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 08: Pipeline Monitoring and Data Lineage",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-08-pipeline-monitoring-lineage/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-09-backfill-strategies",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 09: Backfill Strategies",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-09-backfill-strategies/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-10-etl-to-elt-migration",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 10: ETL → ELT Migration with dbt",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-10-etl-to-elt-migration/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-11-lambda-architecture",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 11: Lambda Architecture — Batch + Streaming Hybrid",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-11-lambda-architecture/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-12-pipeline-cost-optimization",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 12: Pipeline Cost Optimization",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-12-pipeline-cost-optimization/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Module 05: Data Pipelines - Hands-On Exercises",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/exercises/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "labs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lab 01: Run Airflow Locally with docker-compose",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/labs/lab-01-airflow-local.md"
+                      },
+                      {
+                        "name": "Lab 02: Author Your First DAG",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/labs/lab-02-dag-development.md"
+                      },
+                      {
+                        "name": "Lab 03: Run a Spark Batch Job Locally",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/labs/lab-03-spark-job.md"
+                      },
+                      {
+                        "name": "Lab 04: Stream Events Through Kafka",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/labs/lab-04-kafka-streaming.md"
+                      },
+                      {
+                        "name": "Lab 05: Version Data and Models with DVC",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/labs/lab-05-dvc-versioning.md"
+                      },
+                      {
+                        "name": "Lab 06: Validate Data with Great Expectations",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/labs/lab-06-data-quality.md"
+                      },
+                      {
+                        "name": "Module 05 — Labs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/labs/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 05: Data Pipelines - Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/quizzes/module-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Lesson 01: Data Pipeline Architecture for ML",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/01-data-pipeline-architecture.md"
+                  },
+                  {
+                    "name": "Lesson 02: Apache Airflow Fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/02-apache-airflow-fundamentals.md"
+                  },
+                  {
+                    "name": "Lesson 03: Advanced Airflow for ML",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/03-advanced-airflow-ml.md"
+                  },
+                  {
+                    "name": "Lesson 04: Data Versioning with DVC",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/04-data-versioning-dvc.md"
+                  },
+                  {
+                    "name": "Lesson 05: Data Processing with Apache Spark",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/05-data-processing-spark.md"
+                  },
+                  {
+                    "name": "Lesson 06: Streaming Data with Apache Kafka",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/06-streaming-data-kafka.md"
+                  },
+                  {
+                    "name": "Lesson 07: Data Quality and Validation",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/07-data-quality-validation.md"
+                  },
+                  {
+                    "name": "Lesson 08: Pipeline Monitoring and Error Handling",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/08-pipeline-monitoring-errors.md"
+                  },
+                  {
+                    "name": "Module 05: Data Pipelines - Resources",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/resources.md"
+                  },
+                  {
+                    "name": "Module 05: Data Pipelines and Orchestration",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-05-data-pipelines/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-06-mlops",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-01-mlops-maturity-assessment",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 01: MLOps Maturity Assessment",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-01-mlops-maturity-assessment/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-02-mlflow-tracking-deep-dive",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 02: MLflow Tracking Deep Dive",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-02-mlflow-tracking-deep-dive/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-03-model-registry-promotion",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 03: Model Registry and Promotion Workflow",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-03-model-registry-promotion/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-04-experiment-tracking-mlflow",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 04: Experiment Tracking and Model Registry with MLflow",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-04-experiment-tracking-mlflow/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-model-monitoring-drift",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 05: Model Monitoring and Drift Detection",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-05-model-monitoring-drift/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-ci-cd-ml-pipelines",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 06: CI/CD for ML Pipelines",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-06-ci-cd-ml-pipelines/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-07-feature-store-implementation",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 07: Feature Store Implementation",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-07-feature-store-implementation/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-08-deployment-strategies",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 08: Model Deployment Strategies",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-08-deployment-strategies/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-09-ab-testing-infrastructure",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 09: A/B Testing Infrastructure for ML",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-09-ab-testing-infrastructure/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-10-model-governance",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 10: Model Governance and Audit",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-10-model-governance/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-11-ml-orchestration-patterns",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 11: ML Pipeline Orchestration Patterns",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-11-ml-orchestration-patterns/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-12-model-cost-attribution",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 12: Per-Model Cost Attribution",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-12-model-cost-attribution/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-13-reproducibility-audit",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 13: ML Reproducibility Audit",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-13-reproducibility-audit/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-14-ml-platform-operating-model",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 14: ML Platform Team Operating Model",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/exercise-14-ml-platform-operating-model/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Module 06: MLOps & Experiment Tracking - Hands-On Exercises",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/exercises/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "labs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lab 01: MLflow Tracking Server End-to-End",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/labs/lab-01-mlflow-tracking.md"
+                      },
+                      {
+                        "name": "Lab 02: Model Registry and Stage Promotion",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/labs/lab-02-model-registry.md"
+                      },
+                      {
+                        "name": "Lab 03: Stand Up a Feast Feature Store",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/labs/lab-03-feature-store.md"
+                      },
+                      {
+                        "name": "Lab 04: CI/CD for Models with GitHub Actions",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/labs/lab-04-cicd-models.md"
+                      },
+                      {
+                        "name": "Lab 05: Canary Deployment with Argo Rollouts",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/labs/lab-05-canary-deployment.md"
+                      },
+                      {
+                        "name": "Lab 06: A/B Test with Traffic Splitting",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/labs/lab-06-ab-testing.md"
+                      },
+                      {
+                        "name": "Lab 07: Drift Monitoring with Evidently",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/labs/lab-07-drift-monitoring.md"
+                      },
+                      {
+                        "name": "Module 06 — Labs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/labs/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 06: MLOps & Experiment Tracking - Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/quizzes/module-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Lesson 01: Introduction to MLOps",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/01-introduction-to-mlops.md"
+                  },
+                  {
+                    "name": "Lesson 02: MLflow Experiment Tracking",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/02-mlflow-experiment-tracking.md"
+                  },
+                  {
+                    "name": "Lesson 03: Model Registry & Versioning",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/03-model-registry-versioning.md"
+                  },
+                  {
+                    "name": "Lesson 04: Feature Stores & Feature Engineering",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/04-feature-stores-engineering.md"
+                  },
+                  {
+                    "name": "Lesson 05: CI/CD for ML Models",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/05-cicd-ml-models.md"
+                  },
+                  {
+                    "name": "Lesson 06: Model Deployment Strategies",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/06-model-deployment-strategies.md"
+                  },
+                  {
+                    "name": "Lesson 07: A/B Testing & Experimentation",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/07-ab-testing-experimentation.md"
+                  },
+                  {
+                    "name": "Lesson 08: MLOps Best Practices & Governance",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/08-best-practices-governance.md"
+                  },
+                  {
+                    "name": "Module 06: MLOps & Experiment Tracking",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/README.md"
+                  },
+                  {
+                    "name": "Module 06: MLOps & Experiment Tracking - Learning Resources",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-06-mlops/resources.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-07-gpu-computing",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-01-gpu-introspection",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 01: GPU Introspection and First CUDA Op",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-01-gpu-introspection/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-02-cuda-kernel",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 02: Write Your First CUDA Kernel",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-02-cuda-kernel/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-03-pytorch-gpu-pipeline",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 03: End-to-End PyTorch GPU Pipeline",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-03-pytorch-gpu-pipeline/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-04-gpu-cluster-management",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 04: GPU Cluster Management and Scheduling",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-04-gpu-cluster-management/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-gpu-performance-optimization",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 05: GPU Performance Optimization and Profiling",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-05-gpu-performance-optimization/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-distributed-gpu-training",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 06: Distributed GPU Training at Scale",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-06-distributed-gpu-training/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-07-gpu-memory-profiling",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 07: GPU Memory Profiling and OOM Diagnosis",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-07-gpu-memory-profiling/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-08-mixed-precision",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 08: Mixed Precision Training Benchmarks",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-08-mixed-precision/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-09-inference-optimization",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 09: GPU Inference Optimization",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-09-inference-optimization/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-10-gpu-sharing-strategies",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 10: GPU Sharing Strategies (MIG, MPS, Time-Slicing)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-10-gpu-sharing-strategies/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-11-gpu-cost-optimization",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 11: GPU Cost Optimization Playbook",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-11-gpu-cost-optimization/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Module 07: GPU Computing & Distributed Training - Hands-on Exercises",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/exercises/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "labs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lab 01: CUDA Hello-World and Device Introspection",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/labs/lab-01-cuda-hello-world.md"
+                      },
+                      {
+                        "name": "Lab 02: PyTorch GPU Inference and Benchmarking",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/labs/lab-02-pytorch-gpu-inference.md"
+                      },
+                      {
+                        "name": "Lab 03: Multi-GPU Training with DistributedDataParallel",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/labs/lab-03-multi-gpu-training.md"
+                      },
+                      {
+                        "name": "Lab 04: Run a GPU Pod on Kubernetes",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/labs/lab-04-gpu-cluster-on-k8s.md"
+                      },
+                      {
+                        "name": "Lab 05: Mixed-Precision Training with `torch.amp`",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/labs/lab-05-mixed-precision.md"
+                      },
+                      {
+                        "name": "Lab 06: GPU Memory Profiling and OOM Diagnosis",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/labs/lab-06-memory-profiling.md"
+                      },
+                      {
+                        "name": "Module 07 — Labs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/labs/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 07: GPU Computing & Distributed Training - Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/quizzes/module-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Lesson 01: Introduction to GPU Computing for AI",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/01-introduction-gpu-computing.md"
+                  },
+                  {
+                    "name": "Lesson 02: CUDA Programming Fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/02-cuda-programming-fundamentals.md"
+                  },
+                  {
+                    "name": "Lesson 03: PyTorch GPU Acceleration",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/03-pytorch-gpu-acceleration.md"
+                  },
+                  {
+                    "name": "Lesson 04: Distributed Training Fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/04-distributed-training-fundamentals.md"
+                  },
+                  {
+                    "name": "Lesson 05: Multi-GPU Training Strategies",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/05-multi-gpu-training-strategies.md"
+                  },
+                  {
+                    "name": "Lesson 06: Model and Pipeline Parallelism",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/06-model-pipeline-parallelism.md"
+                  },
+                  {
+                    "name": "Lesson 07: GPU Memory Management & Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/07-gpu-memory-management.md"
+                  },
+                  {
+                    "name": "Lesson 08: Advanced GPU Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/08-advanced-gpu-optimization.md"
+                  },
+                  {
+                    "name": "Module 07: GPU Computing & Distributed Training",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/README.md"
+                  },
+                  {
+                    "name": "Module 07: GPU Computing & Distributed Training - Resources",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-07-gpu-computing/resources.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-08-monitoring-observability",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-01-observability-stack",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 01: Production Observability Stack (Prometheus + Grafana + Loki)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-01-observability-stack/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-02-ml-model-monitoring",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 02: ML Model Monitoring and Drift Detection",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-02-ml-model-monitoring/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-03-promql-deep-dive",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 03: PromQL Deep Dive",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-03-promql-deep-dive/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-04-dashboards-as-code",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 04: Grafana Dashboards as Code",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-04-dashboards-as-code/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-log-pipeline",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 05: Structured Log Pipeline (Loki + Vector)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-05-log-pipeline/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-distributed-tracing-otel",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 06: Distributed Tracing with OpenTelemetry",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-06-distributed-tracing-otel/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-07-alertmanager-routing",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 07: Alertmanager Routing and Notification Strategy",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-07-alertmanager-routing/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-08-slo-and-error-budgets",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 08: SLI / SLO / Error Budget Implementation",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-08-slo-and-error-budgets/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-09-incident-response-gameday",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 09: Incident Response Game Day",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-09-incident-response-gameday/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-10-observability-cost-control",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 10: Observability Cost Control",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-10-observability-cost-control/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Module 08: Monitoring & Observability - Exercises",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/exercises/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "labs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lab 01: Instrument a Python Service with Prometheus",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/labs/lab-01-prometheus-instrumentation.md"
+                      },
+                      {
+                        "name": "Lab 02: Build a Grafana Dashboard from Scratch",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/labs/lab-02-grafana-dashboards.md"
+                      },
+                      {
+                        "name": "Lab 03: Send Logs to Loki",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/labs/lab-03-loki-logging.md"
+                      },
+                      {
+                        "name": "Lab 04: Distributed Tracing with OpenTelemetry + Jaeger",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/labs/lab-04-distributed-tracing.md"
+                      },
+                      {
+                        "name": "Lab 05: Author Alert Rules with Multi-Window Burn Rates",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/labs/lab-05-alerting-rules.md"
+                      },
+                      {
+                        "name": "Module 08 — Labs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/labs/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 08: Monitoring & Observability - Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/quizzes/module-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Lesson 01: Introduction to Observability",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/01-introduction-observability.md"
+                  },
+                  {
+                    "name": "Lesson 02: Prometheus for Metrics Collection",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/02-prometheus-metrics.md"
+                  },
+                  {
+                    "name": "Lesson 03: Grafana for Visualization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/03-grafana-visualization.md"
+                  },
+                  {
+                    "name": "Lesson 04: Logging with ELK Stack and Loki",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/04-logging-elk-loki.md"
+                  },
+                  {
+                    "name": "Lesson 05: Distributed Tracing with Jaeger and Tempo",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/05-distributed-tracing.md"
+                  },
+                  {
+                    "name": "Lesson 06: Alerting Strategies and Alert Management",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/06-alerting-strategies.md"
+                  },
+                  {
+                    "name": "Lesson 07: ML-Specific Monitoring and Model Observability",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/07-ml-model-observability.md"
+                  },
+                  {
+                    "name": "Lesson 08: Best Practices and Observability Culture",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/08-best-practices-culture.md"
+                  },
+                  {
+                    "name": "Module 08: Monitoring & Observability",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/README.md"
+                  },
+                  {
+                    "name": "Module 08: Monitoring & Observability - Resources",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-08-monitoring-observability/resources.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-09-infrastructure-as-code",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-01-terraform-ml-infrastructure",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 01: Production ML Infrastructure with Terraform",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-01-terraform-ml-infrastructure/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-02-pulumi-multicloud-ml",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 02: Multi-Cloud ML Infrastructure with Pulumi",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-02-pulumi-multicloud-ml/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-03-terraform-module-library",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 03: Build a Reusable Terraform Module Library",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-03-terraform-module-library/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-04-state-management-at-scale",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 04: Terraform State Management at Scale",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-04-state-management-at-scale/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-pulumi-advanced-patterns",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 05: Pulumi Advanced Patterns",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-05-pulumi-advanced-patterns/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-gitops-argocd",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 06: GitOps with ArgoCD",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-06-gitops-argocd/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-07-secret-management",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 07: Secret Management Across IaC + Runtime",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-07-secret-management/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-08-policy-as-code",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 08: Policy as Code (OPA + Sentinel)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-08-policy-as-code/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-09-drift-detection",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 09: Drift Detection and Remediation",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-09-drift-detection/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-10-multi-environment-promotion",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 10: Multi-Environment Promotion Pipeline",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-10-multi-environment-promotion/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-11-cost-aware-iac",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 11: Cost-Aware IaC",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-11-cost-aware-iac/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-12-disaster-recovery-iac",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 12: Disaster Recovery via IaC",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-12-disaster-recovery-iac/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-13-iac-for-ml-workloads",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 13: IaC for AI/ML Workloads",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-13-iac-for-ml-workloads/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Module 09: Infrastructure as Code - Hands-On Exercises",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "labs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lab 01: Terraform AWS VPC",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-01-terraform-aws-vpc.md"
+                      },
+                      {
+                        "name": "Lab 02: Terraform EKS Cluster",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-02-terraform-eks.md"
+                      },
+                      {
+                        "name": "Lab 03: Remote State Backend with S3 + DynamoDB Locking",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-03-terraform-state-backend.md"
+                      },
+                      {
+                        "name": "Lab 04: Pulumi Multi-Cloud Deployment",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-04-pulumi-multicloud.md"
+                      },
+                      {
+                        "name": "Lab 05: IaC in CI/CD with PR-Based Plan",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-05-iac-cicd.md"
+                      },
+                      {
+                        "name": "Lab 06: Secret Management with Vault + Terraform",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-06-secret-management.md"
+                      },
+                      {
+                        "name": "Lab 07: Policy as Code with OPA Conftest",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-07-policy-as-code.md"
+                      },
+                      {
+                        "name": "Module 09 — Labs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/labs/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 09: Infrastructure as Code - Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/quizzes/module-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Lesson 01: Introduction to Infrastructure as Code",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/01-introduction-to-iac.md"
+                  },
+                  {
+                    "name": "Lesson 02: Terraform Fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/02-terraform-fundamentals.md"
+                  },
+                  {
+                    "name": "Lesson 03: Terraform State Management",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/03-terraform-state-management.md"
+                  },
+                  {
+                    "name": "Lesson 04: Building AI Infrastructure with Terraform",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/04-building-ai-infrastructure-terraform.md"
+                  },
+                  {
+                    "name": "Lesson 05: Pulumi - Infrastructure as Software",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/05-pulumi-infrastructure-as-software.md"
+                  },
+                  {
+                    "name": "Lesson 06: Advanced IaC Patterns",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/06-advanced-iac-patterns.md"
+                  },
+                  {
+                    "name": "Lesson 07: GitOps and IaC CI/CD",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/07-gitops-iac-cicd.md"
+                  },
+                  {
+                    "name": "Lesson 08: Security Best Practices for IaC",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/08-security-best-practices.md"
+                  },
+                  {
+                    "name": "Module 09: Infrastructure as Code - Resources",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/resources.md"
+                  },
+                  {
+                    "name": "Module 09: Infrastructure as Code (IaC)",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-09-infrastructure-as-code/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-10-llm-infrastructure",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-01-production-llm-serving",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 01: Production LLM Serving Platform (vLLM + Kubernetes)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-01-production-llm-serving/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-02-production-rag-system",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 02: Production RAG System (Retrieval-Augmented Generation)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-02-production-rag-system/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-03-vllm-deep-dive",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 03: vLLM Deep Dive",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-03-vllm-deep-dive/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-04-vector-db-benchmarking",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 04: Vector Database Benchmarking",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-04-vector-db-benchmarking/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-finetuning-at-scale",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 05: Fine-Tuning at Scale (LoRA + QLoRA + Distributed)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-05-finetuning-at-scale/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-inference-optimization-llm",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 06: LLM Inference Optimization",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-06-inference-optimization-llm/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-07-multi-tenant-llm-platform",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 07: Multi-Tenant LLM Platform",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-07-multi-tenant-llm-platform/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-08-llm-cost-routing",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 08: Cost-Aware LLM Routing",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-08-llm-cost-routing/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-09-llm-observability",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 09: LLM-Specific Observability",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-09-llm-observability/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-10-prompt-management",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 10: Prompt Management and Versioning",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-10-prompt-management/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-11-llm-guardrails",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 11: LLM Guardrails (Injection, Moderation, Output Filtering)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-11-llm-guardrails/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-12-llm-evaluation-harness",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 12: LLM Evaluation Infrastructure",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-12-llm-evaluation-harness/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-13-semantic-caching",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 13: Semantic Caching for LLMs",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-13-semantic-caching/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-14-hybrid-retrieval-reranking",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "Exercise 14: Hybrid Retrieval + Reranking Pipeline",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-14-hybrid-retrieval-reranking/README.md"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Module 10: LLM Infrastructure - Hands-On Exercises",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/exercises/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "labs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lab 01: Deploy an LLM with vLLM",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-01-vllm-deployment.md"
+                      },
+                      {
+                        "name": "Lab 02: Build a RAG Pipeline End-to-End",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-02-rag-pipeline.md"
+                      },
+                      {
+                        "name": "Lab 03: Stand Up a Vector Database (Qdrant)",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-03-vector-db-qdrant.md"
+                      },
+                      {
+                        "name": "Lab 04: LoRA Fine-Tune a Small Model",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-04-lora-finetune.md"
+                      },
+                      {
+                        "name": "Lab 05: Streaming Responses to Clients",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-05-streaming-responses.md"
+                      },
+                      {
+                        "name": "Lab 06: Cost Tracking and Budget Alerts",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-06-cost-monitoring.md"
+                      },
+                      {
+                        "name": "Lab 07: Prompt-Injection Defenses",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-07-prompt-injection-defense.md"
+                      },
+                      {
+                        "name": "Lab 08: Multi-Model Serving with Intelligent Routing",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-08-multi-model-serving.md"
+                      },
+                      {
+                        "name": "Module 10 — Labs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/labs/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "quizzes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Module 10: LLM Infrastructure - Quiz",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/quizzes/module-quiz.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Lesson 01: Introduction to LLM Infrastructure",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/01-introduction-llm-infrastructure.md"
+                  },
+                  {
+                    "name": "Lesson 02: vLLM Deployment",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/02-vllm-deployment.md"
+                  },
+                  {
+                    "name": "Lesson 03: RAG Systems (Retrieval-Augmented Generation)",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/03-rag-systems.md"
+                  },
+                  {
+                    "name": "Lesson 04: Vector Databases",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/04-vector-databases.md"
+                  },
+                  {
+                    "name": "Lesson 05: LLM Fine-Tuning Infrastructure",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/05-llm-fine-tuning-infrastructure.md"
+                  },
+                  {
+                    "name": "Lesson 06: LLM Serving Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/06-llm-serving-optimization.md"
+                  },
+                  {
+                    "name": "Lesson 07: LLM Platform Architecture",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/07-llm-platform-architecture.md"
+                  },
+                  {
+                    "name": "Lesson 08: Production LLM Best Practices",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/08-production-llm-best-practices.md"
+                  },
+                  {
+                    "name": "Module 10: LLM Infrastructure",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/README.md"
+                  },
+                  {
+                    "name": "Module 10: LLM Infrastructure - Resources",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/resources.md"
                   }
                 ]
               }
@@ -1874,15 +4256,725 @@
             "type": "directory",
             "children": [
               {
-                "name": "project-06-distributed-training",
+                "name": "project-101-basic-model-serving",
                 "type": "directory",
                 "children": [
                   {
-                    "name": "Project 06: Distributed LLM Training Pipeline",
+                    "name": "docs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "API Documentation - ML Model Serving",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/docs/API.md"
+                      },
+                      {
+                        "name": "Deployment Guide - Project 01: Basic Model Serving",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/docs/DEPLOYMENT.md"
+                      },
+                      {
+                        "name": "Project 01: Basic Model Serving - Architecture Documentation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/docs/ARCHITECTURE.md"
+                      },
+                      {
+                        "name": "Troubleshooting Guide - ML Model Serving",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/docs/TROUBLESHOOTING.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "kubernetes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "configmap.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/kubernetes/configmap.yaml"
+                      },
+                      {
+                        "name": "deployment.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/kubernetes/deployment.yaml"
+                      },
+                      {
+                        "name": "hpa.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/kubernetes/hpa.yaml"
+                      },
+                      {
+                        "name": "service.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/kubernetes/service.yaml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "monitoring",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "grafana",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "dashboards",
+                            "type": "directory",
+                            "children": [
+                              {
+                                "name": "dashboard.yml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/monitoring/grafana/dashboards/dashboard.yml"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "datasources",
+                            "type": "directory",
+                            "children": [
+                              {
+                                "name": "prometheus.yml",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/monitoring/grafana/datasources/prometheus.yml"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "prometheus.yml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/monitoring/prometheus.yml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "src",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "api.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/src/api.py"
+                      },
+                      {
+                        "name": "config.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/src/config.py"
+                      },
+                      {
+                        "name": "model.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/src/model.py"
+                      },
+                      {
+                        "name": "utils.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/src/utils.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tests",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "test_api.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/tests/test_api.py"
+                      },
+                      {
+                        "name": "test_model.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/tests/test_model.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": ".env.example",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-06-distributed-training/README.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/.env.example"
+                  },
+                  {
+                    "name": "docker-compose.yml",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/docker-compose.yml"
+                  },
+                  {
+                    "name": "Dockerfile",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/Dockerfile"
+                  },
+                  {
+                    "name": "Project 01: Basic Model Serving System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/README.md"
+                  },
+                  {
+                    "name": "pytest.ini",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/pytest.ini"
+                  },
+                  {
+                    "name": "requirements.txt",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-101-basic-model-serving/requirements.txt"
                   }
                 ]
+              },
+              {
+                "name": "project-102-mlops-pipeline",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "dags",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "data_pipeline.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/dags/data_pipeline.py"
+                      },
+                      {
+                        "name": "deployment_pipeline.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/dags/deployment_pipeline.py"
+                      },
+                      {
+                        "name": "training_pipeline.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/dags/training_pipeline.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "docs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Deployment Guide",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/docs/DEPLOYMENT.md"
+                      },
+                      {
+                        "name": "MLflow Setup and Usage Guide",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/docs/MLFLOW.md"
+                      },
+                      {
+                        "name": "MLOps Pipeline Architecture",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/docs/ARCHITECTURE.md"
+                      },
+                      {
+                        "name": "MLOps Pipeline Workflows",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/docs/PIPELINE.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "kubernetes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "configmap.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/kubernetes/configmap.yaml"
+                      },
+                      {
+                        "name": "model-deployment.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/kubernetes/model-deployment.yaml"
+                      },
+                      {
+                        "name": "service.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/kubernetes/service.yaml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "monitoring",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "grafana",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "provisioning",
+                            "type": "directory",
+                            "children": [
+                              {
+                                "name": "dashboards",
+                                "type": "directory",
+                                "children": [
+                                  {
+                                    "name": "mlops-dashboard.json",
+                                    "type": "file",
+                                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/monitoring/grafana/provisioning/dashboards/mlops-dashboard.json"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "prometheus",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "prometheus.yml",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/monitoring/prometheus/prometheus.yml"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "src",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "data",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "ingestion.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/src/data/ingestion.py"
+                          },
+                          {
+                            "name": "preprocessing.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/src/data/preprocessing.py"
+                          },
+                          {
+                            "name": "validation.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/src/data/validation.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "deployment",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "deploy.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/src/deployment/deploy.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "monitoring",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "__init__.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/src/monitoring/__init__.py"
+                          },
+                          {
+                            "name": "health.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/src/monitoring/health.py"
+                          },
+                          {
+                            "name": "metrics.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/src/monitoring/metrics.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "training",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "evaluate.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/src/training/evaluate.py"
+                          },
+                          {
+                            "name": "train.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/src/training/train.py"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tests",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "test_data.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/tests/test_data.py"
+                      },
+                      {
+                        "name": "test_deployment.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/tests/test_deployment.py"
+                      },
+                      {
+                        "name": "test_training.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/tests/test_training.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": ".env.example",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/.env.example"
+                  },
+                  {
+                    "name": "docker-compose.yml",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/docker-compose.yml"
+                  },
+                  {
+                    "name": "Project 02: End-to-End MLOps Pipeline",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/README.md"
+                  },
+                  {
+                    "name": "requirements.txt",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-mlops-pipeline/requirements.txt"
+                  }
+                ]
+              },
+              {
+                "name": "project-103-llm-deployment",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "docs",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Cost Analysis and Optimization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/docs/COST.md"
+                      },
+                      {
+                        "name": "Deployment Guide",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/docs/DEPLOYMENT.md"
+                      },
+                      {
+                        "name": "LLM Deployment Platform Architecture",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/docs/ARCHITECTURE.md"
+                      },
+                      {
+                        "name": "Performance Optimization Guide",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/docs/OPTIMIZATION.md"
+                      },
+                      {
+                        "name": "RAG Implementation Guide",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/docs/RAG.md"
+                      },
+                      {
+                        "name": "Troubleshooting — Project 103 (LLM Deployment)",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/docs/TROUBLESHOOTING.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "kubernetes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "configmap.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/kubernetes/configmap.yaml"
+                      },
+                      {
+                        "name": "gpu-node-pool.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/kubernetes/gpu-node-pool.yaml"
+                      },
+                      {
+                        "name": "hpa.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/kubernetes/hpa.yaml"
+                      },
+                      {
+                        "name": "llm-deployment.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/kubernetes/llm-deployment.yaml"
+                      },
+                      {
+                        "name": "service.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/kubernetes/service.yaml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "monitoring",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "alerting",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "alerts.yml",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/monitoring/alerting/alerts.yml"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "grafana",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "dashboards",
+                            "type": "directory",
+                            "children": [
+                              {
+                                "name": "llm-dashboard.json",
+                                "type": "file",
+                                "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/monitoring/grafana/dashboards/llm-dashboard.json"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "prometheus",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "prometheus.yml",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/monitoring/prometheus/prometheus.yml"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "notebooks",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Jupyter Notebooks for LLM Experimentation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/notebooks/README.md"
+                      },
+                      {
+                        "name": "utils.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/notebooks/utils.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "prompts",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Prompt Templates — Project 103",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/prompts/README.md"
+                      },
+                      {
+                        "name": "templates.yaml",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/prompts/templates.yaml"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "src",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "api",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "main.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/api/main.py"
+                          },
+                          {
+                            "name": "middleware.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/api/middleware.py"
+                          },
+                          {
+                            "name": "models.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/api/models.py"
+                          },
+                          {
+                            "name": "streaming.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/api/streaming.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "ingestion",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "indexer.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/ingestion/indexer.py"
+                          },
+                          {
+                            "name": "loader.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/ingestion/loader.py"
+                          },
+                          {
+                            "name": "processor.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/ingestion/processor.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "llm",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "config.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/llm/config.py"
+                          },
+                          {
+                            "name": "optimization.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/llm/optimization.py"
+                          },
+                          {
+                            "name": "server.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/llm/server.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "monitoring",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "cost_tracker.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/monitoring/cost_tracker.py"
+                          },
+                          {
+                            "name": "metrics.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/monitoring/metrics.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "rag",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "chunking.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/rag/chunking.py"
+                          },
+                          {
+                            "name": "embeddings.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/rag/embeddings.py"
+                          },
+                          {
+                            "name": "pipeline.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/rag/pipeline.py"
+                          },
+                          {
+                            "name": "retriever.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/src/rag/retriever.py"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "tests",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "conftest.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/tests/conftest.py"
+                      },
+                      {
+                        "name": "test_api.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/tests/test_api.py"
+                      },
+                      {
+                        "name": "test_ingestion.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/tests/test_ingestion.py"
+                      },
+                      {
+                        "name": "test_llm.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/tests/test_llm.py"
+                      },
+                      {
+                        "name": "test_rag.py",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/tests/test_rag.py"
+                      }
+                    ]
+                  },
+                  {
+                    "name": ".env.example",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/.env.example"
+                  },
+                  {
+                    "name": "docker-compose.yml",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/docker-compose.yml"
+                  },
+                  {
+                    "name": "Dockerfile",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/Dockerfile"
+                  },
+                  {
+                    "name": "Project 03: LLM Deployment Platform",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-103-llm-deployment/README.md"
+                  }
+                ]
+              },
+              {
+                "name": "Projects",
+                "type": "file",
+                "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/README.md"
               }
             ]
           },

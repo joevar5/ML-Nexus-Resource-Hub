@@ -1479,16 +1479,19 @@
             background: radial-gradient(circle, rgba(139,92,246,.16) 0%, transparent 70%);
             animation: hero-orb-float-slow 11s ease-in-out infinite;
         }
-        #projects-view .projects-fade-item {
+        #projects-view .projects-fade-item,
+        #coding-view .projects-fade-item {
             opacity: 0;
             animation: project-fade-up 0.6s ease both;
         }
-        #projects-view .project-card {
+        #projects-view .project-card,
+        #coding-view .project-card {
             position: relative;
             overflow: hidden;
             transition: opacity 0.35s ease, transform 0.35s ease, box-shadow 0.3s ease;
         }
-        #projects-view .project-card::before {
+        #projects-view .project-card::before,
+        #coding-view .project-card::before {
             content: '';
             position: absolute;
             top: 0; left: -60%;
@@ -1498,19 +1501,24 @@
             transition: left 0.7s ease;
             pointer-events: none;
         }
-        #projects-view .project-card:hover::before {
+        #projects-view .project-card:hover::before,
+        #coding-view .project-card:hover::before {
             left: 130%;
         }
-        #projects-view .project-card:hover {
+        #projects-view .project-card:hover,
+        #coding-view .project-card:hover {
             box-shadow: 0 12px 32px rgba(9,76,178,.14);
         }
-        #projects-view .project-card .project-card-icon {
+        #projects-view .project-card .project-card-icon,
+        #coding-view .project-card .project-card-icon {
             transition: transform 0.4s ease;
         }
-        #projects-view .project-card:hover .project-card-icon {
+        #projects-view .project-card:hover .project-card-icon,
+        #coding-view .project-card:hover .project-card-icon {
             transform: rotate(-6deg) scale(1.12);
         }
-        #projects-view .project-card.project-card-hidden {
+        #projects-view .project-card.project-card-hidden,
+        #coding-view .project-card.project-card-hidden {
             animation: none !important;
             opacity: 0 !important;
             transform: scale(0.92) translateY(6px) !important;

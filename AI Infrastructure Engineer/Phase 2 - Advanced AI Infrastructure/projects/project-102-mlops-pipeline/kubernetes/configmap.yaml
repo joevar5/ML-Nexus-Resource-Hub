@@ -1,0 +1,100 @@
+---
+# ConfigMap for model server configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: model-config
+  namespace: default
+  labels:
+    app: mlops-model
+    component: configuration
+data:
+  # Model information
+  model_name: "mlops-classifier"
+  model_version: "1"
+
+  # MLflow configuration
+  mlflow_tracking_uri: "http://mlflow:5000"
+  mlflow_model_uri: "models:/mlops-classifier/Production"
+
+  # Server configuration
+  server_host: "0.0.0.0"
+  server_port: "8000"
+  log_level: "INFO"
+  workers: "4"
+
+  # Model serving configuration
+  batch_size: "32"
+  max_batch_wait_time: "100"  # milliseconds
+  enable_caching: "true"
+  cache_ttl: "3600"  # seconds
+
+  # Feature configuration
+  # TODO: Add feature names and types
+  feature_names: "feature1,feature2,feature3,feature4,feature5"
+
+  # Monitoring configuration
+  enable_prometheus_metrics: "true"
+  metrics_port: "8000"
+  metrics_path: "/metrics"
+
+  # Performance thresholds
+  max_prediction_latency_ms: "100"
+  max_batch_latency_ms: "500"
+
+  # Model refresh configuration
+  model_check_interval: "300"  # Check for new model every 5 minutes
+  auto_reload: "true"
+
+---
+# ConfigMap for application configuration (app.conf)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+data:
+  app.conf: |
+    # Application configuration file
+    # TODO: Add application-specific configuration
+
+    [server]
+    host = 0.0.0.0
+    port = 8000
+    workers = 4
+    timeout = 60
+
+    [model]
+    name = mlops-classifier
+    version = latest
+    framework = sklearn
+
+    [logging]
+    level = INFO
+    format = json
+
+    [monitoring]
+    enable_metrics = true
+    enable_tracing = false
+
+    [features]
+    # TODO: Add feature configuration
+
+    [preprocessing]
+    # TODO: Add preprocessing configuration
+
+---
+# ConfigMap for environment-specific settings
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+  namespace: default
+data:
+  ENVIRONMENT: "production"
+  REGION: "us-east-1"
+  DEPLOYMENT_ID: "deploy-001"
+
+  # TODO: Add environment-specific variables
+  # FEATURE_FLAGS: "new_feature:enabled,beta_feature:disabled"
+  # EXTERNAL_API_ENDPOINT: "https://api.example.com"
