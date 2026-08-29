@@ -269,7 +269,6 @@ function showCodingView() {
     document.getElementById('search-view').style.display = 'none';
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
-    document.getElementById('mobile-warning-view').style.display = 'none';
     document.getElementById('projects-view').style.display = 'none';
     document.getElementById('coding-view').style.display = 'block';
     document.getElementById('sidebar-tree-container').style.display = 'none';
@@ -290,33 +289,6 @@ function showCodingView() {
 
     renderCodingView();
 
-    document.getElementById('progress-bar').style.width = '0%';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Check if the current device is mobile
-// Uses both User Agent detection AND viewport width for maximum reliability
-// This catches large-screen phones (e.g. Samsung S24 Ultra) even in landscape
-function isMobile() {
-    const ua = navigator.userAgent || '';
-    const hasMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Samsung|Mobile|Windows Phone|Tablet|Kindle|Silk|PlayBook|Nokia|SonyEricsson|Motorola|LG|HTC|ZTE|Alcatel|Huawei|Xiaomi|Redmi|Oppo|Vivo|Realme|OnePlus/i.test(ua);
-    const hasMobileViewport = window.innerWidth < 768;
-    const hasTouch = (navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window;
-    const isTouchAndSmall = hasTouch && window.innerWidth < 1024;
-    return hasMobileUA || hasMobileViewport || isTouchAndSmall;
-}
-
-// Show the mobile "Best Viewed on Desktop" warning screen
-function showMobileWarning() {
-    document.getElementById('home-view').style.display = 'none';
-    document.getElementById('reader-view').style.display = 'none';
-    document.getElementById('search-view').style.display = 'none';
-    document.getElementById('error-view').style.display = 'none';
-    document.getElementById('author-view').style.display = 'none';
-    document.getElementById('projects-view').style.display = 'none';
-    document.getElementById('coding-view').style.display = 'none';
-    document.getElementById('sidebar-tree-container').style.display = 'none';
-    document.getElementById('mobile-warning-view').style.display = 'flex';
     document.getElementById('progress-bar').style.width = '0%';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -382,27 +354,6 @@ function setupEventListeners() {
 
     // Handle browser navigation (back/forward)
     window.addEventListener('hashchange', handleRouting);
-
-    // Re-evaluate mobile state on resize / orientation change
-    // Ensures the warning screen appears when rotating a large phone (e.g. S24 Ultra)
-    window.addEventListener('resize', () => {
-        const isOnContent = window.location.hash &&
-            decodeURIComponent(window.location.hash.substring(1)) !== 'about' &&
-            decodeURIComponent(window.location.hash.substring(1)) !== 'README.md';
-        if (isOnContent && isMobile()) {
-            showMobileWarning();
-        }
-    });
-    window.addEventListener('orientationchange', () => {
-        setTimeout(() => {
-            const isOnContent = window.location.hash &&
-                decodeURIComponent(window.location.hash.substring(1)) !== 'about' &&
-                decodeURIComponent(window.location.hash.substring(1)) !== 'README.md';
-            if (isOnContent && isMobile()) {
-                showMobileWarning();
-            }
-        }, 200);
-    });
 
     // Handle Live Search
     const searchInput = document.getElementById('search-input');
@@ -613,11 +564,6 @@ function navigateToCategory(categoryName) {
     if (categoryName === 'Paper Analysis') {
         const displayName = 'Research Paper Analysis';
         showToast(`The ${displayName} path is currently locked.`, 'warning');
-        return;
-    }
-    // On mobile, show desktop-only warning instead of navigating to content
-    if (isMobile()) {
-        showMobileWarning();
         return;
     }
     const cat = categories.find(c => c.name === categoryName);
@@ -970,12 +916,6 @@ function handleRouting() {
         return;
     }
 
-    // On mobile, intercept content file navigation and show desktop-only warning
-    if (isMobile()) {
-        showMobileWarning();
-        return;
-    }
-
     if (decodedPath === 'projects') {
         showProjectsView();
         return;
@@ -1046,7 +986,6 @@ function goHome() {
     document.getElementById('projects-view').style.display = 'none';
     document.getElementById('coding-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
-    document.getElementById('mobile-warning-view').style.display = 'none';
 
     document.querySelectorAll('.tree-file').forEach(el => {
         el.className = 'tree-file flex items-start gap-2 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors cursor-pointer text-sm font-label';
@@ -1076,7 +1015,6 @@ function showAuthorPage() {
     document.getElementById('projects-view').style.display = 'none';
     document.getElementById('coding-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
-    document.getElementById('mobile-warning-view').style.display = 'none';
 
     // Reset files highlights
     document.querySelectorAll('.tree-file').forEach(el => {
@@ -1098,10 +1036,6 @@ function showAuthorPage() {
 
 // Navigate from a hand-built view (e.g. Projects cards) into a real content file
 function openDoc(path) {
-    if (isMobile()) {
-        showMobileWarning();
-        return;
-    }
     window.location.hash = encodeURIComponent(path);
 }
 
@@ -1195,7 +1129,6 @@ function showProjectsView() {
     document.getElementById('search-view').style.display = 'none';
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
-    document.getElementById('mobile-warning-view').style.display = 'none';
     document.getElementById('projects-view').style.display = 'block';
     document.getElementById('coding-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'none';
@@ -2036,7 +1969,6 @@ async function loadFile(filePath) {
     document.getElementById('search-view').style.display = 'none';
     document.getElementById('error-view').style.display = 'none';
     document.getElementById('author-view').style.display = 'none';
-    document.getElementById('mobile-warning-view').style.display = 'none';
     document.getElementById('projects-view').style.display = 'none';
     document.getElementById('coding-view').style.display = 'none';
     document.getElementById('sidebar-tree-container').style.display = 'block';
@@ -2277,7 +2209,7 @@ function buildTOC() {
         if (asideElement) asideElement.style.display = 'none';
         return;
     } else {
-        if (asideElement) asideElement.style.display = 'block';
+        if (asideElement) asideElement.style.display = '';
     }
 
     const seenSlugs = {};
@@ -2432,6 +2364,16 @@ function handleSearch(query) {
     const ring = document.getElementById('cursor-ring');
     if (!dot || !ring) return;
 
+    // Hidden until mouse moves (also covered by CSS for pointer:coarse devices).
+    dot.style.opacity = '0';
+    ring.style.opacity = '0';
+
+    // Skip attaching listeners on touch devices — mobile browsers fire a synthetic
+    // mousemove on tap, which would otherwise strand the cursor dot/ring
+    // at the tap location with no further movement to clear it.
+    const isTouchDevice = (navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window;
+    if (isTouchDevice) return;
+
     let mouseX = 0, mouseY = 0;
     let ringX = 0, ringY = 0;
     let raf;
@@ -2500,9 +2442,6 @@ function handleSearch(query) {
         if (!isCursorViewActive()) disableCursor();
     });
 
-    // Initial state — hidden until mouse moves
-    dot.style.opacity = '0';
-    ring.style.opacity = '0';
 })();
 
 // Premium Toast Notification helper

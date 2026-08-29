@@ -175,12 +175,13 @@
         <!-- Navigation Right Panel -->
         <nav class="flex items-center gap-lg">
             <a class="font-label text-sm text-on-surface hover:text-primary font-semibold py-1 flex items-center gap-1.5 transition-colors"
-                href="https://github.com/joevar5/ML-Nexus-Resource-Hub" target="_blank" rel="noopener noreferrer">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                href="https://github.com/joevar5/ML-Nexus-Resource-Hub" target="_blank" rel="noopener noreferrer"
+                aria-label="Star on GitHub">
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
-                <span>Star on GitHub</span>
+                <span class="hidden sm:inline whitespace-nowrap">Star on GitHub</span>
             </a>
             <div class="flex items-center gap-md ml-md">
                 <!-- Theme toggle button -->
@@ -195,7 +196,8 @@
 
     <!-- SideNavBar -->
     <aside id="sidebar"
-        class="fixed left-0 top-16 bottom-0 w-[280px] flex flex-col px-md py-lg z-40 bg-surface border-r border-outline-variant overflow-y-auto transition-transform duration-300 -translate-x-full md:translate-x-0">
+        class="fixed left-0 top-16 w-[280px] flex flex-col px-md pt-lg z-40 bg-surface border-r border-outline-variant overflow-y-auto transition-transform duration-300 -translate-x-full md:translate-x-0"
+        style="height: calc(100dvh - 4rem); padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));">
         <div class="mb-lg flex-shrink-0">
             <h3 class="font-display text-lg font-bold text-on-background">Learning Paths</h3>
             <p class="font-label text-xs text-on-surface-variant uppercase tracking-wider mt-1">Expert Curated Guides
@@ -717,24 +719,6 @@
                 onclick="goHome()">Go Back Home</button>
         </div>
 
-        <!-- 5. Mobile Desktop-Only Warning View -->
-        <div id="mobile-warning-view"
-            class="flex flex-col items-center justify-center text-center min-h-[70vh] px-gutter py-xl"
-            style="display: none;">
-            <div class="relative mb-lg">
-                <div class="absolute inset-0 bg-primary/10 blur-3xl rounded-full"></div>
-                <span class="material-symbols-outlined text-primary text-7xl relative z-10">desktop_windows</span>
-            </div>
-            <h2 class="font-display text-3xl text-on-surface mb-md">Best Viewed on Desktop</h2>
-            <p class="text-on-surface-variant text-sm leading-relaxed mb-lg max-w-md">
-                This content is optimized for larger screens with full access to interactive features, code blocks,
-                diagrams, and quizzes. Please switch to a desktop or tablet for the best experience.
-            </p>
-            <button
-                class="bg-primary text-on-primary px-6 py-2.5 font-bold rounded-lg hover:bg-primary/95 transition-all font-label text-sm uppercase tracking-wide"
-                onclick="goHome()">Back to Home</button>
-        </div>
-
         <!-- 5. Author Profile View -->
         <div id="author-view" style="display: none;">
             <div class="max-w-5xl mx-auto px-8 py-12">
@@ -776,7 +760,7 @@
 
                 <!-- Biography Section: Tonal Layering -->
                 <section class="mb-24 grid md:grid-cols-3 gap-12 items-start" id="narrative-section">
-                    <div class="md:col-span-1 sticky top-24">
+                    <div class="md:col-span-1 md:sticky md:top-24">
                         <h2 class="text-3xl font-headline font-bold text-on-background mb-4">The Narrative</h2>
                         <div class="h-1 w-12 bg-tertiary mb-6"></div>
                     </div>
