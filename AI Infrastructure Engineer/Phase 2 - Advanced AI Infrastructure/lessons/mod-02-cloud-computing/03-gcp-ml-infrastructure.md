@@ -1,167 +1,90 @@
 # Lesson 03: Google Cloud Platform for ML Infrastructure
 
-**Duration:** 7 hours
-**Difficulty:** Intermediate
-**Prerequisites:** Lesson 01 (Cloud Architecture), Lesson 02 (AWS ML Infrastructure)
+## Lecture Overview
 
-## Learning Objectives
-
-By the end of this lesson, you will be able to:
-
-1. **Set up and secure** a Google Cloud Platform account with proper IAM
-2. **Deploy and manage** Compute Engine instances for ML workloads
-3. **Use Cloud Storage** for datasets and models with lifecycle management
-4. **Work with TPUs** for accelerated deep learning training
-5. **Deploy ML models** on Google Kubernetes Engine (GKE)
-6. **Use Vertex AI** for managed ML training and deployment
-7. **Configure VPC networking** for secure ML infrastructure
-8. **Optimize costs** using GCP pricing models and best practices
+Google Cloud Platform's edge in ML infrastructure comes from three things: it was built by the creators of TensorFlow, it's the only cloud with TPU access, and Vertex AI offers a genuinely unified ML platform. This lesson covers the core services — IAM, Compute Engine, Cloud Storage, TPUs, GKE, Vertex AI, networking, and cost optimization — through hands-on `gcloud`/`gsutil`/`kubectl` commands and Python SDK examples. By the end, you'll be able to provision GPU/TPU compute, manage the ML data lifecycle, train and deploy models on Vertex AI, and control costs with preemptible VMs and committed use discounts.
 
 ---
 
 ## Table of Contents
-
-1. [Introduction to GCP for ML](#introduction-to-gcp-for-ml)
-2. [GCP Account Setup and IAM](#gcp-account-setup-and-iam)
-3. [Compute Engine for ML](#compute-engine-for-ml)
-4. [Cloud Storage for Data and Models](#cloud-storage-for-data-and-models)
-5. [Tensor Processing Units (TPUs)](#tensor-processing-units-tpus)
-6. [Google Kubernetes Engine (GKE)](#google-kubernetes-engine-gke)
-7. [Vertex AI Platform](#vertex-ai-platform)
-8. [GCP Networking for ML](#gcp-networking-for-ml)
-9. [Cost Optimization Strategies](#cost-optimization-strategies)
-10. [Hands-on Exercise](#hands-on-exercise)
-
----
-
-## Introduction to GCP for ML
-
-Google Cloud Platform (GCP) is particularly strong for ML workloads because:
-
-- **Native ML heritage**: Built by the creators of TensorFlow
-- **TPU access**: Exclusive access to Tensor Processing Units
-- **BigQuery ML**: Run ML models directly on data warehouse
-- **Vertex AI**: Comprehensive managed ML platform
-- **Strong open-source integration**: TensorFlow, Kubeflow, Ray
-- **Competitive pricing**: Sustained use discounts, preemptible VMs
-
-### GCP ML Ecosystem
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                       GCP ML Ecosystem                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Data Ingestion       Processing           Training/Serving    │
-│  ──────────────       ──────────           ────────────────    │
-│  Cloud Storage   →    Dataflow        →    Vertex AI          │
-│  BigQuery        →    Dataproc        →    GKE                │
-│  Pub/Sub         →    AI Platform     →    Cloud Run          │
-│                                                                 │
-│  Infrastructure       Networking           Monitoring          │
-│  ──────────────       ──────────           ──────────          │
-│  Compute Engine       VPC                  Cloud Monitoring   │
-│  GKE                  Cloud Load          Cloud Logging       │
-│  Cloud Run            Balancing           Cloud Trace         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### When to Choose GCP for ML
-
-**Choose GCP when:**
-- You're heavily invested in TensorFlow
-- You need TPUs for large-scale training
-- You want strong BigQuery integration
-- You prefer Google's managed services
-- You need strong open-source Kubernetes support
-
-**Consider alternatives when:**
-- Your team is already on AWS/Azure
-- You need a wider range of GPU types
-- You require more regional availability
-- You need specific enterprise integrations
+1. [GCP Account Setup and IAM](#1-gcp-account-setup-and-iam)
+2. [Compute Engine for ML](#2-compute-engine-for-ml)
+3. [Cloud Storage for Data and Models](#3-cloud-storage-for-data-and-models)
+4. [Tensor Processing Units (TPUs)](#4-tensor-processing-units-tpus)
+5. [Google Kubernetes Engine (GKE)](#5-google-kubernetes-engine-gke)
+6. [Vertex AI Platform](#6-vertex-ai-platform)
+7. [GCP Networking for ML](#7-gcp-networking-for-ml)
+8. [Cost Optimization Strategies](#8-cost-optimization-strategies)
+9. [Putting It All Together: Serving Architecture](#9-putting-it-all-together-serving-architecture)
+10. [Key Takeaways](#10-key-takeaways)
+11. [What's Next?](#whats-next)
+12. [Further Reading](#further-reading)
 
 ---
 
-## GCP Account Setup and IAM
+## 1. GCP Account Setup and IAM
 
-### Creating a GCP Account
+### 1.0 GCP ML Ecosystem
 
-1. **Sign up for GCP**:
-   - Visit: https://cloud.google.com/free
-   - Get **$300 free credit** valid for 90 days
-   - No automatic charges after trial ends
-   - Credit card required for verification
+Data flows from ingestion through processing into training/serving, all running on compute + networking infrastructure and watched by monitoring.
 
-2. **Free tier (Always Free)**:
-   ```
-   Compute Engine:
-   - 1 f1-micro instance (US regions only)
-   - 30 GB standard persistent disk
-   - 1 GB snapshot storage
-
-   Cloud Storage:
-   - 5 GB standard storage
-   - 1 GB network egress (North America)
-
-   BigQuery:
-   - 1 TB queries/month
-   - 10 GB storage
-
-   Cloud Functions:
-   - 2 million invocations/month
-   ```
-
-3. **Create a project**:
-   ```bash
-   # Install gcloud CLI
-   # macOS
-   brew install google-cloud-sdk
-
-   # Linux
-   curl https://sdk.cloud.google.com | bash
-   exec -l $SHELL
-
-   # Initialize gcloud
-   gcloud init
-
-   # Create a new project
-   gcloud projects create ml-infrastructure-project --name="ML Infrastructure"
-
-   # Set as default project
-   gcloud config set project ml-infrastructure-project
-
-   # Enable required APIs
-   gcloud services enable compute.googleapis.com
-   gcloud services enable container.googleapis.com
-   gcloud services enable storage.googleapis.com
-   gcloud services enable aiplatform.googleapis.com
-   ```
-
-### IAM Best Practices
-
-GCP uses **Identity and Access Management (IAM)** with a fine-grained permission model.
-
-#### Key Concepts
-
-1. **Principal**: Who (user, service account, group)
-2. **Role**: What permissions (predefined or custom)
-3. **Resource**: Where (project, folder, organization)
-
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  Principal   │────▶│     Role     │────▶│  Resource    │
-├──────────────┤     ├──────────────┤     ├──────────────┤
-│ - User       │     │ - Primitive  │     │ - Project    │
-│ - SA         │     │ - Predefined │     │ - Bucket     │
-│ - Group      │     │ - Custom     │     │ - VM         │
-└──────────────┘     └──────────────┘     └──────────────┘
+```mermaid
+flowchart LR
+    Ingest["Cloud Storage / BigQuery / Pub/Sub"] --> Process["Dataflow / Dataproc"]
+    Process --> Serve["Vertex AI / GKE / Cloud Run"]
+    Infra["Compute Engine / VPC / Load Balancing"] --> Serve
+    Serve --> Obs["Cloud Monitoring / Logging / Trace"]
 ```
 
-#### Creating Service Accounts
+### 1.1 Account and Free Tier
 
-Service accounts are used for application-to-application authentication.
+**Sign up**: https://cloud.google.com/free gives **$300 free credit** for 90 days, no auto-charge after (card required for verification). The **Always Free** tier includes 1 `f1-micro` Compute Engine instance, 5GB Cloud Storage, 1TB/month of BigQuery queries, and 2M Cloud Functions invocations/month.
+
+**Project setup:**
+
+```bash
+# Install gcloud CLI
+brew install google-cloud-sdk          # macOS
+curl https://sdk.cloud.google.com | bash && exec -l $SHELL   # Linux
+
+gcloud init
+
+# Create and select a project
+gcloud projects create ml-infrastructure-project --name="ML Infrastructure"
+gcloud config set project ml-infrastructure-project
+
+# Enable required APIs
+gcloud services enable compute.googleapis.com
+gcloud services enable container.googleapis.com
+gcloud services enable storage.googleapis.com
+gcloud services enable aiplatform.googleapis.com
+```
+
+### 1.2 IAM Model
+
+GCP IAM binds three things together: **who** (principal), **what** (role), and **where** (resource).
+
+```mermaid
+flowchart LR
+    subgraph Principal
+        U[User]
+        SA[Service Account]
+        G[Group]
+    end
+    subgraph Role
+        P[Primitive]
+        PD[Predefined]
+        C[Custom]
+    end
+    subgraph Resource
+        PR[Project]
+        B[Bucket]
+        VM[VM Instance]
+    end
+    Principal -->|is granted a| Role -->|scoped to a| Resource
+```
+
+**Service accounts** are used for application-to-application authentication — never embed personal credentials in code.
 
 ```bash
 # Create a service account for ML training
@@ -169,7 +92,7 @@ gcloud iam service-accounts create ml-training-sa \
   --display-name="ML Training Service Account" \
   --description="Service account for ML training jobs"
 
-# Grant necessary permissions
+# Grant permissions
 gcloud projects add-iam-policy-binding ml-infrastructure-project \
   --member="serviceAccount:ml-training-sa@ml-infrastructure-project.iam.gserviceaccount.com" \
   --role="roles/aiplatform.user"
@@ -178,44 +101,33 @@ gcloud projects add-iam-policy-binding ml-infrastructure-project \
   --member="serviceAccount:ml-training-sa@ml-infrastructure-project.iam.gserviceaccount.com" \
   --role="roles/storage.objectAdmin"
 
-# Create and download key
+# Create and download a key
 gcloud iam service-accounts keys create ~/ml-training-key.json \
   --iam-account=ml-training-sa@ml-infrastructure-project.iam.gserviceaccount.com
 
-# Set environment variable
 export GOOGLE_APPLICATION_CREDENTIALS=~/ml-training-key.json
 ```
 
-#### Common ML Roles
+**Common ML roles:**
 
-```
-┌─────────────────────────────────┬──────────────────────────────────────┐
-│ Role                            │ Use Case                             │
-├─────────────────────────────────┼──────────────────────────────────────┤
-│ roles/aiplatform.user           │ Run Vertex AI training jobs          │
-│ roles/storage.objectAdmin       │ Read/write Cloud Storage             │
-│ roles/compute.instanceAdmin     │ Manage Compute Engine VMs            │
-│ roles/container.admin           │ Manage GKE clusters                  │
-│ roles/monitoring.metricWriter   │ Write custom metrics                 │
-│ roles/logging.logWriter         │ Write application logs               │
-└─────────────────────────────────┴──────────────────────────────────────┘
-```
+| Role | Use Case |
+|---|---|
+| `roles/aiplatform.user` | Run Vertex AI training jobs |
+| `roles/storage.objectAdmin` | Read/write Cloud Storage |
+| `roles/compute.instanceAdmin` | Manage Compute Engine VMs |
+| `roles/container.admin` | Manage GKE clusters |
+| `roles/monitoring.metricWriter` | Write custom metrics |
+| `roles/logging.logWriter` | Write application logs |
 
-#### Security Best Practices
-
-1. **Principle of least privilege**: Grant minimum required permissions
-2. **Use service accounts**: Never use personal credentials in code
-3. **Rotate keys regularly**: Set up key rotation policy (90 days)
-4. **Enable audit logs**: Track all IAM changes
-5. **Use organization policies**: Enforce security constraints
+**Security practices**: least privilege, service accounts over personal credentials, key rotation every 90 days, audit logging, and organization policies for security constraints.
 
 ```bash
-# Enable audit logs
+# Enable audit logs for IAM changes
 gcloud logging sinks create ml-audit-sink \
   storage.googleapis.com/ml-audit-logs-bucket \
   --log-filter='protoPayload.methodName:"iam.googleapis.com"'
 
-# Set key expiration reminder (via monitoring)
+# Check key ages for rotation
 gcloud alpha iam service-accounts keys list \
   --iam-account=ml-training-sa@ml-infrastructure-project.iam.gserviceaccount.com \
   --format="table(name,validAfterTime,validBeforeTime)"
@@ -223,63 +135,43 @@ gcloud alpha iam service-accounts keys list \
 
 ---
 
-## Compute Engine for ML
+## 2. Compute Engine for ML
 
-Compute Engine provides virtual machines with flexible configurations for ML workloads.
+### 2.1 Instance Types
 
-### Instance Types for ML
+**General purpose (N-series)** — development, small models, CPU inference:
 
-#### General Purpose (N-series)
+| Machine Type | vCPUs | Memory | Network | Cost/hour |
+|---|---|---|---|---|
+| n1-standard-4 | 4 | 15GB | 10 Gbps | $0.190 |
+| n2-standard-8 | 8 | 32GB | 32 Gbps | $0.389 |
+| n2d-highmem-16 | 16 | 128GB | 32 Gbps | $0.777 |
 
-Best for: Development, small models, CPU inference
+**GPU instances (accelerator-optimized)** — training and GPU inference:
 
-```
-┌──────────────┬─────────┬────────────┬──────────┬───────────────┐
-│ Machine Type │ vCPUs   │ Memory     │ Network  │ Cost/hour     │
-├──────────────┼─────────┼────────────┼──────────┼───────────────┤
-│ n1-standard-4│ 4       │ 15 GB      │ 10 Gbps  │ $0.190        │
-│ n2-standard-8│ 8       │ 32 GB      │ 32 Gbps  │ $0.389        │
-│ n2d-highmem-16│16      │ 128 GB     │ 32 Gbps  │ $0.777        │
-└──────────────┴─────────┴────────────┴──────────┴───────────────┘
-```
+| Machine Type | GPU | GPU Memory | vCPUs | Cost/hour |
+|---|---|---|---|---|
+| n1 + T4 | 1x NVIDIA T4 | 16GB | 4 | $0.35 |
+| n1 + V100 | 1x NVIDIA V100 | 16GB | 8 | $2.48 |
+| n1 + A100 | 1x NVIDIA A100 | 40GB | 12 | $3.67 |
+| a2 + A100 | 8x NVIDIA A100 | 320GB | 96 | $29.39 |
 
-#### GPU Instances (Accelerator-optimized)
+**TPU instances** — TensorFlow training at scale:
 
-Best for: Training, GPU inference
+| TPU Type | Cores | Memory | Cost/hour |
+|---|---|---|---|
+| v2-8 | 8 | 64GB HBM | $4.50 |
+| v3-8 | 8 | 128GB HBM | $8.00 |
+| v4-8 | 8 | 32GB HBM2e | $3.67 |
+| v4-32 | 32 | 128GB HBM2e | $14.69 |
 
-```
-┌──────────────┬──────────────┬─────────────┬─────────┬──────────────┐
-│ Machine Type │ GPU          │ GPU Memory  │ vCPUs   │ Cost/hour    │
-├──────────────┼──────────────┼─────────────┼─────────┼──────────────┤
-│ n1 + T4      │ 1x NVIDIA T4 │ 16 GB       │ 4       │ $0.35        │
-│ n1 + V100    │ 1x NVIDIA V100│16 GB       │ 8       │ $2.48        │
-│ n1 + A100    │ 1x NVIDIA A100│40 GB       │ 12      │ $3.67        │
-│ a2 + A100    │ 8x NVIDIA A100│320 GB      │ 96      │ $29.39       │
-└──────────────┴──────────────┴─────────────┴─────────┴──────────────┘
-```
-
-#### TPU Instances
-
-Best for: TensorFlow training at scale
-
-```
-┌──────────────┬──────────────┬─────────────┬──────────────┐
-│ TPU Type     │ Cores        │ Memory      │ Cost/hour    │
-├──────────────┼──────────────┼─────────────┼──────────────┤
-│ v2-8         │ 8            │ 64 GB HBM   │ $4.50        │
-│ v3-8         │ 8            │ 128 GB HBM  │ $8.00        │
-│ v4-8         │ 8            │ 32 GB HBM2e │ $3.67        │
-│ v4-32        │ 32           │ 128 GB HBM2e│ $14.69       │
-└──────────────┴──────────────┴─────────────┴──────────────┘
-```
-
-### Creating a GPU Instance
+### 2.2 Creating a GPU Instance
 
 ```bash
-# List available GPU types in region
+# List available GPU types in a zone
 gcloud compute accelerator-types list --filter="zone:us-central1-a"
 
-# Create instance with T4 GPU
+# Create instance with a T4 GPU, using a pre-built Deep Learning VM image
 gcloud compute instances create ml-training-gpu \
   --zone=us-central1-a \
   --machine-type=n1-standard-4 \
@@ -291,48 +183,17 @@ gcloud compute instances create ml-training-gpu \
   --maintenance-policy=TERMINATE \
   --metadata="install-nvidia-driver=True"
 
-# SSH into instance
 gcloud compute ssh ml-training-gpu --zone=us-central1-a
-
-# Verify GPU
 nvidia-smi
 ```
 
-### Deep Learning VM Images
+Deep Learning VM images come pre-configured with frameworks — swap `--image-family` for `tf-latest-gpu` to get TensorFlow instead of PyTorch.
 
-GCP provides pre-configured images with ML frameworks:
+### 2.3 Preemptible VMs
 
-```bash
-# List available images
-gcloud compute images list \
-  --project deeplearning-platform-release \
-  --no-standard-images
-
-# Create instance with PyTorch
-gcloud compute instances create ml-pytorch \
-  --zone=us-central1-a \
-  --machine-type=n1-standard-8 \
-  --accelerator=type=nvidia-tesla-t4,count=1 \
-  --image-family=pytorch-latest-gpu \
-  --image-project=deeplearning-platform-release \
-  --metadata="install-nvidia-driver=True,proxy-mode=project_editors"
-
-# Create instance with TensorFlow
-gcloud compute instances create ml-tensorflow \
-  --zone=us-central1-a \
-  --machine-type=n1-standard-8 \
-  --accelerator=type=nvidia-tesla-t4,count=1 \
-  --image-family=tf-latest-gpu \
-  --image-project=deeplearning-platform-release \
-  --metadata="install-nvidia-driver=True"
-```
-
-### Preemptible VMs (Spot Instances)
-
-Save up to **80%** on compute costs with preemptible VMs.
+Preemptible VMs save up to **80%** ($0.35/hr → $0.07/hr for a T4) but can be terminated at any time with a 30-second warning, cap out at 24 hours runtime, and aren't always available. They're a good fit for fault-tolerant, checkpointed training.
 
 ```bash
-# Create preemptible instance
 gcloud compute instances create ml-training-preemptible \
   --zone=us-central1-a \
   --machine-type=n1-standard-4 \
@@ -341,123 +202,27 @@ gcloud compute instances create ml-training-preemptible \
   --image-family=pytorch-latest-gpu \
   --image-project=deeplearning-platform-release \
   --metadata="install-nvidia-driver=True"
-
-# Cost comparison
-# Regular: $0.35/hour
-# Preemptible: $0.07/hour (80% savings)
 ```
 
-**Important considerations:**
-- Maximum runtime: 24 hours
-- Can be terminated at any time with 30-second warning
-- Not always available (capacity-based)
-- Perfect for fault-tolerant workloads
+**Checkpointing for preemption**: register a `SIGTERM` handler that saves model/optimizer state to Cloud Storage or a persistent disk the instant GCP sends its 30-second termination warning, and have the training script load the latest checkpoint on startup so a new (or restarted) instance resumes rather than starting over.
 
-### Checkpointing for Preemptible VMs
-
-```python
-import os
-import signal
-import sys
-import torch
-
-def signal_handler(signum, frame):
-    """Handle preemption signal"""
-    print("Received preemption signal, saving checkpoint...")
-    save_checkpoint({
-        'epoch': current_epoch,
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-        'loss': current_loss,
-    }, 'checkpoint_preempted.pth')
-    sys.exit(0)
-
-# Register signal handler
-signal.signal(signal.SIGTERM, signal_handler)
-
-# Training loop with checkpointing
-def train_with_checkpointing(model, train_loader, epochs=10):
-    checkpoint_dir = "/mnt/disks/data/checkpoints"
-    os.makedirs(checkpoint_dir, exist_ok=True)
-
-    # Resume from latest checkpoint
-    start_epoch = 0
-    checkpoint_path = os.path.join(checkpoint_dir, "latest.pth")
-
-    if os.path.exists(checkpoint_path):
-        print(f"Resuming from checkpoint: {checkpoint_path}")
-        checkpoint = torch.load(checkpoint_path)
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        start_epoch = checkpoint['epoch'] + 1
-        print(f"Resuming from epoch {start_epoch}")
-
-    for epoch in range(start_epoch, epochs):
-        model.train()
-
-        for batch_idx, (data, target) in enumerate(train_loader):
-            # Training step
-            optimizer.zero_grad()
-            output = model(data)
-            loss = criterion(output, target)
-            loss.backward()
-            optimizer.step()
-
-            # Save checkpoint every 100 batches
-            if batch_idx % 100 == 0:
-                save_checkpoint({
-                    'epoch': epoch,
-                    'batch': batch_idx,
-                    'model_state_dict': model.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'loss': loss.item(),
-                }, checkpoint_path)
-
-        # Save checkpoint after each epoch
-        save_checkpoint({
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'loss': loss.item(),
-        }, checkpoint_path)
-
-        print(f"Epoch {epoch} completed, checkpoint saved")
-
-def save_checkpoint(state, filename):
-    """Save checkpoint to file"""
-    torch.save(state, filename)
-    print(f"Checkpoint saved: {filename}")
-```
-
-### Startup Scripts
-
-Automate setup with startup scripts:
+### 2.4 Startup Scripts
 
 ```bash
-# Create startup script
 cat > startup.sh << 'EOF'
 #!/bin/bash
-
-# Update system
 apt-get update
-
-# Install Python packages
 pip install torch torchvision wandb
 
-# Download dataset
 mkdir -p /data
 gsutil -m rsync -r gs://my-bucket/datasets/imagenet /data/imagenet
 
-# Clone training code
 cd /home
 git clone https://github.com/myorg/ml-training.git
-
-# Start training
 cd ml-training
 python train.py --data-path /data/imagenet --epochs 100 --checkpoint-dir /data/checkpoints
 EOF
 
-# Create instance with startup script
 gcloud compute instances create ml-training \
   --zone=us-central1-a \
   --machine-type=n1-standard-8 \
@@ -471,385 +236,164 @@ gcloud compute instances create ml-training \
 
 ---
 
-## Cloud Storage for Data and Models
+## 3. Cloud Storage for Data and Models
 
-Cloud Storage is GCP's object storage service, similar to AWS S3.
+Cloud Storage is GCP's object storage service, equivalent to AWS S3.
 
-### Storage Classes
+### 3.1 Storage Classes
 
-```
-┌────────────────────┬────────────────┬─────────────────┬────────────────┐
-│ Storage Class      │ Cost/GB/month  │ Retrieval Cost  │ Use Case       │
-├────────────────────┼────────────────┼─────────────────┼────────────────┤
-│ Standard           │ $0.020         │ Free            │ Active data    │
-│ Nearline           │ $0.010         │ $0.01/GB        │ <1/month access│
-│ Coldline           │ $0.004         │ $0.02/GB        │ <1/quarter     │
-│ Archive            │ $0.0012        │ $0.05/GB        │ <1/year        │
-└────────────────────┴────────────────┴─────────────────┴────────────────┘
-```
+| Storage Class | Cost/GB/month | Retrieval Cost | Use Case |
+|---|---|---|---|
+| Standard | $0.020 | Free | Active data |
+| Nearline | $0.010 | $0.01/GB | <1 access/month |
+| Coldline | $0.004 | $0.02/GB | <1 access/quarter |
+| Archive | $0.0012 | $0.05/GB | <1 access/year |
 
-### Creating and Managing Buckets
+### 3.2 Bucket Operations (CLI)
 
 ```bash
 # Create a bucket
 gsutil mb -l us-central1 -c STANDARD gs://my-ml-data-bucket
 
-# Upload files
+# Upload / download
 gsutil cp model.pth gs://my-ml-data-bucket/models/
-
-# Upload directory (parallel)
-gsutil -m cp -r ./datasets gs://my-ml-data-bucket/
-
-# Download files
+gsutil -m cp -r ./datasets gs://my-ml-data-bucket/     # parallel, for directories
 gsutil cp gs://my-ml-data-bucket/models/model.pth ./
 
-# Sync directories (like rsync)
+# Sync (like rsync)
 gsutil -m rsync -r ./local-dir gs://my-ml-data-bucket/remote-dir
 
-# List files
+# List / delete / size
 gsutil ls gs://my-ml-data-bucket/models/
-
-# Delete files
 gsutil rm gs://my-ml-data-bucket/models/old-model.pth
-
-# Get bucket info
 gsutil du -sh gs://my-ml-data-bucket
 ```
 
-### Versioning and Lifecycle Management
+### 3.3 Versioning and Lifecycle Management
 
 ```bash
-# Enable versioning
 gsutil versioning set on gs://my-ml-data-bucket
 
-# Create lifecycle policy
-cat > lifecycle.json << EOF
-{
-  "lifecycle": {
-    "rule": [
-      {
-        "action": {"type": "SetStorageClass", "storageClass": "NEARLINE"},
-        "condition": {
-          "age": 30,
-          "matchesStorageClass": ["STANDARD"]
-        }
-      },
-      {
-        "action": {"type": "SetStorageClass", "storageClass": "COLDLINE"},
-        "condition": {
-          "age": 90,
-          "matchesStorageClass": ["NEARLINE"]
-        }
-      },
-      {
-        "action": {"type": "Delete"},
-        "condition": {
-          "age": 365,
-          "matchesStorageClass": ["COLDLINE"]
-        }
-      }
-    ]
-  }
-}
-EOF
-
-# Apply lifecycle policy
+# lifecycle.json: age 30d STANDARD→NEARLINE, age 90d NEARLINE→COLDLINE, age 365d delete
 gsutil lifecycle set lifecycle.json gs://my-ml-data-bucket
-
-# View lifecycle policy
 gsutil lifecycle get gs://my-ml-data-bucket
 ```
 
-### Python SDK (google-cloud-storage)
+### 3.4 Python SDK (google-cloud-storage)
 
 ```python
 from google.cloud import storage
-import os
+from datetime import timedelta
 
-# Initialize client
 client = storage.Client()
+bucket = client.bucket("my-ml-data-bucket")
 
-# Create bucket
-bucket = client.create_bucket("my-ml-data-bucket", location="us-central1")
+bucket.blob("models/resnet50-v1.pth").upload_from_filename("model.pth")
+bucket.blob("models/resnet50-v1.pth").download_to_filename("./model.pth")
 
-# Upload file
-def upload_file(bucket_name, source_file, destination_blob):
-    """Upload file to Cloud Storage"""
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob)
+for blob in bucket.list_blobs(prefix="models/"):
+    print(blob.name)
 
-    blob.upload_from_filename(source_file)
-    print(f"File {source_file} uploaded to {destination_blob}")
+# Temporary-access URL (e.g. share a model without making the bucket public)
+url = bucket.blob("models/resnet50-v1.pth").generate_signed_url(
+    expiration=timedelta(minutes=120), method='GET'
+)
 
-# Upload model
-upload_file("my-ml-data-bucket", "model.pth", "models/resnet50-v1.pth")
-
-# Download file
-def download_file(bucket_name, source_blob, destination_file):
-    """Download file from Cloud Storage"""
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(source_blob)
-
-    blob.download_to_filename(destination_file)
-    print(f"File {source_blob} downloaded to {destination_file}")
-
-# Download model
-download_file("my-ml-data-bucket", "models/resnet50-v1.pth", "./model.pth")
-
-# List files with prefix
-def list_files(bucket_name, prefix):
-    """List files in bucket with prefix"""
-    bucket = client.bucket(bucket_name)
-    blobs = bucket.list_blobs(prefix=prefix)
-
-    for blob in blobs:
-        print(blob.name)
-
-# List all models
-list_files("my-ml-data-bucket", "models/")
-
-# Generate signed URL (temporary access)
-def generate_signed_url(bucket_name, blob_name, expiration_minutes=60):
-    """Generate signed URL for temporary access"""
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(blob_name)
-
-    url = blob.generate_signed_url(
-        expiration=timedelta(minutes=expiration_minutes),
-        method='GET'
-    )
-
-    return url
-
-# Get temporary URL for model
-url = generate_signed_url("my-ml-data-bucket", "models/resnet50-v1.pth", 120)
-print(f"Temporary URL (valid for 2 hours): {url}")
-
-# Stream large files
-def download_large_file_in_chunks(bucket_name, source_blob, destination_file):
-    """Download large file in chunks"""
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(source_blob)
-
-    with open(destination_file, 'wb') as f:
-        blob.download_to_file(f)
-
-    print(f"Large file downloaded: {destination_file}")
-
-# Copy file within Cloud Storage
-def copy_blob(bucket_name, source_blob, destination_bucket, destination_blob):
-    """Copy file within Cloud Storage"""
-    source_bucket = client.bucket(bucket_name)
-    source = source_bucket.blob(source_blob)
-    destination_bucket = client.bucket(destination_bucket)
-
-    source_bucket.copy_blob(source, destination_bucket, destination_blob)
-    print(f"Copied {source_blob} to {destination_blob}")
-
-# Promote model from staging to production
-copy_blob(
-    "ml-staging-bucket", "models/resnet50-v2.pth",
-    "ml-production-bucket", "models/resnet50-latest.pth"
+# Promote a model from staging to production
+staging = client.bucket("ml-staging-bucket").blob("models/resnet50-v2.pth")
+client.bucket("ml-staging-bucket").copy_blob(
+    staging, client.bucket("ml-production-bucket"), "models/resnet50-latest.pth"
 )
 ```
 
-### Best Practices for ML Data Storage
+### 3.5 Best Practices
 
-1. **Organize by lifecycle**:
-   ```
-   gs://my-ml-bucket/
-   ├── raw-data/           # Standard storage
-   ├── processed-data/     # Standard → Nearline after 30 days
-   ├── models/
-   │   ├── staging/        # Standard
-   │   ├── production/     # Standard
-   │   └── archived/       # Coldline
-   └── experiments/        # Delete after 90 days
-   ```
-
-2. **Use regional buckets**: Keep data close to compute for lower latency
-
-3. **Enable versioning**: Protect against accidental deletion
-
-4. **Set up notifications**: Trigger Cloud Functions on new data
-
-5. **Use requester pays**: For public datasets, make users pay egress costs
+1. **Organize by lifecycle**: `raw-data/` (Standard), `processed-data/` (Standard → Nearline at 30 days), `models/staging|production` (Standard), `models/archived` (Coldline), `experiments/` (delete after 90 days)
+2. **Use regional buckets** to keep data close to compute
+3. **Enable versioning** to protect against accidental deletion
+4. **Set up Pub/Sub notifications** to trigger Cloud Functions on new data
+5. **Use requester-pays** for public datasets so consumers cover egress
 
 ---
 
-## Tensor Processing Units (TPUs)
+## 4. Tensor Processing Units (TPUs)
 
-TPUs are Google's custom-designed ASICs for accelerating machine learning workloads.
+TPUs are Google's custom ASICs purpose-built for ML workloads.
 
-### TPU vs GPU
+### 4.1 TPU vs GPU
 
-```
-┌─────────────────┬───────────────────┬────────────────────┐
-│ Aspect          │ GPU               │ TPU                │
-├─────────────────┼───────────────────┼────────────────────┤
-│ Architecture    │ General purpose   │ ML-specific        │
-│ Precision       │ FP32, FP16, INT8  │ BFloat16 optimized │
-│ Framework       │ Any framework     │ TensorFlow, JAX    │
-│ Memory          │ 16-80 GB HBM      │ 8-32 GB HBM        │
-│ Performance     │ High              │ Very High (TF)     │
-│ Cost            │ Medium            │ Medium-Low         │
-│ Flexibility     │ Very flexible     │ Less flexible      │
-│ Best for        │ Any ML/DL task    │ Large TF models    │
-└─────────────────┴───────────────────┴────────────────────┘
-```
+| Aspect | GPU | TPU |
+|---|---|---|
+| Architecture | General purpose | ML-specific |
+| Precision | FP32, FP16, INT8 | BFloat16 optimized |
+| Framework | Any framework | TensorFlow, JAX |
+| Memory | 16-80GB HBM | 8-32GB HBM |
+| Performance | High | Very high (TF) |
+| Cost | Medium | Medium-low |
+| Flexibility | Very flexible | Less flexible |
+| Best for | Any ML/DL task | Large TF models |
 
-### When to Use TPUs
+**Use TPUs** for large TensorFlow models (transformers, large CNNs), bfloat16 mixed-precision training, extended training runs, and high-throughput inference. **Use GPUs** for PyTorch, prototyping, maximum flexibility, and models with custom ops.
 
-**Use TPUs when:**
-- Training large TensorFlow models (transformers, large CNNs)
-- Using mixed-precision training (bfloat16)
-- Training for extended periods (cost-effective)
-- Need high throughput for inference
-
-**Use GPUs when:**
-- Using PyTorch as primary framework
-- Prototyping and experimentation
-- Need maximum flexibility
-- Training models with complex custom ops
-
-### Creating a TPU VM
+### 4.2 Creating and Using a TPU VM
 
 ```bash
-# Create TPU v2-8 (8 cores)
 gcloud compute tpus tpu-vm create ml-tpu-v2 \
   --zone=us-central1-a \
   --accelerator-type=v2-8 \
   --version=tpu-vm-tf-2.13.0
 
-# Create TPU v3-8 (more memory)
-gcloud compute tpus tpu-vm create ml-tpu-v3 \
-  --zone=us-central1-a \
-  --accelerator-type=v3-8 \
-  --version=tpu-vm-tf-2.13.0
-
-# SSH into TPU VM
 gcloud compute tpus tpu-vm ssh ml-tpu-v2 --zone=us-central1-a
-
-# List TPUs
 gcloud compute tpus tpu-vm list
-
-# Delete TPU
 gcloud compute tpus tpu-vm delete ml-tpu-v2 --zone=us-central1-a
 ```
 
-### Training on TPUs with TensorFlow
+### 4.3 Training on TPUs with TensorFlow
+
+Connect to the TPU, wrap model creation in a `TPUStrategy` scope, and train as usual — the strategy handles distributing the graph across cores:
 
 ```python
 import tensorflow as tf
-import os
 
-# Initialize TPU
 resolver = tf.distribute.cluster_resolver.TPUClusterResolver()
-tf.config.experimental_connect_to_cluster(resolver)
 tf.tpu.experimental.initialize_tpu_system(resolver)
-
-# Create TPU strategy
 strategy = tf.distribute.TPUStrategy(resolver)
 
-print(f"Number of TPU cores: {strategy.num_replicas_in_sync}")
-
-# Define model inside strategy scope
 with strategy.scope():
-    # Create model
-    model = tf.keras.Sequential([
-        tf.keras.layers.Conv2D(32, 3, activation='relu', input_shape=(224, 224, 3)),
-        tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(64, 3, activation='relu'),
-        tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dense(1000, activation='softmax')
-    ])
+    model = build_model()  # any tf.keras model
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-    # Compile model
-    model.compile(
-        optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
-        loss='sparse_categorical_crossentropy',
-        metrics=['accuracy']
-    )
-
-# Load dataset
-def load_dataset():
-    # Load from Cloud Storage
-    dataset = tf.data.TFRecordDataset(
-        'gs://my-ml-bucket/datasets/imagenet/train-*.tfrecord'
-    )
-
-    # Parse and preprocess
-    def parse_example(example):
-        features = tf.io.parse_single_example(example, {
-            'image': tf.io.FixedLenFeature([], tf.string),
-            'label': tf.io.FixedLenFeature([], tf.int64),
-        })
-        image = tf.io.decode_jpeg(features['image'], channels=3)
-        image = tf.image.resize(image, [224, 224])
-        image = tf.cast(image, tf.float32) / 255.0
-        return image, features['label']
-
-    dataset = dataset.map(parse_example)
-    dataset = dataset.batch(128)  # Global batch size
-    dataset = dataset.prefetch(tf.data.AUTOTUNE)
-
-    return dataset
-
-train_dataset = load_dataset()
-
-# Train on TPU
-model.fit(
-    train_dataset,
-    epochs=10,
-    steps_per_epoch=1000
-)
-
-# Save model
+train_ds = tf.data.TFRecordDataset('gs://my-ml-bucket/datasets/train-*.tfrecord').map(parse_fn).batch(128)
+model.fit(train_ds, epochs=10, steps_per_epoch=1000)
 model.save('gs://my-ml-bucket/models/resnet-tpu-trained')
 ```
 
-### TPU Pods (Multi-TPU Training)
+### 4.4 TPU Pods and Best Practices
 
-For very large models, use TPU Pods (multiple TPUs connected):
+TPU Pods chain multiple TPUs for very large models:
 
 ```bash
-# Create TPU Pod (v3-32 = 4 TPU v3-8 chips)
+# v3-32 = 4x TPU v3-8 chips, ~$32/hour (4x the cost of v3-8)
 gcloud compute tpus tpu-vm create ml-tpu-pod \
   --zone=us-central1-a \
   --accelerator-type=v3-32 \
   --version=tpu-vm-tf-2.13.0
-
-# Cost: v3-32 = $32/hour (4x the cost of v3-8)
 ```
 
-### TPU Best Practices
-
-1. **Use bfloat16 for training**: TPUs are optimized for bfloat16
-   ```python
-   policy = tf.keras.mixed_precision.Policy('mixed_bfloat16')
-   tf.keras.mixed_precision.set_global_policy(policy)
-   ```
-
-2. **Batch size**: Use large batch sizes (128, 256, 512)
-
-3. **Data pipeline**: Preprocess data on CPU, use `tf.data.Dataset`
-
-4. **Checkpointing**: Save to Cloud Storage, not local disk
-
-5. **Preemptible TPUs**: Save 70% with preemptible TPUs (similar to preemptible VMs)
+- **Use bfloat16**: `tf.keras.mixed_precision.set_global_policy(tf.keras.mixed_precision.Policy('mixed_bfloat16'))`
+- **Batch size**: use large batches (128, 256, 512)
+- **Data pipeline**: preprocess on CPU with `tf.data.Dataset`
+- **Checkpointing**: save to Cloud Storage, not local disk
+- **Preemptible TPUs**: save ~70%, same tradeoffs as preemptible VMs
 
 ---
 
-## Google Kubernetes Engine (GKE)
+## 5. Google Kubernetes Engine (GKE)
 
-GKE is Google's managed Kubernetes service for container orchestration.
-
-### Creating a GKE Cluster
+### 5.1 Creating a Cluster
 
 ```bash
-# Create standard cluster
+# Standard cluster
 gcloud container clusters create ml-cluster \
   --zone=us-central1-a \
   --num-nodes=3 \
@@ -859,7 +403,7 @@ gcloud container clusters create ml-cluster \
   --min-nodes=1 \
   --max-nodes=10
 
-# Create cluster with GPU nodes
+# Cluster with GPU nodes
 gcloud container clusters create ml-gpu-cluster \
   --zone=us-central1-a \
   --num-nodes=2 \
@@ -870,802 +414,332 @@ gcloud container clusters create ml-gpu-cluster \
   --min-nodes=0 \
   --max-nodes=5
 
-# Install NVIDIA device plugin (for GPU support)
 kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/master/nvidia-driver-installer/cos/daemonset-preloaded.yaml
 
-# Get cluster credentials
 gcloud container clusters get-credentials ml-gpu-cluster --zone=us-central1-a
-
-# Verify nodes
 kubectl get nodes
 ```
 
-### Deploying ML Model on GKE
+### 5.2 Deploying a Model
 
-```yaml
-# deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ml-model-server
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: ml-model
-  template:
-    metadata:
-      labels:
-        app: ml-model
-    spec:
-      containers:
-      - name: model-server
-        image: gcr.io/my-project/ml-model:v1.0
-        ports:
-        - containerPort: 8000
-        env:
-        - name: MODEL_PATH
-          value: "gs://my-ml-bucket/models/resnet50-latest.pth"
-        - name: WORKERS
-          value: "4"
-        resources:
-          requests:
-            cpu: 1000m
-            memory: 2Gi
-          limits:
-            cpu: 2000m
-            memory: 4Gi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 60
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 5
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ml-model-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: ml-model
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8000
-```
+A standard Deployment + LoadBalancer Service: 3 replicas of a model-server container, a `MODEL_PATH` env var pointing at the Cloud Storage artifact, CPU/memory limits, and a `/health` liveness probe. Request `nvidia.com/gpu` in the container's `resources` block to schedule onto GPU nodes.
 
-Deploy:
 ```bash
-# Apply deployment
-kubectl apply -f deployment.yaml
-
-# Check status
+kubectl apply -f deployment.yaml   # Deployment (3 replicas) + Service (type: LoadBalancer)
 kubectl get deployments
 kubectl get pods
-kubectl get services
-
-# Get external IP
-kubectl get service ml-model-service
+kubectl get service ml-model-service   # external IP
 ```
 
-### GPU Deployment on GKE
-
-```yaml
-# gpu-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ml-gpu-inference
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: ml-gpu-model
-  template:
-    metadata:
-      labels:
-        app: ml-gpu-model
-    spec:
-      containers:
-      - name: gpu-model-server
-        image: gcr.io/my-project/ml-model-gpu:v1.0
-        ports:
-        - containerPort: 8000
-        resources:
-          requests:
-            nvidia.com/gpu: 1
-          limits:
-            nvidia.com/gpu: 1
-        env:
-        - name: CUDA_VISIBLE_DEVICES
-          value: "0"
-```
-
-### Autoscaling on GKE
-
-```yaml
-# hpa.yaml
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: ml-model-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: ml-model-server
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
-```
-
-### GKE Autopilot
-
-GKE Autopilot is a fully managed mode that handles all cluster management:
+### 5.3 Autoscaling
 
 ```bash
-# Create Autopilot cluster
-gcloud container clusters create-auto ml-autopilot-cluster \
-  --region=us-central1
+# Horizontal Pod Autoscaler: scale 2-20 replicas on CPU/memory utilization
+kubectl autoscale deployment ml-model-server --cpu-percent=70 --min=2 --max=20
+```
 
-# Benefits:
-# - No node management
-# - Pay per pod (not per node)
-# - Automatic scaling
-# - Security hardening
-# - Lower operational overhead
+### 5.4 GKE Autopilot
+
+Autopilot is a fully managed mode with no node management — you pay per pod, not per node, with automatic scaling and security hardening baked in.
+
+```bash
+gcloud container clusters create-auto ml-autopilot-cluster --region=us-central1
 ```
 
 ---
 
-## Vertex AI Platform
+## 6. Vertex AI Platform
 
-Vertex AI is GCP's unified ML platform for building, training, and deploying models.
+Vertex AI unifies notebooks, training, prediction, feature storage, model registry, and pipelines under one platform.
 
-### Vertex AI Components
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                      Vertex AI Platform                      │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Workbench         Training          Prediction             │
-│  ──────────        ────────          ──────────             │
-│  - Notebooks       - Custom          - Online               │
-│  - Managed         - AutoML          - Batch                │
-│  - Git integration - Hyperparameter  - Edge                 │
-│                      tuning                                  │
-│                                                              │
-│  Feature Store     Model Registry    Pipelines              │
-│  ─────────────     ──────────────    ─────────              │
-│  - Feature mgmt    - Versioning      - Kubeflow             │
-│  - Serving         - Lineage         - TFX                  │
-│  - Monitoring      - Evaluation      - Orchestration        │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    NB[Notebooks] --> Train["Training (Custom / AutoML / HP tuning)"]
+    FS["Feature Store"] --> Train
+    Train --> MR["Model Registry (versioning, lineage)"]
+    MR --> Pred["Prediction (Online / Batch / Edge)"]
+    PL["Pipelines (Kubeflow / TFX)"] --> Train
+    PL --> Pred
 ```
 
-### Training a Model on Vertex AI
+### 6.1 Training a Custom Job
 
 ```python
 from google.cloud import aiplatform
 
-# Initialize Vertex AI
-aiplatform.init(
-    project='my-project-id',
-    location='us-central1',
-    staging_bucket='gs://my-ml-bucket/staging'
-)
+aiplatform.init(project='my-project-id', location='us-central1', staging_bucket='gs://my-ml-bucket/staging')
 
-# Create custom training job
 job = aiplatform.CustomTrainingJob(
     display_name='resnet-training',
     script_path='train.py',
     container_uri='gcr.io/cloud-aiplatform/training/pytorch-gpu.1-13:latest',
-    requirements=['torchvision', 'wandb'],
 )
 
-# Run training job
 model = job.run(
-    replica_count=1,
     machine_type='n1-standard-8',
-    accelerator_type='NVIDIA_TESLA_T4',
-    accelerator_count=1,
-    args=[
-        '--epochs', '100',
-        '--batch-size', '64',
-        '--learning-rate', '0.001',
-    ],
-    environment_variables={
-        'MODEL_NAME': 'resnet50',
-        'DATA_PATH': 'gs://my-ml-bucket/datasets/imagenet',
-    },
+    accelerator_type='NVIDIA_TESLA_T4', accelerator_count=1,
+    args=['--epochs', '100', '--data-path', 'gs://my-ml-bucket/datasets/imagenet'],
 )
-
-print(f"Training job completed: {model.resource_name}")
 ```
 
-### Deploying Model to Vertex AI Endpoint
+### 6.2 Deploying to an Endpoint
 
 ```python
-# Upload model
 model = aiplatform.Model.upload(
     display_name='resnet50-v1',
     artifact_uri='gs://my-ml-bucket/models/resnet50/',
     serving_container_image_uri='gcr.io/my-project/model-server:latest',
 )
 
-# Create endpoint
-endpoint = aiplatform.Endpoint.create(
-    display_name='resnet50-endpoint',
-)
+endpoint = aiplatform.Endpoint.create(display_name='resnet50-endpoint')
+endpoint.deploy(model=model, machine_type='n1-standard-4', min_replica_count=1, max_replica_count=10,
+                 accelerator_type='NVIDIA_TESLA_T4', accelerator_count=1)
 
-# Deploy model to endpoint
-endpoint.deploy(
-    model=model,
-    deployed_model_display_name='resnet50-v1',
-    machine_type='n1-standard-4',
-    min_replica_count=1,
-    max_replica_count=10,
-    accelerator_type='NVIDIA_TESLA_T4',
-    accelerator_count=1,
-)
-
-print(f"Model deployed to endpoint: {endpoint.resource_name}")
-
-# Make prediction
-instances = [
-    {'image_bytes': base64.b64encode(open('cat.jpg', 'rb').read()).decode()}
-]
-
-prediction = endpoint.predict(instances=instances)
-print(f"Prediction: {prediction.predictions}")
+prediction = endpoint.predict(instances=[{'image_bytes': base64.b64encode(open('cat.jpg', 'rb').read()).decode()}])
 ```
 
-### AutoML on Vertex AI
+### 6.3 AutoML
 
-For quick prototyping without custom training code:
+For prototyping without custom training code, `aiplatform.AutoMLImageTrainingJob` (or its tabular/text equivalents) trains against an `aiplatform.ImageDataset` with a train/validation/test split and a compute-time budget (`budget_milli_node_hours`) — no training script required.
 
-```python
-# Create AutoML image classification model
-dataset = aiplatform.ImageDataset.create(
-    display_name='my-image-dataset',
-    gcs_source='gs://my-ml-bucket/datasets/images.csv',
-)
+### 6.4 Vertex AI Pricing
 
-job = aiplatform.AutoMLImageTrainingJob(
-    display_name='automl-image-classification',
-    prediction_type='classification',
-    multi_label=False,
-)
-
-model = job.run(
-    dataset=dataset,
-    model_display_name='automl-resnet-v1',
-    training_fraction_split=0.8,
-    validation_fraction_split=0.1,
-    test_fraction_split=0.1,
-    budget_milli_node_hours=8000,  # 8 hours
-)
-```
-
-### Vertex AI Pricing
-
-```
-Training:
-- n1-standard-4: $0.190/hour
-- n1-standard-4 + T4: $0.526/hour
-- n1-standard-8 + V100: $2.67/hour
-
-Prediction (Hosting):
-- n1-standard-2: $0.095/hour
-- n1-standard-4 + T4: $0.526/hour
-
-AutoML:
-- Training: $3.15/hour
-- Prediction: $1.25/hour + $0.10/1000 predictions
-```
+| Item | Cost |
+|---|---|
+| Training: n1-standard-4 | $0.190/hour |
+| Training: n1-standard-4 + T4 | $0.526/hour |
+| Training: n1-standard-8 + V100 | $2.67/hour |
+| Prediction: n1-standard-2 | $0.095/hour |
+| Prediction: n1-standard-4 + T4 | $0.526/hour |
+| AutoML training | $3.15/hour |
+| AutoML prediction | $1.25/hour + $0.10/1000 predictions |
 
 ---
 
-## GCP Networking for ML
+## 7. GCP Networking for ML
 
-### VPC Architecture
+### 7.1 VPC Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    VPC Network (Global)                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  us-central1                      us-east1                 │
-│  ────────────                     ────────                 │
-│  ┌─────────────────┐             ┌──────────────────┐     │
-│  │ Subnet: 10.0.1.0/24│         │ Subnet: 10.0.2.0/24│   │
-│  │                 │             │                  │     │
-│  │ ML Training     │             │ ML Inference     │     │
-│  │ Instances       │             │ Instances        │     │
-│  │ (GPU VMs)       │             │ (GKE Cluster)    │     │
-│  └─────────────────┘             └──────────────────┘     │
-│                                                             │
-│  Cloud Storage                   Cloud SQL                 │
-│  (Private endpoint)              (Private IP)              │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-         ▲                               ▲
-         │                               │
-    Cloud NAT                    Cloud Load Balancer
-    (Outbound)                   (Inbound - Public)
+```mermaid
+flowchart TB
+    subgraph VPC["VPC Network (Global)"]
+        subgraph R1["us-central1"]
+            S1["Subnet 10.0.1.0/24"]
+            T1["ML Training Instances (GPU VMs)"]
+            S1 --- T1
+        end
+        subgraph R2["us-east1"]
+            S2["Subnet 10.0.2.0/24"]
+            T2["ML Inference (GKE Cluster)"]
+            S2 --- T2
+        end
+        CS[(Cloud Storage - private endpoint)]
+        SQL[(Cloud SQL - private IP)]
+    end
+    NAT[Cloud NAT - outbound] --> VPC
+    LB[Cloud Load Balancer - inbound/public] --> VPC
 ```
 
-### Creating VPC Network
+### 7.2 Creating the Network
 
 ```bash
-# Create VPC network
-gcloud compute networks create ml-vpc \
-  --subnet-mode=custom
+gcloud compute networks create ml-vpc --subnet-mode=custom
 
-# Create subnet for training (us-central1)
 gcloud compute networks subnets create ml-training-subnet \
-  --network=ml-vpc \
-  --region=us-central1 \
-  --range=10.0.1.0/24
+  --network=ml-vpc --region=us-central1 --range=10.0.1.0/24
 
-# Create subnet for inference (us-east1)
 gcloud compute networks subnets create ml-inference-subnet \
-  --network=ml-vpc \
-  --region=us-east1 \
-  --range=10.0.2.0/24
+  --network=ml-vpc --region=us-east1 --range=10.0.2.0/24
 
-# Create firewall rule (allow SSH)
 gcloud compute firewall-rules create ml-allow-ssh \
-  --network=ml-vpc \
-  --allow=tcp:22 \
-  --source-ranges=0.0.0.0/0
+  --network=ml-vpc --allow=tcp:22 --source-ranges=0.0.0.0/0
 
-# Create firewall rule (allow internal)
 gcloud compute firewall-rules create ml-allow-internal \
-  --network=ml-vpc \
-  --allow=tcp,udp,icmp \
-  --source-ranges=10.0.0.0/16
+  --network=ml-vpc --allow=tcp,udp,icmp --source-ranges=10.0.0.0/16
 ```
 
-### Cloud Load Balancing
+### 7.3 Load Balancing and CDN
 
 ```bash
-# Create instance group
 gcloud compute instance-groups managed create ml-inference-group \
   --base-instance-name=ml-inference \
   --template=ml-inference-template \
-  --size=3 \
-  --zone=us-central1-a
+  --size=3 --zone=us-central1-a
 
-# Create health check
 gcloud compute health-checks create http ml-health-check \
-  --port=8000 \
-  --request-path=/health
+  --port=8000 --request-path=/health
 
-# Create backend service
 gcloud compute backend-services create ml-backend-service \
-  --protocol=HTTP \
-  --health-checks=ml-health-check \
-  --global
+  --protocol=HTTP --health-checks=ml-health-check --global
 
-# Add instance group to backend
 gcloud compute backend-services add-backend ml-backend-service \
   --instance-group=ml-inference-group \
-  --instance-group-zone=us-central1-a \
-  --global
+  --instance-group-zone=us-central1-a --global
 
-# Create URL map
-gcloud compute url-maps create ml-load-balancer \
-  --default-service=ml-backend-service
-
-# Create target HTTP proxy
-gcloud compute target-http-proxies create ml-http-proxy \
-  --url-map=ml-load-balancer
-
-# Create forwarding rule (public IP)
+gcloud compute url-maps create ml-load-balancer --default-service=ml-backend-service
+gcloud compute target-http-proxies create ml-http-proxy --url-map=ml-load-balancer
 gcloud compute forwarding-rules create ml-forwarding-rule \
-  --global \
-  --target-http-proxy=ml-http-proxy \
-  --ports=80
+  --global --target-http-proxy=ml-http-proxy --ports=80
 
-# Get public IP
 gcloud compute forwarding-rules describe ml-forwarding-rule --global
-```
 
-### Cloud CDN
-
-Enable Cloud CDN for model serving with caching:
-
-```bash
-# Enable Cloud CDN on backend service
+# Cloud CDN for cached model serving
 gcloud compute backend-services update ml-backend-service \
-  --enable-cdn \
-  --cache-mode=CACHE_ALL_STATIC \
-  --default-ttl=3600 \
-  --global
+  --enable-cdn --cache-mode=CACHE_ALL_STATIC --default-ttl=3600 --global
 ```
 
 ---
 
-## Cost Optimization Strategies
+## 8. Cost Optimization Strategies
 
-### 1. Committed Use Discounts (CUDs)
+### 8.1 Committed Use Discounts (CUDs)
 
-Save **57%** with 3-year commitment:
+Save up to **57%** with a 3-year commitment (purchased via Billing → Commitments):
 
-```
-┌────────────────────┬──────────────┬──────────────┬──────────────┐
-│ Resource           │ On-Demand    │ 1-Year CUD   │ 3-Year CUD   │
-├────────────────────┼──────────────┼──────────────┼──────────────┤
-│ n1-standard-4      │ $0.190/hr    │ $0.128/hr    │ $0.082/hr    │
-│ n1-standard-8      │ $0.380/hr    │ $0.256/hr    │ $0.164/hr    │
-│ T4 GPU             │ $0.35/hr     │ $0.244/hr    │ $0.158/hr    │
-└────────────────────┴──────────────┴──────────────┴──────────────┘
+| Resource | On-Demand | 1-Year CUD | 3-Year CUD |
+|---|---|---|---|
+| n1-standard-4 | $0.190/hr | $0.128/hr (33%) | $0.082/hr (57%) |
+| n1-standard-8 | $0.380/hr | $0.256/hr (33%) | $0.164/hr (57%) |
+| T4 GPU | $0.35/hr | $0.244/hr (30%) | $0.158/hr (55%) |
 
-Savings:           -              33%           57%
-```
+### 8.2 Sustained Use Discounts
 
-Purchase:
-```bash
-# Purchase CUD (via console or API)
-# Console: Billing → Commitments → Purchase commitment
-```
+Automatic, no commitment required — discount scales with how much of the month an instance runs: 0% at 25% of month, 10% at 50%, 20% at 75%, 30% at 100%.
 
-### 2. Sustained Use Discounts
+### 8.3 Preemptible and Spot VMs
 
-Automatic discounts for sustained use (no commitment required):
-
-```
-Running time per month: Discount
-- 25% of month: 0%
-- 50% of month: 10%
-- 75% of month: 20%
-- 100% of month: 30%
-```
-
-### 3. Preemptible VMs and Spot VMs
-
-Save **60-91%** on compute:
+Save **60-91%**:
 
 ```bash
-# Preemptible VM (can be terminated anytime)
+# Preemptible (legacy)
 gcloud compute instances create ml-training \
-  --preemptible \
-  --machine-type=n1-standard-8 \
+  --preemptible --machine-type=n1-standard-8 \
   --accelerator=type=nvidia-tesla-t4,count=1
 
-# Spot VM (successor to preemptible, with more features)
+# Spot (successor, more control over termination behavior)
 gcloud compute instances create ml-training-spot \
   --provisioning-model=SPOT \
   --instance-termination-action=STOP \
   --machine-type=n1-standard-8
 ```
 
-### 4. Autoscaling
-
-Scale down when not in use:
+### 8.4 Autoscaling and Storage Lifecycle
 
 ```bash
-# GKE cluster autoscaling
 gcloud container clusters update ml-cluster \
-  --enable-autoscaling \
-  --min-nodes=0 \
-  --max-nodes=10 \
-  --zone=us-central1-a
+  --enable-autoscaling --min-nodes=0 --max-nodes=10 --zone=us-central1-a
 
-# Instance group autoscaling
 gcloud compute instance-groups managed set-autoscaling ml-inference-group \
-  --max-num-replicas=10 \
-  --min-num-replicas=1 \
-  --target-cpu-utilization=0.7 \
-  --zone=us-central1-a
+  --max-num-replicas=10 --min-num-replicas=1 \
+  --target-cpu-utilization=0.7 --zone=us-central1-a
 ```
 
-### 5. Storage Lifecycle Management
+A 1TB dataset kept in Standard storage for a year costs ~$240; with a Standard → Nearline (30d) → Coldline (90d) → delete (365d) lifecycle policy it drops to ~$80 (67% savings).
 
-Automatically move data to cheaper storage:
-
-```bash
-# Lifecycle policy (from earlier)
-# Standard → Nearline (30 days) → Coldline (90 days) → Delete (365 days)
-
-# Savings example:
-# 1 TB for 1 year:
-# - All Standard: $240
-# - With lifecycle: $80 (67% savings)
-```
-
-### 6. Budget Alerts
-
-Set up billing alerts:
+### 8.5 Budgets and Cost Monitoring
 
 ```bash
-# Create budget (via console)
 # Billing → Budgets & alerts → Create budget
+# Thresholds: 50% → email, 90% → email + Pub/Sub, 100% → emergency notification
 
-# Set thresholds:
-# - 50% of budget: Email alert
-# - 90% of budget: Email alert + Pub/Sub notification
-# - 100% of budget: Emergency notification
-```
-
-### 7. Cost Monitoring
-
-```bash
-# Install cost management tool
 pip install google-cloud-billing
-
-# View current costs
 gcloud billing accounts list
 gcloud billing projects describe my-project-id
 
 # Export billing data to BigQuery for analysis
-gcloud alpha billing accounts describe ACCOUNT_ID \
-  --format="value(billingAccountName)"
+gcloud alpha billing accounts describe ACCOUNT_ID --format="value(billingAccountName)"
 ```
 
-### Cost Optimization Checklist
-
-- [ ] Use preemptible/spot VMs for training (60-91% savings)
-- [ ] Commit to 1-year or 3-year CUDs (33-57% savings)
-- [ ] Enable autoscaling (scale to zero when idle)
-- [ ] Use storage lifecycle policies (67% savings on old data)
-- [ ] Right-size instances (don't over-provision)
-- [ ] Delete unused resources (snapshots, disks, IPs)
-- [ ] Use regional resources (cheaper than multi-regional)
-- [ ] Leverage free tier (always free resources)
-- [ ] Set up budget alerts (prevent surprise bills)
-- [ ] Review costs weekly (identify waste early)
+**Checklist**: preemptible/spot VMs for training, 1- or 3-year CUDs for steady-state load, autoscale to zero when idle, storage lifecycle policies, right-sized instances, prune unused disks/snapshots/IPs, prefer regional over multi-regional resources, use the free tier, set budget alerts, review costs weekly.
 
 ---
 
-## Hands-on Exercise
+## 9. Putting It All Together: Serving Architecture
 
-### Exercise: Deploy Complete ML System on GCP
+**Scenario:** Deploy an image classification model behind an autoscaling, GPU-backed GKE service with CDN caching.
 
-**Objective**: Deploy an image classification model with the following architecture:
-
-```
-User Request
-    ↓
-Cloud Load Balancer (with Cloud CDN)
-    ↓
-GKE Cluster (autoscaling 1-10 pods)
-    ↓
-Model Server (T4 GPU, loads model from Cloud Storage)
-    ↓
-Cloud Storage (model weights)
+```mermaid
+flowchart TD
+    User([User Request]) -->|HTTPS| CDN[Cloud CDN]
+    CDN --> LB[Cloud Load Balancer]
+    LB --> GKE["GKE Cluster (autoscaling 1-10 pods)"]
+    GKE -->|"1 T4 GPU per pod"| Model[Model Server]
+    Model -->|Load weights| GCS[(Cloud Storage: model artifacts)]
 ```
 
-**Requirements**:
-1. Use preemptible GKE nodes
-2. Enable autoscaling (CPU > 70%)
-3. Implement health checks
-4. Enable Cloud CDN for caching
-5. Set up monitoring with Cloud Monitoring
-6. Estimate monthly cost (assume 1M requests/month)
+**Steps:**
 
-**Steps**:
+```bash
+# 1. Store the model
+gsutil mb -l us-central1 gs://my-ml-exercise-bucket
+gsutil cp model.pth gs://my-ml-exercise-bucket/models/
 
-1. **Create Cloud Storage bucket and upload model**:
-   ```bash
-   gsutil mb -l us-central1 gs://my-ml-exercise-bucket
-   gsutil cp model.pth gs://my-ml-exercise-bucket/models/
-   ```
+# 2. Build and push the serving image
+docker build -t gcr.io/my-project/ml-model:v1 .
+docker push gcr.io/my-project/ml-model:v1
 
-2. **Build and push Docker image**:
-   ```bash
-   # Build image
-   docker build -t gcr.io/my-project/ml-model:v1 .
+# 3. Create a preemptible, autoscaling GPU cluster
+gcloud container clusters create ml-exercise-cluster \
+  --zone=us-central1-a \
+  --machine-type=n1-standard-4 \
+  --accelerator=type=nvidia-tesla-t4,count=1 \
+  --num-nodes=2 \
+  --enable-autoscaling --min-nodes=1 --max-nodes=10 \
+  --preemptible
 
-   # Push to Google Container Registry
-   docker push gcr.io/my-project/ml-model:v1
-   ```
+# 4. Deploy (Deployment + Service from section 5.2) and enable autoscaling
+kubectl apply -f deployment.yaml
+kubectl autoscale deployment ml-model-server --cpu-percent=70 --min=2 --max=20
 
-3. **Create GKE cluster with GPU nodes**:
-   ```bash
-   gcloud container clusters create ml-exercise-cluster \
-     --zone=us-central1-a \
-     --machine-type=n1-standard-4 \
-     --accelerator=type=nvidia-tesla-t4,count=1 \
-     --num-nodes=2 \
-     --enable-autoscaling \
-     --min-nodes=1 \
-     --max-nodes=10 \
-     --preemptible
-   ```
+# 5. Enable Cloud CDN on the backend service (section 7.3)
 
-4. **Deploy model to GKE**:
-   ```bash
-   kubectl apply -f deployment.yaml
-   kubectl apply -f service.yaml
-   kubectl apply -f hpa.yaml
-   ```
+# 6. Load test
+ab -n 10000 -c 50 http://LOAD_BALANCER_IP/predict
+```
 
-5. **Set up load balancer and Cloud CDN**:
-   ```bash
-   # Follow load balancer setup from earlier
-   # Enable Cloud CDN
-   ```
+**Estimated cost at 1M requests/month:**
 
-6. **Configure monitoring**:
-   ```bash
-   # Set up Cloud Monitoring dashboard
-   # Create alerts for high CPU, errors, latency
-   ```
+| Item | Cost |
+|---|---|
+| GKE nodes (2x preemptible n1-standard-4 + T4, 730hr) | $102 |
+| Cloud Storage (1GB) | $0.02 |
+| Load Balancer (1M requests) | $8 |
+| Cloud CDN (500GB egress) | $40 |
+| **Total** | **~$150/month** |
 
-7. **Test and calculate costs**:
-   ```bash
-   # Load test
-   ab -n 10000 -c 50 http://LOAD_BALANCER_IP/predict
-
-   # Calculate costs:
-   # - GKE: 2 preemptible n1-standard-4 + T4
-   # - Cloud Storage: 1 GB
-   # - Load Balancer: 1M requests
-   # - Cloud CDN: 500 GB egress
-   # - Cloud Monitoring: Basic tier
-   ```
-
-**Expected Cost** (1M requests/month):
-- GKE nodes (preemptible): 2 × $0.07/hr × 730hr = $102
-- Cloud Storage: 1 GB × $0.020 = $0.02
-- Load Balancer: 1M requests × $0.008/1000 = $8
-- Cloud CDN: 500 GB × $0.08/GB = $40
-- **Total: ~$150/month**
-
-**Bonus challenges**:
-- Add Cloud Armor (DDoS protection)
-- Implement A/B testing (split traffic between model versions)
-- Set up CI/CD with Cloud Build
-- Add distributed tracing with Cloud Trace
+Extending this further: add Cloud Armor for DDoS protection, split traffic across model versions for A/B testing, wire up Cloud Build for CI/CD, and add Cloud Trace for distributed tracing.
 
 ---
 
-## Self-Check Questions
+## 10. Key Takeaways
 
-1. **What is the difference between Compute Engine, GKE, and Vertex AI for training models?**
-   <details>
-   <summary>Answer</summary>
+1. **IAM** binds principals to roles to resources — use service accounts for workloads, never personal credentials, and rotate keys every 90 days.
 
-   - **Compute Engine**: Full control, manual management, good for custom setups
-   - **GKE**: Container orchestration, auto-scaling, good for production serving
-   - **Vertex AI**: Fully managed, automated scaling, good for quick deployment
-   </details>
+2. **Compute Engine** gives full control over VM configuration; preemptible/spot instances cut costs 60-91% for fault-tolerant, checkpointed training.
 
-2. **When would you choose a TPU over a GPU?**
-   <details>
-   <summary>Answer</summary>
+3. **Cloud Storage** is the ML data backbone; lifecycle policies (Standard → Nearline → Coldline → Archive) cut storage costs by up to 67% on aging data.
 
-   Choose TPU when:
-   - Training large TensorFlow models
-   - Using bfloat16 precision
-   - Training for extended periods (cost-effective)
-   - Need high matrix multiplication throughput
+4. **TPUs** are the fastest, cheapest option for large-scale TensorFlow/JAX training in bfloat16; GPUs remain the better choice for PyTorch and flexible custom ops.
 
-   Choose GPU when:
-   - Using PyTorch
-   - Need flexibility for custom operations
-   - Prototyping and experimentation
-   </details>
+5. **GKE** is the production serving layer — GPU scheduling via `nvidia.com/gpu` resources, HPA for autoscaling, and Autopilot when you don't want to manage nodes at all.
 
-3. **How can you save 80% on compute costs?**
-   <details>
-   <summary>Answer</summary>
+6. **Vertex AI** unifies training, AutoML, model registry, and endpoints — the fastest path from trained model to a scaled prediction endpoint.
 
-   - Use preemptible/spot VMs (60-91% savings)
-   - Implement checkpointing for fault tolerance
-   - Use autoscaling (scale to zero when idle)
-   - Purchase committed use discounts (33-57% savings)
-   </details>
-
-4. **What's the best storage class for archived model checkpoints?**
-   <details>
-   <summary>Answer</summary>
-
-   **Coldline** or **Archive** storage:
-   - Coldline: $0.004/GB/month (access <1/quarter)
-   - Archive: $0.0012/GB/month (access <1/year)
-   - Use lifecycle policies to automatically transition
-   </details>
-
-5. **How do you enable autoscaling on GKE?**
-   <details>
-   <summary>Answer</summary>
-
-   ```bash
-   # Cluster autoscaler (nodes)
-   gcloud container clusters update ml-cluster \
-     --enable-autoscaling --min-nodes=1 --max-nodes=10
-
-   # Horizontal Pod Autoscaler (pods)
-   kubectl autoscale deployment ml-model \
-     --cpu-percent=70 --min=2 --max=20
-   ```
-   </details>
+7. **Cost management** stacks: sustained-use discounts are automatic, CUDs reward commitment (up to 57%), and preemptible/spot compute plus lifecycle-managed storage handle the rest.
 
 ---
 
-## Additional Resources
+## What's Next?
 
-### Official Documentation
-- [GCP ML Documentation](https://cloud.google.com/products/ai)
-- [Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)
-- [GKE Documentation](https://cloud.google.com/kubernetes-engine/docs)
-- [TPU Documentation](https://cloud.google.com/tpu/docs)
-
-### Tutorials
-- [GCP ML Crash Course](https://developers.google.com/machine-learning/crash-course)
-- [Vertex AI Tutorials](https://cloud.google.com/vertex-ai/docs/tutorials)
-- [GKE ML Serving Guide](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning)
-
-### Tools
-- [gcloud CLI](https://cloud.google.com/sdk/gcloud)
-- [gsutil](https://cloud.google.com/storage/docs/gsutil)
-- [kubectl](https://kubernetes.io/docs/reference/kubectl/)
-
-### Cost Management
-- [GCP Pricing Calculator](https://cloud.google.com/products/calculator)
-- [Cost Management Tools](https://cloud.google.com/cost-management)
-- [Free Tier Details](https://cloud.google.com/free)
-
-### Community
-- [GCP Community](https://cloud.google.com/community)
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/google-cloud-platform)
-- [Reddit: r/googlecloud](https://www.reddit.com/r/googlecloud/)
+**Lesson 04** covers **Azure for ML Infrastructure** — Azure ML, AKS, and Blob Storage, with a direct comparison to the AWS and GCP patterns from this module.
 
 ---
 
-## Summary
+## Further Reading
 
-In this lesson, you learned:
-
-✅ Set up GCP account with proper IAM and security
-✅ Deploy Compute Engine instances with GPUs for ML training
-✅ Use Cloud Storage for datasets and models with lifecycle management
-✅ Work with TPUs for accelerated TensorFlow training
-✅ Deploy models on GKE with autoscaling
-✅ Use Vertex AI for managed ML training and serving
-✅ Configure VPC networking and load balancing
-✅ Optimize costs with preemptible VMs, CUDs, and lifecycle policies
-
-**Key Takeaways**:
-- GCP is strong for TensorFlow workloads and TPU access
-- Preemptible VMs save 60-91% on compute costs
-- Use GKE for production model serving with autoscaling
-- Vertex AI simplifies ML workflow management
-- Cloud Storage lifecycle policies save 67% on old data
-
-**Next Steps**:
-- Complete hands-on exercise
-- Explore Vertex AI Pipelines for MLOps
-- Learn about Kubeflow on GKE
-- Proceed to Lesson 04: Azure for ML Infrastructure
-
----
-
-**Estimated Time to Complete**: 7 hours (including hands-on exercise)
-**Difficulty**: Intermediate
-**Next Lesson**: [04-azure-ml-infrastructure.md](./04-azure-ml-infrastructure.md)
+- **GCP ML Documentation**: https://cloud.google.com/products/ai
+- **Vertex AI Documentation**: https://cloud.google.com/vertex-ai/docs
+- **GKE Documentation**: https://cloud.google.com/kubernetes-engine/docs
+- **TPU Documentation**: https://cloud.google.com/tpu/docs
+- **GCP Pricing Calculator**: https://cloud.google.com/products/calculator
+- **Free Tier Details**: https://cloud.google.com/free

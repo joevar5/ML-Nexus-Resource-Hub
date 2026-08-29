@@ -21,3 +21,14 @@ htmlcov/
 
 # OS files
 .DS_Store
+
+# Local agent/skill tooling (installed via `npx skills add`, `npx impeccable install`) — kept globally at ~/.agents, not in the repo
+.agents/
+.claude/
+.codex/
+.github/agents/
+.github/hooks/
+.github/skills/
+.impeccable/
+.playwright-cli/
+skills-lock.json

@@ -1,581 +1,312 @@
 # Lesson 01: Cloud Architecture for ML
 
-**Duration:** 6 hours
-**Objectives:** Understand cloud architecture patterns and design principles for ML systems
+Architecting ML systems in the cloud means applying general cloud architecture principles with ML-specific considerations layered on top. This lesson covers the core building blocks, ML-specific patterns, and the design principles that govern them.
 
-## Introduction
+**Prerequisites:** basic familiarity with a cloud provider console (AWS, GCP, or Azure) and general networking concepts (IP addresses, DNS, HTTP).
 
-Architecting ML systems in the cloud requires understanding both general cloud architecture principles and ML-specific considerations. This lesson covers fundamental cloud architecture patterns, components, and design decisions that impact ML infrastructure.
+### Contents
+
+1. [Cloud Architecture Fundamentals](#cloud-architecture-fundamentals)
+2. [ML-Specific Architecture Patterns](#ml-specific-architecture-patterns)
+3. [Architecture Design Principles](#architecture-design-principles)
+4. [Training vs. Inference](#training-vs-inference)
+5. [Practical Exercise](#practical-exercise)
+6. [Key Architecture Decisions](#key-architecture-decisions)
+7. [Deployment Patterns](#deployment-patterns)
+8. [Key Takeaways](#key-takeaways)
+9. [Additional Resources](#additional-resources)
+
+---
 
 ## Cloud Architecture Fundamentals
 
-### The Three Pillars of Cloud Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│           Cloud Architecture Pillars                     │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  1. COMPUTE                2. STORAGE        3. NETWORK │
-│  ┌──────────┐             ┌──────────┐     ┌─────────┐ │
-│  │   VMs    │             │  Object  │     │   VPC   │ │
-│  │ Containers│            │  Block   │     │  Subnet │ │
-│  │Serverless│             │   File   │     │   LB    │ │
-│  └──────────┘             └──────────┘     └─────────┘ │
-│       ↓                        ↓                 ↓      │
-│  Run ML code           Store data/models    Connect it  │
-│                                                          │
-└─────────────────────────────────────────────────────────┘
-```
-
-### 1. Compute Resources
-
-**Virtual Machines (VMs)**
-- Full control over OS and software
-- Suitable for complex ML pipelines
-- Can run 24/7 or on-demand
-- Examples: AWS EC2, GCP Compute Engine, Azure VMs
-
-**Containers**
-- Portable and consistent environments
-- Faster startup than VMs
-- Ideal for ML model serving
-- Examples: AWS ECS/EKS, GCP GKE, Azure AKS
-
-**Serverless**
-- No server management
-- Auto-scaling
-- Pay per execution
-- Examples: AWS Lambda, GCP Cloud Functions, Azure Functions
-
-**When to use each:**
-```
-VMs:           Long-running training jobs, complex dependencies
-Containers:    Model serving, microservices, portability
-Serverless:    Lightweight inference, event-driven processing
+```mermaid
+flowchart TB
+    subgraph Pillars["Cloud Architecture Pillars"]
+        direction LR
+        subgraph Compute["1. Compute"]
+            C1["VMs<br/>Containers<br/>Serverless"]
+        end
+        subgraph Storage["2. Storage"]
+            S1["Object<br/>Block<br/>File"]
+        end
+        subgraph Network["3. Network"]
+            N1["VPC<br/>Subnet<br/>LB"]
+        end
+    end
+    Compute --> CU["Run ML code"]
+    Storage --> SU["Store data/models"]
+    Network --> NU["Connect it all together"]
 ```
 
-### 2. Storage Resources
+### Compute
 
-**Object Storage**
-- Unlimited scalability
-- Store datasets, models, logs
-- HTTP/S access
-- Examples: AWS S3, GCP Cloud Storage, Azure Blob Storage
-- Cost: ~$0.02/GB/month
+| Type | Best For | Examples |
+|---|---|---|
+| VMs | Long-running training, complex dependencies, full OS control | EC2, GCE, Azure VMs |
+| Containers | Model serving, microservices, portability, fast startup | ECS/EKS, GKE, AKS |
+| Serverless | Lightweight inference, event-driven, zero server management | Lambda, Cloud Functions, Azure Functions |
 
-**Block Storage**
-- Attached to compute instances
-- Low latency, high IOPS
-- Databases, application data
-- Examples: AWS EBS, GCP Persistent Disk, Azure Managed Disks
-- Cost: ~$0.10/GB/month
+### Storage
 
-**File Storage**
-- Shared file systems
-- NFS protocol
-- Multi-instance access
-- Examples: AWS EFS, GCP Filestore, Azure Files
-- Cost: ~$0.30/GB/month
+| Type | Best For | Examples | Cost |
+|---|---|---|---|
+| Object | Datasets, trained models, backups, logs (HTTP/S access, unlimited scale) | S3, Cloud Storage, Blob Storage | ~$0.02/GB/mo |
+| Block | Databases, checkpoints, active caches (attached to an instance, low latency/high IOPS) | EBS, Persistent Disk, Managed Disks | ~$0.10/GB/mo |
+| File | Shared training data, home directories (NFS, multi-instance access) | EFS, Filestore, Azure Files | ~$0.30/GB/mo |
 
-**When to use each:**
-```
-Object Storage:  Datasets, trained models, backups, logs
-Block Storage:   Databases, training data cache, checkpoints
-File Storage:    Shared training data, home directories
-```
+### Network
 
-### 3. Networking Resources
+- **VPC**: isolated network, defines IP ranges/subnets, controls traffic flow
+- **Load Balancer**: distributes traffic, health-checks instances, terminates SSL
+- **CDN** (CloudFront, Cloud CDN, Azure CDN): caches responses at the edge to cut latency
 
-**Virtual Private Cloud (VPC)**
-- Isolated network environment
-- Define IP ranges, subnets
-- Control traffic flow
-
-**Load Balancers**
-- Distribute traffic across instances
-- Health checking
-- SSL termination
-
-**Content Delivery Network (CDN)**
-- Cache model predictions
-- Reduce latency for users
-- Examples: AWS CloudFront, GCP Cloud CDN, Azure CDN
+---
 
 ## ML-Specific Architecture Patterns
 
-### Pattern 1: Training Architecture
+### Training
 
-```
-┌──────────────────────────────────────────────────────────┐
-│              ML Training Architecture                     │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  Data Storage          Compute              Output       │
-│  ┌──────────┐         ┌────────┐         ┌──────────┐   │
-│  │ S3/GCS   │ ──────► │  GPU   │ ──────► │  Model   │   │
-│  │ Dataset  │         │Instance│         │  Storage │   │
-│  │  (1TB)   │         │Training│         │  (S3/GCS)│   │
-│  └──────────┘         └────────┘         └──────────┘   │
-│       │                    │                   │         │
-│       │                    ↓                   │         │
-│       │              ┌────────┐                │         │
-│       │              │Metrics │                │         │
-│       │              │Tracking│                │         │
-│       │              │(MLflow)│                │         │
-│       │              └────────┘                │         │
-│       │                                        │         │
-│       └────────────── Clean up ───────────────┘         │
-│                                                           │
-└──────────────────────────────────────────────────────────┘
-
-Components:
-1. Data Storage: S3/GCS bucket with versioned datasets
-2. Training Instance: GPU instance (p3.2xlarge, n1-highmem-8)
-3. Experiment Tracking: MLflow on separate instance
-4. Model Registry: Versioned models in object storage
-5. Monitoring: CloudWatch/Stackdriver for GPU utilization
+```mermaid
+flowchart LR
+    A["S3/GCS<br/>Dataset (1TB)"] -->|train| B["GPU Instance<br/>Training"]
+    B --> C["Model Storage<br/>(S3/GCS)"]
+    B --> D["Metrics Tracking<br/>(MLflow)"]
+    A -.->|clean up after run| E["Auto-shutdown"]
+    C -.->|clean up after run| E
 ```
 
-**Key Considerations:**
-- Use spot instances for cost savings (up to 90% off)
-- Implement checkpointing for fault tolerance
-- Auto-shutdown after training completes
-- Version datasets and models
+- Use spot instances (up to 90% cheaper) with checkpointing for fault tolerance
+- Auto-shutdown after the job completes; version both datasets and models
 - Track experiments with MLflow/W&B
 
-**Cost Estimation:**
-```
-Training Job (ResNet-50 on ImageNet):
-- GPU Instance (p3.2xlarge): $3.06/hour
-- Training Time: 24 hours
-- Storage (1TB dataset): $20/month
-- Data Transfer: $50
-──────────────────────────────────────
-Total: ~$150 per training run
+| Cost driver (ResNet-50 / ImageNet, 24h) | Amount |
+|---|---|
+| GPU instance (p3.2xlarge) | $3.06/hr |
+| Storage (1TB dataset) | $20/mo |
+| Data transfer | $50 |
+| **Total per run** | **~$150** |
+
+### Inference
+
+```mermaid
+flowchart LR
+    U["Users"] --> LB["Load Balancer"]
+    LB --> CDN["CDN Cache"]
+    LB --> INF["Inference Instances<br/>(Auto-scaled)"]
+    LB --> MET["Metrics<br/>(Prometheus/Grafana)"]
+    INF --> MS["Model Storage<br/>(S3/GCS)"]
 ```
 
-### Pattern 2: Inference Architecture
+- Auto-scale for variable load; cache at multiple levels (CDN, Redis)
+- Monitor p50/p95/p99 latency; use circuit breakers
 
-```
-┌──────────────────────────────────────────────────────────┐
-│             ML Inference Architecture                     │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  ┌────────┐       ┌──────────┐       ┌────────────┐     │
-│  │  CDN   │       │   Load   │       │  Inference │     │
-│  │ Cache  │ ◄───  │ Balancer │  ───► │  Instances │     │
-│  └────────┘       └──────────┘       │  (Auto-    │     │
-│                         │             │   scaled)  │     │
-│                         │             └────────────┘     │
-│                         │                   │            │
-│                         ↓                   ↓            │
-│                   ┌──────────┐       ┌────────────┐     │
-│                   │  Metrics │       │   Model    │     │
-│                   │ (Prom/   │       │  Storage   │     │
-│                   │  Stack)  │       │  (S3/GCS)  │     │
-│                   └──────────┘       └────────────┘     │
-│                                                           │
-└──────────────────────────────────────────────────────────┘
+| Cost driver (1M requests/mo) | Amount |
+|---|---|
+| Load balancer | $18/mo |
+| Compute (3x t3.medium) | $90/mo |
+| Data transfer | $80/mo |
+| CDN | $40/mo |
+| **Total** | **~$230/mo** |
 
-Components:
-1. CDN: Cache responses at edge locations
-2. Load Balancer: Distribute traffic, SSL termination
-3. Auto-Scaling Group: 2-10 instances based on load
-4. Model Storage: Versioned models in S3/GCS
-5. Monitoring: Prometheus + Grafana or CloudWatch
-6. Caching: Redis for frequent predictions
+### Data Pipeline
+
+```mermaid
+flowchart LR
+    A["API / Stream<br/>Ingestion"] --> B["Spark / Airflow<br/>Processing"]
+    B --> C["Data Lake<br/>(S3/GCS)"]
+    A --> D["Transform Jobs"]
+    D --> E["Feature Store"]
+    C --> E
 ```
 
-**Key Considerations:**
-- Use auto-scaling for variable load
-- Implement caching at multiple levels
-- Use CDN for static assets
-- Monitor latency (p50, p95, p99)
-- Implement circuit breakers
-
-**Cost Estimation:**
-```
-Inference Service (1M requests/month):
-- Load Balancer: $18/month
-- Compute (3x t3.medium): $90/month
-- Data Transfer: $80/month
-- CDN: $40/month
-──────────────────────────────────────
-Total: ~$230/month
-```
-
-### Pattern 3: Data Pipeline Architecture
-
-```
-┌──────────────────────────────────────────────────────────┐
-│              Data Pipeline Architecture                   │
-├──────────────────────────────────────────────────────────┤
-│                                                           │
-│  Ingestion         Processing        Storage             │
-│  ┌─────────┐       ┌─────────┐     ┌─────────┐          │
-│  │ API/    │ ───► │ Spark/  │ ──► │  Data   │          │
-│  │ Stream  │       │ Airflow │     │  Lake   │          │
-│  └─────────┘       └─────────┘     │ (S3/GCS)│          │
-│       │                 │           └─────────┘          │
-│       │                 │                 │              │
-│       │                 ↓                 ↓              │
-│       │           ┌─────────┐       ┌─────────┐         │
-│       │           │Transform│       │ Feature │         │
-│       │           │  Jobs   │       │  Store  │         │
-│       │           └─────────┘       └─────────┘         │
-│       │                                   │              │
-│       └──────────────────────────────────┘              │
-│                                                           │
-└──────────────────────────────────────────────────────────┘
-```
+---
 
 ## Architecture Design Principles
 
-### 1. High Availability
+### High Availability
 
-**Definition:** System remains operational even when components fail
+Multi-AZ deployment removes the single-AZ outage as a point of failure:
 
-**Strategies:**
-- **Multi-AZ Deployment**: Distribute across availability zones
-- **Load Balancing**: Distribute traffic across instances
-- **Health Checks**: Automatic failover to healthy instances
-- **Redundancy**: Multiple instances of critical components
-
-**Example:**
+```mermaid
+flowchart TB
+    LB1["Load Balancer"] --> AZ1["AZ-1: 2 VMs"]
 ```
-Single AZ (99.5% uptime):
-┌──────────────┐
-│ Load Balancer│
-└──────┬───────┘
-       │
-   ┌───┴───────┐
-   │  2 VMs    │  (Single point of failure: AZ outage)
-   │ (Same AZ) │
-   └───────────┘
+Single AZ ≈ 99.5% uptime — one zone going down takes the service with it.
 
-Multi-AZ (99.99% uptime):
-┌──────────────┐
-│ Load Balancer│
-└──────┬───────┘
-       │
-   ┌───┴────────────────┐
-   │                    │
-┌──┴────┐          ┌────┴──┐
-│ AZ-1  │          │ AZ-2  │
-│ 2 VMs │          │ 2 VMs │
-└───────┘          └───────┘
+```mermaid
+flowchart TB
+    LB2["Load Balancer"] --> AZa["AZ-1: 2 VMs"]
+    LB2 --> AZb["AZ-2: 2 VMs"]
 ```
+Multi-AZ ≈ 99.99% uptime — traffic fails over automatically.
 
-### 2. Scalability
+### Scalability
 
-**Vertical Scaling (Scale Up)**
-- Increase instance size (more CPU/RAM/GPU)
-- Simpler but has limits
-- Requires restart
+- **Vertical** (bigger instance): simple, but capped by max instance size, needs a restart
+- **Horizontal** (more instances): effectively unlimited, no downtime
 
-**Horizontal Scaling (Scale Out)**
-- Add more instances
-- Unlimited scaling potential
-- No downtime
-
-**Auto-Scaling Example:**
 ```yaml
-# AWS Auto Scaling Configuration
-MinSize: 2              # Minimum instances
-MaxSize: 10             # Maximum instances
-DesiredCapacity: 3      # Initial instances
-TargetCPU: 70%          # Scale when CPU > 70%
-
-Scaling Policies:
-- Scale Up: Add 2 instances when CPU > 70% for 5 minutes
-- Scale Down: Remove 1 instance when CPU < 30% for 10 minutes
+MinSize: 2              # floor
+MaxSize: 10              # ceiling
+DesiredCapacity: 3
+TargetCPU: 70%           # scale up when CPU > 70% for 5 min; down when < 30% for 10 min
 ```
 
-### 3. Cost Optimization
+### Cost Optimization
 
-**Right-Sizing**
-- Start small, scale up as needed
-- Monitor actual usage
-- Avoid over-provisioning
+| Lever | Applies To | Typical Savings |
+|---|---|---|
+| Spot instances | Training, batch (can be reclaimed with ~2 min notice) | up to 90% |
+| Storage lifecycle (archive old data) | Cold data | up to 50% |
+| Reserved instances (1yr/3yr commitment) | Steady production | up to 40–60% |
+| Auto-scaling | Variable load | up to 40% |
+| Right-sizing | Any workload | up to 30% |
+| Data transfer optimization | Cross-region/egress | up to 20% |
 
-**Reserved Instances**
-- 1-year: ~40% savings
-- 3-year: ~60% savings
-- Good for steady workloads
+### Security — Defense in Depth
 
-**Spot Instances**
-- 70-90% savings
-- Can be terminated with 2-minute notice
-- Perfect for training, batch processing
+| Layer | Controls |
+|---|---|
+| Network | VPC, subnets, firewalls |
+| Access | IAM, RBAC, MFA |
+| Data | Encryption at rest & in transit |
+| Application | Input validation |
+| Monitoring | Logs, alerts, audit |
 
-**Cost Optimization Hierarchy:**
-```
-1. Spot Instances (Training, Batch)       90% savings
-2. Reserved Instances (Production)        60% savings
-3. Auto-Scaling (Variable load)           40% savings
-4. Right-Sizing (Match actual needs)      30% savings
-5. Storage Lifecycle (Archive old data)   50% savings
-6. Data Transfer Optimization             20% savings
-```
+Principle of least privilege, network isolation, and automated patching apply across every layer.
 
-### 4. Security
+### Observability
 
-**Defense in Depth:**
-```
-┌────────────────────────────────────────────────┐
-│ Layer 1: Network (VPC, Subnets, Firewalls)    │
-│ Layer 2: Access (IAM, RBAC, MFA)              │
-│ Layer 3: Data (Encryption at rest & transit)  │
-│ Layer 4: Application (Input validation)       │
-│ Layer 5: Monitoring (Logs, alerts, audit)     │
-└────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    App["Application"] --> M["Metrics"] --> Prom["Prometheus"] --> Graf["Grafana"]
+    App --> L["Logs"] --> ELK["ELK Stack"] --> Kib["Kibana"]
+    App --> T["Traces"] --> Jae["Jaeger"] --> UI["UI"]
 ```
 
-**Best Practices:**
-- Principle of least privilege
-- Encrypt data at rest and in transit
-- Network isolation (private subnets)
-- Regular security audits
-- Automated patching
+Metrics answer "how much/how fast," logs answer "what happened," traces answer "where did this request go."
 
-### 5. Observability
+---
 
-**Three Pillars:**
-1. **Metrics**: Quantitative measurements (CPU, latency, errors)
-2. **Logs**: Event records for debugging
-3. **Traces**: Request flow through system
-
-**Monitoring Stack:**
-```
-Application ──► Metrics   ──► Prometheus ──► Grafana
-            │
-            ├─► Logs      ──► ELK Stack  ──► Kibana
-            │
-            └─► Traces    ──► Jaeger     ──► UI
-```
-
-## Architecting for ML Workloads
-
-### Training vs Inference Architecture
+## Training vs. Inference
 
 | Aspect | Training | Inference |
 |--------|----------|-----------|
-| **Compute** | GPU-heavy, spot instances | CPU, auto-scaling |
-| **Storage** | High-throughput (EBS/Persistent SSD) | Low-latency (caching) |
-| **Network** | Internal only | Public-facing, CDN |
-| **Cost Model** | Temporary (hours/days) | Continuous (24/7) |
-| **Optimization** | Throughput | Latency |
-| **Scaling** | Vertical (bigger GPU) | Horizontal (more instances) |
+| Compute | GPU-heavy, spot instances | CPU, auto-scaling |
+| Storage | High-throughput (SSD) | Low-latency (caching) |
+| Network | Internal only | Public-facing, CDN |
+| Cost model | Temporary (hours/days) | Continuous (24/7) |
+| Optimize for | Throughput | Latency |
+| Scaling direction | Vertical (bigger GPU) | Horizontal (more instances) |
 
-### Data Flow Architecture
-
+```mermaid
+flowchart LR
+    A["Ingestion<br/><small>S3/GCS, Kinesis, Kafka</small>"] --> B["Preprocessing<br/><small>Spark/EMR, Airflow, Glue</small>"]
+    B --> C["Training<br/><small>GPU VMs, Spot/Reserved</small>"]
+    C --> D["Evaluation<br/><small>MLflow, W&B, TensorBoard</small>"]
+    D --> E["Deployment<br/><small>K8s/ECS, Fargate</small>"]
+    E --> F["Monitoring<br/><small>Prometheus, CloudWatch</small>"]
 ```
-Data Ingestion → Preprocessing → Training → Evaluation → Deployment → Monitoring
-       ↓              ↓              ↓           ↓            ↓           ↓
-   S3/GCS        Spark/EMR      GPU VMs     MLflow      K8s/ECS    Prometheus
-   Kinesis       Airflow        Spot         W&B         ECS         CloudWatch
-   Kafka         Glue           Reserved     TensorB     Fargate     Grafana
-```
 
-## Practical Exercise: Design an ML Architecture
+---
 
-### Scenario
+## Practical Exercise
+
 Design a cloud architecture for an image classification service:
 
-**Requirements:**
-- 1 million predictions per day
-- 99.9% availability
-- < 500ms latency (p95)
-- Global user base
-- $500/month budget
-- Support model updates without downtime
+**Requirements:** 1M predictions/day · 99.9% availability · <500ms p95 latency · global users · $500/mo budget · zero-downtime model updates.
 
-### Your Task
+Sketch your own answer (compute, storage, networking, cost, HA plan) before expanding the solution.
 
-1. **Choose compute resources:**
-   - How many instances?
-   - What instance types?
-   - Auto-scaling strategy?
+<details>
+<summary><strong>Sample Solution</strong></summary>
 
-2. **Design storage:**
-   - Where to store models?
-   - How to version them?
-   - Caching strategy?
-
-3. **Plan networking:**
-   - Load balancer configuration?
-   - CDN usage?
-   - Multi-region deployment?
-
-4. **Estimate costs:**
-   - Compute costs
-   - Storage costs
-   - Network costs
-   - Total monthly cost
-
-5. **Plan for high availability:**
-   - Multi-AZ deployment?
-   - Health checks?
-   - Failover strategy?
-
-### Sample Solution
-
-**Architecture:**
-```
-Global Users
-     │
-     ↓
-┌────────────┐
-│ CloudFront │ (CDN, caching)
-│   (CDN)    │
-└─────┬──────┘
-      │
-      ↓
-┌─────────────┐
-│ Application │ (SSL termination, routing)
-│Load Balancer│
-└─────┬───────┘
-      │
-   ┌──┴──────────┐
-   │             │
-┌──┴───┐    ┌───┴──┐
-│ AZ-1 │    │ AZ-2 │
-│ 2x   │    │ 2x   │
-│ t3.  │    │ t3.  │
-│medium│    │medium│
-└──┬───┘    └───┬──┘
-   │            │
-   └─────┬──────┘
-         │
-    ┌────┴────┐
-    │ S3/GCS  │ (Model storage)
-    │ (Models)│
-    └─────────┘
+```mermaid
+flowchart TB
+    U["Global Users"] --> CDN["CloudFront CDN"]
+    CDN --> ALB["App Load Balancer<br/>(SSL, routing)"]
+    ALB --> AZ1["AZ-1: 2x t3.medium"]
+    ALB --> AZ2["AZ-2: 2x t3.medium"]
+    AZ1 --> S3["S3/GCS<br/>(versioned models)"]
+    AZ2 --> S3
 ```
 
-**Cost Breakdown:**
-```
-Load Balancer:           $18/month
-CloudFront (CDN):        $50/month (1M requests)
-Compute (4x t3.medium):  $120/month
-S3 Storage (10GB):       $0.23/month
-Data Transfer:           $80/month
-Monitoring:              $30/month
-────────────────────────────────────
-Total:                   ~$298/month (Under budget!)
-```
+| Item | Cost |
+|---|---|
+| Load balancer | $18/mo |
+| CloudFront (1M requests) | $50/mo |
+| Compute (4x t3.medium) | $120/mo |
+| S3 storage (10GB) | $0.23/mo |
+| Data transfer | $80/mo |
+| Monitoring | $30/mo |
+| **Total** | **~$298/mo** (under budget) |
 
-**Scaling Strategy:**
-```
-Normal Load (0-6am):    2 instances
-Peak Load (12-8pm):     4-6 instances
-High Load (events):     8-10 instances
-```
+Scaling: 2 instances off-peak, 4–6 at peak, 8–10 during traffic spikes.
+
+**Why it meets the requirements:** multi-AZ + health checks cover 99.9% availability; CDN + small instances keep p95 latency low; new models land in S3 and roll out behind a health-checked deploy for zero downtime; CDN edge locations serve global users without a multi-region deployment.
+
+</details>
+
+---
 
 ## Key Architecture Decisions
 
-### 1. Region Selection
+**Region:** pick by user location (latency), data residency rules, and cost — e.g., US → us-east-1/us-west-2, EU → eu-west-1/eu-central-1, Asia → ap-southeast-1/ap-northeast-1.
 
-**Factors:**
-- User location (latency)
-- Data residency requirements
-- Service availability
-- Cost (varies by region)
+**Instance sizing:**
 
-**Example:**
-```
-US Users:      us-east-1 (Virginia) or us-west-2 (Oregon)
-EU Users:      eu-west-1 (Ireland) or eu-central-1 (Frankfurt)
-Asia Users:    ap-southeast-1 (Singapore) or ap-northeast-1 (Tokyo)
-```
+| Model Size | Serving (CPU) | Training (GPU) |
+|---|---|---|
+| Small | t3.medium (2 vCPU, 4GB) | g4dn.xlarge (1x T4) |
+| Medium | c5.xlarge (4 vCPU, 8GB) | p3.2xlarge (1x V100) |
+| Large | c5.4xlarge (16 vCPU, 32GB) | p3.8xlarge (4x V100) |
 
-### 2. Instance Selection
+**Storage tiering:** hot data (S3/SSD/Redis) for frequent access → warm (Infrequent Access) for occasional access → cold (Glacier + lifecycle policies) for archives.
 
-**CPU-Based (Model Serving):**
-- Small model: t3.medium (2 vCPU, 4GB)
-- Medium model: c5.xlarge (4 vCPU, 8GB)
-- Large model: c5.4xlarge (16 vCPU, 32GB)
+---
 
-**GPU-Based (Training):**
-- Small model: g4dn.xlarge (1x T4, 4 vCPU)
-- Medium model: p3.2xlarge (1x V100, 8 vCPU)
-- Large model: p3.8xlarge (4x V100, 32 vCPU)
+## Deployment Patterns
 
-### 3. Storage Strategy
+**Lambda Architecture** — combine a real-time stream with periodic batch retraining:
 
-**Hot Data** (accessed frequently):
-- Standard S3/GCS
-- SSD-backed block storage
-- In-memory caching (Redis)
-
-**Warm Data** (accessed occasionally):
-- Infrequent Access storage class
-- Standard block storage
-
-**Cold Data** (archived):
-- Glacier/Archive storage
-- Lifecycle policies
-
-## Common Architecture Patterns
-
-### Pattern: Lambda Architecture
-
-```
-Real-time Layer:    Stream processing → Serving Layer
-                    (Kafka/Kinesis)
-                           │
-Batch Layer:        ─────────► Model Training
-                    Historical Data
+```mermaid
+flowchart LR
+    subgraph Realtime["Real-time Layer"]
+        RT["Stream processing<br/>(Kafka/Kinesis)"]
+    end
+    subgraph Batch["Batch Layer"]
+        BT["Historical Data"] --> MT["Model Training"]
+    end
+    RT --> SL["Serving Layer"]
+    MT --> SL
 ```
 
-Use for: Real-time predictions with periodic retraining
+**Microservices** — independent scaling for multiple models:
 
-### Pattern: Microservices
-
-```
-API Gateway
-    │
-    ├─► Preprocessing Service
-    ├─► Model Service A (v1)
-    ├─► Model Service B (v2)
-    └─► Post-processing Service
+```mermaid
+flowchart LR
+    GW["API Gateway"] --> P["Preprocessing Service"]
+    GW --> A["Model Service A (v1)"]
+    GW --> B["Model Service B (v2)"]
+    GW --> Post["Post-processing Service"]
 ```
 
-Use for: Multiple models, independent scaling
+**Monolith** — simplest option, good for getting started: a single application handling API endpoints, inference, pre/post-processing, and monitoring together.
 
-### Pattern: Monolith
-
-```
-Single Application
-├─ API endpoints
-├─ Model inference
-├─ Pre/post processing
-└─ Monitoring
-```
-
-Use for: Simple use cases, getting started
+---
 
 ## Key Takeaways
 
-1. **Three pillars**: Compute, Storage, Network
-2. **Training ≠ Inference**: Different architectures for different workloads
-3. **High Availability**: Multi-AZ, load balancing, health checks
-4. **Cost Optimization**: Spot instances, auto-scaling, right-sizing
-5. **Security**: Defense in depth, principle of least privilege
-6. **Observability**: Metrics, logs, traces
-7. **Design for failure**: Assume components will fail
-8. **Start simple**: Add complexity as needed
+1. Three pillars: compute, storage, network
+2. Training ≠ inference — different architectures, different optimization targets
+3. High availability comes from multi-AZ + load balancing + health checks
+4. Cost optimization: spot instances, auto-scaling, right-sizing
+5. Security: defense in depth, least privilege
+6. Observability: metrics, logs, traces
+7. Design for failure; start simple and add complexity as needed
 
-## Self-Check Questions
-
-1. What are the three pillars of cloud architecture?
-2. When would you use object storage vs block storage?
-3. What's the difference between vertical and horizontal scaling?
-4. Why use spot instances for training but not serving?
-5. What are the three pillars of observability?
-6. How does multi-AZ deployment improve availability?
-7. What's the cost difference between reserved and on-demand instances?
+---
 
 ## Additional Resources
 
@@ -587,4 +318,4 @@ Use for: Simple use cases, getting started
 
 ---
 
-**Next Lesson:** [02-aws-ml-infrastructure.md](./02-aws-ml-infrastructure.md) - Deep dive into AWS
+**Next Lesson:** [02-aws-ml-infrastructure.md](./02-aws-ml-infrastructure.md) — Deep dive into AWS

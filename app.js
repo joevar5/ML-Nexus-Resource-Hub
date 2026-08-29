@@ -1302,6 +1302,12 @@ function addCopyButtons() {
 }
 
 // ── Zoom Lightbox for Images & Mermaid Diagrams ──
+// initZoomLightbox() is called again after every lesson navigation (to bind the
+// magnifier to that page's images/diagrams), so the one-time page-chrome listeners
+// (close button, wheel zoom, drag-to-pan, Escape) are guarded to attach only once —
+// otherwise they'd pile up and fire multiple times per action after a few navigations.
+let zoomLightboxGlobalInitialized = false;
+
 function initZoomLightbox() {
     const lightbox = document.getElementById('zoom-lightbox');
     const contentWrap = document.getElementById('zoom-lightbox-content');
@@ -1311,6 +1317,12 @@ function initZoomLightbox() {
     const LENS_SIZE = 180;
     let scale = 1, translateX = 0, translateY = 0;
     let isDragging = false, startX = 0, startY = 0;
+
+    // #mag-lens lives outside #markdown-content, so it survives lesson navigation.
+    // If the mouse was hovering a diagram when the page navigated away, the hovered
+    // element got wiped by innerHTML replacement without ever firing 'mouseleave',
+    // leaving the lens stuck active. Reset it defensively on every (re)init.
+    magLens.classList.remove('active');
 
     function applyTransform() {
         contentWrap.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
@@ -1410,6 +1422,24 @@ function initZoomLightbox() {
         svg.style.cursor = 'none';
         attachMagnifier(svg);
     });
+
+    // ── Self-healing watchdog ──
+    // Catches every other way the lens can be left stuck: Mermaid re-rendering a
+    // diagram in place (e.g. on theme toggle), the mouse leaving the browser window
+    // entirely, or any future DOM-swap that removes a hovered element without firing
+    // 'mouseleave'. Runs continuously but is a no-op unless the lens is visible.
+    document.addEventListener('mousemove', (e) => {
+        if (!magLens.classList.contains('active')) return;
+        const overZoomable = e.target.closest && e.target.closest('#markdown-content img, #markdown-content .mermaid svg');
+        if (!overZoomable) magLens.classList.remove('active');
+    });
+    document.addEventListener('mouseleave', () => magLens.classList.remove('active'));
+
+    // The page chrome below (close button, Escape, zoom buttons, wheel, drag-to-pan)
+    // targets elements that live outside #markdown-content and are never recreated,
+    // so it only needs to be wired up once across the whole session.
+    if (zoomLightboxGlobalInitialized) return;
+    zoomLightboxGlobalInitialized = true;
 
     // Close lightbox
     document.getElementById('zoom-close').addEventListener('click', closeLightbox);
@@ -2107,6 +2137,10 @@ async function loadFile(filePath) {
                 parsedHtml = parsedHtml.replace(`%%MATH_BLOCK_${index}%%`, original);
             });
 
+            // If the mouse is hovering a diagram/image when navigation happens, the
+            // replacement below removes it without firing 'mouseleave' — hide the
+            // magnifier lens immediately rather than leaving it stuck on screen.
+            document.getElementById('mag-lens')?.classList.remove('active');
             markdownContentDiv.innerHTML = parsedHtml;
 
             // Convert mermaid code blocks into renderable <pre class="mermaid"> elements

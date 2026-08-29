@@ -1,176 +1,87 @@
 # Lesson 04: Azure for ML Infrastructure
 
-**Duration:** 6 hours
-**Difficulty:** Intermediate
-**Prerequisites:** Lesson 01-03 (Cloud Architecture, AWS, GCP)
+## Lesson Overview
 
-## Learning Objectives
+Microsoft Azure is the cloud platform most tightly integrated with the Microsoft ecosystem, and it's the only major cloud with exclusive first-party access to OpenAI's models via Azure OpenAI. Like AWS and GCP, its ML offering is layered — data services underpin compute, compute underpins the managed ML and cognitive services teams build on day-to-day — but Azure's differentiators are enterprise governance (Azure AD, RBAC, compliance certifications) and hybrid-cloud reach through Azure Arc. The tradeoff is that Azure can run more expensive than AWS/GCP for equivalent raw compute, and it doesn't offer specialized ML hardware like TPUs.
 
-By the end of this lesson, you will be able to:
-
-1. **Set up and secure** an Azure account with proper identity management
-2. **Deploy and manage** Virtual Machines for ML workloads
-3. **Use Azure Blob Storage** for datasets and models
-4. **Deploy models** on Azure Kubernetes Service (AKS)
-5. **Leverage Azure Machine Learning** for managed ML workflows
-6. **Integrate Azure OpenAI** services into applications
-7. **Configure networking** for secure ML infrastructure
-8. **Optimize costs** using Azure pricing models
+By the end of this lesson you will be able to set up and secure an Azure account with Azure AD/RBAC, provision VMs (including GPU and Spot) for ML workloads, use Blob Storage for datasets and models, deploy models on AKS, run training and deployment through Azure Machine Learning, call Azure OpenAI from an application, configure a VNet for secure ML infrastructure, and apply Azure's core cost-optimization levers.
 
 ---
 
 ## Table of Contents
-
-1. [Introduction to Azure for ML](#introduction-to-azure-for-ml)
-2. [Azure Account Setup and Identity Management](#azure-account-setup-and-identity-management)
-3. [Virtual Machines for ML](#virtual-machines-for-ml)
-4. [Azure Blob Storage](#azure-blob-storage)
-5. [Azure Kubernetes Service (AKS)](#azure-kubernetes-service-aks)
-6. [Azure Machine Learning](#azure-machine-learning)
-7. [Azure OpenAI Service](#azure-openai-service)
-8. [Azure Networking](#azure-networking)
-9. [Cost Optimization](#cost-optimization)
-10. [Hands-on Exercise](#hands-on-exercise)
-
----
-
-## Introduction to Azure for ML
-
-Microsoft Azure offers a comprehensive set of services for ML infrastructure:
-
-- **Enterprise focus**: Strong integration with Microsoft ecosystem
-- **Azure OpenAI**: Exclusive access to GPT-4, GPT-3.5, DALL-E
-- **Hybrid cloud**: Seamless on-premises integration with Azure Arc
-- **Azure ML**: End-to-end managed ML platform
-- **Strong compliance**: GDPR, HIPAA, SOC certifications
-- **Global presence**: 60+ regions worldwide
-
-### Azure ML Ecosystem
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                      Azure ML Ecosystem                          │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Data Services        Compute              ML Services          │
-│  ─────────────        ───────              ───────────          │
-│  Blob Storage    →    Virtual Machines →   Azure ML Studio     │
-│  Data Lake       →    AKS              →   Cognitive Services  │
-│  SQL Database    →    Azure Batch      →   Azure OpenAI       │
-│                                                                  │
-│  Infrastructure       Networking           Monitoring           │
-│  ──────────────       ──────────           ──────────           │
-│  Resource Groups      VNet                 Azure Monitor       │
-│  Subscriptions        Load Balancer        Application Insights│
-│  Management Groups    CDN                  Log Analytics       │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-### When to Choose Azure for ML
-
-**Choose Azure when:**
-- You're in a Microsoft-centric organization
-- You need Azure OpenAI (GPT-4, ChatGPT)
-- You require strong hybrid cloud capabilities
-- You need enterprise compliance and governance
-- You want tight integration with Office 365, Teams, Power BI
-
-**Consider alternatives when:**
-- You're already heavily invested in AWS/GCP
-- You need more specialized ML hardware (TPUs)
-- You prefer open-source-first ecosystems
-- Cost is primary concern (Azure can be more expensive)
+1. [Azure Account Setup and Identity Management](#1-azure-account-setup-and-identity-management)
+2. [Virtual Machines for ML](#2-virtual-machines-for-ml)
+3. [Azure Blob Storage](#3-azure-blob-storage)
+4. [Azure Kubernetes Service (AKS)](#4-azure-kubernetes-service-aks)
+5. [Azure Machine Learning](#5-azure-machine-learning)
+6. [Azure OpenAI Service](#6-azure-openai-service)
+7. [Azure Networking](#7-azure-networking)
+8. [Cost Optimization](#8-cost-optimization)
+9. [Putting It All Together: ML Serving Architecture](#9-putting-it-all-together-ml-serving-architecture)
+10. [Key Takeaways](#10-key-takeaways)
+11. [What's Next?](#whats-next)
+12. [Further Reading](#further-reading)
 
 ---
 
-## Azure Account Setup and Identity Management
+## 1. Azure Account Setup and Identity Management
 
-### Creating an Azure Account
+Every Azure resource lives under a subscription, and every action taken against it is authorized through Azure AD identities and RBAC role assignments. Setting these up correctly — a funded subscription, a secured sign-in, and scoped roles instead of blanket Owner access — is the same "get the foundation right first" step covered for AWS's IAM and GCP's IAM, just under Azure's own naming.
 
-1. **Sign up for Azure**:
-   - Visit: https://azure.microsoft.com/free/
-   - Get **$200 credit** valid for 30 days
-   - 12 months of popular services free
-   - 55+ always-free services
+### 1.1 Creating an Azure Account
 
-2. **Free tier benefits**:
-   ```
-   Compute:
-   - 750 hours B1S VM (Linux/Windows) per month
-   - 1M Azure Functions requests
-   - 20 compute hours Azure Container Instances
+Sign up at https://azure.microsoft.com/free/ for a **$200 credit** valid for 30 days, 12 months of popular services free, and 55+ always-free services.
 
-   Storage:
-   - 5 GB Blob Storage (Hot tier)
-   - 5 GB File Storage
-   - 2 million reads, 2 million writes
+**Free tier highlights:**
 
-   Databases:
-   - 250 GB SQL Database
-   - 5 GB Cosmos DB
+| Category | Includes |
+|---|---|
+| Compute | 750 hrs/mo B1S VM (Linux/Windows), 1M Azure Functions requests, 20 compute hrs Azure Container Instances |
+| Storage | 5 GB Blob Storage (Hot tier), 5 GB File Storage, 2M reads / 2M writes |
+| Databases | 250 GB SQL Database, 5 GB Cosmos DB |
+| Machine Learning | Azure ML compute hours (varied), 5,000 transactions Cognitive Services |
 
-   Machine Learning:
-   - Azure ML compute hours (varied)
-   - 5,000 transactions Cognitive Services
-   ```
+**Install and configure the Azure CLI:**
 
-3. **Install Azure CLI**:
-   ```bash
-   # macOS
-   brew install azure-cli
+```bash
+# macOS
+brew install azure-cli
 
-   # Linux
-   curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+# Linux
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-   # Windows
-   # Download from: https://aka.ms/installazurecliwindows
+# Windows: download from https://aka.ms/installazurecliwindows
 
-   # Verify installation
-   az --version
+az --version
+az login
 
-   # Login
-   az login
-
-   # Set subscription (if you have multiple)
-   az account list --output table
-   az account set --subscription "My Subscription"
-   ```
-
-### Azure Active Directory (Azure AD)
-
-Azure uses **Azure Active Directory** for identity and access management.
-
-#### Key Concepts
-
-```
-┌────────────────────────────────────────────────────────┐
-│              Azure AD Hierarchy                        │
-├────────────────────────────────────────────────────────┤
-│                                                        │
-│  Tenant (Organization)                                 │
-│    ├── Subscription 1                                  │
-│    │     ├── Resource Group A                          │
-│    │     │     ├── Virtual Machine                     │
-│    │     │     └── Storage Account                     │
-│    │     └── Resource Group B                          │
-│    │           └── AKS Cluster                         │
-│    └── Subscription 2                                  │
-│          └── Resource Group C                          │
-│                └── Azure ML Workspace                  │
-│                                                        │
-└────────────────────────────────────────────────────────┘
+# Set subscription (if you have multiple)
+az account list --output table
+az account set --subscription "My Subscription"
 ```
 
-#### Creating Resource Groups
+### 1.2 Azure Active Directory (Azure AD)
 
-Resource Groups are logical containers for Azure resources:
+Azure uses **Azure Active Directory** for identity and access management. It sits above the resource hierarchy: one AD tenant can own multiple subscriptions (billing boundaries), each subscription holds resource groups (logical containers), and each resource group holds the actual VMs, storage accounts, and clusters.
+
+```mermaid
+flowchart TB
+    T["Tenant (Organization)"] --> S1["Subscription 1"]
+    T --> S2["Subscription 2"]
+    S1 --> RGA["Resource Group A"]
+    S1 --> RGB["Resource Group B"]
+    RGA --> VM["Virtual Machine"]
+    RGA --> SA["Storage Account"]
+    RGB --> AKS["AKS Cluster"]
+    S2 --> RGC["Resource Group C"]
+    RGC --> AMLW["Azure ML Workspace"]
+```
+
+**Resource groups** are logical containers for Azure resources:
 
 ```bash
 # Create resource group
-az group create \
-  --name ml-infrastructure-rg \
-  --location eastus
+az group create --name ml-infrastructure-rg --location eastus
 
 # List resource groups
 az group list --output table
@@ -179,7 +90,7 @@ az group list --output table
 az group delete --name ml-infrastructure-rg --yes
 ```
 
-#### Role-Based Access Control (RBAC)
+### 1.3 Role-Based Access Control (RBAC)
 
 ```bash
 # List available roles
@@ -190,21 +101,15 @@ az role assignment create \
   --assignee user@example.com \
   --role "Contributor" \
   --scope /subscriptions/{subscription-id}/resourceGroups/ml-infrastructure-rg
-
-# Common ML roles:
-# - Contributor: Full access except granting access to others
-# - Reader: View all resources but can't make changes
-# - Owner: Full access including managing access
-# - AcrPull: Pull images from Azure Container Registry
-# - Storage Blob Data Contributor: Read, write, delete blob containers and data
 ```
 
-#### Creating Service Principals
+Common ML roles: **Contributor** (full access except granting access to others), **Reader** (view only), **Owner** (full access including managing access), **AcrPull** (pull images from Azure Container Registry), **Storage Blob Data Contributor** (read/write/delete blob containers and data).
+
+### 1.4 Service Principals
 
 Service principals are used for application authentication:
 
 ```bash
-# Create service principal
 az ad sp create-for-rbac \
   --name ml-training-sp \
   --role Contributor \
@@ -218,7 +123,6 @@ az ad sp create-for-rbac \
 #   "tenant": "xxxx-xxxx-xxxx-xxxx"
 # }
 
-# Use in applications
 export AZURE_CLIENT_ID="<appId>"
 export AZURE_CLIENT_SECRET="<password>"
 export AZURE_TENANT_ID="<tenant>"
@@ -227,44 +131,31 @@ export AZURE_SUBSCRIPTION_ID="<subscription-id>"
 
 ---
 
-## Virtual Machines for ML
+## 2. Virtual Machines for ML
 
-Azure Virtual Machines provide scalable compute for ML workloads.
+Azure Virtual Machines are the raw compute layer underneath most other options on Azure, including AKS worker nodes and the compute clusters Azure ML provisions on your behalf. Which VM series to pick depends on the workload: general-purpose D-series instances are fine for CPU inference and development, but training needs a GPU-backed NC/ND/NV-series instance.
 
-### VM Series for ML
+### 2.1 VM Series for ML
 
-#### General Purpose (D-series)
+**General purpose (D-series)** — development, small models, CPU inference:
 
-Best for: Development, small models, CPU inference
+| VM Size | vCPUs | Memory | Cost/hour |
+|---|---|---|---|
+| Standard_D4s_v3 | 4 | 16 GB | $0.192 |
+| Standard_D8s_v3 | 8 | 32 GB | $0.384 |
+| Standard_D16s_v3 | 16 | 64 GB | $0.768 |
 
-```
-┌─────────────────┬─────────┬────────────┬──────────────┐
-│ VM Size         │ vCPUs   │ Memory     │ Cost/hour    │
-├─────────────────┼─────────┼────────────┼──────────────┤
-│ Standard_D4s_v3 │ 4       │ 16 GB      │ $0.192       │
-│ Standard_D8s_v3 │ 8       │ 32 GB      │ $0.384       │
-│ Standard_D16s_v3│ 16      │ 64 GB      │ $0.768       │
-└─────────────────┴─────────┴────────────┴──────────────┘
-```
+**GPU VMs (NC/ND/NV-series)** — training, GPU inference:
 
-#### GPU VMs (NC/ND/NV-series)
+| VM Size | GPU | GPU Memory | vCPUs | Cost/hour |
+|---|---|---|---|---|
+| Standard_NC4 | 1x Tesla K80 | 12 GB | 4 | $0.90 |
+| Standard_NC6s_v3 | 1x Tesla V100 | 16 GB | 6 | $3.06 |
+| Standard_ND6s | 1x Tesla P40 | 24 GB | 6 | $2.07 |
+| Standard_ND40rs | 8x V100 | 128 GB | 40 | $24.48 |
+| Standard_NC24ads | 1x A100 | 80 GB | 24 | $3.67 |
 
-Best for: Training, GPU inference
-
-```
-┌─────────────────┬──────────────────┬────────────┬─────────┬──────────────┐
-│ VM Size         │ GPU              │ GPU Memory │ vCPUs   │ Cost/hour    │
-├─────────────────┼──────────────────┼────────────┼─────────┼──────────────┤
-│ Standard_NC4    │ 1x Tesla K80     │ 12 GB      │ 4       │ $0.90        │
-│ Standard_NC6s_v3│ 1x Tesla V100    │ 16 GB      │ 6       │ $3.06        │
-│ Standard_ND6s   │ 1x Tesla P40     │ 24 GB      │ 6       │ $2.07        │
-│ Standard_NC6s_v3│ 1x V100          │ 16 GB      │ 6       │ $3.06        │
-│ Standard_ND40rs │ 8x V100          │ 128 GB     │ 40      │ $24.48       │
-│ Standard_NC24ads│ 1x A100          │ 80 GB      │ 24      │ $3.67        │
-└─────────────────┴──────────────────┴────────────┴─────────┴──────────────┘
-```
-
-### Creating a GPU VM
+### 2.2 Creating a GPU VM
 
 ```bash
 # List available VM sizes with GPUs
@@ -280,7 +171,7 @@ az vm create \
   --generate-ssh-keys \
   --public-ip-sku Standard
 
-# SSH into VM
+# Get public IP and SSH in
 az vm show \
   --resource-group ml-infrastructure-rg \
   --name ml-training-vm \
@@ -289,22 +180,15 @@ az vm show \
   --output tsv
 
 ssh azureuser@<public-ip>
-
-# Verify GPU
 nvidia-smi
 ```
 
-### Data Science Virtual Machine (DSVM)
+### 2.3 Data Science Virtual Machine (DSVM)
 
-Azure DSVM comes pre-installed with ML frameworks:
-
-- **Frameworks**: PyTorch, TensorFlow, scikit-learn
-- **Tools**: Jupyter, VS Code, PyCharm
-- **Data tools**: Azure CLI, AzCopy, Azure Storage Explorer
-- **Development**: Git, Docker, Kubernetes tools
+Azure's DSVM images come pre-installed with ML frameworks (PyTorch, TensorFlow, scikit-learn), tools (Jupyter, VS Code, PyCharm), data tools (Azure CLI, AzCopy, Storage Explorer), and Git/Docker/Kubernetes tooling.
 
 ```bash
-# Create DSVM (Ubuntu)
+# Ubuntu DSVM
 az vm create \
   --resource-group ml-infrastructure-rg \
   --name dsvm-gpu \
@@ -313,7 +197,7 @@ az vm create \
   --admin-username azureuser \
   --generate-ssh-keys
 
-# Create DSVM (Windows)
+# Windows DSVM
 az vm create \
   --resource-group ml-infrastructure-rg \
   --name dsvm-windows \
@@ -323,12 +207,11 @@ az vm create \
   --admin-password <secure-password>
 ```
 
-### Spot VMs (Low-Priority VMs)
+### 2.4 Spot VMs
 
-Save up to **90%** with Azure Spot VMs:
+Azure Spot VMs sell unused capacity at a steep discount — up to 90% off pay-as-you-go — in exchange for Azure being able to evict the VM whenever it needs that capacity back for on-demand customers. That makes them a poor fit for anything that must stay up continuously, but a great fit for training jobs: pair a Spot VM with checkpointing and an eviction only costs you the time since the last checkpoint, not the whole job.
 
 ```bash
-# Create Spot VM
 az vm create \
   --resource-group ml-infrastructure-rg \
   --name ml-training-spot \
@@ -342,39 +225,29 @@ az vm create \
 
 # Cost comparison:
 # Regular NC6s_v3: $3.06/hour
-# Spot NC6s_v3: ~$0.30-0.60/hour (80-90% savings)
+# Spot NC6s_v3:    ~$0.30-0.60/hour (80-90% savings)
 ```
 
-### VM Startup Script
+### 2.5 VM Startup Script
 
 ```bash
-# Create startup script
 cat > startup.sh << 'EOF'
 #!/bin/bash
-
-# Update system
 apt-get update
 apt-get upgrade -y
-
-# Install Python packages
 pip install torch torchvision wandb mlflow
 
-# Download dataset
 mkdir -p /data
 azcopy copy \
   "https://mystorageaccount.blob.core.windows.net/datasets/*" \
   "/data/" \
   --recursive
 
-# Clone training repo
 git clone https://github.com/myorg/ml-training.git /home/azureuser/training
-
-# Start training
 cd /home/azureuser/training
 python train.py --data-path /data --epochs 100
 EOF
 
-# Create VM with startup script
 az vm create \
   --resource-group ml-infrastructure-rg \
   --name ml-training-auto \
@@ -385,137 +258,37 @@ az vm create \
   --generate-ssh-keys
 ```
 
-### Checkpointing for Spot VMs
+### 2.6 Checkpointing for Spot VMs
 
-```python
-import os
-import signal
-import sys
-import torch
-from azure.storage.blob import BlobServiceClient
-
-# Azure Blob Storage setup
-connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
-blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-container_client = blob_service_client.get_container_client("checkpoints")
-
-def save_checkpoint_to_blob(state, filename):
-    """Save checkpoint to Azure Blob Storage"""
-    local_path = f"/tmp/{filename}"
-    torch.save(state, local_path)
-
-    blob_client = container_client.get_blob_client(filename)
-    with open(local_path, "rb") as data:
-        blob_client.upload_blob(data, overwrite=True)
-
-    print(f"Checkpoint saved to blob: {filename}")
-    os.remove(local_path)
-
-def load_checkpoint_from_blob(filename):
-    """Load checkpoint from Azure Blob Storage"""
-    local_path = f"/tmp/{filename}"
-    blob_client = container_client.get_blob_client(filename)
-
-    if blob_client.exists():
-        with open(local_path, "wb") as f:
-            blob_data = blob_client.download_blob()
-            blob_data.readinto(f)
-
-        checkpoint = torch.load(local_path)
-        os.remove(local_path)
-        return checkpoint
-
-    return None
-
-def signal_handler(signum, frame):
-    """Handle eviction signal"""
-    print("Spot VM eviction detected, saving checkpoint...")
-    save_checkpoint_to_blob({
-        'epoch': current_epoch,
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-        'loss': current_loss,
-    }, 'checkpoint_evicted.pth')
-    sys.exit(0)
-
-# Register signal handler for Azure Spot VM eviction
-signal.signal(signal.SIGTERM, signal_handler)
-
-# Training loop with Azure Blob checkpointing
-def train_with_azure_checkpointing(model, train_loader, epochs=10):
-    # Try to resume from checkpoint
-    checkpoint = load_checkpoint_from_blob("latest.pth")
-    start_epoch = 0
-
-    if checkpoint:
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        start_epoch = checkpoint['epoch'] + 1
-        print(f"Resumed from epoch {start_epoch}")
-
-    for epoch in range(start_epoch, epochs):
-        model.train()
-
-        for batch_idx, (data, target) in enumerate(train_loader):
-            optimizer.zero_grad()
-            output = model(data)
-            loss = criterion(output, target)
-            loss.backward()
-            optimizer.step()
-
-            # Save checkpoint every 100 batches
-            if batch_idx % 100 == 0:
-                save_checkpoint_to_blob({
-                    'epoch': epoch,
-                    'batch': batch_idx,
-                    'model_state_dict': model.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'loss': loss.item(),
-                }, "latest.pth")
-
-        print(f"Epoch {epoch} completed")
-```
+Same pattern as any interruptible instance: register a `SIGTERM` handler that uploads model/optimizer state to Blob Storage (via `azure-storage-blob`) the moment Azure sends its eviction notice, and have the training script check Blob Storage for a checkpoint on startup so a replacement Spot VM resumes instead of restarting from scratch.
 
 ---
 
-## Azure Blob Storage
+## 3. Azure Blob Storage
 
-Azure Blob Storage is object storage for unstructured data.
+Azure Blob Storage is Azure's object store — the default home for datasets, model checkpoints, and training artifacts, playing the same role S3 plays on AWS. Objects (blobs) live inside **containers** within a **storage account**, and both the account's redundancy level and the blob's access tier are levers for trading cost against durability and retrieval speed.
 
-### Storage Account Types
+### 3.1 Storage Account Types
 
-```
-┌──────────────────────┬────────────────┬────────────────────────┐
-│ Performance Tier     │ Redundancy     │ Use Case               │
-├──────────────────────┼────────────────┼────────────────────────┤
-│ Standard (HDD)       │ LRS            │ Backup, archival       │
-│ Standard (HDD)       │ GRS            │ Geo-redundant backup   │
-│ Premium (SSD)        │ LRS            │ High-throughput ML     │
-└──────────────────────┴────────────────┴────────────────────────┘
+| Performance Tier | Redundancy | Use Case |
+|---|---|---|
+| Standard (HDD) | LRS | Backup, archival |
+| Standard (HDD) | GRS | Geo-redundant backup |
+| Premium (SSD) | LRS | High-throughput ML |
 
-Redundancy Options:
-- LRS (Locally Redundant): 3 copies in one datacenter
-- ZRS (Zone Redundant): 3 copies across availability zones
-- GRS (Geo-Redundant): 6 copies (3 local + 3 remote)
-- GZRS (Geo-Zone Redundant): 6 copies across zones and regions
-```
+**Redundancy options:** LRS (locally redundant, 3 copies in one datacenter), ZRS (zone redundant, 3 copies across availability zones), GRS (geo-redundant, 6 copies: 3 local + 3 remote), GZRS (geo-zone redundant, 6 copies across zones and regions).
 
-### Access Tiers and Pricing
+### 3.2 Access Tiers and Pricing
 
-```
-┌────────────────┬───────────────┬──────────────────┬────────────────┐
-│ Tier           │ Storage Cost  │ Access Cost      │ Use Case       │
-├────────────────┼───────────────┼──────────────────┼────────────────┤
-│ Hot            │ $0.0184/GB    │ Low              │ Active data    │
-│ Cool           │ $0.01/GB      │ Medium           │ <30 days       │
-│ Archive        │ $0.00099/GB   │ High             │ >180 days      │
-└────────────────┴───────────────┴──────────────────┴────────────────┘
-```
+| Tier | Storage Cost | Access Cost | Use Case |
+|---|---|---|---|
+| Hot | $0.0184/GB | Low | Active data |
+| Cool | $0.01/GB | Medium | <30 days |
+| Archive | $0.00099/GB | High | >180 days |
 
-### Creating Storage Account
+### 3.3 Creating a Storage Account
 
 ```bash
-# Create storage account
 az storage account create \
   --name mlstorageacct001 \
   --resource-group ml-infrastructure-rg \
@@ -523,23 +296,16 @@ az storage account create \
   --sku Standard_LRS \
   --kind StorageV2
 
-# Get connection string
 az storage account show-connection-string \
   --name mlstorageacct001 \
   --resource-group ml-infrastructure-rg \
   --output tsv
 
-# Create container
-az storage container create \
-  --name datasets \
-  --account-name mlstorageacct001
-
-az storage container create \
-  --name models \
-  --account-name mlstorageacct001
+az storage container create --name datasets --account-name mlstorageacct001
+az storage container create --name models --account-name mlstorageacct001
 ```
 
-### Using AzCopy for Large Files
+### 3.4 AzCopy for Large Files
 
 ```bash
 # Install AzCopy
@@ -555,16 +321,16 @@ az storage container generate-sas \
   --expiry 2024-12-31 \
   --output tsv
 
-# Upload file
+# Upload a file
 azcopy copy "model.pth" \
   "https://mlstorageacct001.blob.core.windows.net/models/model.pth?<SAS-token>"
 
-# Upload directory (parallel)
+# Upload a directory (parallel)
 azcopy copy "./datasets" \
   "https://mlstorageacct001.blob.core.windows.net/datasets?<SAS-token>" \
   --recursive
 
-# Download file
+# Download
 azcopy copy \
   "https://mlstorageacct001.blob.core.windows.net/models/model.pth?<SAS-token>" \
   "./model.pth"
@@ -575,139 +341,40 @@ azcopy sync "./local-dir" \
   --recursive
 ```
 
-### Python SDK (azure-storage-blob)
+### 3.5 Python SDK (azure-storage-blob)
 
 ```python
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
+from datetime import datetime, timedelta
 import os
 
-# Initialize client
-connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
-blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+client = BlobServiceClient.from_connection_string(os.getenv("AZURE_STORAGE_CONNECTION_STRING"))
+container = client.get_container_client("models")
 
-# Create container
-container_name = "models"
-container_client = blob_service_client.create_container(container_name)
+container.get_blob_client("resnet50-v1.pth").upload_blob(open("model.pth", "rb"), overwrite=True)
 
-# Upload file
-def upload_file_to_blob(local_file, blob_name):
-    """Upload file to Azure Blob Storage"""
-    blob_client = blob_service_client.get_blob_client(
-        container=container_name,
-        blob=blob_name
-    )
+with open("./model.pth", "wb") as f:
+    container.get_blob_client("resnet50-v1.pth").download_blob().readinto(f)
 
-    with open(local_file, "rb") as data:
-        blob_client.upload_blob(data, overwrite=True)
+for blob in container.list_blobs(name_starts_with="resnet"):
+    print(blob.name, blob.size)
 
-    print(f"Uploaded {local_file} to {blob_name}")
+# Temporary-access SAS URL (e.g. share a model without making the container public)
+sas = generate_blob_sas(
+    account_name="mlstorageacct001", container_name="models", blob_name="resnet50-v1.pth",
+    account_key=os.getenv("AZURE_STORAGE_ACCOUNT_KEY"),
+    permission=BlobSasPermissions(read=True), expiry=datetime.utcnow() + timedelta(hours=48),
+)
 
-# Upload model
-upload_file_to_blob("model.pth", "resnet50-v1.pth")
-
-# Download file
-def download_file_from_blob(blob_name, local_file):
-    """Download file from Azure Blob Storage"""
-    blob_client = blob_service_client.get_blob_client(
-        container=container_name,
-        blob=blob_name
-    )
-
-    with open(local_file, "wb") as f:
-        blob_data = blob_client.download_blob()
-        blob_data.readinto(f)
-
-    print(f"Downloaded {blob_name} to {local_file}")
-
-# Download model
-download_file_from_blob("resnet50-v1.pth", "./model.pth")
-
-# List blobs
-def list_blobs(container_name, prefix=None):
-    """List blobs in container"""
-    container_client = blob_service_client.get_container_client(container_name)
-    blobs = container_client.list_blobs(name_starts_with=prefix)
-
-    for blob in blobs:
-        print(f"Name: {blob.name}, Size: {blob.size} bytes")
-
-# List all models
-list_blobs("models", prefix="resnet")
-
-# Generate SAS URL (temporary access)
-from azure.storage.blob import generate_blob_sas, BlobSasPermissions
-from datetime import datetime, timedelta
-
-def generate_sas_url(container_name, blob_name, expiry_hours=24):
-    """Generate SAS URL for temporary access"""
-    account_name = "mlstorageacct001"
-    account_key = os.getenv("AZURE_STORAGE_ACCOUNT_KEY")
-
-    sas_token = generate_blob_sas(
-        account_name=account_name,
-        container_name=container_name,
-        blob_name=blob_name,
-        account_key=account_key,
-        permission=BlobSasPermissions(read=True),
-        expiry=datetime.utcnow() + timedelta(hours=expiry_hours)
-    )
-
-    url = f"https://{account_name}.blob.core.windows.net/{container_name}/{blob_name}?{sas_token}"
-    return url
-
-# Get temporary URL for model
-url = generate_sas_url("models", "resnet50-v1.pth", expiry_hours=48)
-print(f"Temporary URL (48 hours): {url}")
-
-# Copy blob within Azure
-def copy_blob(source_container, source_blob, dest_container, dest_blob):
-    """Copy blob within Azure Storage"""
-    source_blob_client = blob_service_client.get_blob_client(source_container, source_blob)
-    dest_blob_client = blob_service_client.get_blob_client(dest_container, dest_blob)
-
-    dest_blob_client.start_copy_from_url(source_blob_client.url)
-    print(f"Copied {source_blob} to {dest_blob}")
-
-# Promote model from staging to production
-copy_blob("staging", "resnet50-v2.pth", "production", "resnet50-latest.pth")
+# Promote a model from staging to production
+dest = client.get_blob_client("production", "resnet50-latest.pth")
+dest.start_copy_from_url(client.get_blob_client("staging", "resnet50-v2.pth").url)
 ```
 
-### Lifecycle Management
+### 3.6 Lifecycle Management
 
 ```bash
-# Create lifecycle policy (JSON)
-cat > lifecycle-policy.json << EOF
-{
-  "rules": [
-    {
-      "enabled": true,
-      "name": "move-to-cool",
-      "type": "Lifecycle",
-      "definition": {
-        "actions": {
-          "baseBlob": {
-            "tierToCool": {
-              "daysAfterModificationGreaterThan": 30
-            },
-            "tierToArchive": {
-              "daysAfterModificationGreaterThan": 90
-            },
-            "delete": {
-              "daysAfterModificationGreaterThan": 365
-            }
-          }
-        },
-        "filters": {
-          "blobTypes": ["blockBlob"],
-          "prefixMatch": ["datasets/"]
-        }
-      }
-    }
-  ]
-}
-EOF
-
-# Apply lifecycle policy
+# lifecycle-policy.json: datasets/ blobs → Cool at 30 days, Archive at 90, delete at 365
 az storage account management-policy create \
   --account-name mlstorageacct001 \
   --resource-group ml-infrastructure-rg \
@@ -716,14 +383,13 @@ az storage account management-policy create \
 
 ---
 
-## Azure Kubernetes Service (AKS)
+## 4. Azure Kubernetes Service (AKS)
 
-AKS is Azure's managed Kubernetes service for container orchestration.
+AKS is Azure's managed Kubernetes service — Azure runs and patches the control plane, you manage the worker nodes and what runs on them. It's the go-to choice on Azure for scalable, multi-model serving, since it gives you pod-level replica counts, health-checked rolling deployments, and both node- and pod-level autoscaling, the same benefits EKS provides on AWS.
 
-### Creating an AKS Cluster
+### 4.1 Creating a Cluster
 
 ```bash
-# Create AKS cluster
 az aks create \
   --resource-group ml-infrastructure-rg \
   --name ml-aks-cluster \
@@ -732,19 +398,13 @@ az aks create \
   --enable-addons monitoring \
   --generate-ssh-keys
 
-# Get credentials
-az aks get-credentials \
-  --resource-group ml-infrastructure-rg \
-  --name ml-aks-cluster
-
-# Verify
+az aks get-credentials --resource-group ml-infrastructure-rg --name ml-aks-cluster
 kubectl get nodes
 ```
 
-### Creating AKS Cluster with GPU Nodes
+### 4.2 Adding a GPU Node Pool
 
 ```bash
-# Create AKS cluster with GPU node pool
 az aks create \
   --resource-group ml-infrastructure-rg \
   --name ml-gpu-aks-cluster \
@@ -752,7 +412,6 @@ az aks create \
   --node-vm-size Standard_D4s_v3 \
   --generate-ssh-keys
 
-# Add GPU node pool
 az aks nodepool add \
   --resource-group ml-infrastructure-rg \
   --cluster-name ml-gpu-aks-cluster \
@@ -764,380 +423,110 @@ az aks nodepool add \
 # Install NVIDIA device plugin
 kubectl apply -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.14.0/nvidia-device-plugin.yml
 
-# Verify GPUs
 kubectl get nodes -o json | jq '.items[].status.capacity'
 ```
 
-### Deploying ML Model on AKS
+### 4.3 Deploying a Model
 
-```yaml
-# deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ml-model-deployment
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: ml-model
-  template:
-    metadata:
-      labels:
-        app: ml-model
-    spec:
-      containers:
-      - name: model-server
-        image: myacr.azurecr.io/ml-model:v1.0
-        ports:
-        - containerPort: 8000
-        env:
-        - name: MODEL_PATH
-          value: "https://mlstorageacct001.blob.core.windows.net/models/model.pth"
-        - name: AZURE_STORAGE_CONNECTION_STRING
-          valueFrom:
-            secretKeyRef:
-              name: azure-storage-secret
-              key: connection-string
-        resources:
-          requests:
-            cpu: 1000m
-            memory: 2Gi
-          limits:
-            cpu: 2000m
-            memory: 4Gi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 60
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 5
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ml-model-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: ml-model
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8000
-```
-
-Deploy:
-```bash
-# Create secret for Azure Storage
-kubectl create secret generic azure-storage-secret \
-  --from-literal=connection-string="<connection-string>"
-
-# Deploy
-kubectl apply -f deployment.yaml
-
-# Check status
-kubectl get deployments
-kubectl get pods
-kubectl get services
-```
-
-### GPU Deployment on AKS
-
-```yaml
-# gpu-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ml-gpu-deployment
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: ml-gpu-model
-  template:
-    metadata:
-      labels:
-        app: ml-gpu-model
-    spec:
-      nodeSelector:
-        kubernetes.io/hostname: gpu-node  # Schedule on GPU nodes
-      tolerations:
-      - key: sku
-        operator: Equal
-        value: gpu
-        effect: NoSchedule
-      containers:
-      - name: gpu-model-server
-        image: myacr.azurecr.io/ml-model-gpu:v1.0
-        resources:
-          requests:
-            nvidia.com/gpu: 1
-          limits:
-            nvidia.com/gpu: 1
-```
-
-### AKS Autoscaling
+A Deployment (3 replicas of a model-server container reading `MODEL_PATH` from Blob Storage, with a `/health` liveness probe and CPU/memory limits) plus a `LoadBalancer` Service, same shape as the GCP/AWS equivalents. Store the storage connection string as a Secret rather than a plain env var:
 
 ```bash
-# Enable cluster autoscaler
-az aks update \
-  --resource-group ml-infrastructure-rg \
-  --name ml-aks-cluster \
-  --enable-cluster-autoscaler \
-  --min-count 1 \
-  --max-count 10
+kubectl create secret generic azure-storage-secret --from-literal=connection-string="<connection-string>"
+kubectl apply -f deployment.yaml   # Deployment + Service
+kubectl get deployments; kubectl get pods; kubectl get services
+```
 
-# Horizontal Pod Autoscaler (HPA)
-kubectl autoscale deployment ml-model-deployment \
-  --cpu-percent=70 \
-  --min=2 \
-  --max=20
+**GPU deployment**: add a `nodeSelector`/`toleration` to land pods on the tainted GPU node pool, and request `nvidia.com/gpu: 1` in the container's `resources` block.
+
+### 4.5 Autoscaling
+
+```bash
+# Cluster autoscaler (nodes)
+az aks update --resource-group ml-infrastructure-rg --name ml-aks-cluster \
+  --enable-cluster-autoscaler --min-count 1 --max-count 10
+
+# Horizontal Pod Autoscaler (pods)
+kubectl autoscale deployment ml-model-deployment --cpu-percent=70 --min=2 --max=20
 ```
 
 ---
 
-## Azure Machine Learning
+## 5. Azure Machine Learning
 
-Azure Machine Learning is a comprehensive managed platform for ML workflows.
+Azure Machine Learning is Azure's purpose-built ML platform — the counterpart to AWS SageMaker. Instead of provisioning VMs and wiring up storage access yourself, you hand Azure ML a training script and a compute target, and it manages instance lifecycle, data mounting, and experiment tracking for you. It's the default choice unless you have a specific reason to manage VMs or AKS directly, since it trades some low-level control for a lot less operational overhead.
 
-### Creating Azure ML Workspace
+### 5.1 Creating a Workspace
 
 ```bash
-# Create ML workspace
 az ml workspace create \
   --name ml-workspace \
   --resource-group ml-infrastructure-rg \
   --location eastus
 
-# Get workspace details
-az ml workspace show \
-  --name ml-workspace \
-  --resource-group ml-infrastructure-rg
+az ml workspace show --name ml-workspace --resource-group ml-infrastructure-rg
 ```
 
-### Training with Azure ML
+### 5.2 Training with Azure ML
 
 ```python
 from azureml.core import Workspace, Experiment, Environment, ScriptRunConfig
 from azureml.core.compute import ComputeTarget, AmlCompute
 
-# Connect to workspace
-ws = Workspace.from_config()  # Reads from config.json
-# Or:
-ws = Workspace.get(
-    name='ml-workspace',
-    subscription_id='<subscription-id>',
-    resource_group='ml-infrastructure-rg'
-)
+ws = Workspace.from_config()
 
-# Create compute cluster
-compute_name = "gpu-cluster"
-compute_config = AmlCompute.provisioning_configuration(
-    vm_size='Standard_NC6s_v3',
-    max_nodes=4,
-    idle_seconds_before_scaledown=300
-)
-
-compute_target = ComputeTarget.create(ws, compute_name, compute_config)
+compute_target = ComputeTarget.create(ws, "gpu-cluster", AmlCompute.provisioning_configuration(
+    vm_size='Standard_NC6s_v3', max_nodes=4, idle_seconds_before_scaledown=300))
 compute_target.wait_for_completion(show_output=True)
 
-# Create environment
-env = Environment.from_conda_specification(
-    name='pytorch-env',
-    file_path='environment.yml'
-)
+env = Environment.from_conda_specification(name='pytorch-env', file_path='environment.yml')
 
-# Or use curated environment
-env = Environment.get(ws, name='AzureML-PyTorch-1.13-CUDA11.6')
-
-# Create training script config
 config = ScriptRunConfig(
-    source_directory='./src',
-    script='train.py',
-    arguments=[
-        '--data-path', ws.datasets['imagenet'].as_mount(),
-        '--epochs', 100,
-        '--batch-size', 64,
-        '--learning-rate', 0.001
-    ],
-    compute_target=compute_target,
-    environment=env
+    source_directory='./src', script='train.py',
+    arguments=['--data-path', ws.datasets['imagenet'].as_mount(), '--epochs', 100],
+    compute_target=compute_target, environment=env,
 )
 
-# Submit experiment
-experiment = Experiment(ws, 'resnet-training')
-run = experiment.submit(config)
-
-# Monitor run
+run = Experiment(ws, 'resnet-training').submit(config)
 run.wait_for_completion(show_output=True)
-
-# Download model
-run.download_file(
-    name='outputs/model.pth',
-    output_file_path='./model.pth'
-)
+run.download_file(name='outputs/model.pth', output_file_path='./model.pth')
 ```
 
-### Deploying Model with Azure ML
+### 5.3 Deploying a Model
 
 ```python
 from azureml.core.model import Model, InferenceConfig
-from azureml.core.webservice import AciWebservice, AksWebservice
+from azureml.core.webservice import AksWebservice
 
-# Register model
-model = Model.register(
-    workspace=ws,
-    model_name='resnet50',
-    model_path='./model.pth',
-    description='ResNet-50 trained on ImageNet',
-    tags={'framework': 'pytorch', 'task': 'classification'}
+model = Model.register(workspace=ws, model_name='resnet50', model_path='./model.pth')
+inference_config = InferenceConfig(entry_script='score.py', environment=env)
+
+# AksWebservice for production; AciWebservice (same call shape) for cheap ad-hoc testing
+aks_config = AksWebservice.deploy_configuration(
+    autoscale_enabled=True, autoscale_min_replicas=2, autoscale_max_replicas=10,
+    autoscale_target_utilization=70, cpu_cores=2, memory_gb=4,
 )
 
-# Create inference config
-inference_config = InferenceConfig(
-    entry_script='score.py',
-    environment=env
-)
-
-# Deploy to Azure Container Instances (ACI) - for testing
-aci_config = AciWebservice.deploy_configuration(
-    cpu_cores=2,
-    memory_gb=4,
-    auth_enabled=True
-)
-
-service = Model.deploy(
-    workspace=ws,
-    name='resnet50-aci',
-    models=[model],
-    inference_config=inference_config,
-    deployment_config=aci_config
-)
-
+service = Model.deploy(ws, 'resnet50-production', [model], inference_config, aks_config,
+                        deployment_target=ComputeTarget(ws, 'ml-aks-cluster'))
 service.wait_for_deployment(show_output=True)
 print(f"Scoring URI: {service.scoring_uri}")
-
-# Deploy to AKS - for production
-aks_target = ComputeTarget(ws, 'ml-aks-cluster')
-
-aks_config = AksWebservice.deploy_configuration(
-    autoscale_enabled=True,
-    autoscale_min_replicas=2,
-    autoscale_max_replicas=10,
-    autoscale_target_utilization=70,
-    cpu_cores=2,
-    memory_gb=4,
-    enable_app_insights=True
-)
-
-service = Model.deploy(
-    workspace=ws,
-    name='resnet50-production',
-    models=[model],
-    inference_config=inference_config,
-    deployment_config=aks_config,
-    deployment_target=aks_target
-)
-
-service.wait_for_deployment(show_output=True)
-
-# Test endpoint
-import requests
-import json
-
-headers = {'Content-Type': 'application/json'}
-headers['Authorization'] = f'Bearer {service.get_keys()[0]}'
-
-data = {'data': [[1, 2, 3, 4, 5]]}
-response = requests.post(service.scoring_uri, json=data, headers=headers)
-print(response.json())
 ```
 
-### Azure ML Pipelines
+### 5.4 Azure ML Pipelines
 
-```python
-from azureml.pipeline.core import Pipeline, PipelineData
-from azureml.pipeline.steps import PythonScriptStep
-
-# Define pipeline data
-processed_data = PipelineData('processed', datastore=ws.get_default_datastore())
-trained_model = PipelineData('model', datastore=ws.get_default_datastore())
-
-# Data preprocessing step
-preprocess_step = PythonScriptStep(
-    name='preprocess-data',
-    script_name='preprocess.py',
-    arguments=['--output', processed_data],
-    outputs=[processed_data],
-    compute_target=compute_target,
-    source_directory='./src'
-)
-
-# Training step
-train_step = PythonScriptStep(
-    name='train-model',
-    script_name='train.py',
-    arguments=['--input', processed_data, '--output', trained_model],
-    inputs=[processed_data],
-    outputs=[trained_model],
-    compute_target=compute_target,
-    source_directory='./src'
-)
-
-# Evaluation step
-evaluate_step = PythonScriptStep(
-    name='evaluate-model',
-    script_name='evaluate.py',
-    arguments=['--model', trained_model],
-    inputs=[trained_model],
-    compute_target=compute_target,
-    source_directory='./src'
-)
-
-# Create pipeline
-pipeline = Pipeline(
-    workspace=ws,
-    steps=[preprocess_step, train_step, evaluate_step]
-)
-
-# Submit pipeline
-experiment = Experiment(ws, 'ml-pipeline')
-pipeline_run = experiment.submit(pipeline)
-pipeline_run.wait_for_completion(show_output=True)
-
-# Publish pipeline for reuse
-published_pipeline = pipeline.publish(
-    name='training-pipeline-v1',
-    description='Complete training pipeline'
-)
-```
+Multi-step workflows (`azureml.pipeline.steps.PythonScriptStep`) chain a preprocess → train → evaluate sequence, passing data between steps as `PipelineData`. Submit a `Pipeline(workspace=ws, steps=[...])` through an `Experiment` the same way as a single training run, and `pipeline.publish()` to make it reusable as a versioned, callable endpoint.
 
 ---
 
-## Azure OpenAI Service
+## 6. Azure OpenAI Service
 
-Azure OpenAI provides exclusive access to OpenAI's models through Azure.
+Azure OpenAI is Azure's exclusive, enterprise-hardened gateway to OpenAI's models — the same GPT-4, embeddings, DALL-E, and Whisper models available from OpenAI directly, but wrapped in Azure's SLAs, VNet integration, and regional data-residency controls. For teams already on Azure, it's usually preferable to calling the OpenAI API directly, since it keeps the traffic inside the same governance and billing boundary as the rest of the ML infrastructure.
 
-### Available Models
+**Available models:** GPT-4 (most capable, complex tasks), GPT-3.5-Turbo (fast, cost-effective), GPT-3.5-Turbo-16k (extended context), DALL-E 3 (image generation), Whisper (speech-to-text), Embeddings (similarity search).
 
-- **GPT-4**: Most capable model, best for complex tasks
-- **GPT-3.5-Turbo**: Fast, cost-effective for most tasks
-- **GPT-3.5-Turbo-16k**: Extended context window (16k tokens)
-- **DALL-E 3**: Image generation
-- **Whisper**: Speech-to-text
-- **Embeddings**: Text embeddings for similarity search
-
-### Creating Azure OpenAI Resource
+### 6.1 Creating the Resource
 
 ```bash
-# Create Azure OpenAI resource
 az cognitiveservices account create \
   --name my-openai-resource \
   --resource-group ml-infrastructure-rg \
@@ -1145,147 +534,81 @@ az cognitiveservices account create \
   --sku S0 \
   --location eastus
 
-# Get API key
 az cognitiveservices account keys list \
   --name my-openai-resource \
   --resource-group ml-infrastructure-rg
 ```
 
-### Using Azure OpenAI with Python
+### 6.2 Using Azure OpenAI with Python
+
+The only difference from calling OpenAI directly is the client setup — `engine` refers to your Azure *deployment name*, not the raw model name:
 
 ```python
-import openai
-import os
+import openai, os
 
-# Set up Azure OpenAI
 openai.api_type = "azure"
 openai.api_base = "https://my-openai-resource.openai.azure.com/"
 openai.api_version = "2023-05-15"
 openai.api_key = os.getenv("AZURE_OPENAI_API_KEY")
 
-# Chat completion (GPT-4)
 response = openai.ChatCompletion.create(
-    engine="gpt-4",  # Deployment name in Azure
-    messages=[
-        {"role": "system", "content": "You are a helpful AI assistant."},
-        {"role": "user", "content": "Explain machine learning in simple terms"}
-    ],
+    engine="gpt-4",  # deployment name, not model name
+    messages=[{"role": "user", "content": "Explain machine learning in simple terms"}],
     temperature=0.7,
-    max_tokens=500
 )
-
 print(response['choices'][0]['message']['content'])
-
-# Embeddings
-response = openai.Embedding.create(
-    engine="text-embedding-ada-002",
-    input="Machine learning is a subset of artificial intelligence"
-)
-
-embedding = response['data'][0]['embedding']
-print(f"Embedding dimension: {len(embedding)}")
-
-# Image generation (DALL-E)
-response = openai.Image.create(
-    prompt="A futuristic AI data center with glowing servers",
-    n=1,
-    size="1024x1024"
-)
-
-image_url = response['data'][0]['url']
-print(f"Generated image: {image_url}")
 ```
 
-### Integrating Azure OpenAI with ML Pipeline
+`openai.Embedding.create(engine="text-embedding-ada-002", input=...)` and `openai.Image.create(prompt=..., size="1024x1024")` follow the same pattern for embeddings and DALL-E. A common integration is applying `ChatCompletion` row-by-row over an Azure ML dataset (e.g. `df['sentiment'] = df['feedback'].apply(classify_fn)`) to enrich data as part of a pipeline step.
 
-```python
-import openai
-from azureml.core import Workspace, Dataset
+### 6.4 Pricing
 
-# Connect to Azure ML workspace
-ws = Workspace.from_config()
-
-# Load dataset
-dataset = Dataset.get_by_name(ws, 'customer-feedback')
-df = dataset.to_pandas_dataframe()
-
-# Analyze sentiments with GPT-4
-def analyze_sentiment(text):
-    response = openai.ChatCompletion.create(
-        engine="gpt-4",
-        messages=[
-            {"role": "system", "content": "Analyze sentiment: positive, negative, or neutral"},
-            {"role": "user", "content": text}
-        ],
-        temperature=0,
-        max_tokens=10
-    )
-    return response['choices'][0]['message']['content']
-
-# Apply to dataset
-df['sentiment'] = df['feedback'].apply(analyze_sentiment)
-
-# Register updated dataset
-updated_dataset = Dataset.Tabular.register_pandas_dataframe(
-    df,
-    target=(ws.get_default_datastore(), 'feedback-with-sentiment'),
-    name='customer-feedback-analyzed'
-)
-```
-
-### Azure OpenAI Pricing
-
-```
-┌──────────────────────┬────────────────────────────────────────┐
-│ Model                │ Price                                  │
-├──────────────────────┼────────────────────────────────────────┤
-│ GPT-4 (8K context)   │ $0.03/1K prompt + $0.06/1K completion  │
-│ GPT-4 (32K context)  │ $0.06/1K prompt + $0.12/1K completion  │
-│ GPT-3.5-Turbo        │ $0.0015/1K prompt + $0.002/1K compl    │
-│ GPT-3.5-Turbo-16k    │ $0.003/1K prompt + $0.004/1K compl     │
-│ Embeddings           │ $0.0001/1K tokens                      │
-│ DALL-E 3             │ $0.04-0.12 per image                   │
-│ Whisper              │ $0.006/minute                          │
-└──────────────────────┴────────────────────────────────────────┘
-```
+| Model | Price |
+|---|---|
+| GPT-4 (8K context) | $0.03/1K prompt + $0.06/1K completion |
+| GPT-4 (32K context) | $0.06/1K prompt + $0.12/1K completion |
+| GPT-3.5-Turbo | $0.0015/1K prompt + $0.002/1K completion |
+| GPT-3.5-Turbo-16k | $0.003/1K prompt + $0.004/1K completion |
+| Embeddings | $0.0001/1K tokens |
+| DALL-E 3 | $0.04–0.12 per image |
+| Whisper | $0.006/minute |
 
 ---
 
-## Azure Networking
+## 7. Azure Networking
 
-### Virtual Network (VNet) Architecture
+A VNet (Virtual Network) is Azure's isolated, software-defined network for your resources — the same role a VPC plays on AWS/GCP. The pattern below splits it into a training subnet, an inference subnet fronted by AKS, and a data subnet reachable only through a private endpoint, with Azure Bastion providing secure SSH access and an Application Gateway handling public HTTPS traffic into the cluster.
 
+```mermaid
+flowchart TB
+    Bastion["Azure Bastion<br/>(Secure SSH)"]
+    AppGW["Application Gateway<br/>(Public HTTPS)"]
+
+    subgraph VNet["Azure Virtual Network"]
+        subgraph Training["Subnet 1: Training (10.0.1.0/24)"]
+            GPU1["GPU VM 1"]
+            GPU2["GPU VM 2"]
+            DSVM["DSVM"]
+        end
+        subgraph Inference["Subnet 2: Inference (10.0.2.0/24)"]
+            AKSc["AKS Cluster<br/>(Pod 1, Pod 2, Pod 3)"]
+            LB["Load Balancer"]
+        end
+        subgraph Data["Subnet 3: Data (10.0.3.0/24)"]
+            PE["Private Endpoint"]
+        end
+    end
+
+    Bastion --> Training
+    AppGW --> LB
+    LB --> AKSc
+    AKSc --> PE
+    PE --> Blob["Blob Storage"]
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                   Azure Virtual Network                      │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Subnet 1: Training (10.0.1.0/24)                           │
-│  ├── GPU VM 1                                                │
-│  ├── GPU VM 2                                                │
-│  └── DSVM                                                    │
-│                                                              │
-│  Subnet 2: Inference (10.0.2.0/24)                          │
-│  ├── AKS Cluster                                             │
-│  │   ├── Pod 1                                               │
-│  │   ├── Pod 2                                               │
-│  │   └── Pod 3                                               │
-│  └── Load Balancer                                           │
-│                                                              │
-│  Subnet 3: Data (10.0.3.0/24)                               │
-│  └── Private Endpoint → Blob Storage                        │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
-         ▲                               ▲
-         │                               │
-    Azure Bastion                 Application Gateway
-    (Secure SSH)                  (Public HTTPS)
-```
 
-### Creating VNet
+### 7.1 Creating a VNet
 
 ```bash
-# Create VNet
 az network vnet create \
   --resource-group ml-infrastructure-rg \
   --name ml-vnet \
@@ -1293,7 +616,6 @@ az network vnet create \
   --subnet-name training-subnet \
   --subnet-prefix 10.0.1.0/24
 
-# Add additional subnets
 az network vnet subnet create \
   --resource-group ml-infrastructure-rg \
   --vnet-name ml-vnet \
@@ -1307,15 +629,12 @@ az network vnet subnet create \
   --address-prefix 10.0.3.0/24
 ```
 
-### Network Security Groups (NSG)
+### 7.2 Network Security Groups (NSG)
 
 ```bash
-# Create NSG
-az network nsg create \
-  --resource-group ml-infrastructure-rg \
-  --name ml-training-nsg
+az network nsg create --resource-group ml-infrastructure-rg --name ml-training-nsg
 
-# Allow SSH from specific IP
+# Allow SSH from a specific IP
 az network nsg rule create \
   --resource-group ml-infrastructure-rg \
   --nsg-name ml-training-nsg \
@@ -1338,16 +657,14 @@ az network nsg rule create \
   --access Allow
 ```
 
-### Azure Load Balancer
+### 7.3 Azure Load Balancer
 
 ```bash
-# Create public IP
 az network public-ip create \
   --resource-group ml-infrastructure-rg \
   --name ml-lb-ip \
   --sku Standard
 
-# Create load balancer
 az network lb create \
   --resource-group ml-infrastructure-rg \
   --name ml-load-balancer \
@@ -1356,7 +673,6 @@ az network lb create \
   --frontend-ip-name ml-frontend \
   --backend-pool-name ml-backend-pool
 
-# Create health probe
 az network lb probe create \
   --resource-group ml-infrastructure-rg \
   --lb-name ml-load-balancer \
@@ -1365,7 +681,6 @@ az network lb probe create \
   --port 8000 \
   --path /health
 
-# Create load balancing rule
 az network lb rule create \
   --resource-group ml-infrastructure-rg \
   --lb-name ml-load-balancer \
@@ -1380,45 +695,36 @@ az network lb rule create \
 
 ---
 
-## Cost Optimization
+## 8. Cost Optimization
 
-### 1. Reserved Instances
+Azure ML infrastructure spend is dominated by GPU compute and storage, and both have well-worn levers for cutting cost without cutting capability: commit to Reserved Instances for steady-state workloads, use Spot VMs for interruptible ones, and let storage lifecycle policies move cold data to cheaper tiers automatically.
 
-Save **40-60%** with 1-3 year commitments:
+### 8.1 Reserved Instances
 
-```
-┌─────────────────────┬──────────────┬──────────────┬──────────────┐
-│ VM Size             │ Pay-as-you-go│ 1-Year RI    │ 3-Year RI    │
-├─────────────────────┼──────────────┼──────────────┼──────────────┤
-│ Standard_D4s_v3     │ $0.192/hr    │ $0.131/hr    │ $0.086/hr    │
-│ Standard_NC6s_v3    │ $3.06/hr     │ $2.08/hr     │ $1.37/hr     │
-└─────────────────────┴──────────────┴──────────────┴──────────────┘
+Save 40-60% with 1-3 year commitments:
 
-Savings:                 -              32%           55%
-```
+| VM Size | Pay-as-you-go | 1-Year RI | 3-Year RI |
+|---|---|---|---|
+| Standard_D4s_v3 | $0.192/hr | $0.131/hr (~32%) | $0.086/hr (~55%) |
+| Standard_NC6s_v3 | $3.06/hr | $2.08/hr (~32%) | $1.37/hr (~55%) |
 
-Purchase through Azure Portal: Cost Management → Reservations
+Purchase through Azure Portal: Cost Management → Reservations.
 
-### 2. Azure Spot VMs
-
-Save **up to 90%**:
+### 8.2 Azure Spot VMs
 
 ```bash
-# Always use Spot VMs for training
 az vm create \
   --priority Spot \
   --max-price 0.5 \
   --eviction-policy Deallocate
 
-# Cost comparison:
 # Regular NC6s_v3: $3.06/hour
-# Spot NC6s_v3: ~$0.30/hour (90% savings)
+# Spot NC6s_v3:    ~$0.30/hour (90% savings)
 ```
 
-### 3. Auto-shutdown VMs
+### 8.3 Auto-Shutdown
 
 ```bash
-# Enable auto-shutdown
 az vm auto-shutdown \
   --resource-group ml-infrastructure-rg \
   --name ml-training-vm \
@@ -1426,25 +732,17 @@ az vm auto-shutdown \
   --timezone "Pacific Standard Time"
 ```
 
-### 4. Storage Cost Optimization
+### 8.4 Storage Lifecycle
 
-```bash
-# Use lifecycle management
-# Hot → Cool (30 days) → Archive (90 days) → Delete (365 days)
+Hot → Cool (30 days) → Archive (90 days) → Delete (365 days). For 1 TB over a year: all-Hot costs ~$221, with lifecycle management ~$78 (65% savings).
 
-# Savings example:
-# 1 TB for 1 year:
-# - All Hot: $221
-# - With lifecycle: $78 (65% savings)
-```
-
-### 5. Azure Cost Management
+### 8.5 Cost Management and Budgets
 
 ```bash
 # View current costs
 az consumption usage list --output table
 
-# Create budget
+# Create a budget with alert thresholds
 az consumption budget create \
   --budget-name ml-monthly-budget \
   --amount 1000 \
@@ -1452,218 +750,80 @@ az consumption budget create \
   --time-period start-date=2024-01-01 \
   --notifications threshold=50 threshold-type=Actual contact-emails=["admin@example.com"]
 
-# Set up cost alerts (via Portal)
-# Cost Management → Budgets → Create budget
-# - Set threshold at 50%, 90%, 100%
-# - Email notifications
-# - Action groups for automation
+# Additional thresholds (90%, 100%) and action groups for automation
+# can be configured via Portal: Cost Management → Budgets → Create budget
 ```
 
-### Cost Optimization Checklist
-
-- [ ] Use Spot VMs for training (90% savings)
-- [ ] Purchase Reserved Instances for production (40-60% savings)
-- [ ] Enable VM auto-shutdown (evenings, weekends)
-- [ ] Use storage lifecycle management (65% savings)
-- [ ] Right-size VMs (avoid over-provisioning)
-- [ ] Delete unused resources (disks, IPs, snapshots)
-- [ ] Use AKS autoscaling (scale to zero)
-- [ ] Leverage Azure Hybrid Benefit (if you have Windows licenses)
-- [ ] Set up cost budgets and alerts
-- [ ] Review costs weekly with Cost Management
+**Checklist:** Spot VMs for training, Reserved Instances for steady-state production, VM auto-shutdown outside business hours, storage lifecycle management, right-sized VMs, prompt cleanup of unused disks/IPs/snapshots, AKS autoscaling (including scale-to-zero where possible), Azure Hybrid Benefit if you hold Windows licenses, and a standing budget with alerts reviewed weekly in Cost Management.
 
 ---
 
-## Hands-on Exercise
+## 9. Putting It All Together: ML Serving Architecture
 
-### Exercise: Deploy Complete ML System on Azure
+**Scenario:** Deploy an image-classification model behind an autoscaling, publicly reachable endpoint.
 
-**Objective**: Deploy an image classification model with:
-
-```
-User Request
-    ↓
-Application Gateway (WAF + SSL)
-    ↓
-AKS Cluster (autoscaling 2-10 pods)
-    ↓
-Model Server (loads from Blob Storage)
-    ↓
-Azure Blob Storage (model weights)
+```mermaid
+flowchart TB
+    U["User Request"] --> AG["Application Gateway<br/>(WAF + SSL)"]
+    AG --> AKS["AKS Cluster<br/>(autoscaling 2-10 pods)"]
+    AKS --> MS["Model Server<br/>(loads from Blob Storage)"]
+    MS --> Blob["Azure Blob Storage<br/>(model weights)"]
 ```
 
-**Requirements**:
-1. Use Spot VMs for AKS node pool
-2. Enable AKS autoscaling (CPU > 70%)
-3. Implement health checks
-4. Store models in Blob Storage
-5. Set up Azure Monitor
-6. Estimate monthly cost (1M requests/month)
+**Requirements:** Spot VMs for the AKS node pool, AKS autoscaling on CPU > 70%, health checks, models served from Blob Storage, and Azure Monitor for observability.
 
-**Steps**:
+```bash
+# 1. Resource group and storage
+az group create --name ml-exercise-rg --location eastus
+az storage account create --name mlexercisestore --resource-group ml-exercise-rg
+az storage container create --name models --account-name mlexercisestore
+azcopy copy model.pth "https://mlexercisestore.blob.core.windows.net/models/model.pth?<SAS>"
 
-1. **Create resources**:
-   ```bash
-   # Resource group
-   az group create --name ml-exercise-rg --location eastus
+# 2. AKS cluster with a Spot node pool
+az aks create --resource-group ml-exercise-rg --name ml-aks --node-count 2 --node-vm-size Standard_D4s_v3
+az aks nodepool add --resource-group ml-exercise-rg --cluster-name ml-aks --name spotpool \
+  --priority Spot --eviction-policy Delete --spot-max-price 0.5 --node-count 2
 
-   # Storage account
-   az storage account create --name mlexercisestore --resource-group ml-exercise-rg
+# 3. Deploy (Deployment + Service from section 4.3) and enable autoscaling
+kubectl apply -f deployment.yaml
+kubectl autoscale deployment ml-model-deployment --cpu-percent=70 --min=2 --max=20
 
-   # Upload model
-   az storage container create --name models --account-name mlexercisestore
-   azcopy copy model.pth "https://mlexercisestore.blob.core.windows.net/models/model.pth?<SAS>"
-   ```
+# 4. Monitoring
+az aks enable-addons --resource-group ml-exercise-rg --name ml-aks --addons monitoring
+```
 
-2. **Create AKS cluster**:
-   ```bash
-   az aks create --resource-group ml-exercise-rg --name ml-aks --node-count 2 --node-vm-size Standard_D4s_v3
+Application Gateway for public HTTPS ingress into the AKS backend pool is set up following Azure's Application Gateway + AKS integration docs (not CLI-only).
 
-   # Add Spot node pool
-   az aks nodepool add --resource-group ml-exercise-rg --cluster-name ml-aks --name spotpool --priority Spot --eviction-policy Delete --spot-max-price 0.5 --node-count 2
-   ```
-
-3. **Deploy model**:
-   ```bash
-   kubectl apply -f deployment.yaml
-   kubectl apply -f service.yaml
-   kubectl apply -f hpa.yaml
-   ```
-
-4. **Set up Application Gateway**:
-   ```bash
-   # Follow Azure documentation for Application Gateway + AKS integration
-   ```
-
-5. **Configure monitoring**:
-   ```bash
-   # Enable Container Insights
-   az aks enable-addons --resource-group ml-exercise-rg --name ml-aks --addons monitoring
-   ```
-
-**Expected Cost** (1M requests/month):
-- AKS Spot nodes: 2 × $0.04/hr × 730hr = $58
-- Blob Storage: 1 GB × $0.0184 = $0.02
-- Application Gateway: ~$150/month
-- Monitor: $2.30/GB ingested (~$10/month)
-- **Total: ~$220/month**
+**Estimated cost (1M requests/month):** AKS Spot nodes 2 × $0.04/hr × 730hr = $58; Blob Storage 1 GB × $0.0184 ≈ $0.02; Application Gateway ≈ $150/month; Azure Monitor $2.30/GB ingested ≈ $10/month. **Total ≈ $220/month.**
 
 ---
 
-## Self-Check Questions
+## 10. Key Takeaways
 
-1. **What's the difference between Azure VM, AKS, and Azure ML for training?**
-   <details>
-   <summary>Answer</summary>
-
-   - **Azure VM**: Full control, manual management, good for custom setups
-   - **AKS**: Container orchestration, good for production serving with auto-scaling
-   - **Azure ML**: Fully managed, automated scaling, good for end-to-end ML workflows
-   </details>
-
-2. **How does Azure OpenAI differ from OpenAI API?**
-   <details>
-   <summary>Answer</summary>
-
-   - **Enterprise features**: SLA, security, compliance
-   - **Private network**: VNet integration, private endpoints
-   - **Pricing**: Different pricing model (per-token)
-   - **Regional deployment**: Data residency options
-   - **Azure integration**: Works with Azure ML, Key Vault, etc.
-   </details>
-
-3. **When should you use Azure Spot VMs?**
-   <details>
-   <summary>Answer</summary>
-
-   Use Spot VMs for:
-   - Training jobs (with checkpointing)
-   - Batch processing
-   - Non-critical workloads
-   - Cost-sensitive projects
-
-   Avoid for:
-   - Production inference
-   - Time-sensitive workloads
-   - Workloads without fault tolerance
-   </details>
-
-4. **What's the best storage tier for model checkpoints?**
-   <details>
-   <summary>Answer</summary>
-
-   - **Active checkpoints**: Hot tier ($0.0184/GB)
-   - **Old checkpoints**: Cool tier after 30 days ($0.01/GB)
-   - **Archived checkpoints**: Archive tier after 90 days ($0.00099/GB)
-   - Use lifecycle management for automatic transition
-   </details>
-
-5. **How do you enable autoscaling on AKS?**
-   <details>
-   <summary>Answer</summary>
-
-   ```bash
-   # Cluster autoscaler (nodes)
-   az aks update --enable-cluster-autoscaler --min-count 1 --max-count 10
-
-   # Horizontal Pod Autoscaler (pods)
-   kubectl autoscale deployment ml-model --cpu-percent=70 --min=2 --max=20
-   ```
-   </details>
+1. **Azure AD and RBAC** sit above every resource — get subscription, resource group, and role-assignment structure right before provisioning anything.
+2. **VMs** are the raw compute layer; use D-series for CPU workloads, NC/ND/NV-series GPUs for training, and Spot VMs with checkpointing for interruptible jobs (up to 90% savings).
+3. **Blob Storage** is the backbone of ML data storage; access tiers (Hot/Cool/Archive) and lifecycle policies cut storage cost substantially for aging data.
+4. **AKS** is the production serving option when you need pod-level autoscaling and rolling deployments across GPU and CPU node pools.
+5. **Azure Machine Learning** trades low-level control for a fully managed training/deployment/pipeline workflow — the default choice unless you need to manage VMs or AKS directly.
+6. **Azure OpenAI** gives enterprise-governed access to GPT-4, embeddings, DALL-E, and Whisper without leaving Azure's compliance and billing boundary.
+7. **VNets, NSGs, and load balancers** isolate training, inference, and data subnets, matching the segmentation patterns used on AWS/GCP.
+8. **Cost optimization** is a checklist you run repeatedly: Spot VMs, Reserved Instances, auto-shutdown, storage lifecycle, right-sizing, and budget alerts.
 
 ---
 
-## Additional Resources
+## What's Next?
 
-### Official Documentation
-- [Azure ML Documentation](https://docs.microsoft.com/azure/machine-learning/)
-- [Azure OpenAI Documentation](https://learn.microsoft.com/azure/cognitive-services/openai/)
-- [AKS Documentation](https://docs.microsoft.com/azure/aks/)
-- [Azure Blob Storage Documentation](https://docs.microsoft.com/azure/storage/blobs/)
-
-### Tutorials
-- [Azure ML Tutorials](https://docs.microsoft.com/azure/machine-learning/tutorial-1st-experiment-sdk-setup)
-- [Deploy ML models to AKS](https://docs.microsoft.com/azure/machine-learning/how-to-deploy-azure-kubernetes-service)
-
-### Tools
-- [Azure CLI](https://docs.microsoft.com/cli/azure/)
-- [Azure Storage Explorer](https://azure.microsoft.com/features/storage-explorer/)
-- [Azure ML SDK](https://docs.microsoft.com/python/api/overview/azure/ml/)
-
-### Cost Management
-- [Azure Pricing Calculator](https://azure.microsoft.com/pricing/calculator/)
-- [Azure Cost Management](https://azure.microsoft.com/services/cost-management/)
+**Lesson 05** covers cloud storage architecture in more depth — data lakes, warehouses, and cross-cloud storage patterns for large-scale ML pipelines.
 
 ---
 
-## Summary
+## Further Reading
 
-In this lesson, you learned:
+- **Azure ML Documentation**: https://docs.microsoft.com/azure/machine-learning/
+- **Azure OpenAI Documentation**: https://learn.microsoft.com/azure/cognitive-services/openai/
+- **AKS Documentation**: https://docs.microsoft.com/azure/aks/
+- **Azure Blob Storage Documentation**: https://docs.microsoft.com/azure/storage/blobs/
+- **Azure CLI Reference**: https://docs.microsoft.com/cli/azure/
+- **Azure Pricing Calculator**: https://azure.microsoft.com/pricing/calculator/
+- **Azure Cost Management**: https://azure.microsoft.com/services/cost-management/
 
-✅ Set up Azure account with proper RBAC
-✅ Deploy VMs with GPUs for ML training
-✅ Use Azure Blob Storage with lifecycle management
-✅ Deploy models on AKS with autoscaling
-✅ Leverage Azure Machine Learning for managed workflows
-✅ Integrate Azure OpenAI (GPT-4, embeddings)
-✅ Configure VNet and load balancing
-✅ Optimize costs with Spot VMs and Reserved Instances
-
-**Key Takeaways**:
-- Azure excels at enterprise ML with strong governance
-- Azure OpenAI provides exclusive access to GPT-4
-- Spot VMs save up to 90% on training costs
-- Azure ML simplifies end-to-end ML workflows
-- Strong hybrid cloud capabilities with Azure Arc
-
-**Next Steps**:
-- Complete hands-on exercise
-- Explore Azure ML Pipelines
-- Learn about Azure Arc for hybrid deployments
-- Proceed to Lesson 05: Cloud Storage Deep Dive
-
----
-
-**Estimated Time to Complete**: 6 hours (including hands-on exercise)
-**Difficulty**: Intermediate
-**Next Lesson**: [05-cloud-storage.md](./05-cloud-storage.md)
