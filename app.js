@@ -1964,6 +1964,10 @@ async function loadFile(filePath) {
 
     currentFilePath = filePath;
 
+    if (window.innerWidth < 768) {
+        showToast('Best viewed on desktop for the full experience — code blocks, diagrams, and quizzes.', 'info', 4000);
+    }
+
     document.getElementById('home-view').style.display = 'none';
     document.getElementById('reader-view').style.display = 'none';
     document.getElementById('search-view').style.display = 'none';
