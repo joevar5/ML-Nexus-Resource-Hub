@@ -136,7 +136,7 @@ s3.upload_file('./imagenet_full.tar.gz', 'ml-data-bucket', 'datasets/imagenet/fu
 
 ## 3. Block Storage for ML
 
-Block storage gives training workloads the low latency and high IOPS that object storage can't.
+Object storage (Section 2) is great at holding large amounts of data cheaply, but it's not built for a training loop that needs to read the same files thousands of times with millisecond-level latency. Block storage closes that gap: it's a virtual disk attached directly to a single compute instance, addressed in fixed-size blocks the way a physical hard drive is, which is what gives it its two defining properties — **IOPS** (how many individual read/write operations it can complete per second, which matters when a job is reading many small files) and **throughput** (how many MB/s of sustained data it can move, which matters when a job is streaming large sequential files). Object storage optimizes for durability and cost at scale; block storage optimizes for low, predictable latency on the machine actually doing the training.
 
 | Feature | AWS EBS | GCP PD | Azure Disk |
 |---|---|---|---|
@@ -149,37 +149,50 @@ Block storage gives training workloads the low latency and high IOPS that object
 
 ### 3.1 Volume Types
 
+Not every training job needs the same disk profile, so AWS (and the GCP/Azure equivalents) offer a few volume types tuned for different access patterns:
+
 | Type | IOPS | Throughput | Cost/GB | Best For |
 |---|---|---|---|---|
 | gp3 (general SSD) | 3,000 baseline | 125 MB/s baseline | $0.08 | Standard training datasets, checkpoints |
 | io2 (provisioned IOPS) | up to 64,000 | up to 4,000 MB/s | $0.125 + $0.065/IOPS | Large-scale training (ImageNet, COCO), high-throughput pipelines |
 | st1 (throughput HDD) | — | up to 500 MB/s | $0.045 | Sequential reads: video/audio, preprocessing |
 
+The decision is really about the shape of your I/O: **gp3** is the default for most training jobs — a flat, predictable baseline that's cheap enough to leave attached permanently. **io2** is worth the extra cost only when a job is bottlenecked on IOPS specifically (e.g. randomly sampling millions of small image files each epoch) — you pay per IOPS you provision, so it scales with need rather than being a fixed jump in price. **st1** is HDD-backed, so it has no meaningful IOPS number, but it's the cheapest option for workloads that read data sequentially in large chunks (streaming video/audio files start-to-finish) rather than jumping around randomly.
+
 ```python
 ec2 = boto3.client('ec2')
+
+# Create a 1TB gp3 volume with baseline 3,000 IOPS / 125 MB/s throughput, encrypted at rest
 vol = ec2.create_volume(AvailabilityZone='us-east-1a', Size=1000, VolumeType='gp3',
                          Iops=3000, Throughput=125, Encrypted=True)
+
+# Attach it to a running instance as a new device
 ec2.attach_volume(VolumeId=vol['VolumeId'], InstanceId='i-0abcdef1234567890', Device='/dev/sdf')
+
+# Point-in-time backup of the volume, stored durably in S3 behind the scenes
 ec2.create_snapshot(VolumeId=vol['VolumeId'], Description='ml-data-backup')
 ```
 
 ### 3.2 Local NVMe Storage
 
-For maximum throughput, instance-local NVMe (e.g. AWS `i3`/`i4i` instances, up to 16 GB/s) beats any network-attached disk — but it's ephemeral, wiped on stop/terminate:
+Both gp3 and io2 above are *network-attached* — the disk is physically separate hardware, reached over the network fabric, which is what limits their throughput. Some instance families (AWS `i3`/`i4i`, and equivalents on other clouds) instead include NVMe SSDs physically installed in the same host as the CPU/GPU, cutting out that network hop entirely. That's what makes them capable of up to 16 GB/s — an order of magnitude beyond any network-attached disk — at the cost of being **ephemeral**: the data lives only as long as the instance does, and is permanently wiped the moment it stops or terminates (including a Spot eviction).
 
 ```bash
-# i3.2xlarge: 1x 1.9TB NVMe SSD
+# i3.2xlarge ships with one 1.9TB NVMe SSD as instance storage (separate from the boot volume)
 aws ec2 run-instances --image-id ami-0c55b159cbfafe1f0 --instance-type i3.2xlarge \
   --block-device-mappings '[{"DeviceName":"/dev/sdb","VirtualName":"ephemeral0"}]'
 
+# Format and mount the NVMe device like any other disk before using it
 sudo mkfs.ext4 /dev/nvme0n1 && sudo mkdir -p /data && sudo mount /dev/nvme0n1 /data
 
-# Expect 50,000+ IOPS, 200+ MB/s
+# fio benchmarks random 4KB writes with 4 parallel jobs for 60s — a stand-in for how a
+# training job hammers the disk with small, random reads across many shuffled files.
+# Expect 50,000+ IOPS, 200+ MB/s on local NVMe (versus ~3,000 IOPS baseline on gp3)
 sudo fio --name=randwrite --ioengine=libaio --iodepth=32 --rw=randwrite --bs=4k \
   --direct=1 --size=1G --numjobs=4 --runtime=60 --filename=/data/test
 ```
 
-**Always back up to object storage** — an eviction, reboot, or Spot termination loses everything on local NVMe. A cron job (or a `SIGTERM` handler on Spot instances) running `tar` + `aws s3 cp` on a schedule is enough to cover this.
+Because that speed comes with zero durability guarantees, local NVMe should only ever be used as a working copy: **always back up to object storage**, since an eviction, reboot, or Spot termination loses everything on it instantly with no recovery path. A cron job (or a `SIGTERM` handler that fires on Spot's two-minute eviction warning) running `tar` + `aws s3 cp` on a schedule is enough to make sure nothing important lives *only* on local NVMe.
 
 ---
 
@@ -211,11 +224,20 @@ echo "fs-12345678:/ /mnt/efs efs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
 
 Common uses: collaborative Jupyter notebooks shared across a data science team, training datasets read concurrently by multiple jobs without duplication, a centralized model repository (`production/`, `staging/`, `experimental/`) serving an inference fleet, and checkpoint directories shared across nodes in a distributed training job for fault tolerance.
 
+### 4.1 Cross-AZ and Cross-Region Access
+
+EFS is regional (one mount target per AZ, sub-ms latency between them), but it doesn't span regions or reach across to another datacenter — cross-region traffic has to leave over VPN/Direct Connect/peering and pays 20-100ms+ latency. Rather than fighting that, fall back to **object storage (S3)** for anything that needs to cross a region or datacenter boundary: it's already global-reachable and durable, so the pattern is "curate/checkpoint to S3, then have each region/DC pull its own local copy" instead of mounting one file system remotely.
+
 ---
 
 ## 5. Data Lakes for ML
 
-A data lake organizes storage into zones by how processed the data is — raw ingestion, processed features, training-ready curated data, and versioned models:
+A data lake organizes storage into zones by how processed the data is — raw ingestion, processed features, training-ready curated data, and versioned models. It's not a separate storage product: it's just object storage (S3/GCS/Blob) with a deliberate folder structure and metadata convention layered on top, which is why everything in this section builds directly on Section 2.
+
+**Databricks** popularized this pattern under the name **"lakehouse"** — warehouse-style features (ACID transactions, versioning) built on top of cheap object storage, via their open-source **Delta Lake** format. The zones below are a simplified, DIY version of the same idea.
+
+> [!NOTE]
+> Databricks also ships **Lakebase**, a managed Postgres OLTP database that reads/writes the same lakehouse tables directly — closing the gap between transactional apps and the lake.
 
 ```mermaid
 flowchart LR
@@ -452,9 +474,3 @@ This combination — lifecycle-managed object storage for the source of truth, l
 - **Redis Documentation**: https://redis.io/docs/
 - **GCS Storage Classes**: https://cloud.google.com/storage/docs/storage-classes
 - **Azure Blob Storage Tiers**: https://learn.microsoft.com/azure/storage/blobs/access-tiers-overview
-
----
-
-**Estimated Time to Complete**: 4 hours
-**Difficulty**: Intermediate
-**Next Lesson**: [06-cloud-networking.md](./06-cloud-networking.md)

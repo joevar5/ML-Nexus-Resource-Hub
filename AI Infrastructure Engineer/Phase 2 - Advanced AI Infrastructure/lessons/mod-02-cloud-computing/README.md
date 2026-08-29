@@ -1,7 +1,5 @@
 # Module 02: Cloud Computing for ML Infrastructure
 
-**Duration:** 50 hours · **Difficulty:** Intermediate · **Prerequisites:** Comfortable with Linux, Docker, and basic networking
-
 ## Overview
 
 Every real ML system eventually has to live somewhere that isn't your laptop. This module is about learning that terrain across the three clouds you'll actually run into on the job — AWS, GCP, and Azure — so you can architect, deploy, and (critically) not blow the budget on ML infrastructure in production.
@@ -28,7 +26,7 @@ Every real ML system eventually has to live somewhere that isn't your laptop. Th
 
 ## Hands-on
 
-Each lesson ends with a deploy-something exercise (see [`labs/`](./labs/)), building toward a capstone: **deploy a production-ready ML system** that's multi-region, auto-scales, stays under $50/month, and hits 99.9% availability.
+Each lesson ends with a deploy-something exercise, building toward a capstone: **deploy a production-ready ML system** that's multi-region, auto-scales, stays under $50/month, and hits 99.9% availability.
 
 ## Before you start
 
@@ -45,11 +43,11 @@ pip install awscli azure-cli
 
 ## Assessment
 
-- **Mid-module quiz** (after Lesson 04) and **final quiz** (after Lesson 08) — see [`quizzes/`](./quizzes/)
-- Three practical exercises: multi-cloud deployment, a cost-optimization challenge, and a network architecture design — see [`labs/`](./labs/)
+- **Quiz** — [`quizzes/final-quiz.md`](./quizzes/final-quiz.md), 50 questions covering all 8 lessons, 80% to pass
+- Three practical exercises: multi-cloud deployment, a cost-optimization challenge, and a network architecture design
 
 ## What's next
 
-Pass the quizzes, ship the capstone, then move on to **Module 03: Containerization** — the images you build there are what you'll actually be deploying onto this cloud infrastructure.
+Pass the quiz, ship the capstone, then move on to **Module 03: Containerization** — the images you build there are what you'll actually be deploying onto this cloud infrastructure.
 
 More reading in [`resources.md`](./resources.md).

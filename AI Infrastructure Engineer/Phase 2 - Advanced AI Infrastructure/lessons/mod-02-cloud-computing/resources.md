@@ -1,4 +1,4 @@
-# Module 02 Resources: Cloud Computing for ML
+# Resources: Cloud Computing for ML
 
 ## Official Documentation
 
@@ -313,6 +313,67 @@ az login
 - **[EC2Instances.info](https://instances.vantage.sh/)** - AWS EC2 instance comparison
 - **[GCP Machine Types](https://gcpinstances.doit-intl.com/)** - GCP instance comparison
 - **[Azure VM Comparison](https://azureprice.net/)** - Azure VM pricing
+
+---
+
+## Real-World Case Studies
+
+### Architecture Write-Ups
+- **[Netflix Tech Blog](https://netflixtechblog.com/)** - Multi-region AWS architecture at massive scale
+- **[Airbnb Engineering](https://medium.com/airbnb-engineering)** - ML infrastructure and data platform design
+- **[Spotify Engineering](https://engineering.atspotify.com/)** - GCP-based ML and data pipeline architecture
+- **[Pinterest Engineering](https://medium.com/pinterest-engineering)** - Large-scale ML serving infrastructure
+- **[Uber Engineering](https://www.uber.com/blog/engineering/)** - Michelangelo ML platform and multi-cloud strategy
+- **[Dropbox Tech Blog](https://dropbox.tech/)** - Cloud migration and infrastructure cost lessons
+
+### Postmortems and Incident Reports
+- **[AWS Post-Event Summaries](https://aws.amazon.com/premiumsupport/technology/pes/)** - Official outage retrospectives
+- **[Google Cloud Status Incident History](https://status.cloud.google.com/summary)** - Past incident reports
+- **[Cloudflare Blog - Outages](https://blog.cloudflare.com/tag/outage/)** - Cross-cloud dependency failure analysis
+
+---
+
+## Security & Compliance
+
+### Best Practices
+- **[AWS Well-Architected Framework - Security Pillar](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/)**
+- **[Google Cloud Security Best Practices](https://cloud.google.com/security/best-practices)**
+- **[Azure Security Documentation](https://learn.microsoft.com/azure/security/)**
+- **[CIS Benchmarks for Cloud Providers](https://www.cisecurity.org/cis-benchmarks)** - Hardening guides for AWS/GCP/Azure
+
+### Compliance Frameworks
+- **[AWS Compliance Programs](https://aws.amazon.com/compliance/programs/)** - SOC2, HIPAA, GDPR, etc.
+- **[Google Cloud Compliance Resource Center](https://cloud.google.com/security/compliance)**
+- **[Microsoft Azure Compliance Documentation](https://learn.microsoft.com/azure/compliance/)**
+- **[Cloud Security Alliance (CSA)](https://cloudsecurityalliance.org/)** - Vendor-neutral cloud security standards
+
+### IAM Deep Dives
+- **[AWS IAM Best Practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)**
+- **[GCP IAM Documentation](https://cloud.google.com/iam/docs)**
+- **[Azure AD / Entra ID Documentation](https://learn.microsoft.com/entra/identity/)**
+
+---
+
+## Data Lakehouse & Databricks
+
+- **[Databricks Documentation](https://docs.databricks.com/)** - Official platform docs
+- **[Delta Lake Documentation](https://docs.delta.io/)** - Open-source transactional storage layer
+- **[Databricks Lakehouse Architecture Whitepaper](https://www.databricks.com/product/data-lakehouse)** - The original "lakehouse" case
+- **[Databricks Lakebase](https://www.databricks.com/product/lakebase)** - Managed Postgres on the lakehouse
+- **[AWS Lake Formation](https://docs.aws.amazon.com/lake-formation/)** - AWS-native data lake governance
+- **[GCP BigLake](https://cloud.google.com/biglake)** - Google's unified lakehouse layer over BigQuery/GCS
+- **[Azure Synapse Analytics](https://learn.microsoft.com/azure/synapse-analytics/)** - Azure's lakehouse/warehouse platform
+
+---
+
+## Managed ML Platform Comparisons
+
+- **[SageMaker vs. Vertex AI vs. Azure ML - Comparison Guides](https://cloud.google.com/vertex-ai)** - Check each vendor's own comparison/migration pages, since neutral comparisons age quickly
+- **[AWS SageMaker Documentation](https://docs.aws.amazon.com/sagemaker/)**
+- **[Google Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)**
+- **[Azure Machine Learning Documentation](https://learn.microsoft.com/azure/machine-learning/)**
+- **[Kubeflow (open-source alternative)](https://www.kubeflow.org/)** - Cloud-agnostic ML pipelines, referenced throughout Lesson 07
+- **[MLflow](https://mlflow.org/)** - Cloud-agnostic experiment tracking and model registry
 
 ---
 

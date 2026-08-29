@@ -1,1131 +1,450 @@
 # Lesson 08: Multi-Cloud & Cost Optimization
 
-**Duration:** 6 hours
-**Difficulty:** Advanced
-**Prerequisites:** Lessons 01-07 (Complete cloud computing module)
+## Lesson Overview
 
-## Learning Objectives
+Lessons 02-07 built and compared ML infrastructure on a single cloud at a time. This closing lesson of the module asks two different questions: when does it make sense to spread that infrastructure across *multiple* clouds, and — regardless of how many clouds you use — how do you keep the bill under control as usage grows? The two are related: multi-cloud adds cost-tracking complexity (now you're reading three billing APIs instead of one), but a deliberate multi-cloud strategy can itself be a cost lever, not just a resilience one.
 
-By the end of this lesson, you will be able to:
-
-1. **Design multi-cloud strategies** for ML infrastructure
-2. **Implement cost monitoring** and tracking across clouds
-3. **Optimize cloud spending** with right-sizing and reservations
-4. **Use spot/preemptible instances** effectively for training
-5. **Implement FinOps practices** for ML teams
-6. **Migrate workloads** between cloud providers
-7. **Build cloud-agnostic** ML pipelines
-8. **Forecast and budget** cloud costs accurately
+By the end of this lesson you will be able to choose an appropriate multi-cloud strategy for a given organization, track and allocate cost across providers, apply the standard optimization levers (right-sizing, reservations, spot/preemptible instances, auto-shutdown), run basic FinOps practices for an ML team, build cloud-agnostic abstractions where portability matters, and plan a migration between providers.
 
 ---
 
 ## Table of Contents
 
-1. [Multi-Cloud Strategies](#multi-cloud-strategies)
-2. [Cost Monitoring and Tracking](#cost-monitoring-and-tracking)
-3. [Cost Optimization Techniques](#cost-optimization-techniques)
-4. [Spot and Preemptible Instances](#spot-and-preemptible-instances)
-5. [FinOps for ML Teams](#finops-for-ml-teams)
-6. [Cloud-Agnostic Architecture](#cloud-agnostic-architecture)
-7. [Migration Between Clouds](#migration-between-clouds)
-8. [Budgeting and Forecasting](#budgeting-and-forecasting)
-9. [Best Practices](#best-practices)
-10. [Hands-on Exercise](#hands-on-exercise)
+1. [Multi-Cloud Strategies](#1-multi-cloud-strategies)
+2. [Cost Monitoring and Tracking](#2-cost-monitoring-and-tracking)
+3. [Cost Optimization Techniques](#3-cost-optimization-techniques)
+4. [Spot and Preemptible Instances](#4-spot-and-preemptible-instances)
+5. [FinOps for ML Teams](#5-finops-for-ml-teams)
+6. [Cloud-Agnostic Architecture](#6-cloud-agnostic-architecture)
+7. [Migration Between Clouds](#7-migration-between-clouds)
+8. [Budgeting and Forecasting](#8-budgeting-and-forecasting)
+9. [Best Practices](#9-best-practices)
+10. [Putting It All Together: A Cost Optimization Rollout](#10-putting-it-all-together-a-cost-optimization-rollout)
+11. [Key Takeaways](#11-key-takeaways)
+12. [What's Next?](#whats-next)
+13. [Further Reading](#further-reading)
 
 ---
 
-## Multi-Cloud Strategies
+## 1. Multi-Cloud Strategies
 
-Why and how organizations adopt multi-cloud for ML workloads.
+Multi-cloud is a deliberate architectural choice, not a default — it trades operational simplicity for one of three specific benefits, and the pattern you pick should map directly to which benefit you're actually after:
 
-### Multi-Cloud Patterns
+| Pattern | Structure | Use Case | Complexity | Cost |
+|---|---|---|---|---|
+| Active-Passive (DR) | AWS primary (training, inference, storage); Azure cold standby (data replication only) | Risk mitigation, compliance | Low | +10-20% overhead |
+| Best-of-Breed | AWS (data lake, edge); GCP (TPU training, AutoML, BigQuery ML); Azure (enterprise, OpenAI, compliance) | Leverage each cloud's unique strength | High | Optimized per workload |
+| Geographic Distribution | AWS (US customers); GCP (EU, GDPR); Azure (APAC, latency) | Global reach, data sovereignty | Medium | Higher — cross-region data transfer |
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│                 Multi-Cloud Strategy Patterns                  │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  Pattern 1: Active-Passive (Disaster Recovery)                 │
-│  ─────────────────────────────────────────                     │
-│  AWS (Primary)           Azure (Backup)                        │
-│  ├── Training            ├── Cold standby                      │
-│  ├── Inference           ├── Data replication                  │
-│  └── Data storage        └── DR only                           │
-│                                                                │
-│  Use case: Risk mitigation, compliance                         │
-│  Complexity: Low                                               │
-│  Cost: +10-20% overhead                                        │
-│                                                                │
-│  Pattern 2: Best-of-Breed (Specialized)                        │
-│  ──────────────────────────────────────                        │
-│  AWS                     GCP                    Azure          │
-│  ├── Data lake (S3)      ├── Training (TPU)    ├── Enterprise │
-│  ├── General compute     ├── AutoML            ├── OpenAI     │
-│  └── Edge (Greengrass)   └── BigQuery ML       └── Compliance │
-│                                                                │
-│  Use case: Leverage unique strengths                           │
-│  Complexity: High                                              │
-│  Cost: Optimized per workload                                  │
-│                                                                │
-│  Pattern 3: Geographic Distribution                            │
-│  ──────────────────────────────────                            │
-│  AWS (US)                GCP (Europe)          Azure (Asia)    │
-│  ├── US customers        ├── EU customers      ├── APAC       │
-│  └── Data residency      └── GDPR compliance   └── Latency    │
-│                                                                │
-│  Use case: Global reach, data sovereignty                      │
-│  Complexity: Medium                                            │
-│  Cost: Higher (multi-region data transfer)                     │
-│                                                                │
-└────────────────────────────────────────────────────────────────┘
-```
+### 1.1 Which Pattern for Which Organization
 
-### Decision Matrix
+| Scenario | Recommended | Reasoning |
+|---|---|---|
+| Startup (<50 people) | Single cloud | Minimize operational complexity |
+| Growth stage (50-200) | Single cloud + DR | Risk mitigation without full multi-cloud overhead |
+| Enterprise (>200) | Multi-cloud | Avoid vendor lock-in |
+| AI-first company | GCP + AWS | TPU access plus ecosystem breadth |
+| Microsoft shop | Azure + backup | Enterprise features, minimal added complexity |
+| Global company | Multi-cloud (geographic) | Data residency requirements |
+| Cost-sensitive at scale | Multi-cloud (best-of-breed) | Price arbitrage between providers |
+| High compliance | Multi-cloud (active-passive) | Redundancy across independent providers |
 
-```
-┌──────────────────────────┬────────────────┬─────────────────────┐
-│ Scenario                 │ Recommended    │ Reasoning           │
-├──────────────────────────┼────────────────┼─────────────────────┤
-│ Startup (<50 people)     │ Single cloud   │ Reduce complexity   │
-│ Growth (50-200)          │ Single + DR    │ Risk mitigation     │
-│ Enterprise (>200)        │ Multi-cloud    │ Avoid vendor lock-in│
-│ AI-First Company         │ GCP + AWS      │ TPU + ecosystem     │
-│ Microsoft Shop           │ Azure + backup │ Enterprise features │
-│ Global Company           │ Multi-cloud    │ Data residency      │
-│ Cost-Sensitive           │ Multi-cloud    │ Arbitrage           │
-│ High Compliance          │ Multi-cloud    │ Redundancy          │
-└──────────────────────────┴────────────────┴─────────────────────┘
-```
+The through-line: multi-cloud is worth its complexity tax once you have a *specific* reason (compliance, a hardware advantage, geographic requirements) — "just in case" is rarely reason enough to justify running three billing accounts and three sets of IAM policies.
 
 ---
 
-## Cost Monitoring and Tracking
+## 2. Cost Monitoring and Tracking
 
-Effective cost management starts with visibility.
+Cost optimization is impossible without visibility first — you can't right-size what you can't attribute to a team or project.
 
-### Cost Allocation Strategy
+### 2.1 Tagging Strategy
+
+A small set of mandatory tags makes every dollar attributable: `Environment` (dev/staging/production), `Team`, `Project`, `CostCenter`, `Owner`. Optional tags (`Experiment`, `Model`, `Stage`) add finer-grained breakdowns for ML-specific reporting.
 
 ```python
-"""
-Tag Strategy for ML Cost Tracking
-
-Mandatory tags:
-- Environment: dev, staging, production
-- Team: data-science, ml-engineering, research
-- Project: project-name
-- CostCenter: engineering, research, operations
-- Owner: email@company.com
-
-Optional tags:
-- Experiment: experiment-id
-- Model: model-name
-- Stage: training, inference, experimentation
-"""
-
 import boto3
 
-def tag_ml_resources(resource_arn, tags):
-    """
-    Apply consistent tagging to ML resources
+def tag_ml_resources(bucket_name, tags):
+    required = {'Environment', 'Team', 'Project', 'CostCenter', 'Owner'}
+    if not required.issubset(tags):
+        raise ValueError(f"Missing required tags: {required - tags.keys()}")
+    boto3.client('s3').put_bucket_tagging(
+        Bucket=bucket_name, Tagging={'TagSet': [{'Key': k, 'Value': v} for k, v in tags.items()]})
 
-    Args:
-        resource_arn: ARN of resource
-        tags: Dictionary of tags
-    """
-    required_tags = ['Environment', 'Team', 'Project', 'CostCenter', 'Owner']
-
-    # Validate required tags
-    for tag in required_tags:
-        if tag not in tags:
-            raise ValueError(f"Missing required tag: {tag}")
-
-    # Convert to AWS tag format
-    aws_tags = [{'Key': k, 'Value': v} for k, v in tags.items()]
-
-    # Apply tags (example for S3)
-    s3_client = boto3.client('s3')
-    if 's3' in resource_arn:
-        bucket_name = resource_arn.split(':::')[-1]
-        s3_client.put_bucket_tagging(
-            Bucket=bucket_name,
-            Tagging={'TagSet': aws_tags}
-        )
-
-# Usage
-tag_ml_resources(
-    resource_arn='arn:aws:s3:::ml-training-data',
-    tags={
-        'Environment': 'production',
-        'Team': 'ml-engineering',
-        'Project': 'image-classification',
-        'CostCenter': 'engineering',
-        'Owner': 'ml-team@company.com',
-        'Stage': 'training'
-    }
-)
+tag_ml_resources('ml-training-data', {
+    'Environment': 'production', 'Team': 'ml-engineering', 'Project': 'image-classification',
+    'CostCenter': 'engineering', 'Owner': 'ml-team@company.com', 'Stage': 'training',
+})
 ```
 
-### Multi-Cloud Cost Dashboard
+### 2.2 A Unified Multi-Cloud Cost View
+
+Each cloud exposes cost data through its own API (AWS Cost Explorer, GCP Billing, Azure Cost Management) — grouped consistently by the tags above, so they merge into one dataframe:
 
 ```python
-import boto3
-import google.cloud.billing_v1 as gcpbilling
-from azure.mgmt.costmanagement import CostManagementClient
+import boto3, pandas as pd
 from datetime import datetime, timedelta
-import pandas as pd
 
-class MultiCloudCostTracker:
-    """
-    Track costs across AWS, GCP, and Azure
+def get_aws_costs(days=30):
+    ce = boto3.client('ce')
+    start, end = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d'), datetime.now().strftime('%Y-%m-%d')
+    resp = ce.get_cost_and_usage(
+        TimePeriod={'Start': start, 'End': end}, Granularity='DAILY', Metrics=['UnblendedCost'],
+        GroupBy=[{'Type': 'TAG', 'Key': 'Project'}, {'Type': 'TAG', 'Key': 'Team'}],
+        Filter={'Tags': {'Key': 'Environment', 'Values': ['production']}},
+    )
+    return pd.DataFrame([
+        {'date': r['TimePeriod']['Start'], 'cloud': 'AWS', 'project': g['Keys'][0], 'team': g['Keys'][1],
+         'cost': float(g['Metrics']['UnblendedCost']['Amount'])}
+        for r in resp['ResultsByTime'] for g in r['Groups']
+    ])
 
-    Usage:
-        tracker = MultiCloudCostTracker()
-        costs = tracker.get_monthly_costs()
-        print(costs)
-    """
-
-    def __init__(self):
-        self.aws_client = boto3.client('ce')  # Cost Explorer
-        # GCP and Azure clients initialized elsewhere
-
-    def get_aws_costs(self, days=30):
-        """Get AWS costs for last N days"""
-        end_date = datetime.now().strftime('%Y-%m-%d')
-        start_date = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')
-
-        response = self.aws_client.get_cost_and_usage(
-            TimePeriod={
-                'Start': start_date,
-                'End': end_date
-            },
-            Granularity='DAILY',
-            Metrics=['UnblendedCost'],
-            GroupBy=[
-                {'Type': 'TAG', 'Key': 'Project'},
-                {'Type': 'TAG', 'Key': 'Team'}
-            ],
-            Filter={
-                'Tags': {
-                    'Key': 'Environment',
-                    'Values': ['production']
-                }
-            }
-        )
-
-        costs = []
-        for result in response['ResultsByTime']:
-            date = result['TimePeriod']['Start']
-            for group in result['Groups']:
-                costs.append({
-                    'date': date,
-                    'cloud': 'AWS',
-                    'project': group['Keys'][0],
-                    'team': group['Keys'][1],
-                    'cost': float(group['Metrics']['UnblendedCost']['Amount'])
-                })
-
-        return pd.DataFrame(costs)
-
-    def get_gcp_costs(self, days=30):
-        """Get GCP costs for last N days"""
-        # Similar implementation using GCP Billing API
-        # Placeholder
-        return pd.DataFrame()
-
-    def get_azure_costs(self, days=30):
-        """Get Azure costs for last N days"""
-        # Similar implementation using Azure Cost Management API
-        # Placeholder
-        return pd.DataFrame()
-
-    def get_total_costs(self, days=30):
-        """Aggregate costs from all clouds"""
-        aws_costs = self.get_aws_costs(days)
-        gcp_costs = self.get_gcp_costs(days)
-        azure_costs = self.get_azure_costs(days)
-
-        all_costs = pd.concat([aws_costs, gcp_costs, azure_costs], ignore_index=True)
-
-        # Group by project
-        summary = all_costs.groupby('project')['cost'].sum().sort_values(ascending=False)
-
-        return {
-            'total': all_costs['cost'].sum(),
-            'by_project': summary.to_dict(),
-            'by_cloud': all_costs.groupby('cloud')['cost'].sum().to_dict(),
-            'details': all_costs
-        }
-
-# Usage
-tracker = MultiCloudCostTracker()
-costs = tracker.get_total_costs(days=30)
-
-print(f"Total monthly cost: ${costs['total']:.2f}")
-print(f"\nBy cloud:")
-for cloud, cost in costs['by_cloud'].items():
-    print(f"  {cloud}: ${cost:.2f}")
-
-print(f"\nTop 5 projects by cost:")
-for project, cost in list(costs['by_project'].items())[:5]:
-    print(f"  {project}: ${cost:.2f}")
+# get_gcp_costs() / get_azure_costs() follow the same shape against their own billing APIs
+all_costs = pd.concat([get_aws_costs(), get_gcp_costs(), get_azure_costs()], ignore_index=True)
+print(f"Total: ${all_costs['cost'].sum():,.2f}")
+print(all_costs.groupby('cloud')['cost'].sum())
+print(all_costs.groupby('project')['cost'].sum().sort_values(ascending=False).head())
 ```
 
 ---
 
-## Cost Optimization Techniques
+## 3. Cost Optimization Techniques
 
-Proven strategies to reduce ML infrastructure costs.
+Four levers cover most of the achievable savings, and they compound rather than compete — most teams apply all four.
 
-### 1. Right-Sizing Instances
+### 3.1 Right-Sizing
+
+Compare actual CPU utilization against the provisioned instance size: consistently low utilization (<30% average, <60% peak) means the instance is oversized; the reverse means it's undersized and risking throttling.
 
 ```python
 import boto3
 from datetime import datetime, timedelta
 
-class InstanceRightSizer:
-    """
-    Analyze CloudWatch metrics to recommend right-sizing
+def rightsizing_recommendation(instance_id, days=7):
+    cw = boto3.client('cloudwatch')
+    stats = cw.get_metric_statistics(
+        Namespace='AWS/EC2', MetricName='CPUUtilization',
+        Dimensions=[{'Name': 'InstanceId', 'Value': instance_id}],
+        StartTime=datetime.utcnow() - timedelta(days=days), EndTime=datetime.utcnow(),
+        Period=3600, Statistics=['Average', 'Maximum'],
+    )['Datapoints']
+    if not stats:
+        return {'recommendation': 'Insufficient data'}
 
-    Identifies over-provisioned instances (CPU < 30%, Memory < 50%)
-    """
+    avg_cpu = sum(d['Average'] for d in stats) / len(stats)
+    max_cpu = max(d['Maximum'] for d in stats)
 
-    def __init__(self):
-        self.ec2_client = boto3.client('ec2')
-        self.cloudwatch = boto3.client('cloudwatch')
-
-    def analyze_instance(self, instance_id, days=7):
-        """
-        Analyze instance utilization
-
-        Returns:
-            Recommendation dict with suggested instance type
-        """
-        end_time = datetime.utcnow()
-        start_time = end_time - timedelta(days=days)
-
-        # Get CPU utilization
-        cpu_stats = self.cloudwatch.get_metric_statistics(
-            Namespace='AWS/EC2',
-            MetricName='CPUUtilization',
-            Dimensions=[{'Name': 'InstanceId', 'Value': instance_id}],
-            StartTime=start_time,
-            EndTime=end_time,
-            Period=3600,  # 1 hour
-            Statistics=['Average', 'Maximum']
-        )
-
-        if not cpu_stats['Datapoints']:
-            return {'recommendation': 'Insufficient data'}
-
-        avg_cpu = sum(d['Average'] for d in cpu_stats['Datapoints']) / len(cpu_stats['Datapoints'])
-        max_cpu = max(d['Maximum'] for d in cpu_stats['Datapoints'])
-
-        # Get instance details
-        instance = self.ec2_client.describe_instances(InstanceIds=[instance_id])
-        current_type = instance['Reservations'][0]['Instances'][0]['InstanceType']
-
-        # Recommendation logic
-        if avg_cpu < 30 and max_cpu < 60:
-            recommendation = 'DOWNSIZE'
-            suggested_action = 'Consider smaller instance type'
-            potential_savings = 0.4  # 40% savings
-        elif avg_cpu > 80 or max_cpu > 95:
-            recommendation = 'UPSIZE'
-            suggested_action = 'Consider larger instance type'
-            potential_savings = 0  # No savings, avoid throttling
-        else:
-            recommendation = 'OPTIMIZED'
-            suggested_action = 'Instance is appropriately sized'
-            potential_savings = 0
-
-        return {
-            'instance_id': instance_id,
-            'current_type': current_type,
-            'avg_cpu': avg_cpu,
-            'max_cpu': max_cpu,
-            'recommendation': recommendation,
-            'suggested_action': suggested_action,
-            'potential_savings_pct': potential_savings * 100
-        }
-
-# Usage
-rightsizer = InstanceRightSizer()
-recommendation = rightsizer.analyze_instance('i-1234567890abcdef0')
-print(f"Instance: {recommendation['current_type']}")
-print(f"Avg CPU: {recommendation['avg_cpu']:.1f}%")
-print(f"Recommendation: {recommendation['recommendation']}")
-print(f"Potential savings: {recommendation['potential_savings_pct']:.0f}%")
+    if avg_cpu < 30 and max_cpu < 60:
+        return {'recommendation': 'DOWNSIZE', 'potential_savings_pct': 40}
+    if avg_cpu > 80 or max_cpu > 95:
+        return {'recommendation': 'UPSIZE', 'potential_savings_pct': 0}
+    return {'recommendation': 'OPTIMIZED', 'potential_savings_pct': 0}
 ```
 
-### 2. Reserved Instances / Savings Plans
+### 3.2 Reserved Instances vs. Savings Plans
+
+| Option | Commitment | Savings | Flexibility | Best For |
+|---|---|---|---|---|
+| Reserved Instances | 1-3 years | 40-60% | Low — locked to one instance type | Steady-state workloads (inference) |
+| Savings Plans | 1-3 years | 40-60% | High — any instance in the family | Dynamic workloads (varied training) |
+| On-Demand/Spot | None | 0% / 60-90% | Highest | Experimentation / interruptible batch |
 
 ```python
-"""
-Reserved Instances vs Savings Plans Comparison
+PRICING = {'p3.2xlarge': {'on_demand': 3.06, 'ri_1yr': 2.08, 'ri_3yr': 1.37}}
 
-Reserved Instances (RI):
-- Commitment: 1 or 3 years
-- Savings: 40-60%
-- Flexibility: Low (specific instance type)
-- Best for: Steady-state workloads
+def ri_savings(instance_type, hours_per_month, years=3):
+    p = PRICING[instance_type]
+    total_hours = hours_per_month * 12 * years
+    ri_rate = p['ri_3yr'] if years >= 3 else p['ri_1yr']
+    return {'savings': (p['on_demand'] - ri_rate) * total_hours,
+            'savings_pct': (1 - ri_rate / p['on_demand']) * 100}
 
-Savings Plans:
-- Commitment: 1 or 3 years
-- Savings: 40-60%
-- Flexibility: High (any instance in family)
-- Best for: Dynamic workloads
-
-Recommendation Matrix:
-┌──────────────────────────┬─────────────────┬────────────────────┐
-│ Workload Type            │ Recommended     │ Reasoning          │
-├──────────────────────────┼─────────────────┼────────────────────┤
-│ Inference (stable)       │ Reserved Inst   │ Predictable        │
-│ Training (varied)        │ Savings Plan    │ Flexibility        │
-│ Experimentation          │ On-demand/Spot  │ Variable usage     │
-│ Batch processing         │ Spot instances  │ Interruptible      │
-└──────────────────────────┴─────────────────┴────────────────────┘
-"""
-
-def calculate_ri_savings(instance_type, hours_per_month, months=36):
-    """
-    Calculate savings with Reserved Instances
-
-    Example: p3.2xlarge (1x V100)
-    - On-demand: $3.06/hour
-    - 1-year RI: $2.08/hour (32% savings)
-    - 3-year RI: $1.37/hour (55% savings)
-    """
-    pricing = {
-        'p3.2xlarge': {
-            'on_demand': 3.06,
-            'ri_1yr': 2.08,
-            'ri_3yr': 1.37
-        },
-        'p3.8xlarge': {
-            'on_demand': 12.24,
-            'ri_1yr': 8.32,
-            'ri_3yr': 5.48
-        }
-    }
-
-    if instance_type not in pricing:
-        return None
-
-    prices = pricing[instance_type]
-    total_hours = hours_per_month * months
-
-    on_demand_cost = prices['on_demand'] * total_hours
-
-    if months <= 12:
-        ri_cost = prices['ri_1yr'] * total_hours
-        savings_pct = (1 - prices['ri_1yr'] / prices['on_demand']) * 100
-    else:
-        ri_cost = prices['ri_3yr'] * total_hours
-        savings_pct = (1 - prices['ri_3yr'] / prices['on_demand']) * 100
-
-    return {
-        'instance_type': instance_type,
-        'on_demand_cost': on_demand_cost,
-        'ri_cost': ri_cost,
-        'savings': on_demand_cost - ri_cost,
-        'savings_pct': savings_pct,
-        'payback_months': 0  # Immediate with no upfront RI
-    }
-
-# Example: Inference server running 24/7
-result = calculate_ri_savings('p3.2xlarge', hours_per_month=730, months=36)
-print(f"Savings over 3 years: ${result['savings']:,.0f} ({result['savings_pct']:.0f}%)")
+# A 24/7 inference server on p3.2xlarge, 3-year commitment
+print(ri_savings('p3.2xlarge', hours_per_month=730))  # ~55% savings
 ```
 
-### 3. Auto-Shutdown Policies
+### 3.3 Auto-Shutdown for Non-Production Instances
+
+Development and training instances rarely need to run 24/7 — tagging them for a shutdown/startup schedule (via AWS Instance Scheduler, or an equivalent Lambda/cron) captures savings proportional to the hours reclaimed:
 
 ```python
-import boto3
-from datetime import datetime, time
+def estimate_shutdown_savings(hourly_rate, hours_saved_per_day):
+    monthly = hourly_rate * hours_saved_per_day * 30
+    return {'monthly_savings': monthly, 'annual_savings': monthly * 12,
+            'savings_pct': hours_saved_per_day / 24 * 100}
 
-class AutoShutdownManager:
-    """
-    Automatically stop instances during off-hours
-
-    Use case: Development/training instances that don't need 24/7 runtime
-    Savings: 50-75% (if only running 8-12 hours/day)
-    """
-
-    def __init__(self):
-        self.ec2_client = boto3.client('ec2')
-
-    def configure_shutdown_schedule(self, instance_ids, shutdown_time='19:00',
-                                     startup_time='08:00', timezone='America/Los_Angeles'):
-        """
-        Configure auto-shutdown/startup schedule
-
-        Args:
-            instance_ids: List of instance IDs
-            shutdown_time: Time to shutdown (HH:MM)
-            startup_time: Time to start (HH:MM)
-            timezone: Timezone for schedule
-        """
-        # Use AWS Instance Scheduler or Lambda
-        # This is a simplified example
-
-        # Tag instances for shutdown
-        for instance_id in instance_ids:
-            self.ec2_client.create_tags(
-                Resources=[instance_id],
-                Tags=[
-                    {'Key': 'AutoShutdown', 'Value': 'true'},
-                    {'Key': 'ShutdownTime', 'Value': shutdown_time},
-                    {'Key': 'StartupTime', 'Value': startup_time},
-                    {'Key': 'Timezone', 'Value': timezone}
-                ]
-            )
-
-        print(f"Configured auto-shutdown for {len(instance_ids)} instances")
-        print(f"Shutdown: {shutdown_time}, Startup: {startup_time} ({timezone})")
-
-    def estimate_savings(self, instance_type, hourly_rate, hours_saved_per_day):
-        """
-        Estimate savings from auto-shutdown
-
-        Example: Development instance running 12hr/day instead of 24hr/day
-        """
-        monthly_hours_saved = hours_saved_per_day * 30
-        monthly_savings = hourly_rate * monthly_hours_saved
-        annual_savings = monthly_savings * 12
-
-        savings_pct = (hours_saved_per_day / 24) * 100
-
-        return {
-            'instance_type': instance_type,
-            'hourly_rate': hourly_rate,
-            'monthly_savings': monthly_savings,
-            'annual_savings': annual_savings,
-            'savings_pct': savings_pct
-        }
-
-# Example: p3.2xlarge running 12hr/day instead of 24hr/day
-manager = AutoShutdownManager()
-savings = manager.estimate_savings('p3.2xlarge', 3.06, hours_saved_per_day=12)
-print(f"Annual savings: ${savings['annual_savings']:,.0f} ({savings['savings_pct']:.0f}%)")
-# Output: Annual savings: $13,391 (50%)
+# p3.2xlarge running 12hr/day instead of 24hr/day
+print(estimate_shutdown_savings(3.06, hours_saved_per_day=12))  # $13,391/yr, 50%
 ```
 
 ---
 
-## Spot and Preemptible Instances
+## 4. Spot and Preemptible Instances
 
-Leverage spare capacity for massive savings on training workloads.
+Spot/preemptible capacity offers the single largest discount available (60-90% off on-demand) in exchange for a ~2-minute eviction warning — the same tradeoff covered in Lessons 02-04's per-cloud sections, generalized here across providers.
 
-### Spot Instance Strategy
+### 4.1 Spot Fleet with Fallback
+
+A resilient spot setup spans multiple instance types and AZs, so losing capacity in one doesn't stall the whole job, and falls back toward smaller/cheaper instance types rather than failing outright:
 
 ```python
-"""
-Spot Instance Best Practices for ML Training
-
-Savings: 60-90% vs on-demand
-Availability: 70-95% (varies by region/instance type)
-Interruption: 2-minute warning
-
-Best practices:
-1. Checkpointing (save every epoch)
-2. Flexible instance types
-3. Multiple AZs
-4. Spot Fleet with fallback
-"""
-
 import boto3
 
-class SpotTrainingCluster:
-    """
-    Manage spot instances for distributed training
-
-    Features:
-    - Automatic checkpointing
-    - Fallback to on-demand if spot unavailable
-    - Multi-AZ for higher availability
-    """
-
-    def __init__(self):
-        self.ec2_client = boto3.client('ec2')
-
-    def create_spot_training_cluster(self, target_capacity=4, max_price=0.5):
-        """
-        Create spot fleet for training
-
-        Args:
-            target_capacity: Number of instances
-            max_price: Max price per hour ($ per instance)
-
-        Returns:
-            Spot fleet request ID
-        """
-        # Spot fleet configuration
-        spot_fleet_config = {
-            'IamFleetRole': 'arn:aws:iam::123456789012:role/aws-ec2-spot-fleet-role',
-            'AllocationStrategy': 'lowestPrice',
-            'TargetCapacity': target_capacity,
-            'SpotPrice': str(max_price),
-            'LaunchSpecifications': [
-                # Multiple instance types for flexibility
-                {
-                    'ImageId': 'ami-12345678',
-                    'InstanceType': 'p3.2xlarge',
-                    'KeyName': 'my-key',
-                    'SpotPrice': str(max_price),
-                    'SubnetId': 'subnet-1,subnet-2,subnet-3',  # Multi-AZ
-                    'UserData': self._get_user_data_script(),
-                    'TagSpecifications': [
-                        {
-                            'ResourceType': 'instance',
-                            'Tags': [
-                                {'Key': 'Name', 'Value': 'spot-training'},
-                                {'Key': 'Workload', 'Value': 'training'},
-                                {'Key': 'SpotFleet', 'Value': 'true'}
-                            ]
-                        }
-                    ]
-                },
-                # Fallback to smaller instance if p3 unavailable
-                {
-                    'ImageId': 'ami-12345678',
-                    'InstanceType': 'p2.xlarge',
-                    'KeyName': 'my-key',
-                    'SpotPrice': str(max_price * 0.7),
-                    'SubnetId': 'subnet-1,subnet-2,subnet-3',
-                    'UserData': self._get_user_data_script()
-                }
-            ],
-            'Type': 'maintain',  # Maintain target capacity
-            'ReplaceUnhealthyInstances': True,
-            'TerminateInstancesWithExpiration': True,
-            'InstanceInterruptionBehavior': 'terminate'
-        }
-
-        # Request spot fleet
-        response = self.ec2_client.request_spot_fleet(
-            SpotFleetRequestConfig=spot_fleet_config
-        )
-
-        fleet_id = response['SpotFleetRequestId']
-        print(f"Created spot fleet: {fleet_id}")
-
-        return fleet_id
-
-    def _get_user_data_script(self):
-        """
-        User data script with checkpointing and spot handling
-
-        Monitors spot interruption warnings and saves checkpoint
-        """
-        script = """#!/bin/bash
-# Setup training environment
-cd /home/ubuntu/training
-
-# Monitor spot interruption
-(
-  while true; do
-    HTTP_CODE=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -s -w %{http_code} -o /dev/null http://169.254.169.254/latest/meta-data/spot/instance-action)
-    if [[ "$HTTP_CODE" -eq 200 ]]; then
-      echo "Spot interruption detected, saving checkpoint..."
-      touch /tmp/SPOT_INTERRUPTION
-      # Training script will detect this and save checkpoint
-      break
-    fi
-    sleep 5
-  done
-) &
-
-# Start training with checkpointing
-python train.py \\
-  --checkpoint-dir s3://my-bucket/checkpoints \\
-  --checkpoint-frequency 100 \\
-  --resume-from-checkpoint latest
-"""
-        import base64
-        return base64.b64encode(script.encode()).decode()
-
-# Usage
-cluster = SpotTrainingCluster()
-fleet_id = cluster.create_spot_training_cluster(target_capacity=4, max_price=0.5)
+def create_spot_training_fleet(target_capacity=4, max_price=0.5):
+    ec2 = boto3.client('ec2')
+    config = {
+        'IamFleetRole': 'arn:aws:iam::123456789012:role/aws-ec2-spot-fleet-role',
+        'AllocationStrategy': 'lowestPrice', 'TargetCapacity': target_capacity,
+        'Type': 'maintain', 'ReplaceUnhealthyInstances': True,
+        'LaunchSpecifications': [
+            {'ImageId': 'ami-12345678', 'InstanceType': 'p3.2xlarge', 'SpotPrice': str(max_price),
+             'SubnetId': 'subnet-1,subnet-2,subnet-3'},  # multi-AZ
+            {'ImageId': 'ami-12345678', 'InstanceType': 'p2.xlarge', 'SpotPrice': str(max_price * 0.7),
+             'SubnetId': 'subnet-1,subnet-2,subnet-3'},  # fallback if p3 capacity is unavailable
+        ],
+    }
+    return ec2.request_spot_fleet(SpotFleetRequestConfig=config)['SpotFleetRequestId']
 ```
 
-### Checkpoint Management
+### 4.2 Checkpointing Against Eviction
+
+The pattern is identical to the Spot VM checkpointing covered in Lessons 02-04: poll the instance metadata endpoint for the eviction notice, and save state the moment it appears rather than waiting for the 2-minute window to run out.
 
 ```python
-import torch
-import os
-from pathlib import Path
+import torch, os
 
-class CheckpointManager:
-    """
-    Robust checkpointing for spot instance training
-
-    Features:
-    - Automatic save on spot interruption
-    - Resume from latest checkpoint
-    - Save to S3 for durability
-    """
-
-    def __init__(self, checkpoint_dir, save_frequency=100):
-        self.checkpoint_dir = Path(checkpoint_dir)
-        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        self.save_frequency = save_frequency
-
-    def save_checkpoint(self, epoch, model, optimizer, loss, filename='checkpoint.pth'):
-        """Save training checkpoint"""
-        checkpoint = {
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'loss': loss,
-        }
-
-        local_path = self.checkpoint_dir / filename
-        torch.save(checkpoint, local_path)
-
-        # Upload to S3
-        self._upload_to_s3(local_path, f's3://my-bucket/checkpoints/{filename}')
-
-        print(f"Checkpoint saved: epoch {epoch}, loss {loss:.4f}")
-
-    def load_checkpoint(self, model, optimizer, filename='checkpoint.pth'):
-        """Load latest checkpoint"""
-        # Download from S3
-        local_path = self.checkpoint_dir / filename
-        self._download_from_s3(f's3://my-bucket/checkpoints/{filename}', local_path)
-
-        if not local_path.exists():
-            print("No checkpoint found, starting from scratch")
-            return 0
-
-        checkpoint = torch.load(local_path)
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        epoch = checkpoint['epoch']
-
-        print(f"Resumed from checkpoint: epoch {epoch}")
-        return epoch
-
-    def _upload_to_s3(self, local_path, s3_uri):
-        """Upload file to S3"""
-        import boto3
-        s3_client = boto3.client('s3')
-        bucket, key = s3_uri.replace('s3://', '').split('/', 1)
-        s3_client.upload_file(str(local_path), bucket, key)
-
-    def _download_from_s3(self, s3_uri, local_path):
-        """Download file from S3"""
-        import boto3
-        s3_client = boto3.client('s3')
-        bucket, key = s3_uri.replace('s3://', '').split('/', 1)
-        try:
-            s3_client.download_file(bucket, key, str(local_path))
-        except:
-            pass  # File doesn't exist yet
-
-# Training loop with checkpointing
-def train_with_spot(model, train_loader, epochs=100):
-    checkpoint_mgr = CheckpointManager('/data/checkpoints', save_frequency=100)
-
-    # Resume from checkpoint
-    start_epoch = checkpoint_mgr.load_checkpoint(model, optimizer)
+def train_with_checkpointing(model, optimizer, train_loader, epochs, checkpoint_dir, s3_client):
+    start_epoch = 0
+    if os.path.exists(f'{checkpoint_dir}/checkpoint.pth'):
+        ckpt = torch.load(f'{checkpoint_dir}/checkpoint.pth')
+        model.load_state_dict(ckpt['model']); optimizer.load_state_dict(ckpt['optimizer'])
+        start_epoch = ckpt['epoch']
 
     for epoch in range(start_epoch, epochs):
-        model.train()
-
         for batch_idx, (data, target) in enumerate(train_loader):
-            # Training step
-            optimizer.zero_grad()
-            output = model(data)
-            loss = criterion(output, target)
-            loss.backward()
-            optimizer.step()
-
-            # Check for spot interruption
-            if os.path.exists('/tmp/SPOT_INTERRUPTION'):
-                print("Spot interruption detected, saving final checkpoint...")
-                checkpoint_mgr.save_checkpoint(epoch, model, optimizer, loss.item())
-                return
-
-            # Periodic checkpoint
-            if batch_idx % checkpoint_mgr.save_frequency == 0:
-                checkpoint_mgr.save_checkpoint(epoch, model, optimizer, loss.item())
-
-        print(f"Epoch {epoch} completed")
+            loss = train_step(model, optimizer, data, target)
+            if os.path.exists('/tmp/SPOT_INTERRUPTION') or batch_idx % 100 == 0:
+                torch.save({'epoch': epoch, 'model': model.state_dict(),
+                            'optimizer': optimizer.state_dict()}, f'{checkpoint_dir}/checkpoint.pth')
+                s3_client.upload_file(f'{checkpoint_dir}/checkpoint.pth', 'my-bucket', 'checkpoints/checkpoint.pth')
+                if os.path.exists('/tmp/SPOT_INTERRUPTION'):
+                    return  # let the fleet replace this instance; it resumes from this checkpoint
 ```
 
 ---
 
-## FinOps for ML Teams
+## 5. FinOps for ML Teams
 
-Financial Operations (FinOps) practices for ML infrastructure.
+FinOps is the practice of making cost a shared, continuously-managed responsibility rather than something finance discovers at month-end. Maturity typically builds in three stages:
 
-### Cost Allocation and Showback
+| Stage | Capabilities |
+|---|---|
+| Crawl (visibility) | Cost tracking by team/project, monthly reports, basic tagging |
+| Walk (active management) | Real-time dashboards, budget alerts, showback to teams, right-sizing |
+| Run (optimization) | Automated optimization, chargeback, forecasting, continuous RI/Savings Plan management |
+
+### 5.1 Showback Reports and Recommendations
+
+A showback report ties spend back to a team and flags the two most common findings automatically — low utilization and non-spot training:
 
 ```python
-"""
-FinOps Maturity Model for ML Teams
+def generate_team_report(costs_df, team_name):
+    team_costs = costs_df[costs_df['team'] == team_name]
+    recommendations = []
 
-Level 1: Crawl (Basic Visibility)
-- Cost tracking by team/project
-- Monthly reports
-- Basic tagging
+    if team_costs['utilization'].mean() < 0.5:
+        recommendations.append(('RIGHT_SIZE', 'Average utilization <50%', team_costs['cost'].sum() * 0.3))
 
-Level 2: Walk (Active Management)
-- Real-time dashboards
-- Budget alerts
-- Showback to teams
-- Basic optimization (right-sizing)
+    training = team_costs[team_costs['workload'] == 'training']
+    if not training.empty and (~training['spot']).any():
+        recommendations.append(('USE_SPOT', 'Training running on-demand', training['cost'].sum() * 0.7))
 
-Level 3: Run (Optimization)
-- Automated cost optimization
-- Chargeback to teams
-- Forecasting
-- Reserved instance management
-- Continuous optimization
-"""
-
-class MLFinOpsManager:
-    """
-    FinOps management for ML teams
-
-    Features:
-    - Cost allocation by team/project
-    - Budget tracking and alerts
-    - Showback reports
-    - Optimization recommendations
-    """
-
-    def __init__(self):
-        self.cost_tracker = MultiCloudCostTracker()
-
-    def generate_team_report(self, team_name, month):
-        """
-        Generate monthly cost report for team
-
-        Returns:
-            Cost breakdown and recommendations
-        """
-        costs = self.cost_tracker.get_total_costs(days=30)
-        team_costs = costs['details'][costs['details']['team'] == team_name]
-
-        total_cost = team_costs['cost'].sum()
-
-        # Breakdown by workload type
-        training_cost = team_costs[team_costs['workload'] == 'training']['cost'].sum()
-        inference_cost = team_costs[team_costs['workload'] == 'inference']['cost'].sum()
-        storage_cost = team_costs[team_costs['workload'] == 'storage']['cost'].sum()
-
-        report = {
-            'team': team_name,
-            'month': month,
-            'total_cost': total_cost,
-            'breakdown': {
-                'training': training_cost,
-                'inference': inference_cost,
-                'storage': storage_cost
-            },
-            'per_project': team_costs.groupby('project')['cost'].sum().to_dict(),
-            'recommendations': self._generate_recommendations(team_costs)
-        }
-
-        return report
-
-    def _generate_recommendations(self, costs_df):
-        """Generate cost optimization recommendations"""
-        recommendations = []
-
-        # Check for underutilized resources
-        if costs_df['utilization'].mean() < 0.5:
-            recommendations.append({
-                'type': 'RIGHT_SIZE',
-                'priority': 'HIGH',
-                'message': 'Average utilization <50%, consider downsizing instances',
-                'potential_savings': costs_df['cost'].sum() * 0.3
-            })
-
-        # Check for non-spot training
-        training_costs = costs_df[costs_df['workload'] == 'training']
-        if not training_costs.empty and (training_costs['spot'] == False).sum() > 0:
-            recommendations.append({
-                'type': 'USE_SPOT',
-                'priority': 'MEDIUM',
-                'message': 'Use spot instances for training workloads',
-                'potential_savings': training_costs['cost'].sum() * 0.7
-            })
-
-        return recommendations
-
-    def set_budget_alert(self, team_name, monthly_budget, threshold_pct=80):
-        """
-        Set budget alert for team
-
-        Triggers alert when spending exceeds threshold
-        """
-        # Use CloudWatch or similar for monitoring
-        print(f"Budget alert set for {team_name}: ${monthly_budget} ({threshold_pct}%)")
-
-# Usage
-finops = MLFinOpsManager()
-report = finops.generate_team_report('ml-engineering', '2024-01')
-
-print(f"Team: {report['team']}")
-print(f"Total cost: ${report['total_cost']:,.2f}")
-print(f"\nBreakdown:")
-for workload, cost in report['breakdown'].items():
-    print(f"  {workload}: ${cost:,.2f}")
-
-print(f"\nRecommendations:")
-for rec in report['recommendations']:
-    print(f"  [{rec['priority']}] {rec['message']}")
-    print(f"    Potential savings: ${rec['potential_savings']:,.2f}")
+    return {'team': team_name, 'total_cost': team_costs['cost'].sum(),
+            'by_workload': team_costs.groupby('workload')['cost'].sum().to_dict(),
+            'recommendations': recommendations}
 ```
 
 ---
 
-## Cloud-Agnostic Architecture
+## 6. Cloud-Agnostic Architecture
 
-Build portable ML infrastructure across clouds.
-
-### Abstraction Layer Pattern
+Portability is worth building deliberately only when you actually expect to move or run across clouds — Section 1 covers when that's true. The standard approach is a thin interface per capability (storage, compute, ML services) with one implementation per provider, selected by a factory at runtime:
 
 ```python
-"""
-Cloud-Agnostic ML Infrastructure
-
-Goals:
-- Portability across AWS, GCP, Azure
-- Minimize vendor lock-in
-- Consistent APIs
-
-Approach:
-- Abstraction layers for compute, storage, ML services
-- Infrastructure as Code (Terraform)
-- Containerization (Docker/Kubernetes)
-- Standard ML frameworks (PyTorch, TensorFlow)
-"""
-
 from abc import ABC, abstractmethod
 
 class CloudStorageProvider(ABC):
-    """Abstract interface for cloud storage"""
-
     @abstractmethod
-    def upload_file(self, local_path, remote_path):
-        pass
-
+    def upload_file(self, local_path, remote_path): ...
     @abstractmethod
-    def download_file(self, remote_path, local_path):
-        pass
-
-    @abstractmethod
-    def list_files(self, prefix):
-        pass
+    def download_file(self, remote_path, local_path): ...
 
 class AWSStorage(CloudStorageProvider):
-    """AWS S3 implementation"""
-
     def __init__(self):
         import boto3
-        self.s3_client = boto3.client('s3')
+        self.client = boto3.client('s3')
 
     def upload_file(self, local_path, remote_path):
-        bucket, key = self._parse_path(remote_path)
-        self.s3_client.upload_file(local_path, bucket, key)
+        bucket, key = remote_path.replace('s3://', '').split('/', 1)
+        self.client.upload_file(local_path, bucket, key)
 
     def download_file(self, remote_path, local_path):
-        bucket, key = self._parse_path(remote_path)
-        self.s3_client.download_file(bucket, key, local_path)
+        bucket, key = remote_path.replace('s3://', '').split('/', 1)
+        self.client.download_file(bucket, key, local_path)
 
-    def list_files(self, prefix):
-        bucket, key = self._parse_path(prefix)
-        response = self.s3_client.list_objects_v2(Bucket=bucket, Prefix=key)
-        return [obj['Key'] for obj in response.get('Contents', [])]
+# GCPStorage / AzureStorage implement the same interface against gs:// / azure:// URIs
 
-    def _parse_path(self, path):
-        """Parse s3://bucket/key format"""
-        path = path.replace('s3://', '')
-        parts = path.split('/', 1)
-        return parts[0], parts[1] if len(parts) > 1 else ''
-
-class GCPStorage(CloudStorageProvider):
-    """GCP Cloud Storage implementation"""
-
-    def __init__(self):
-        from google.cloud import storage
-        self.client = storage.Client()
-
-    def upload_file(self, local_path, remote_path):
-        bucket_name, blob_name = self._parse_path(remote_path)
-        bucket = self.client.bucket(bucket_name)
-        blob = bucket.blob(blob_name)
-        blob.upload_from_filename(local_path)
-
-    def download_file(self, remote_path, local_path):
-        bucket_name, blob_name = self._parse_path(remote_path)
-        bucket = self.client.bucket(bucket_name)
-        blob = bucket.blob(blob_name)
-        blob.download_to_filename(local_path)
-
-    def list_files(self, prefix):
-        bucket_name, prefix_path = self._parse_path(prefix)
-        bucket = self.client.bucket(bucket_name)
-        blobs = bucket.list_blobs(prefix=prefix_path)
-        return [blob.name for blob in blobs]
-
-    def _parse_path(self, path):
-        """Parse gs://bucket/key format"""
-        path = path.replace('gs://', '')
-        parts = path.split('/', 1)
-        return parts[0], parts[1] if len(parts) > 1 else ''
-
-class AzureStorage(CloudStorageProvider):
-    """Azure Blob Storage implementation"""
-
-    def __init__(self):
-        from azure.storage.blob import BlobServiceClient
-        self.client = BlobServiceClient.from_connection_string(
-            os.getenv('AZURE_STORAGE_CONNECTION_STRING')
-        )
-
-    def upload_file(self, local_path, remote_path):
-        container, blob_name = self._parse_path(remote_path)
-        blob_client = self.client.get_blob_client(container, blob_name)
-        with open(local_path, 'rb') as data:
-            blob_client.upload_blob(data, overwrite=True)
-
-    def download_file(self, remote_path, local_path):
-        container, blob_name = self._parse_path(remote_path)
-        blob_client = self.client.get_blob_client(container, blob_name)
-        with open(local_path, 'wb') as f:
-            blob_client.download_blob().readinto(f)
-
-    def list_files(self, prefix):
-        container, prefix_path = self._parse_path(prefix)
-        container_client = self.client.get_container_client(container)
-        blobs = container_client.list_blobs(name_starts_with=prefix_path)
-        return [blob.name for blob in blobs]
-
-    def _parse_path(self, path):
-        """Parse azure://container/blob format"""
-        path = path.replace('azure://', '').replace('https://', '')
-        parts = path.split('/', 1)
-        return parts[0], parts[1] if len(parts) > 1 else ''
-
-# Factory pattern for cloud-agnostic code
 class StorageFactory:
-    """Create storage provider based on URI scheme"""
-
     @staticmethod
     def create(uri):
-        if uri.startswith('s3://'):
-            return AWSStorage()
-        elif uri.startswith('gs://'):
-            return GCPStorage()
-        elif uri.startswith('azure://'):
-            return AzureStorage()
-        else:
-            raise ValueError(f"Unsupported storage URI: {uri}")
+        return {'s3://': AWSStorage, 'gs://': GCPStorage, 'azure://': AzureStorage}[
+            next(p for p in ('s3://', 'gs://', 'azure://') if uri.startswith(p))]()
 
-# Usage: Cloud-agnostic code
 def upload_model(local_path, remote_path):
-    """Upload model to any cloud provider"""
-    storage = StorageFactory.create(remote_path)
-    storage.upload_file(local_path, remote_path)
-    print(f"Uploaded {local_path} to {remote_path}")
+    StorageFactory.create(remote_path).upload_file(local_path, remote_path)
 
-# Works with any cloud
-upload_model('./model.pth', 's3://my-bucket/models/model.pth')      # AWS
-upload_model('./model.pth', 'gs://my-bucket/models/model.pth')      # GCP
-upload_model('./model.pth', 'azure://container/models/model.pth')   # Azure
+upload_model('./model.pth', 's3://my-bucket/models/model.pth')     # AWS
+upload_model('./model.pth', 'gs://my-bucket/models/model.pth')     # GCP
+upload_model('./model.pth', 'azure://container/models/model.pth')  # Azure
 ```
+
+The cost of this abstraction is real — three implementations to maintain instead of one, and it can only expose the lowest common denominator of features across providers. Reach for it when portability is a stated requirement, not preemptively for every project.
 
 ---
 
-## Migration Between Clouds
+## 7. Migration Between Clouds
 
-Strategies for migrating ML workloads between cloud providers.
+A cloud migration is a project with real phases and real lead time, not a weekend task — treat it accordingly:
 
-### Migration Checklist
+1. **Assessment (1-2 weeks):** inventory current resources, document dependencies, size the data volume, estimate cost, define success criteria.
+2. **Planning (2-4 weeks):** pick a strategy (lift-and-shift, refactor, or rebuild), design the target architecture, plan the data-migration approach, write a rollback plan.
+3. **Data migration (varies with volume):** set up transfer (DataSync, a Transfer Appliance, or the destination cloud's equivalent), migrate incrementally, validate integrity before cutover.
+4. **Application migration (2-6 weeks):** containerize if not already, update cloud-specific code (Lesson 07 §7.1 covers this for the managed ML platforms specifically), migrate the model registry, re-test thoroughly.
+5. **Cutover (1 week):** final sync, DNS/traffic switch, close monitoring, decommission the old infrastructure only once the new one is validated.
 
-```markdown
-## Cloud Migration Checklist
-
-### Phase 1: Assessment (1-2 weeks)
-- [ ] Inventory current resources
-- [ ] Document dependencies
-- [ ] Identify data volumes
-- [ ] Estimate migration costs
-- [ ] Define success criteria
-
-### Phase 2: Planning (2-4 weeks)
-- [ ] Choose migration strategy (lift-shift, refactor, rebuild)
-- [ ] Design target architecture
-- [ ] Plan data migration approach
-- [ ] Identify risks and mitigation
-- [ ] Create rollback plan
-
-### Phase 3: Data Migration (Varies)
-- [ ] Set up data transfer (AWS DataSync, Transfer Appliance)
-- [ ] Migrate datasets incrementally
-- [ ] Validate data integrity
-- [ ] Replicate data for cutover
-
-### Phase 4: Application Migration (2-6 weeks)
-- [ ] Containerize applications
-- [ ] Update cloud-specific code
-- [ ] Migrate models to new registry
-- [ ] Update endpoints
-- [ ] Test thoroughly
-
-### Phase 5: Cutover (1 week)
-- [ ] Final data sync
-- [ ] DNS/traffic cutover
-- [ ] Monitor closely
-- [ ] Validate functionality
-- [ ] Decommission old infrastructure
-
-Estimated timeline: 2-3 months for medium-sized ML platform
-```
+**Realistic timeline for a medium-sized ML platform: 2-3 months.** The data migration and application-code phases are almost always where estimates go wrong — pad both rather than the assessment phase.
 
 ---
 
-## Summary
+## 8. Budgeting and Forecasting
 
-In this lesson, you learned:
+Cost tracking (Section 2) tells you what happened; budgeting and forecasting are about catching a problem *before* the bill arrives.
 
-✅ Design multi-cloud strategies (active-passive, best-of-breed, geographic)
-✅ Implement cost monitoring across clouds (tagging, dashboards)
-✅ Optimize costs (right-sizing 40%, RIs 55%, auto-shutdown 50%)
-✅ Use spot instances (60-90% savings with checkpointing)
-✅ Apply FinOps practices (showback, budgets, recommendations)
-✅ Build cloud-agnostic architectures (abstraction layers)
-✅ Migrate workloads between clouds
-✅ Forecast and budget accurately
+### 8.1 Setting Budget Alerts
 
-**Key Takeaways**:
-- **Right-sizing** saves 30-40% on compute
-- **Reserved Instances** save 40-60% for steady workloads
-- **Spot instances** save 60-90% for training (with checkpointing)
-- **Auto-shutdown** saves 50-75% on dev instances
-- **Combined** optimizations can reduce costs by **70-80%**
+Every provider supports the same shape: a monthly amount, a percentage threshold, and a notification target. AWS Budgets is representative:
 
-**Cost Optimization ROI**:
-```
-Before optimization: $10,000/month
-After optimization:
-- Right-sizing: -$3,000 (30%)
-- Reserved Instances: -$2,000 (20%)
-- Spot instances: -$1,500 (15%)
-- Auto-shutdown: -$500 (5%)
-Total savings: $7,000/month → $3,000/month (70% reduction!)
+```python
+import boto3
+
+boto3.client('budgets').create_budget(
+    AccountId='123456789012',
+    Budget={'BudgetName': 'ml-engineering-monthly', 'BudgetLimit': {'Amount': '10000', 'Unit': 'USD'},
+            'TimeUnit': 'MONTHLY', 'BudgetType': 'COST'},
+    NotificationsWithSubscribers=[{
+        'Notification': {'NotificationType': 'ACTUAL', 'ComparisonOperator': 'GREATER_THAN', 'Threshold': 80},
+        'Subscribers': [{'SubscriptionType': 'EMAIL', 'Address': 'ml-team@company.com'}],
+    }],
+)
 ```
 
-**Next Steps**:
-- Complete hands-on exercise
-- Implement cost tracking for your project
-- Apply optimization techniques
-- **Congratulations! Module 02 complete!**
+Set at least two thresholds per budget (e.g. 80% as an early warning, 100% as an escalation) — a single alert at 100% gives no time to react before the month closes.
+
+### 8.2 Trend-Based Forecasting
+
+The simplest useful forecast is a linear trend over the last few months of actuals — good enough to catch a runaway growth trajectory long before it needs anything more sophisticated:
+
+```python
+import numpy as np
+
+def forecast_next_month(monthly_costs):
+    months = np.arange(len(monthly_costs))
+    slope, intercept = np.polyfit(months, monthly_costs, 1)
+    return slope * len(monthly_costs) + intercept
+
+# Last 6 months of actuals -> next month's projection
+forecast = forecast_next_month([8200, 8600, 9100, 9400, 9800, 10200])
+print(f"Projected next month: ${forecast:,.0f}")  # trend continuing upward -> budget conversation now, not next month
+```
+
+A forecast that's trending toward a budget breach is the trigger for the optimization pass in Sections 3-4, applied *before* the overage happens rather than after.
+
+---
+
+## 9. Best Practices
+
+**Tag everything before optimizing anything.** Right-sizing and RI purchases are only as good as the cost attribution behind them — untagged spend can't be assigned to a team, which means it never gets optimized by anyone.
+
+**Default new non-production compute to auto-shutdown and Spot.** These are the two highest-savings, lowest-effort levers (Sections 3.3 and 4) — make them the default rather than an opt-in a team has to remember.
+
+**Buy reservations only for measured steady-state load.** Commit to Reserved Instances/Savings Plans after right-sizing (Section 3.1) has already stabilized the workload's baseline — reserving before right-sizing locks in the wrong size.
+
+**Review budgets and forecasts on a fixed cadence, not reactively.** A monthly FinOps review (Section 5) that checks actuals against forecast (Section 8.2) catches drift while it's still cheap to correct.
+
+**Build cloud-agnostic abstractions only when portability is a real requirement.** The abstraction cost in Section 6 is worth paying for an active multi-cloud strategy (Section 1) or a planned migration (Section 7) — not as insurance against a hypothetical future move.
+
+**Treat a cloud migration as a scoped project with a rollback plan**, not an incremental drift — Section 7's phased approach exists specifically to avoid a half-migrated state with no clear path forward.
+
+---
+
+## 10. Putting It All Together: A Cost Optimization Rollout
+
+**Scenario:** An ML team is spending $10,000/month on a single cloud with no tagging, no reservations, and all training running on-demand. Bring that down using the levers from this lesson, in the order that actually matters.
+
+```python
+# 1. Tag everything first (Section 2.1) — nothing downstream works without attribution
+tag_ml_resources('ml-training-data', {'Environment': 'production', 'Team': 'ml-engineering',
+                                       'Project': 'core-models', 'CostCenter': 'engineering',
+                                       'Owner': 'ml-team@company.com'})
+
+# 2. Right-size against 7 days of real utilization (Section 3.1)
+for instance_id in production_instance_ids:
+    rec = rightsizing_recommendation(instance_id)
+    if rec['recommendation'] == 'DOWNSIZE':
+        apply_recommended_size(instance_id)  # -> ~30% off compute
+
+# 3. Move interruptible training to Spot with checkpointing (Section 4)
+fleet_id = create_spot_training_fleet(target_capacity=4, max_price=0.5)  # -> ~70% off training compute
+
+# 4. Buy Reserved Instances/Savings Plans against the now-stable steady-state baseline (Section 3.2)
+# purchased via console/CLI once utilization has been right-sized -> ~20% off remaining steady load
+
+# 5. Auto-shutdown all dev/experimentation instances outside business hours (Section 3.3)
+# -> ~5% off overall, concentrated entirely on non-production spend
+
+# 6. Set budget alerts and a monthly forecast review going forward (Section 8)
+```
+
+**Result, applied in this order:** right-sizing -$3,000 (30%), Reserved Instances -$2,000 (20%), Spot instances -$1,500 (15%), auto-shutdown -$500 (5%) — **$10,000/month → $3,000/month, a 70% reduction**, with budget alerts now in place to catch any regression before it compounds for a full month.
+
+---
+
+## 11. Key Takeaways
+
+1. **Multi-cloud is a deliberate tradeoff, not a default** — pick active-passive, best-of-breed, or geographic distribution based on a specific need (DR, unique hardware, data residency), not as general-purpose insurance.
+2. **Tagging is the prerequisite for every other optimization** — untagged spend can't be attributed, and unattributed spend never gets optimized.
+3. **Right-sizing, Reserved Instances, Spot, and auto-shutdown compound** — applied together they routinely cut 70-80% off an unoptimized bill, in that rough order of application.
+4. **Buy reservations after right-sizing, not before** — committing to a size before confirming it's correct locks in the wrong number for 1-3 years.
+5. **FinOps maturity is a ladder (crawl → walk → run)** — visibility has to exist before showback is meaningful, and showback has to exist before automated optimization is trustworthy.
+6. **Cloud-agnostic abstractions cost real engineering effort** — worth it for an active multi-cloud strategy or a planned migration, not as blanket future-proofing.
+7. **A migration is a phased project with real lead time (2-3 months for a medium platform)** — the data and application-migration phases are where naive estimates go wrong.
+8. **A budget alert without a forecast only tells you after the fact** — pairing threshold alerts with trend forecasting (Section 8.2) catches a cost trajectory problem while there's still time to act on it.
+
+---
+
+## What's Next?
+
+This closes **Module 02: Cloud Computing for ML**. Module 03 moves one layer down the stack into **Kubernetes**, covering the orchestration internals (scheduling, networking, storage, operators) that AKS/EKS/GKE — used throughout this module for model serving — are built on top of.
+
+---
+
+## Further Reading
+
+- **AWS Cost Explorer & Budgets**: https://aws.amazon.com/aws-cost-management/
+- **GCP Billing and Cost Management**: https://cloud.google.com/billing/docs
+- **Azure Cost Management**: https://learn.microsoft.com/azure/cost-management-billing/
+- **FinOps Foundation**: https://www.finops.org/
+- **Terraform Multi-Cloud Provisioning**: https://developer.hashicorp.com/terraform/language/providers
 
 ---
 
@@ -1135,9 +454,9 @@ Total savings: $7,000/month → $3,000/month (70% reduction!)
 
 ---
 
-## Module 02 Completed! 🎉
+## Module 02 Completed!
 
-You've mastered:
+You've covered:
 - Cloud architecture patterns
 - AWS, GCP, and Azure ML infrastructure
 - Cloud storage strategies

@@ -1,1210 +1,411 @@
 # Lesson 06: Cloud Networking for ML
 
-**Duration:** 6 hours
-**Difficulty:** Intermediate
-**Prerequisites:** Lessons 01-05 (Cloud providers and storage)
+## Lesson Overview
 
-## Learning Objectives
+ML workloads put unusual demands on a network compared to a typical web app: training clusters need low-latency, high-bandwidth links for AllReduce synchronization across GPUs; inference APIs need a load balancer that can route, health-check, and gradually shift traffic between model versions; and everything needs to be reachable without exposing training instances directly to the internet. This lesson builds that networking layer end-to-end — VPC design, load balancing, CDN delivery, layered security, hybrid connectivity, service mesh, and the performance/monitoring tooling to keep it all running — using AWS as the primary example, since the same patterns carry over directly to GCP and Azure's equivalents.
 
-By the end of this lesson, you will be able to:
-
-1. **Design VPC networks** for ML infrastructure
-2. **Configure load balancers** for model serving at scale
-3. **Implement CDN** for global model delivery
-4. **Secure ML systems** with firewalls and security groups
-5. **Set up VPN and hybrid connectivity** for on-premises integration
-6. **Optimize network performance** for training and inference
-7. **Implement service mesh** for microservices architecture
-8. **Monitor and troubleshoot** network issues
+By the end of this lesson you will be able to design a multi-tier VPC for ML infrastructure, configure load balancers for model serving (including A/B testing and canary rollouts), front a model API with a CDN, layer security groups and NACLs for defense in depth, set up VPN/Direct Connect for hybrid workloads, apply a service mesh for microservice traffic management, tune network performance for distributed training, and monitor/troubleshoot the resulting infrastructure.
 
 ---
 
 ## Table of Contents
 
-1. [Networking Fundamentals for ML](#networking-fundamentals-for-ml)
-2. [Virtual Private Cloud (VPC)](#virtual-private-cloud-vpc)
-3. [Load Balancing](#load-balancing)
-4. [Content Delivery Network (CDN)](#content-delivery-network-cdn)
-5. [Network Security](#network-security)
-6. [Hybrid and Multi-Cloud Networking](#hybrid-and-multi-cloud-networking)
-7. [Service Mesh](#service-mesh)
-8. [Network Performance Optimization](#network-performance-optimization)
-9. [Monitoring and Troubleshooting](#monitoring-and-troubleshooting)
-10. [Hands-on Exercise](#hands-on-exercise)
+1. [Networking Fundamentals for ML](#1-networking-fundamentals-for-ml)
+2. [Virtual Private Cloud (VPC)](#2-virtual-private-cloud-vpc)
+3. [Load Balancing](#3-load-balancing)
+4. [Content Delivery Network (CDN)](#4-content-delivery-network-cdn)
+5. [Network Security](#5-network-security)
+6. [Hybrid and Multi-Cloud Networking](#6-hybrid-and-multi-cloud-networking)
+7. [Service Mesh](#7-service-mesh)
+8. [Network Performance Optimization](#8-network-performance-optimization)
+9. [Monitoring and Troubleshooting](#9-monitoring-and-troubleshooting)
+10. [Putting It All Together: Secure Multi-Tier ML Network](#10-putting-it-all-together-secure-multi-tier-ml-network)
+11. [Key Takeaways](#11-key-takeaways)
+12. [What's Next?](#whats-next)
+13. [Further Reading](#further-reading)
 
 ---
 
-## Networking Fundamentals for ML
+## 1. Networking Fundamentals for ML
 
-ML workloads have unique networking requirements compared to traditional applications.
+Three traffic patterns dominate ML infrastructure, each with a different bandwidth/latency profile: bulk data movement during training, latency-sensitive request/response during inference, and tight node-to-node synchronization during distributed training.
 
-### ML Network Traffic Patterns
-
-```
-┌────────────────────────────────────────────────────────────────┐
-│                    ML Network Architecture                     │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│  Training Phase                                                │
-│  ──────────────                                                │
-│  Data Storage (S3)  ──→  Training Cluster  ──→  Model Storage │
-│     1-10 GB/s             (GPU instances)         100 MB/s    │
-│     High bandwidth        Low latency             Medium       │
-│                                                                │
-│  Inference Phase                                               │
-│  ───────────────                                               │
-│  User Request  ──→  Load Balancer  ──→  Model Server ──→ DB  │
-│     1-10 KB          100K+ requests     <50ms latency   <10ms │
-│     Low bandwidth    High availability   Low latency   Cache  │
-│                                                                │
-│  Distributed Training                                          │
-│  ────────────────────                                          │
-│  Node 1  ←─────→  Node 2  ←─────→  Node 3  ←─────→  Node 4  │
-│    ↓                ↓                ↓                ↓       │
-│  All-reduce communication (parameter synchronization)         │
-│  Requirement: Low latency (<10ms), High bandwidth (25+ Gbps)  │
-│                                                                │
-└────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph Training["Training Phase"]
+        DS["Data Storage (S3)<br/>1-10 GB/s"] --> TC["Training Cluster<br/>GPU instances, low latency"] --> MS["Model Storage<br/>~100 MB/s"]
+    end
+    subgraph Inference["Inference Phase"]
+        UR["User Request<br/>1-10 KB"] --> LB["Load Balancer<br/>100K+ req/s"] --> MSrv["Model Server<br/><50ms"] --> Cache["Cache/DB<br/><10ms"]
+    end
+    subgraph Dist["Distributed Training (AllReduce)"]
+        N1["Node 1"] <--> N2["Node 2"] <--> N3["Node 3"] <--> N4["Node 4"]
+    end
 ```
 
-### Network Requirements by Workload
+| Workload | Bandwidth | Latency | Reliability |
+|---|---|---|---|
+| Data loading (training) | Very high, 1-10 GB/s | Medium, 100-500ms | 99% |
+| Model inference (real-time) | Low, 1-10 KB | Very low, <50ms | 99.99% |
+| Batch inference | High, 100 MB-1GB/s | Medium, <1s | 99.9% |
+| Distributed training (multi-GPU) | Very high, 10-100 GB/s | Very low, <10ms | 99.9% |
+| Model upload/download | Medium, 10-100 MB/s | Low, <5s | 99% |
 
-```
-┌──────────────────────┬──────────────┬──────────────┬─────────────┐
-│ Workload             │ Bandwidth    │ Latency      │ Reliability │
-├──────────────────────┼──────────────┼──────────────┼─────────────┤
-│ Data Loading         │ Very High    │ Medium       │ Medium      │
-│ (Training)           │ 1-10 GB/s    │ 100-500ms    │ 99%         │
-│                      │              │              │             │
-│ Model Inference      │ Low          │ Very Low     │ Very High   │
-│ (Real-time)          │ 1-10 KB      │ <50ms        │ 99.99%      │
-│                      │              │              │             │
-│ Batch Inference      │ High         │ Medium       │ High        │
-│                      │ 100 MB-1GB/s │ <1s          │ 99.9%       │
-│                      │              │              │             │
-│ Distributed Training │ Very High    │ Very Low     │ High        │
-│ (Multi-GPU)          │ 10-100 GB/s  │ <10ms        │ 99.9%       │
-│                      │              │              │             │
-│ Model Upload/Download│ Medium       │ Low          │ Medium      │
-│                      │ 10-100 MB/s  │ <5s          │ 99%         │
-└──────────────────────┴──────────────┴──────────────┴─────────────┘
-```
+The takeaway that shapes the rest of this lesson: inference infrastructure is optimized for availability and tail latency, while training infrastructure is optimized for raw throughput between a small number of nodes — they warrant different subnets, different security postures, and often different placement strategies.
 
 ---
 
-## Virtual Private Cloud (VPC)
+## 2. Virtual Private Cloud (VPC)
 
-VPC provides isolated network environments for ML infrastructure.
+A VPC is an isolated, software-defined network for your resources. Two patterns cover most ML use cases: a flat public/private split for development, and a multi-tier, multi-AZ layout for production.
 
-### VPC Design Patterns for ML
+### 2.1 VPC Design Patterns
 
-#### Pattern 1: Simple VPC (Development)
+**Development — single public/private split:**
 
-```
-┌─────────────────────────────────────────────────────────┐
-│              VPC: 10.0.0.0/16                           │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  Public Subnet: 10.0.1.0/24                             │
-│  ├── Bastion Host (SSH gateway)                         │
-│  ├── NAT Gateway                                        │
-│  └── Load Balancer                                      │
-│                                                         │
-│  Private Subnet: 10.0.2.0/24                            │
-│  ├── ML Training VMs (GPU instances)                    │
-│  ├── Jupyter Notebooks                                  │
-│  └── Development servers                                │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph VPC1["VPC: 10.0.0.0/16"]
+        subgraph Pub["Public Subnet: 10.0.1.0/24"]
+            Bastion["Bastion Host"]
+            NAT["NAT Gateway"]
+            LB1["Load Balancer"]
+        end
+        subgraph Priv["Private Subnet: 10.0.2.0/24"]
+            GPUdev["ML Training VMs"]
+            Jupyter["Jupyter Notebooks"]
+            Dev["Dev Servers"]
+        end
+    end
 ```
 
-#### Pattern 2: Multi-Tier VPC (Production)
+**Production — multi-tier, multi-AZ:**
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│              VPC: 10.0.0.0/16 (Multi-AZ)                     │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Availability Zone 1           Availability Zone 2          │
-│  ────────────────────           ────────────────────        │
-│                                                              │
-│  Public Subnet A: 10.0.1.0/24   Public Subnet B: 10.0.2.0/24│
-│  ├── Load Balancer              ├── Load Balancer           │
-│  └── NAT Gateway                └── NAT Gateway             │
-│                                                              │
-│  App Subnet A: 10.0.11.0/24     App Subnet B: 10.0.12.0/24 │
-│  ├── Model Servers (AKS)        ├── Model Servers (AKS)    │
-│  └── API Gateway                └── API Gateway            │
-│                                                              │
-│  Data Subnet A: 10.0.21.0/24    Data Subnet B: 10.0.22.0/24│
-│  ├── Redis Cache                ├── Redis Cache            │
-│  ├── Database                   ├── Database (replica)     │
-│  └── Feature Store              └── Feature Store          │
-│                                                              │
-│  Training Subnet: 10.0.31.0/24  (Single AZ - cost savings) │
-│  ├── GPU Training Instances                                 │
-│  ├── Distributed Training Cluster                           │
-│  └── Data Processing Pipeline                               │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph AZ1["Availability Zone 1"]
+        Pub1["Public Subnet A: 10.0.1.0/24<br/>LB + NAT"]
+        App1["App Subnet A: 10.0.11.0/24<br/>Model Servers (AKS) + API GW"]
+        Data1["Data Subnet A: 10.0.21.0/24<br/>Redis + DB + Feature Store"]
+        Pub1 --> App1 --> Data1
+    end
+    subgraph AZ2["Availability Zone 2"]
+        Pub2["Public Subnet B: 10.0.2.0/24<br/>LB + NAT"]
+        App2["App Subnet B: 10.0.12.0/24<br/>Model Servers (AKS) + API GW"]
+        Data2["Data Subnet B: 10.0.22.0/24<br/>Redis + DB replica + Feature Store"]
+        Pub2 --> App2 --> Data2
+    end
+    Training["Training Subnet: 10.0.31.0/24<br/>(single AZ — cost savings)<br/>GPU cluster + data pipeline"]
 ```
 
-### Creating VPC for ML (AWS)
+The training subnet deliberately lives in a single AZ rather than being duplicated across both — GPU training jobs are usually restarted from a checkpoint rather than failed over, so the extra AZ redundancy isn't worth the cost.
+
+### 2.2 Creating a VPC (AWS)
 
 ```python
 import boto3
+ec2 = boto3.client('ec2')
 
-ec2_client = boto3.client('ec2')
+vpc = ec2.create_vpc(CidrBlock='10.0.0.0/16')['Vpc']['VpcId']
+ec2.modify_vpc_attribute(VpcId=vpc, EnableDnsHostnames={'Value': True})
 
-def create_ml_vpc():
-    """
-    Create VPC for ML infrastructure
+igw = ec2.create_internet_gateway()['InternetGateway']['InternetGatewayId']
+ec2.attach_internet_gateway(InternetGatewayId=igw, VpcId=vpc)
 
-    Returns:
-        VPC ID and subnet IDs
-    """
-    # Create VPC
-    vpc_response = ec2_client.create_vpc(
-        CidrBlock='10.0.0.0/16',
-        TagSpecifications=[
-            {
-                'ResourceType': 'vpc',
-                'Tags': [
-                    {'Key': 'Name', 'Value': 'ml-vpc'},
-                    {'Key': 'Environment', 'Value': 'production'}
-                ]
-            }
-        ]
-    )
-    vpc_id = vpc_response['Vpc']['VpcId']
-    print(f"Created VPC: {vpc_id}")
+public_subnet = ec2.create_subnet(VpcId=vpc, CidrBlock='10.0.1.0/24', AvailabilityZone='us-east-1a')['Subnet']['SubnetId']
+private_subnet = ec2.create_subnet(VpcId=vpc, CidrBlock='10.0.2.0/24', AvailabilityZone='us-east-1a')['Subnet']['SubnetId']
+app_subnet = ec2.create_subnet(VpcId=vpc, CidrBlock='10.0.11.0/24', AvailabilityZone='us-east-1a')['Subnet']['SubnetId']
 
-    # Enable DNS hostnames
-    ec2_client.modify_vpc_attribute(
-        VpcId=vpc_id,
-        EnableDnsHostnames={'Value': True}
-    )
+# NAT Gateway for outbound-only access from private subnets
+eip = ec2.allocate_address(Domain='vpc')['AllocationId']
+nat = ec2.create_nat_gateway(SubnetId=public_subnet, AllocationId=eip)['NatGateway']['NatGatewayId']
+ec2.get_waiter('nat_gateway_available').wait(NatGatewayIds=[nat])
 
-    # Create Internet Gateway
-    igw_response = ec2_client.create_internet_gateway(
-        TagSpecifications=[
-            {
-                'ResourceType': 'internet-gateway',
-                'Tags': [{'Key': 'Name', 'Value': 'ml-igw'}]
-            }
-        ]
-    )
-    igw_id = igw_response['InternetGateway']['InternetGatewayId']
+# Public route table -> Internet Gateway
+public_rt = ec2.create_route_table(VpcId=vpc)['RouteTable']['RouteTableId']
+ec2.create_route(RouteTableId=public_rt, DestinationCidrBlock='0.0.0.0/0', GatewayId=igw)
+ec2.associate_route_table(SubnetId=public_subnet, RouteTableId=public_rt)
 
-    # Attach IGW to VPC
-    ec2_client.attach_internet_gateway(
-        InternetGatewayId=igw_id,
-        VpcId=vpc_id
-    )
-
-    # Create Public Subnet (for load balancers, NAT)
-    public_subnet_response = ec2_client.create_subnet(
-        VpcId=vpc_id,
-        CidrBlock='10.0.1.0/24',
-        AvailabilityZone='us-east-1a',
-        TagSpecifications=[
-            {
-                'ResourceType': 'subnet',
-                'Tags': [
-                    {'Key': 'Name', 'Value': 'ml-public-subnet'},
-                    {'Key': 'Type', 'Value': 'public'}
-                ]
-            }
-        ]
-    )
-    public_subnet_id = public_subnet_response['Subnet']['SubnetId']
-
-    # Create Private Subnet (for training instances)
-    private_subnet_response = ec2_client.create_subnet(
-        VpcId=vpc_id,
-        CidrBlock='10.0.2.0/24',
-        AvailabilityZone='us-east-1a',
-        TagSpecifications=[
-            {
-                'ResourceType': 'subnet',
-                'Tags': [
-                    {'Key': 'Name', 'Value': 'ml-training-subnet'},
-                    {'Key': 'Type', 'Value': 'private'}
-                ]
-            }
-        ]
-    )
-    private_subnet_id = private_subnet_response['Subnet']['SubnetId']
-
-    # Create App Subnet (for model servers)
-    app_subnet_response = ec2_client.create_subnet(
-        VpcId=vpc_id,
-        CidrBlock='10.0.11.0/24',
-        AvailabilityZone='us-east-1a',
-        TagSpecifications=[
-            {
-                'ResourceType': 'subnet',
-                'Tags': [
-                    {'Key': 'Name', 'Value': 'ml-app-subnet'},
-                    {'Key': 'Type', 'Value': 'private'}
-                ]
-            }
-        ]
-    )
-    app_subnet_id = app_subnet_response['Subnet']['SubnetId']
-
-    # Create NAT Gateway for private subnets
-    # First, allocate Elastic IP
-    eip_response = ec2_client.allocate_address(Domain='vpc')
-    eip_allocation_id = eip_response['AllocationId']
-
-    nat_response = ec2_client.create_nat_gateway(
-        SubnetId=public_subnet_id,
-        AllocationId=eip_allocation_id,
-        TagSpecifications=[
-            {
-                'ResourceType': 'natgateway',
-                'Tags': [{'Key': 'Name', 'Value': 'ml-nat-gateway'}]
-            }
-        ]
-    )
-    nat_gateway_id = nat_response['NatGateway']['NatGatewayId']
-
-    # Wait for NAT Gateway to be available
-    waiter = ec2_client.get_waiter('nat_gateway_available')
-    waiter.wait(NatGatewayIds=[nat_gateway_id])
-
-    # Create Route Tables
-    # Public route table
-    public_rt_response = ec2_client.create_route_table(
-        VpcId=vpc_id,
-        TagSpecifications=[
-            {
-                'ResourceType': 'route-table',
-                'Tags': [{'Key': 'Name', 'Value': 'ml-public-rt'}]
-            }
-        ]
-    )
-    public_rt_id = public_rt_response['RouteTable']['RouteTableId']
-
-    # Add route to IGW
-    ec2_client.create_route(
-        RouteTableId=public_rt_id,
-        DestinationCidrBlock='0.0.0.0/0',
-        GatewayId=igw_id
-    )
-
-    # Associate public subnet with public route table
-    ec2_client.associate_route_table(
-        SubnetId=public_subnet_id,
-        RouteTableId=public_rt_id
-    )
-
-    # Private route table
-    private_rt_response = ec2_client.create_route_table(
-        VpcId=vpc_id,
-        TagSpecifications=[
-            {
-                'ResourceType': 'route-table',
-                'Tags': [{'Key': 'Name', 'Value': 'ml-private-rt'}]
-            }
-        ]
-    )
-    private_rt_id = private_rt_response['RouteTable']['RouteTableId']
-
-    # Add route to NAT Gateway
-    ec2_client.create_route(
-        RouteTableId=private_rt_id,
-        DestinationCidrBlock='0.0.0.0/0',
-        NatGatewayId=nat_gateway_id
-    )
-
-    # Associate private subnets with private route table
-    ec2_client.associate_route_table(
-        SubnetId=private_subnet_id,
-        RouteTableId=private_rt_id
-    )
-    ec2_client.associate_route_table(
-        SubnetId=app_subnet_id,
-        RouteTableId=private_rt_id
-    )
-
-    print(f"VPC setup complete!")
-    return {
-        'vpc_id': vpc_id,
-        'public_subnet_id': public_subnet_id,
-        'private_subnet_id': private_subnet_id,
-        'app_subnet_id': app_subnet_id,
-        'nat_gateway_id': nat_gateway_id
-    }
-
-# Create ML VPC
-vpc_config = create_ml_vpc()
-print(vpc_config)
+# Private route table -> NAT Gateway
+private_rt = ec2.create_route_table(VpcId=vpc)['RouteTable']['RouteTableId']
+ec2.create_route(RouteTableId=private_rt, DestinationCidrBlock='0.0.0.0/0', NatGatewayId=nat)
+for subnet in (private_subnet, app_subnet):
+    ec2.associate_route_table(SubnetId=subnet, RouteTableId=private_rt)
 ```
 
-### VPC Peering for Multi-Region Training
+### 2.3 VPC Peering for Multi-Region Training
+
+Peering connects two VPCs — even across regions — so distributed training nodes in different regions can reach each other over AWS's private backbone instead of the public internet:
 
 ```python
-def create_vpc_peering(vpc_id_1, vpc_id_2, region_1='us-east-1', region_2='us-west-2'):
-    """
-    Create VPC peering connection between regions
-
-    Use case: Distributed training across regions
-    """
-    ec2_client_1 = boto3.client('ec2', region_name=region_1)
-    ec2_client_2 = boto3.client('ec2', region_name=region_2)
-
-    # Create peering connection
-    response = ec2_client_1.create_vpc_peering_connection(
-        VpcId=vpc_id_1,
-        PeerVpcId=vpc_id_2,
-        PeerRegion=region_2,
-        TagSpecifications=[
-            {
-                'ResourceType': 'vpc-peering-connection',
-                'Tags': [{'Key': 'Name', 'Value': 'ml-multi-region-peering'}]
-            }
-        ]
-    )
-
-    peering_id = response['VpcPeeringConnection']['VpcPeeringConnectionId']
-    print(f"Created VPC peering: {peering_id}")
-
-    # Accept peering connection in peer region
-    ec2_client_2.accept_vpc_peering_connection(
-        VpcPeeringConnectionId=peering_id
-    )
-
-    print(f"VPC peering accepted")
+def create_vpc_peering(vpc_id_1, vpc_id_2, region_2='us-west-2'):
+    ec2_1, ec2_2 = boto3.client('ec2'), boto3.client('ec2', region_name=region_2)
+    peering_id = ec2_1.create_vpc_peering_connection(
+        VpcId=vpc_id_1, PeerVpcId=vpc_id_2, PeerRegion=region_2
+    )['VpcPeeringConnection']['VpcPeeringConnectionId']
+    ec2_2.accept_vpc_peering_connection(VpcPeeringConnectionId=peering_id)
     return peering_id
 ```
 
 ---
 
-## Load Balancing
+## 3. Load Balancing
 
-Load balancers distribute traffic across multiple model servers for scalability and reliability.
+Load balancers distribute inference traffic across model server replicas for scalability and reliability.
 
-### Load Balancer Types
+### 3.1 Load Balancer Types
 
-```
-┌──────────────────────┬───────────────────┬─────────────────────┐
-│ Type                 │ Use Case          │ Performance         │
-├──────────────────────┼───────────────────┼─────────────────────┤
-│ Application LB (L7)  │ HTTP/HTTPS APIs   │ 100K requests/sec   │
-│ - Path-based routing │ Model serving     │ <100ms latency      │
-│ - WebSocket support  │ A/B testing       │                     │
-│                      │                   │                     │
-│ Network LB (L4)      │ TCP/UDP traffic   │ Millions req/sec    │
-│ - Ultra-low latency  │ gRPC inference    │ <10ms latency       │
-│ - Static IP          │ Batch processing  │                     │
-│                      │                   │                     │
-│ Gateway LB           │ Security/Firewall │ High throughput     │
-│ - Inline inspection  │ Traffic analysis  │                     │
-└──────────────────────┴───────────────────┴─────────────────────┘
-```
+| Type | Use Case | Performance |
+|---|---|---|
+| Application LB (L7) | HTTP/HTTPS model APIs, path-based routing, A/B testing, WebSocket | 100K req/s, <100ms |
+| Network LB (L4) | TCP/UDP, gRPC inference, batch processing, static IP | Millions req/s, <10ms |
+| Gateway LB | Inline security/firewall inspection, traffic analysis | High throughput |
 
-### Application Load Balancer for ML APIs
+### 3.2 Application Load Balancer for Model Serving
 
 ```python
 import boto3
+elbv2, ec2 = boto3.client('elbv2'), boto3.client('ec2')
 
-elbv2_client = boto3.client('elbv2')
-ec2_client = boto3.client('ec2')
+sg = ec2.create_security_group(GroupName='ml-alb-sg', Description='ML ALB', VpcId=vpc_id)['GroupId']
+ec2.authorize_security_group_ingress(GroupId=sg, IpPermissions=[
+    {'IpProtocol': 'tcp', 'FromPort': p, 'ToPort': p, 'IpRanges': [{'CidrIp': '0.0.0.0/0'}]} for p in (80, 443)
+])
 
-def create_ml_load_balancer(vpc_id, public_subnet_ids):
-    """
-    Create Application Load Balancer for ML model serving
+lb = elbv2.create_load_balancer(Name='ml-model-alb', Subnets=public_subnet_ids, SecurityGroups=[sg],
+                                 Scheme='internet-facing', Type='application')['LoadBalancers'][0]
+tg_arn = elbv2.create_target_group(
+    Name='ml-model-tg', Protocol='HTTP', Port=8000, VpcId=vpc_id,
+    HealthCheckPath='/health', HealthCheckIntervalSeconds=30, HealthyThresholdCount=2,
+)['TargetGroups'][0]['TargetGroupArn']
 
-    Args:
-        vpc_id: VPC ID
-        public_subnet_ids: List of public subnet IDs
-
-    Returns:
-        Load balancer ARN
-    """
-    # Create security group for load balancer
-    sg_response = ec2_client.create_security_group(
-        GroupName='ml-alb-sg',
-        Description='Security group for ML ALB',
-        VpcId=vpc_id
-    )
-    sg_id = sg_response['GroupId']
-
-    # Allow HTTP/HTTPS from internet
-    ec2_client.authorize_security_group_ingress(
-        GroupId=sg_id,
-        IpPermissions=[
-            {
-                'IpProtocol': 'tcp',
-                'FromPort': 80,
-                'ToPort': 80,
-                'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-            },
-            {
-                'IpProtocol': 'tcp',
-                'FromPort': 443,
-                'ToPort': 443,
-                'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-            }
-        ]
-    )
-
-    # Create load balancer
-    lb_response = elbv2_client.create_load_balancer(
-        Name='ml-model-alb',
-        Subnets=public_subnet_ids,
-        SecurityGroups=[sg_id],
-        Scheme='internet-facing',
-        Type='application',
-        IpAddressType='ipv4',
-        Tags=[
-            {'Key': 'Name', 'Value': 'ml-model-alb'},
-            {'Key': 'Environment', 'Value': 'production'}
-        ]
-    )
-
-    lb_arn = lb_response['LoadBalancers'][0]['LoadBalancerArn']
-    lb_dns = lb_response['LoadBalancers'][0]['DNSName']
-    print(f"Created ALB: {lb_dns}")
-
-    # Create target group
-    tg_response = elbv2_client.create_target_group(
-        Name='ml-model-tg',
-        Protocol='HTTP',
-        Port=8000,
-        VpcId=vpc_id,
-        HealthCheckEnabled=True,
-        HealthCheckProtocol='HTTP',
-        HealthCheckPath='/health',
-        HealthCheckIntervalSeconds=30,
-        HealthCheckTimeoutSeconds=5,
-        HealthyThresholdCount=2,
-        UnhealthyThresholdCount=3,
-        Matcher={'HttpCode': '200'},
-        TargetType='instance'
-    )
-
-    tg_arn = tg_response['TargetGroups'][0]['TargetGroupArn']
-    print(f"Created target group: {tg_arn}")
-
-    # Create listener
-    listener_response = elbv2_client.create_listener(
-        LoadBalancerArn=lb_arn,
-        Protocol='HTTP',
-        Port=80,
-        DefaultActions=[
-            {
-                'Type': 'forward',
-                'TargetGroupArn': tg_arn
-            }
-        ]
-    )
-
-    listener_arn = listener_response['Listeners'][0]['ListenerArn']
-    print(f"Created listener: {listener_arn}")
-
-    return {
-        'lb_arn': lb_arn,
-        'lb_dns': lb_dns,
-        'tg_arn': tg_arn,
-        'listener_arn': listener_arn
-    }
-
-# Usage
-lb_config = create_ml_load_balancer(
-    vpc_id='vpc-12345678',
-    public_subnet_ids=['subnet-1234', 'subnet-5678']
-)
+listener_arn = elbv2.create_listener(
+    LoadBalancerArn=lb['LoadBalancerArn'], Protocol='HTTP', Port=80,
+    DefaultActions=[{'Type': 'forward', 'TargetGroupArn': tg_arn}],
+)['Listeners'][0]['ListenerArn']
 ```
 
-### Advanced Routing for A/B Testing
+### 3.3 A/B Testing and Canary Rollouts
+
+Weighted target groups on the same listener split traffic between model versions without any client-side changes — shift the weight gradually as you gain confidence in a new version:
 
 ```python
-def configure_ab_testing(listener_arn, model_v1_tg_arn, model_v2_tg_arn):
-    """
-    Configure A/B testing with weighted target groups
-
-    90% traffic to v1 (stable)
-    10% traffic to v2 (canary)
-    """
-    elbv2_client = boto3.client('elbv2')
-
-    # Modify listener to use weighted routing
-    elbv2_client.modify_listener(
+def shift_traffic(listener_arn, tg_v1, tg_v2, v2_percentage):
+    elbv2.modify_listener(
         ListenerArn=listener_arn,
-        DefaultActions=[
-            {
-                'Type': 'forward',
-                'ForwardConfig': {
-                    'TargetGroups': [
-                        {
-                            'TargetGroupArn': model_v1_tg_arn,
-                            'Weight': 90
-                        },
-                        {
-                            'TargetGroupArn': model_v2_tg_arn,
-                            'Weight': 10
-                        }
-                    ],
-                    'TargetGroupStickinessConfig': {
-                        'Enabled': True,
-                        'DurationSeconds': 3600  # Sticky for 1 hour
-                    }
-                }
-            }
-        ]
+        DefaultActions=[{'Type': 'forward', 'ForwardConfig': {'TargetGroups': [
+            {'TargetGroupArn': tg_v1, 'Weight': 100 - v2_percentage},
+            {'TargetGroupArn': tg_v2, 'Weight': v2_percentage},
+        ], 'TargetGroupStickinessConfig': {'Enabled': True, 'DurationSeconds': 3600}}}],
     )
 
-    print("Configured A/B testing: 90% v1, 10% v2")
-
-# Gradually shift traffic
-def shift_traffic(listener_arn, model_v1_tg_arn, model_v2_tg_arn, v2_percentage):
-    """
-    Gradually shift traffic to new model version
-    """
-    elbv2_client = boto3.client('elbv2')
-
-    v1_percentage = 100 - v2_percentage
-
-    elbv2_client.modify_listener(
-        ListenerArn=listener_arn,
-        DefaultActions=[
-            {
-                'Type': 'forward',
-                'ForwardConfig': {
-                    'TargetGroups': [
-                        {
-                            'TargetGroupArn': model_v1_tg_arn,
-                            'Weight': v1_percentage
-                        },
-                        {
-                            'TargetGroupArn': model_v2_tg_arn,
-                            'Weight': v2_percentage
-                        }
-                    ]
-                }
-            }
-        ]
-    )
-
-    print(f"Traffic split: {v1_percentage}% v1, {v2_percentage}% v2")
-
-# Canary deployment example
-# Day 1: 10% traffic to v2
+# Canary: 10% -> 50% -> 100% over successive days, watching error/latency metrics between steps
 shift_traffic(listener_arn, tg_v1, tg_v2, v2_percentage=10)
-
-# Day 2: If metrics look good, 50%
 shift_traffic(listener_arn, tg_v1, tg_v2, v2_percentage=50)
-
-# Day 3: Full rollout
 shift_traffic(listener_arn, tg_v1, tg_v2, v2_percentage=100)
 ```
 
 ---
 
-## Content Delivery Network (CDN)
+## 4. Content Delivery Network (CDN)
 
-CDN caches model responses and assets globally for low-latency delivery.
+A CDN caches model responses and static assets at edge locations close to users, cutting latency and offloading the origin.
 
-### CDN Architecture for ML
-
-```
-┌────────────────────────────────────────────────────────────┐
-│                    CDN for ML Serving                      │
-├────────────────────────────────────────────────────────────┤
-│                                                            │
-│  User (US)         User (Europe)       User (Asia)        │
-│     ↓                  ↓                   ↓              │
-│  Edge Location     Edge Location     Edge Location        │
-│  (California)      (Frankfurt)       (Singapore)          │
-│     ↓                  ↓                   ↓              │
-│     └──────────────────┴───────────────────┘              │
-│                        ↓                                   │
-│                  Origin Server                             │
-│              (Load Balancer + Model Servers)               │
-│                                                            │
-│  Benefits:                                                 │
-│  - Latency: 200ms → 50ms (75% reduction)                  │
-│  - Origin load: Reduced by 80% (caching)                  │
-│  - Availability: 99.99% (distributed)                     │
-│  - Cost: Reduced bandwidth costs                          │
-│                                                            │
-└────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    US["User (US)"] --> EdgeUS["Edge: California"]
+    EU["User (Europe)"] --> EdgeEU["Edge: Frankfurt"]
+    AS["User (Asia)"] --> EdgeAS["Edge: Singapore"]
+    EdgeUS --> Origin["Origin<br/>(Load Balancer + Model Servers)"]
+    EdgeEU --> Origin
+    EdgeAS --> Origin
 ```
 
-### CloudFront Setup for ML APIs
+**Benefits:** latency drops from ~200ms to ~50ms (75% reduction), origin load drops ~80% via caching, availability improves to 99.99% through distribution, and bandwidth costs fall since fewer requests reach the origin.
+
+### 4.1 CloudFront for a Model API
+
+The distribution config follows the same origin → cache-behavior → routing shape as an ALB target group, just at the edge instead of in-region. Real-time prediction paths (`/predict`) need `CachingDisabled` since responses must be fresh per request, while static endpoints (model metadata) can cache aggressively:
 
 ```python
-import boto3
+cf = boto3.client('cloudfront')
+CACHING_DISABLED = '4135ea2d-6df8-44a3-9df3-4b5a84be39ad'  # AWS-managed policy
 
-cloudfront_client = boto3.client('cloudfront')
-
-def create_ml_cdn(origin_domain, origin_path='/predict'):
-    """
-    Create CloudFront distribution for ML model serving
-
-    Args:
-        origin_domain: Load balancer DNS name
-        origin_path: API endpoint path
-
-    Returns:
-        CloudFront domain name
-    """
-    import uuid
-
-    # Create distribution configuration
-    config = {
-        'CallerReference': str(uuid.uuid4()),
-        'Comment': 'CDN for ML model serving',
-        'Enabled': True,
-        'Origins': {
-            'Quantity': 1,
-            'Items': [
-                {
-                    'Id': 'ml-origin',
-                    'DomainName': origin_domain,
-                    'CustomOriginConfig': {
-                        'HTTPPort': 80,
-                        'HTTPSPort': 443,
-                        'OriginProtocolPolicy': 'http-only',
-                        'OriginSslProtocols': {
-                            'Quantity': 1,
-                            'Items': ['TLSv1.2']
-                        },
-                        'OriginReadTimeout': 30,
-                        'OriginKeepaliveTimeout': 5
-                    }
-                }
-            ]
-        },
-        'DefaultCacheBehavior': {
-            'TargetOriginId': 'ml-origin',
-            'ViewerProtocolPolicy': 'redirect-to-https',
-            'AllowedMethods': {
-                'Quantity': 7,
-                'Items': ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'PATCH', 'DELETE'],
-                'CachedMethods': {
-                    'Quantity': 2,
-                    'Items': ['GET', 'HEAD']
-                }
-            },
-            'CachePolicyId': '4135ea2d-6df8-44a3-9df3-4b5a84be39ad',  # CachingDisabled (for POST requests)
-            'Compress': True,
-            'MinTTL': 0,
-            'DefaultTTL': 0,
-            'MaxTTL': 0
-        },
-        'CacheBehaviors': {
-            'Quantity': 1,
-            'Items': [
-                {
-                    'PathPattern': '/predict',
-                    'TargetOriginId': 'ml-origin',
-                    'ViewerProtocolPolicy': 'https-only',
-                    'AllowedMethods': {
-                        'Quantity': 3,
-                        'Items': ['GET', 'HEAD', 'POST'],
-                        'CachedMethods': {
-                            'Quantity': 2,
-                            'Items': ['GET', 'HEAD']
-                        }
-                    },
-                    'CachePolicyId': '4135ea2d-6df8-44a3-9df3-4b5a84be39ad',
-                    'Compress': True,
-                    'MinTTL': 0
-                }
-            ]
-        },
-        'PriceClass': 'PriceClass_All',  # All edge locations
-        'ViewerCertificate': {
-            'CloudFrontDefaultCertificate': True
-        }
-    }
-
-    # Create distribution
-    response = cloudfront_client.create_distribution(
-        DistributionConfig=config
-    )
-
-    distribution_id = response['Distribution']['Id']
-    domain_name = response['Distribution']['DomainName']
-
-    print(f"Created CloudFront distribution: {domain_name}")
-    print(f"Distribution ID: {distribution_id}")
-
-    return {
-        'distribution_id': distribution_id,
-        'domain_name': domain_name
-    }
-
-# Usage
-cdn_config = create_ml_cdn('ml-alb-123456.us-east-1.elb.amazonaws.com')
-print(f"Access your model at: https://{cdn_config['domain_name']}/predict")
+dist = cf.create_distribution(DistributionConfig={
+    'CallerReference': str(uuid.uuid4()), 'Comment': 'CDN for ML model serving', 'Enabled': True,
+    'Origins': {'Quantity': 1, 'Items': [{
+        'Id': 'ml-origin', 'DomainName': origin_domain,
+        'CustomOriginConfig': {'HTTPPort': 80, 'HTTPSPort': 443, 'OriginProtocolPolicy': 'http-only'},
+    }]},
+    'DefaultCacheBehavior': {
+        'TargetOriginId': 'ml-origin', 'ViewerProtocolPolicy': 'redirect-to-https',
+        'CachePolicyId': CACHING_DISABLED, 'Compress': True,
+    },
+    'PriceClass': 'PriceClass_All',
+    'ViewerCertificate': {'CloudFrontDefaultCertificate': True},
+})['Distribution']
 ```
 
-### CDN Caching Strategy for ML
+### 4.2 Caching Strategy by Endpoint
+
+| Endpoint | TTL | Rationale |
+|---|---|---|
+| `/models/info` (metadata) | 24h | Rarely changes |
+| `/embeddings/*` | 1h, keyed by user+resource | Expensive to compute, safe to cache per-user |
+| `/predict` | 0 (no caching) | Predictions must be fresh per request |
+| `/batch/results/*` | 5 min, keyed by batch ID | Immutable once written, safe to cache briefly |
+
+---
+
+## 5. Network Security
+
+Securing ML infrastructure means layering security groups, NACLs, and (for VPC-internal traffic) private endpoints.
+
+### 5.1 Security Group Layers
+
+| Layer | Inbound | Outbound |
+|---|---|---|
+| Load Balancer SG | `0.0.0.0/0` : 80, 443 | App Server SG : 8000 |
+| Application Server SG | Load Balancer SG : 8000 | DB SG : 5432, Redis SG : 6379, S3 endpoint |
+| Database SG | App Server SG : 5432 | None required |
+| Training Instance SG | Bastion SG : 22 (SSH) | S3 endpoint, ECR, internet (pip) |
+
+Each layer only accepts traffic from the layer directly in front of it — the database never talks to the internet, and training instances only accept SSH from the bastion, never directly.
+
+### 5.2 Creating Layered Security Groups
 
 ```python
-"""
-CDN Caching Strategy for Different ML Use Cases
-"""
+ec2 = boto3.client('ec2')
 
-# Use Case 1: Static Model Metadata (Cache aggressively)
-model_info_cache = {
-    'path': '/models/info',
-    'cache_ttl': 86400,  # 24 hours
-    'cache_key': 'model_id',
-    'rationale': 'Model metadata rarely changes'
-}
+def sg(name, desc):
+    return ec2.create_security_group(GroupName=name, Description=desc, VpcId=vpc_id)['GroupId']
 
-# Use Case 2: Feature Embeddings (Cache for logged-in users)
-embeddings_cache = {
-    'path': '/embeddings/*',
-    'cache_ttl': 3600,  # 1 hour
-    'cache_key': 'user_id + resource_id',
-    'rationale': 'Embeddings are expensive to compute, safe to cache per user'
-}
+bastion_sg, lb_sg, app_sg, db_sg, training_sg = (
+    sg('ml-bastion-sg', 'Bastion'), sg('ml-lb-sg', 'Load balancer'),
+    sg('ml-app-sg', 'App servers'), sg('ml-db-sg', 'Database'), sg('ml-training-sg', 'Training'),
+)
 
-# Use Case 3: Real-time Predictions (No caching)
-prediction_no_cache = {
-    'path': '/predict',
-    'cache_ttl': 0,  # No caching
-    'rationale': 'Predictions must be fresh for each request'
-}
+ec2.authorize_security_group_ingress(GroupId=bastion_sg, IpPermissions=[
+    {'IpProtocol': 'tcp', 'FromPort': 22, 'ToPort': 22, 'IpRanges': [{'CidrIp': '1.2.3.4/32'}]}])
+ec2.authorize_security_group_ingress(GroupId=lb_sg, IpPermissions=[
+    {'IpProtocol': 'tcp', 'FromPort': p, 'ToPort': p, 'IpRanges': [{'CidrIp': '0.0.0.0/0'}]} for p in (80, 443)])
+ec2.authorize_security_group_ingress(GroupId=app_sg, IpPermissions=[
+    {'IpProtocol': 'tcp', 'FromPort': 8000, 'ToPort': 8000, 'UserIdGroupPairs': [{'GroupId': lb_sg}]}])
+ec2.authorize_security_group_ingress(GroupId=db_sg, IpPermissions=[
+    {'IpProtocol': 'tcp', 'FromPort': 5432, 'ToPort': 5432, 'UserIdGroupPairs': [{'GroupId': app_sg}]}])
+ec2.authorize_security_group_ingress(GroupId=training_sg, IpPermissions=[
+    {'IpProtocol': 'tcp', 'FromPort': 22, 'ToPort': 22, 'UserIdGroupPairs': [{'GroupId': bastion_sg}]}])
+```
 
-# Use Case 4: Batch Inference Results (Short cache)
-batch_results_cache = {
-    'path': '/batch/results/*',
-    'cache_ttl': 300,  # 5 minutes
-    'cache_key': 'batch_id',
-    'rationale': 'Results don\'t change, safe to cache briefly'
-}
+### 5.3 Network ACLs
+
+NACLs add a stateless, subnet-level layer on top of security groups — useful for blocking a specific IP range outright (e.g. a known-malicious block) regardless of what any instance's security group allows:
+
+```python
+nacl_id = ec2.create_network_acl(VpcId=vpc_id)['NetworkAcl']['NetworkAclId']
+
+for rule_num, port in ((100, 80), (110, 443)):
+    ec2.create_network_acl_entry(NetworkAclId=nacl_id, RuleNumber=rule_num, Protocol='6',
+                                  RuleAction='allow', Egress=False, CidrBlock='0.0.0.0/0',
+                                  PortRange={'From': port, 'To': port})
+
+# Deny a specific range, then allow all outbound
+ec2.create_network_acl_entry(NetworkAclId=nacl_id, RuleNumber=50, Protocol='-1',
+                              RuleAction='deny', Egress=False, CidrBlock='192.0.2.0/24')
+ec2.create_network_acl_entry(NetworkAclId=nacl_id, RuleNumber=100, Protocol='-1',
+                              RuleAction='allow', Egress=True, CidrBlock='0.0.0.0/0')
+
+ec2.replace_network_acl_association(AssociationId=subnet_association_id, NetworkAclId=nacl_id)
 ```
 
 ---
 
-## Network Security
+## 6. Hybrid and Multi-Cloud Networking
 
-Securing ML infrastructure requires multiple layers of network security.
+Hybrid connectivity links on-premises infrastructure — an existing data lake, a GPU cluster bought before the team moved to cloud — to the VPC, for workloads that can't (or shouldn't yet) fully migrate. There are two ways to build that link, and they trade cost against bandwidth/latency guarantees rather than one strictly beating the other:
 
-### Security Group Architecture
-
-```
-┌────────────────────────────────────────────────────────────┐
-│                  Security Group Layers                     │
-├────────────────────────────────────────────────────────────┤
-│                                                            │
-│  Layer 1: Load Balancer SG                                 │
-│  ──────────────────────                                    │
-│  Inbound:  0.0.0.0/0:80,443 (Public internet)             │
-│  Outbound: App Server SG:8000                              │
-│                                                            │
-│  Layer 2: Application Server SG                            │
-│  ───────────────────────────                               │
-│  Inbound:  Load Balancer SG:8000                           │
-│  Outbound: Database SG:5432, Redis SG:6379, S3 endpoint   │
-│                                                            │
-│  Layer 3: Database SG                                      │
-│  ─────────────────────                                     │
-│  Inbound:  App Server SG:5432                              │
-│  Outbound: None (no outbound required)                     │
-│                                                            │
-│  Layer 4: Training Instance SG                             │
-│  ──────────────────────────                                │
-│  Inbound:  Bastion SG:22 (SSH)                             │
-│  Outbound: S3 endpoint, ECR (pull images), Internet (pip) │
-│                                                            │
-└────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph OnPrem["On-Premises Datacenter"]
+        Lake["Data Lake"]
+        GPU["GPU Cluster"]
+        CGW["Customer Gateway"]
+    end
+    subgraph AWS["AWS Region"]
+        VPG["Virtual Private Gateway"]
+        DXGW["Direct Connect Gateway"]
+        subgraph VPC["VPC"]
+            Train["Training Subnet"]
+            S3["S3 / Blob Storage"]
+        end
+    end
+    CGW -. "VPN (IPsec over internet)<br/>~1.25 Gbps/tunnel, variable latency" .-> VPG
+    CGW == "Direct Connect (dedicated fiber)<br/>1-100 Gbps, consistent latency" ==> DXGW
+    VPG --> VPC
+    DXGW --> VPC
+    VPC --> Train
+    VPC --> S3
 ```
 
-### Creating Security Groups
+### 6.1 Site-to-Site VPN
+
+A VPN tunnels traffic over the public internet using IPsec — quick to provision (minutes, not weeks) and cheap, but it inherits the internet's variable latency and is capped at roughly 1.25 Gbps per tunnel:
 
 ```python
-import boto3
+ec2 = boto3.client('ec2')
 
-ec2_client = boto3.client('ec2')
+vpg = ec2.create_vpn_gateway(Type='ipsec.1')['VpnGateway']['VpnGatewayId']
+ec2.attach_vpn_gateway(VpcId=vpc_id, VpnGatewayId=vpg)
 
-def create_ml_security_groups(vpc_id):
-    """
-    Create layered security groups for ML infrastructure
+cgw = ec2.create_customer_gateway(Type='ipsec.1', PublicIp=customer_gateway_ip, BgpAsn=65000
+                                   )['CustomerGateway']['CustomerGatewayId']
 
-    Returns:
-        Dictionary of security group IDs
-    """
-    # 1. Bastion SG (SSH access)
-    bastion_sg = ec2_client.create_security_group(
-        GroupName='ml-bastion-sg',
-        Description='Bastion host security group',
-        VpcId=vpc_id
-    )
-    bastion_sg_id = bastion_sg['GroupId']
-
-    # Allow SSH from specific IP (your office/home)
-    ec2_client.authorize_security_group_ingress(
-        GroupId=bastion_sg_id,
-        IpPermissions=[
-            {
-                'IpProtocol': 'tcp',
-                'FromPort': 22,
-                'ToPort': 22,
-                'IpRanges': [{'CidrIp': '1.2.3.4/32', 'Description': 'Office IP'}]
-            }
-        ]
-    )
-
-    # 2. Load Balancer SG
-    lb_sg = ec2_client.create_security_group(
-        GroupName='ml-lb-sg',
-        Description='Load balancer security group',
-        VpcId=vpc_id
-    )
-    lb_sg_id = lb_sg['GroupId']
-
-    # Allow HTTP/HTTPS from internet
-    ec2_client.authorize_security_group_ingress(
-        GroupId=lb_sg_id,
-        IpPermissions=[
-            {
-                'IpProtocol': 'tcp',
-                'FromPort': 80,
-                'ToPort': 80,
-                'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-            },
-            {
-                'IpProtocol': 'tcp',
-                'FromPort': 443,
-                'ToPort': 443,
-                'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-            }
-        ]
-    )
-
-    # 3. Application Server SG
-    app_sg = ec2_client.create_security_group(
-        GroupName='ml-app-sg',
-        Description='ML application server security group',
-        VpcId=vpc_id
-    )
-    app_sg_id = app_sg['GroupId']
-
-    # Allow traffic from load balancer
-    ec2_client.authorize_security_group_ingress(
-        GroupId=app_sg_id,
-        IpPermissions=[
-            {
-                'IpProtocol': 'tcp',
-                'FromPort': 8000,
-                'ToPort': 8000,
-                'UserIdGroupPairs': [{'GroupId': lb_sg_id}]
-            }
-        ]
-    )
-
-    # 4. Database SG
-    db_sg = ec2_client.create_security_group(
-        GroupName='ml-db-sg',
-        Description='Database security group',
-        VpcId=vpc_id
-    )
-    db_sg_id = db_sg['GroupId']
-
-    # Allow traffic from app servers
-    ec2_client.authorize_security_group_ingress(
-        GroupId=db_sg_id,
-        IpPermissions=[
-            {
-                'IpProtocol': 'tcp',
-                'FromPort': 5432,
-                'ToPort': 5432,
-                'UserIdGroupPairs': [{'GroupId': app_sg_id}]
-            }
-        ]
-    )
-
-    # 5. Training Instance SG
-    training_sg = ec2_client.create_security_group(
-        GroupName='ml-training-sg',
-        Description='ML training instance security group',
-        VpcId=vpc_id
-    )
-    training_sg_id = training_sg['GroupId']
-
-    # Allow SSH from bastion
-    ec2_client.authorize_security_group_ingress(
-        GroupId=training_sg_id,
-        IpPermissions=[
-            {
-                'IpProtocol': 'tcp',
-                'FromPort': 22,
-                'ToPort': 22,
-                'UserIdGroupPairs': [{'GroupId': bastion_sg_id}]
-            }
-        ]
-    )
-
-    # Allow outbound HTTPS (for pip, downloads)
-    ec2_client.authorize_security_group_egress(
-        GroupId=training_sg_id,
-        IpPermissions=[
-            {
-                'IpProtocol': 'tcp',
-                'FromPort': 443,
-                'ToPort': 443,
-                'IpRanges': [{'CidrIp': '0.0.0.0/0'}]
-            }
-        ]
-    )
-
-    print("Created all security groups")
-
-    return {
-        'bastion_sg_id': bastion_sg_id,
-        'lb_sg_id': lb_sg_id,
-        'app_sg_id': app_sg_id,
-        'db_sg_id': db_sg_id,
-        'training_sg_id': training_sg_id
-    }
-
-# Usage
-sg_config = create_ml_security_groups('vpc-12345678')
+vpn = ec2.create_vpn_connection(
+    Type='ipsec.1', CustomerGatewayId=cgw, VpnGatewayId=vpg,
+    Options={'StaticRoutesOnly': False},  # use BGP
+)['VpnConnection']['VpnConnectionId']
 ```
 
-### Network ACLs (Additional Layer)
+### 6.2 AWS Direct Connect
 
-```python
-def create_network_acl(vpc_id, subnet_id):
-    """
-    Create Network ACL for additional subnet-level security
+Direct Connect is a physical, dedicated fiber link from your datacenter into an AWS Direct Connect location — no public internet involved at all. For sustained high-bandwidth needs (hybrid training against on-prem storage, continuously moving large datasets), that buys two things a VPN can't: **consistent** latency (no competing internet traffic) and bandwidth up to 100 Gbps instead of ~1.25 Gbps per tunnel.
 
-    Use case: Block specific IP ranges, DDoS protection
-    """
-    ec2_client = boto3.client('ec2')
+**Use cases:** high-bandwidth data transfer (1-100 Gbps), low-latency access to on-prem training data, hybrid (on-prem + cloud) training.
 
-    # Create NACL
-    nacl_response = ec2_client.create_network_acl(
-        VpcId=vpc_id,
-        TagSpecifications=[
-            {
-                'ResourceType': 'network-acl',
-                'Tags': [{'Key': 'Name', 'Value': 'ml-subnet-nacl'}]
-            }
-        ]
-    )
-    nacl_id = nacl_response['NetworkAcl']['NetworkAclId']
+**Setup:** order a Direct Connect connection in the AWS Console, configure a Virtual Interface, set up BGP routing, connect to your datacenter. Unlike VPN, this takes real lead time — provisioning the physical cross-connect typically runs **2-4 weeks**, so it has to be planned ahead of a hard deadline rather than spun up reactively.
 
-    # Allow inbound HTTP/HTTPS
-    ec2_client.create_network_acl_entry(
-        NetworkAclId=nacl_id,
-        RuleNumber=100,
-        Protocol='6',  # TCP
-        RuleAction='allow',
-        Egress=False,
-        CidrBlock='0.0.0.0/0',
-        PortRange={'From': 80, 'To': 80}
-    )
+**Cost:** port-hour $0.30 (1 Gbps) to $2.25 (10 Gbps); data transfer ~$0.02/GB outbound.
 
-    ec2_client.create_network_acl_entry(
-        NetworkAclId=nacl_id,
-        RuleNumber=110,
-        Protocol='6',
-        RuleAction='allow',
-        Egress=False,
-        CidrBlock='0.0.0.0/0',
-        PortRange={'From': 443, 'To': 443}
-    )
+### 6.3 Production Scenario: Direct Connect with VPN Failover
 
-    # Deny specific IP range (example: block malicious traffic)
-    ec2_client.create_network_acl_entry(
-        NetworkAclId=nacl_id,
-        RuleNumber=50,
-        Protocol='-1',  # All protocols
-        RuleAction='deny',
-        Egress=False,
-        CidrBlock='192.0.2.0/24'  # Example blocked range
-    )
+A common real-world setup keeps both links active rather than choosing one: **Direct Connect as the primary path** for the day-to-day bulk transfer of training data (where its bandwidth and consistent latency matter), and a **Site-to-Site VPN as an automatic failover** for the rare case the physical Direct Connect link goes down — a fiber cut, a maintenance window, a hardware fault at the Direct Connect location.
 
-    # Allow all outbound
-    ec2_client.create_network_acl_entry(
-        NetworkAclId=nacl_id,
-        RuleNumber=100,
-        Protocol='-1',
-        RuleAction='allow',
-        Egress=True,
-        CidrBlock='0.0.0.0/0'
-    )
-
-    # Associate with subnet
-    ec2_client.replace_network_acl_association(
-        AssociationId=subnet_id,
-        NetworkAclId=nacl_id
-    )
-
-    print(f"Created NACL: {nacl_id}")
-```
+BGP is what makes the failover automatic: both the VPN and the Direct Connect virtual interface advertise routes to the same on-prem network, and BGP's local-preference attribute is set so Direct Connect is preferred whenever it's up. If it drops, BGP simply stops receiving routes over that path and traffic shifts to the VPN tunnel within the routing protocol's normal convergence time (typically well under a minute) — no manual intervention, no application-level retry logic needed. The tradeoff is that traffic over the VPN fallback runs at ~1.25 Gbps instead of the Direct Connect link's full bandwidth, so a training job mid-transfer during a failover will visibly slow down rather than fail outright — an acceptable degradation for a data pipeline, which is exactly why this pattern is popular for hybrid ML infrastructure specifically rather than for latency-critical production traffic.
 
 ---
 
-## Hybrid and Multi-Cloud Networking
+## 7. Service Mesh
 
-Connect on-premises infrastructure with cloud for hybrid ML workflows.
+A service mesh (Istio, Linkerd) adds traffic management, retries, and observability to microservice-to-microservice calls — useful once model serving is split across multiple versions or multiple specialized services (pre-processing, inference, post-processing).
 
-### VPN Setup for Secure Access
-
-```python
-import boto3
-
-ec2_client = boto3.client('ec2')
-
-def create_vpn_connection(vpc_id, customer_gateway_ip):
-    """
-    Create VPN connection to on-premises datacenter
-
-    Args:
-        vpc_id: VPC ID
-        customer_gateway_ip: Public IP of on-premises VPN device
-
-    Returns:
-        VPN connection ID
-    """
-    # Create Virtual Private Gateway
-    vpg_response = ec2_client.create_vpn_gateway(
-        Type='ipsec.1',
-        TagSpecifications=[
-            {
-                'ResourceType': 'vpn-gateway',
-                'Tags': [{'Key': 'Name', 'Value': 'ml-vpn-gateway'}]
-            }
-        ]
-    )
-    vpg_id = vpg_response['VpnGateway']['VpnGatewayId']
-
-    # Attach to VPC
-    ec2_client.attach_vpn_gateway(
-        VpcId=vpc_id,
-        VpnGatewayId=vpg_id
-    )
-
-    # Create Customer Gateway
-    cgw_response = ec2_client.create_customer_gateway(
-        Type='ipsec.1',
-        PublicIp=customer_gateway_ip,
-        BgpAsn=65000,
-        TagSpecifications=[
-            {
-                'ResourceType': 'customer-gateway',
-                'Tags': [{'Key': 'Name', 'Value': 'onprem-gateway'}]
-            }
-        ]
-    )
-    cgw_id = cgw_response['CustomerGateway']['CustomerGatewayId']
-
-    # Create VPN Connection
-    vpn_response = ec2_client.create_vpn_connection(
-        Type='ipsec.1',
-        CustomerGatewayId=cgw_id,
-        VpnGatewayId=vpg_id,
-        Options={
-            'StaticRoutesOnly': False,  # Use BGP
-            'TunnelOptions': [
-                {
-                    'TunnelInsideCidr': '169.254.10.0/30',
-                    'PreSharedKey': 'your-pre-shared-key-here'
-                },
-                {
-                    'TunnelInsideCidr': '169.254.11.0/30',
-                    'PreSharedKey': 'your-pre-shared-key-here'
-                }
-            ]
-        },
-        TagSpecifications=[
-            {
-                'ResourceType': 'vpn-connection',
-                'Tags': [{'Key': 'Name', 'Value': 'ml-vpn'}]
-            }
-        ]
-    )
-
-    vpn_id = vpn_response['VpnConnection']['VpnConnectionId']
-
-    print(f"Created VPN connection: {vpn_id}")
-    print(f"Configure your on-premises device with the provided config")
-
-    return {
-        'vpn_id': vpn_id,
-        'vpg_id': vpg_id,
-        'cgw_id': cgw_id
-    }
-```
-
-### AWS Direct Connect for High Bandwidth
-
-```python
-"""
-AWS Direct Connect for ML Workloads
-
-Use cases:
-- High-bandwidth data transfer (1-100 Gbps)
-- Low-latency training data access from on-prem storage
-- Hybrid training (on-prem + cloud)
-
-Benefits:
-- Consistent network performance
-- Reduced bandwidth costs
-- Private connectivity (not over internet)
-
-Setup:
-1. Order Direct Connect connection (AWS Console)
-2. Configure Virtual Interface
-3. Set up BGP routing
-4. Connect to your datacenter
-
-Cost:
-- Port hour: $0.30/hour (1 Gbps) to $2.25/hour (10 Gbps)
-- Data transfer: $0.02/GB (outbound)
-"""
-```
-
----
-
-## Service Mesh
-
-Service mesh provides advanced traffic management for microservices-based ML systems.
-
-### Istio for ML Microservices
+### 7.1 Istio for Weighted Model Routing
 
 ```yaml
-# ML Inference Service Mesh with Istio
-
-# Virtual Service for Traffic Management
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: ml-model-service
 spec:
-  hosts:
-  - ml-model.prod.svc.cluster.local
+  hosts: [ml-model.prod.svc.cluster.local]
   http:
-  - match:
-    - headers:
-        version:
-          exact: v2
-    route:
-    - destination:
-        host: ml-model.prod.svc.cluster.local
-        subset: v2
-  - route:  # Default route
-    - destination:
-        host: ml-model.prod.svc.cluster.local
-        subset: v1
-      weight: 90
-    - destination:
-        host: ml-model.prod.svc.cluster.local
-        subset: v2
-      weight: 10
+    - match: [{headers: {version: {exact: v2}}}]
+      route: [{destination: {host: ml-model.prod.svc.cluster.local, subset: v2}}]
+    - route:  # default split
+        - destination: {host: ml-model.prod.svc.cluster.local, subset: v1}
+          weight: 90
+        - destination: {host: ml-model.prod.svc.cluster.local, subset: v2}
+          weight: 10
 ---
-# Destination Rule
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
@@ -1212,258 +413,134 @@ metadata:
 spec:
   host: ml-model.prod.svc.cluster.local
   trafficPolicy:
-    connectionPool:
-      tcp:
-        maxConnections: 100
-      http:
-        http1MaxPendingRequests: 50
-        http2MaxRequests: 100
-        maxRequestsPerConnection: 2
-    outlierDetection:
-      consecutiveErrors: 5
-      interval: 30s
-      baseEjectionTime: 30s
-      maxEjectionPercent: 50
+    connectionPool: {tcp: {maxConnections: 100}, http: {http1MaxPendingRequests: 50, maxRequestsPerConnection: 2}}
+    outlierDetection: {consecutiveErrors: 5, interval: 30s, baseEjectionTime: 30s, maxEjectionPercent: 50}
   subsets:
-  - name: v1
-    labels:
-      version: v1
-  - name: v2
-    labels:
-      version: v2
+    - {name: v1, labels: {version: v1}}
+    - {name: v2, labels: {version: v2}}
 ```
+
+`outlierDetection` here is what makes the mesh self-healing: a subset that returns 5 consecutive errors gets ejected from the routable pool for 30s automatically, without any external health-check system.
 
 ---
 
-## Network Performance Optimization
+## 8. Network Performance Optimization
 
-### Placement Groups for Distributed Training
+### 8.1 Placement Groups for Distributed Training
 
-```python
-def create_cluster_placement_group(name='ml-training-cluster'):
-    """
-    Create placement group for low-latency distributed training
-
-    Use case: Multi-GPU training with AllReduce
-    """
-    ec2_client = boto3.client('ec2')
-
-    response = ec2_client.create_placement_group(
-        GroupName=name,
-        Strategy='cluster',  # Low-latency, high-bandwidth
-        TagSpecifications=[
-            {
-                'ResourceType': 'placement-group',
-                'Tags': [{'Key': 'Purpose', 'Value': 'distributed-training'}]
-            }
-        ]
-    )
-
-    print(f"Created placement group: {name}")
-    print("Launch instances with: --placement-group {name}")
-    return name
-
-# Launch instances in placement group
-def launch_training_cluster(placement_group, num_instances=4):
-    """Launch GPU instances in placement group"""
-    ec2_client = boto3.client('ec2')
-
-    response = ec2_client.run_instances(
-        ImageId='ami-12345678',
-        InstanceType='p3.8xlarge',  # 4x V100 GPUs
-        MinCount=num_instances,
-        MaxCount=num_instances,
-        Placement={
-            'GroupName': placement_group
-        },
-        NetworkInterfaces=[
-            {
-                'DeviceIndex': 0,
-                'AssociatePublicIpAddress': False,
-                'SubnetId': 'subnet-12345678',
-                'Groups': ['sg-training']
-            }
-        ]
-    )
-
-    instance_ids = [i['InstanceId'] for i in response['Instances']]
-    print(f"Launched {num_instances} instances in placement group")
-    return instance_ids
-```
-
-### Enhanced Networking (ENA)
+A `cluster` placement group packs instances physically close together, minimizing the inter-node latency that AllReduce-style synchronization is sensitive to:
 
 ```python
-"""
-Enhanced Networking for ML Workloads
+ec2 = boto3.client('ec2')
+ec2.create_placement_group(GroupName='ml-training-cluster', Strategy='cluster')
 
-Benefits:
-- Higher bandwidth (up to 100 Gbps)
-- Higher packet per second (PPS) performance
-- Lower latency
-- Lower jitter
-
-Supported instances:
-- GPU: p3, p4, g4, g5
-- Compute: c5, c6i, m5, m6i
-
-Enable ENA:
-- Automatically enabled on supported instances
-- Verify: ethtool -i eth0 | grep ena
-
-Performance:
-- Standard: 5-10 Gbps
-- ENA: 25-100 Gbps
-"""
+ec2.run_instances(
+    ImageId='ami-12345678', InstanceType='p3.8xlarge', MinCount=4, MaxCount=4,
+    Placement={'GroupName': 'ml-training-cluster'},
+    NetworkInterfaces=[{'DeviceIndex': 0, 'AssociatePublicIpAddress': False,
+                         'SubnetId': training_subnet_id, 'Groups': [training_sg]}],
+)
 ```
+
+### 8.2 Enhanced Networking (ENA)
+
+ENA raises per-instance bandwidth from the 5-10 Gbps baseline to 25-100 Gbps with lower packet-per-second overhead and jitter — it's automatically enabled on supported instance families (GPU: `p3`/`p4`/`g4`/`g5`; compute: `c5`/`c6i`/`m5`/`m6i`). Verify it's active with `ethtool -i eth0 | grep ena`.
 
 ---
 
-## Monitoring and Troubleshooting
+## 9. Monitoring and Troubleshooting
 
-### Network Monitoring with CloudWatch
+### 9.1 Network Monitoring with CloudWatch
 
 ```python
 import boto3
 from datetime import datetime, timedelta
 
-cloudwatch = boto3.client('cloudwatch')
+cw = boto3.client('cloudwatch')
 
-def get_network_metrics(instance_id, hours=1):
-    """
-    Get network performance metrics for instance
+def network_mbps(instance_id, metric, hours=1):
+    end, start = datetime.utcnow(), datetime.utcnow() - timedelta(hours=hours)
+    points = cw.get_metric_statistics(
+        Namespace='AWS/EC2', MetricName=metric, Dimensions=[{'Name': 'InstanceId', 'Value': instance_id}],
+        StartTime=start, EndTime=end, Period=300, Statistics=['Average'],
+    )['Datapoints']
+    avg_bytes = sum(p['Average'] for p in points) / len(points) if points else 0
+    return avg_bytes / 1024 / 1024 * 8  # -> Mbps
 
-    Returns:
-        Network statistics
-    """
-    end_time = datetime.utcnow()
-    start_time = end_time - timedelta(hours=hours)
-
-    # Network In
-    network_in = cloudwatch.get_metric_statistics(
-        Namespace='AWS/EC2',
-        MetricName='NetworkIn',
-        Dimensions=[{'Name': 'InstanceId', 'Value': instance_id}],
-        StartTime=start_time,
-        EndTime=end_time,
-        Period=300,  # 5 minutes
-        Statistics=['Average', 'Maximum']
-    )
-
-    # Network Out
-    network_out = cloudwatch.get_metric_statistics(
-        Namespace='AWS/EC2',
-        MetricName='NetworkOut',
-        Dimensions=[{'Name': 'InstanceId', 'Value': instance_id}],
-        StartTime=start_time,
-        EndTime=end_time,
-        Period=300,
-        Statistics=['Average', 'Maximum']
-    )
-
-    avg_in = sum(d['Average'] for d in network_in['Datapoints']) / len(network_in['Datapoints']) if network_in['Datapoints'] else 0
-    avg_out = sum(d['Average'] for d in network_out['Datapoints']) / len(network_out['Datapoints']) if network_out['Datapoints'] else 0
-
-    return {
-        'avg_network_in_mbps': avg_in / 1024 / 1024 * 8,
-        'avg_network_out_mbps': avg_out / 1024 / 1024 * 8,
-        'max_network_in_mbps': max((d['Maximum'] for d in network_in['Datapoints']), default=0) / 1024 / 1024 * 8,
-        'max_network_out_mbps': max((d['Maximum'] for d in network_out['Datapoints']), default=0) / 1024 / 1024 * 8
-    }
-
-# Usage
-metrics = get_network_metrics('i-1234567890abcdef0')
-print(f"Average network in: {metrics['avg_network_in_mbps']:.2f} Mbps")
-print(f"Average network out: {metrics['avg_network_out_mbps']:.2f} Mbps")
+print(f"In: {network_mbps(instance_id, 'NetworkIn'):.1f} Mbps, Out: {network_mbps(instance_id, 'NetworkOut'):.1f} Mbps")
 ```
 
-### Troubleshooting Network Issues
+### 9.2 Common Issues and Fixes
 
-```python
-"""
-Common Network Issues and Solutions
+| Symptom | Check | Fix |
+|---|---|---|
+| High latency (>100ms) | Placement group, instance type, region | Use a cluster placement group, enable ENA, pick a closer region |
+| Low bandwidth (<1 Gbps) | Instance type limits, security groups | Upgrade instance type, check for throttling |
+| Connection timeouts | Security groups, NACLs, route tables | Verify SG rules, check NAT gateway, validate routes |
+| Intermittent failures | LB health checks, target health | Adjust health-check thresholds/timeout |
+| Cross-region latency (50-200ms) | Expected for inter-region traffic | Use CloudFront/CDN, consider data locality instead |
 
-1. High Latency (>100ms)
-   - Check: Placement groups, instance type, region
-   - Solution: Use placement groups, enable ENA, choose closer region
+---
 
-2. Low Bandwidth (<1 Gbps)
-   - Check: Instance type bandwidth limits, security groups
-   - Solution: Upgrade instance type, check for throttling
+## 10. Putting It All Together: Secure Multi-Tier ML Network
 
-3. Connection Timeouts
-   - Check: Security groups, NACLs, route tables
-   - Solution: Verify SG rules, check NAT gateway, validate routes
+**Scenario:** Deploy a production-grade inference API with no direct internet access to training instances, load-balanced and CDN-fronted, monitored end-to-end.
 
-4. Intermittent Failures
-   - Check: Load balancer health checks, target health
-   - Solution: Adjust health check settings, increase timeout
+**Requirements:** 99.9%+ availability, secure (no direct internet to training), <100ms API latency, <$500/month.
 
-5. Cross-Region Latency
-   - Check: Inter-region latency (50-200ms is normal)
-   - Solution: Use CloudFront/CDN, consider data locality
-"""
+**Architecture:** 2 AZs, 6 subnets (public/app/training per AZ), 5 layered security groups, 1 ALB, 2 NAT Gateways (HA), 3 auto-scaling model servers, CloudFront in front of the ALB.
+
+```bash
+# 1. VPC, subnets, NAT (section 2.2) across 2 AZs
+# 2. Layered security groups (section 5.2)
+# 3. ALB + target group + listener (section 3.2)
+aws elbv2 create-load-balancer --name ml-model-alb --subnets $PUBLIC_SUBNET_A $PUBLIC_SUBNET_B \
+  --security-groups $LB_SG --scheme internet-facing --type application
+
+# 4. Auto-scaling model servers behind the target group
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name ml-model-asg \
+  --launch-template LaunchTemplateName=ml-model-lt --min-size 3 --max-size 10 \
+  --target-group-arns $TG_ARN --vpc-zone-identifier "$APP_SUBNET_A,$APP_SUBNET_B"
+
+# 5. CloudFront in front of the ALB (section 4.1)
+# 6. CloudWatch alarms on latency and 5xx rate
+aws cloudwatch put-metric-alarm --alarm-name ml-api-latency --metric-name TargetResponseTime \
+  --namespace AWS/ApplicationELB --statistic Average --period 60 --threshold 0.1 \
+  --comparison-operator GreaterThanThreshold --evaluation-periods 3
 ```
 
----
-
-## Hands-on Exercise
-
-### Exercise: Build Secure Multi-Tier ML Network
-
-**Objective**: Deploy a production-grade ML system with:
-- Multi-AZ VPC
-- Layered security groups
-- Application Load Balancer
-- NAT Gateway
-- VPN access for training instances
-- CloudWatch monitoring
-
-**Requirements**:
-1. High availability (99.9%+)
-2. Secure access (no direct internet to training)
-3. Load balanced inference API
-4. <100ms API latency
-5. <$500/month cost
-
-**Expected Architecture**:
-- 2 Availability Zones
-- 6 Subnets (public, app, training per AZ)
-- 5 Security Groups
-- 1 Application Load Balancer
-- 2 NAT Gateways (HA)
-- 3 Model Servers (auto-scaling)
+**Estimated cost (moderate traffic):** ALB ≈ $20/month + LCU usage; 3× `t3.large` model servers ≈ $150/month; 2× NAT Gateway ≈ $65/month + data processing; CloudFront ≈ $50/month for typical API payload volumes; CloudWatch ≈ $10/month. **Total ≈ $300-350/month**, comfortably under the $500 budget with headroom for autoscaling bursts.
 
 ---
 
-## Summary
+## 11. Key Takeaways
 
-In this lesson, you learned:
-
-✅ Design VPCs for ML infrastructure
-✅ Configure load balancers for model serving
-✅ Implement CDN for global delivery
-✅ Secure networks with layered security groups
-✅ Set up VPN and Direct Connect
-✅ Optimize network performance (ENA, placement groups)
-✅ Implement service mesh for microservices
-✅ Monitor and troubleshoot network issues
-
-**Key Takeaways**:
-- VPC design impacts security, performance, and cost
-- Load balancers enable A/B testing and gradual rollouts
-- CDN reduces latency by 75% for global users
-- Layered security (SG + NACL) provides defense in depth
-- Placement groups reduce training time by 30%
-
-**Next Steps**:
-- Complete hands-on exercise
-- Implement VPC for your project
-- Configure load balancer with A/B testing
-- Proceed to Lesson 07: Managed ML Services
+1. **Match the subnet to the traffic pattern**: training is throughput-bound and tolerant of single-AZ placement; inference is latency/availability-bound and belongs behind a load balancer across multiple AZs.
+2. **VPC design is a security boundary first, a routing concern second** — public subnets hold only internet-facing components (LB, NAT, bastion); everything else sits private.
+3. **Load balancers double as a deployment mechanism**: weighted target groups enable canary rollouts and A/B tests with zero client-side changes.
+4. **A CDN is a cost and latency lever, not just a media-delivery tool** — cache what's cacheable (metadata, embeddings) and explicitly disable caching on `/predict`-style endpoints.
+5. **Security is layered, not singular**: security groups (stateful, instance-level) plus NACLs (stateless, subnet-level) plus a bastion for SSH gives defense in depth.
+6. **Hybrid connectivity is a bandwidth/cost tradeoff**: VPN for moderate, ad-hoc access; Direct Connect once you're consistently moving large volumes of training data from on-prem.
+7. **Service mesh outlier detection provides self-healing routing** — failing model server subsets get ejected automatically, without a separate health-check system.
+8. **Placement groups and ENA are the two levers for distributed-training network performance**, and neither costs extra — they're a configuration choice, not a paid tier.
 
 ---
 
-**Estimated Time to Complete**: 6 hours (including hands-on exercise)
-**Difficulty**: Intermediate
+## What's Next?
+
+**Lesson 07** covers managed ML services — the platform layer (SageMaker, Vertex AI, Azure ML) that sits on top of the VPC, compute, and storage foundations built in Lessons 03-06, handling training orchestration and deployment without managing the underlying infrastructure directly.
+
+---
+
+## Further Reading
+
+- **AWS VPC Documentation**: https://docs.aws.amazon.com/vpc/
+- **AWS Elastic Load Balancing**: https://docs.aws.amazon.com/elasticloadbalancing/
+- **AWS CloudFront Documentation**: https://docs.aws.amazon.com/cloudfront/
+- **AWS Direct Connect**: https://docs.aws.amazon.com/directconnect/
+- **Istio Documentation**: https://istio.io/latest/docs/
+- **AWS Enhanced Networking**: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html
+
+---
+
 **Next Lesson**: [07-managed-ml-services.md](./07-managed-ml-services.md)

@@ -2071,54 +2071,13 @@
                     ]
                   },
                   {
-                    "name": "labs",
-                    "type": "directory",
-                    "children": [
-                      {
-                        "name": "Lab 01: Provision an ML-Ready AWS Environment",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/lab-01-aws-ml-infra.md"
-                      },
-                      {
-                        "name": "Lab 02: Provision an ML-Ready GCP Environment",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/lab-02-gcp-ml-infra.md"
-                      },
-                      {
-                        "name": "Lab 03: Provision an ML-Ready Azure Environment",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/lab-03-azure-ml-infra.md"
-                      },
-                      {
-                        "name": "Lab 04: Multi-Cloud Deployment with a Single Tool",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/lab-04-multi-cloud-deployment.md"
-                      },
-                      {
-                        "name": "Module 02 — Labs",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/labs/README.md"
-                      }
-                    ]
-                  },
-                  {
                     "name": "quizzes",
                     "type": "directory",
                     "children": [
                       {
-                        "name": "Module 02 Quiz: Cloud Computing for ML",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/quizzes/module-quiz.md"
-                      },
-                      {
                         "name": "Module 02: Cloud Computing - Final Quiz",
                         "type": "file",
                         "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/quizzes/final-quiz.md"
-                      },
-                      {
-                        "name": "Module 02: Cloud Computing - Mid-Module Quiz",
-                        "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/quizzes/mid-module-quiz.md"
                       }
                     ]
                   },
@@ -2163,7 +2122,7 @@
                     "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/08-multi-cloud-cost-optimization.md"
                   },
                   {
-                    "name": "Module 02 Resources: Cloud Computing for ML",
+                    "name": "Resources: Cloud Computing for ML",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/resources.md"
                   },

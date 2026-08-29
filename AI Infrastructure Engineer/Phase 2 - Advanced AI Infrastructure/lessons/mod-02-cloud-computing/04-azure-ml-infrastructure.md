@@ -438,7 +438,7 @@ kubectl get deployments; kubectl get pods; kubectl get services
 
 **GPU deployment**: add a `nodeSelector`/`toleration` to land pods on the tainted GPU node pool, and request `nvidia.com/gpu: 1` in the container's `resources` block.
 
-### 4.5 Autoscaling
+### 4.4 Autoscaling
 
 ```bash
 # Cluster autoscaler (nodes)
@@ -561,7 +561,7 @@ print(response['choices'][0]['message']['content'])
 
 `openai.Embedding.create(engine="text-embedding-ada-002", input=...)` and `openai.Image.create(prompt=..., size="1024x1024")` follow the same pattern for embeddings and DALL-E. A common integration is applying `ChatCompletion` row-by-row over an Azure ML dataset (e.g. `df['sentiment'] = df['feedback'].apply(classify_fn)`) to enrich data as part of a pipeline step.
 
-### 6.4 Pricing
+### 6.3 Pricing
 
 | Model | Price |
 |---|---|
@@ -826,4 +826,10 @@ Application Gateway for public HTTPS ingress into the AKS backend pool is set up
 - **Azure CLI Reference**: https://docs.microsoft.com/cli/azure/
 - **Azure Pricing Calculator**: https://azure.microsoft.com/pricing/calculator/
 - **Azure Cost Management**: https://azure.microsoft.com/services/cost-management/
+
+---
+
+**Estimated Time to Complete**: 5 hours
+**Difficulty**: Intermediate
+**Next Lesson**: [05-cloud-storage.md](./05-cloud-storage.md)
 
