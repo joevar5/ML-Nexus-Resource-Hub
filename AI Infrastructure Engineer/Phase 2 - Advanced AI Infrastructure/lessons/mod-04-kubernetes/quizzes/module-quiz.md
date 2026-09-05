@@ -57,9 +57,12 @@ B) kubelet - The node agent that ensures containers are running in pods as speci
 ### Question 4
 **True or False: The kube-scheduler is responsible for deciding which node a pod runs on.**
 
+A) True
+B) False
+
 <details>
 <summary>Answer</summary>
-True - The scheduler watches for newly created pods with no assigned node and selects a node for them to run on based on resource requirements and constraints.
+A) True - The scheduler watches for newly created pods with no assigned node and selects a node for them to run on based on resource requirements and constraints.
 </details>
 
 ---
@@ -144,9 +147,12 @@ A) ConfigMaps are for configuration; Secrets are for sensitive data (base64 enco
 ### Question 10
 **True or False: Labels are key-value pairs attached to Kubernetes objects used for organizing and selecting resources.**
 
+A) True
+B) False
+
 <details>
 <summary>Answer</summary>
-True - Labels enable users to map organizational structures onto system objects and are used by selectors to identify groups of objects
+A) True - Labels enable users to map organizational structures onto system objects and are used by selectors to identify groups of objects
 </details>
 
 ---
@@ -216,9 +222,12 @@ C) ClusterIP - Exposes the service on a cluster-internal IP, making it only reac
 ### Question 15
 **True or False: An Ingress controller is required for Ingress resources to function.**
 
+A) True
+B) False
+
 <details>
 <summary>Answer</summary>
-True - Ingress resources define routing rules, but an Ingress controller (like Nginx, Traefik) is needed to implement those rules
+A) True - Ingress resources define routing rules, but an Ingress controller (like Nginx, Traefik) is needed to implement those rules
 </details>
 
 ---
@@ -316,9 +325,12 @@ A) StorageClass - Defines classes of storage with different properties (e.g., SS
 ### Question 21
 **True or False: ConfigMaps can be mounted as volumes or exposed as environment variables in pods.**
 
+A) True
+B) False
+
 <details>
 <summary>Answer</summary>
-True - ConfigMaps can be consumed in both ways, providing flexibility in how configuration is provided to applications
+A) True - ConfigMaps can be consumed in both ways, providing flexibility in how configuration is provided to applications
 </details>
 
 ---
@@ -454,24 +466,24 @@ spec:
 1. B (etcd)
 2. C (Pod)
 3. B (kubelet)
-4. True
+4. A (True)
 5. B (kubectl)
 6. C (Controller Manager)
 7. C (Declarative updates)
 8. C (DaemonSet)
 9. A (ConfigMaps for config, Secrets for sensitive)
-10. True
+10. A (True)
 11. B (resources.requests)
 12. B (Logical isolation)
 13. B (NodePort)
 14. C (ClusterIP)
-15. True
+15. A (True)
 16. C (Label selectors)
 17. B (Ingress)
 18. Short Answer (see details)
 19. C (PV is storage, PVC is request)
 20. A (StorageClass)
-21. True
+21. A (True)
 22. B (StatefulSet)
 23. A (nvidia.com/gpu in requests)
 24. B (Package manager)

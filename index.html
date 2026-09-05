@@ -206,21 +206,31 @@
 
         <!-- Curated Learning Paths Links -->
         <nav class="flex-shrink-0 flex flex-col gap-1" id="sidebar-categories">
-            <button onclick="navigateToCategory('Infrastructure')"
+            <button onclick="navigateToCategory('AI Infrastructure Engineer')"
                 class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
-                data-category="Infrastructure">
+                data-category="AI Infrastructure Engineer">
                 <div class="flex items-center gap-2 overflow-hidden flex-1">
                     <span class="material-symbols-outlined text-xl flex-shrink-0">memory</span>
-                    <span class="font-label text-sm truncate">Infrastructure</span>
+                    <span class="font-label text-sm truncate">AI Infrastructure Engineer</span>
                 </div>
             </button>
-            <button onclick="navigateToCategory('System Design')"
+            <button onclick="navigateToCategory('ML & GenAI System Design')"
                 class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
-                data-category="System Design">
+                data-category="ML & GenAI System Design">
                 <div class="flex items-center gap-2 overflow-hidden flex-1">
                     <span class="material-symbols-outlined text-xl flex-shrink-0">schema</span>
-                    <span class="font-label text-sm truncate">System Design</span>
+                    <span class="font-label text-sm truncate">ML & GenAI System Design</span>
                 </div>
+            </button>
+            <button onclick="navigateToCategory('GenAI Atlas')"
+                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
+                data-category="GenAI Atlas">
+                <div class="flex items-center gap-2 overflow-hidden flex-1">
+                    <span class="material-symbols-outlined text-xl flex-shrink-0">lock</span>
+                    <span class="font-label text-sm truncate">GenAI Atlas</span>
+                </div>
+                <span
+                    class="font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
             </button>
             <button onclick="navigateToCategory('Coding')"
                 class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
@@ -230,20 +240,20 @@
                     <span class="font-label text-sm truncate">Coding</span>
                 </div>
             </button>
-            <button onclick="navigateToCategory('Projects')"
+            <button onclick="navigateToCategory('The Build Lab')"
                 class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
-                data-category="Projects">
+                data-category="The Build Lab">
                 <div class="flex items-center gap-2 overflow-hidden flex-1">
                     <span class="material-symbols-outlined text-xl flex-shrink-0">terminal</span>
-                    <span class="font-label text-sm truncate">Projects</span>
+                    <span class="font-label text-sm truncate">The Build Lab</span>
                 </div>
             </button>
-            <button onclick="navigateToCategory('Paper Analysis')"
+            <button onclick="navigateToCategory('Engineering Blog Dissections')"
                 class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
-                data-category="Paper Analysis">
+                data-category="Engineering Blog Dissections">
                 <div class="flex items-center gap-2 overflow-hidden flex-1">
                     <span class="material-symbols-outlined text-xl flex-shrink-0">lock</span>
-                    <span class="font-label text-sm truncate">Paper Analysis</span>
+                    <span class="font-label text-sm truncate">Engineering Blog Dissections</span>
                 </div>
                 <span
                     class="font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
@@ -324,7 +334,7 @@
 
                     <!-- CTA -->
                     <div class="hero-cta-row">
-                        <button onclick="navigateToCategory('Infrastructure')" class="hero-cta-primary">
+                        <button onclick="navigateToCategory('AI Infrastructure Engineer')" class="hero-cta-primary">
                             <span class="material-symbols-outlined" style="font-size:18px">architecture</span>
                             Start the Path
                         </button>
@@ -481,8 +491,8 @@
                     <div class="text-center mb-16">
                         <h2 class="font-display text-4xl text-on-surface">Your Path to AI Infrastructure</h2>
                         <p class="font-body text-md text-on-surface-variant mt-3 max-w-xl mx-auto">
-                            Four focused tracks — from infrastructure foundations to advanced research — building the
-                            skills that define a world-class AI engineer.
+                            Five focused tracks — from infrastructure foundations to real-world engineering practice —
+                            building the skills that define a world-class AI engineer.
                         </p>
                     </div>
 
@@ -497,7 +507,7 @@
                         <div class="space-y-8 relative">
 
                             <!-- Node 01: AI Infrastructure Engineer (RIGHT — primary focus) -->
-                            <div onclick="navigateToCategory('Infrastructure')"
+                            <div onclick="navigateToCategory('AI Infrastructure Engineer')"
                                 class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
                                 <!-- Running Border Line -->
                                 <svg class="absolute inset-0 w-full h-full pointer-events-none"
@@ -529,7 +539,7 @@
                             </div>
 
                             <!-- Node 02: ML &amp; GenAI System Design (LEFT) -->
-                            <div onclick="navigateToCategory('System Design')"
+                            <div onclick="navigateToCategory('ML & GenAI System Design')"
                                 class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
                                 <!-- Running Border Line -->
                                 <svg class="absolute inset-0 w-full h-full pointer-events-none"
@@ -570,9 +580,9 @@
                                 </div>
                             </div>
 
-                            <!-- Node 03: ML &amp; GenAI Projects (RIGHT) -->
-                            <div onclick="navigateToCategory('Projects')"
-                                class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
+                            <!-- Node 03: GenAI Atlas (RIGHT, LOCKED) -->
+                            <div onclick="navigateToCategory('GenAI Atlas')"
+                                class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
                                 <!-- Running Border Line -->
                                 <svg class="absolute inset-0 w-full h-full pointer-events-none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -585,26 +595,27 @@
 
                                 <!-- Center badge -->
                                 <div
-                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-xl">terminal</span>
+                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-highest text-on-surface-variant/80 border border-outline-variant flex items-center justify-center shadow z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-xl">lock</span>
                                 </div>
 
                                 <!-- Right side text -->
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
                                     <h3 class="font-display text-xl text-on-surface font-bold flex items-center gap-2">
-                                        03. The Build Lab
+                                        03. GenAI Atlas
+                                        <span
+                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
-                                        Where ideas turn into working systems — full model-to-production
-                                        pipelines built end-to-end, alongside smaller experiments and tools
-                                        shipped along the way.
+                                        LLMs, fine-tuning, agents, and RAG — the concepts underneath every modern
+                                        GenAI system, distilled into primers you can actually use.
                                     </p>
                                 </div>
                             </div>
 
-                            <!-- Node 04: Paper Analysis (LEFT) -->
-                            <div onclick="navigateToCategory('Paper Analysis')"
-                                class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
+                            <!-- Node 04: The Build Lab (LEFT) -->
+                            <div onclick="navigateToCategory('The Build Lab')"
+                                class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
                                 <!-- Running Border Line -->
                                 <svg class="absolute inset-0 w-full h-full pointer-events-none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -617,15 +628,47 @@
                                     class="hidden md:block w-[42%] text-right pr-6 group-hover:scale-[1.01] transition-transform">
                                     <h3
                                         class="font-display text-xl text-on-surface font-bold flex items-center justify-end gap-2">
-                                        04. Paper Analysis
-                                        <span
-                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
+                                        04. The Build Lab
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
-                                        Breaking down the math and implementation details of breakthrough research
-                                        papers.
+                                        Where ideas turn into working systems — full model-to-production
+                                        pipelines built end-to-end, alongside smaller experiments and tools
+                                        shipped along the way.
                                     </p>
                                 </div>
+
+                                <!-- Center badge -->
+                                <div
+                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-xl">terminal</span>
+                                </div>
+
+                                <!-- Right side (Mobile only) -->
+                                <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
+                                    <h3
+                                        class="font-display text-xl text-on-surface font-bold md:hidden flex items-center gap-2">
+                                        04. The Build Lab
+                                    </h3>
+                                    <p class="text-on-surface-variant text-sm mt-2 leading-relaxed md:hidden">
+                                        Where ideas turn into working systems — full model-to-production
+                                        pipelines built end-to-end, alongside smaller experiments and tools
+                                        shipped along the way.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Node 05: Engineering Blog Dissections (RIGHT, LOCKED) -->
+                            <div onclick="navigateToCategory('Engineering Blog Dissections')"
+                                class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
+                                <!-- Running Border Line -->
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect class="timeline-border-rect" x="0" y="0" width="100%" height="100%"
+                                        fill="none" stroke-width="1.5" rx="8" />
+                                </svg>
+
+                                <!-- Left side spacer (Desktop) -->
+                                <div class="hidden md:block w-[42%] pr-6"></div>
 
                                 <!-- Center badge -->
                                 <div
@@ -633,17 +676,16 @@
                                     <span class="material-symbols-outlined text-xl">lock</span>
                                 </div>
 
-                                <!-- Right side (Mobile only) -->
+                                <!-- Right side text -->
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
-                                    <h3
-                                        class="font-display text-xl text-on-surface font-bold md:hidden flex items-center gap-2">
-                                        04. Paper Analysis
+                                    <h3 class="font-display text-xl text-on-surface font-bold flex items-center gap-2">
+                                        05. Engineering Blog Dissections
                                         <span
                                             class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
                                     </h3>
-                                    <p class="text-on-surface-variant text-sm mt-2 leading-relaxed md:hidden">
-                                        Breaking down the math and implementation details of breakthrough research
-                                        papers.
+                                    <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
+                                        Breaking down how real engineering teams actually solved hard problems —
+                                        Netflix, Uber, Stripe, OpenAI — instead of academic papers.
                                     </p>
                                 </div>
                             </div>
@@ -936,14 +978,14 @@
                                 </p>
                             </div>
                             <div class="flex flex-wrap gap-3">
-                                <button onclick="navigateToCategory('Infrastructure')" class="explore-track-btn">
+                                <button onclick="navigateToCategory('AI Infrastructure Engineer')" class="explore-track-btn">
                                     <span class="material-symbols-outlined text-base">memory</span>
-                                    <span>Infrastructure</span>
+                                    <span>AI Infrastructure Engineer</span>
                                     <span class="material-symbols-outlined text-sm explore-track-btn-arrow">arrow_forward</span>
                                 </button>
-                                <button onclick="navigateToCategory('System Design')" class="explore-track-btn">
+                                <button onclick="navigateToCategory('ML & GenAI System Design')" class="explore-track-btn">
                                     <span class="material-symbols-outlined text-base">schema</span>
-                                    <span>System Design</span>
+                                    <span>ML & GenAI System Design</span>
                                     <span class="material-symbols-outlined text-sm explore-track-btn-arrow">arrow_forward</span>
                                 </button>
                             </div>
@@ -955,15 +997,15 @@
                                     class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
                                     <span class="material-symbols-outlined text-3xl">terminal</span>
                                 </div>
-                                <h3 class="text-2xl font-headline font-bold mb-3">Projects</h3>
+                                <h3 class="text-2xl font-headline font-bold mb-3">The Build Lab</h3>
                                 <p class="text-on-surface-variant text-sm leading-relaxed mb-6">
                                     Hands-on, production-grade builds spanning the full ML lifecycle — an end-to-end
                                     pipeline covering model APIs, Kubernetes serving, and monitoring.
                                 </p>
                             </div>
-                            <button onclick="navigateToCategory('Projects')"
+                            <button onclick="navigateToCategory('The Build Lab')"
                                 class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label">
-                                Go to Projects
+                                Go to The Build Lab
                             </button>
                         </div>
                         <div

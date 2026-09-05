@@ -26,7 +26,7 @@ Every real ML system eventually has to live somewhere that isn't your laptop. Th
 
 ## Hands-on
 
-Each lesson ends with a deploy-something exercise, building toward a capstone: **deploy a production-ready ML system** that's multi-region, auto-scales, stays under $50/month, and hits 99.9% availability.
+Each lesson ends with a deploy-something exercise (see [`exercises/`](./exercises/)), building toward a capstone: **deploy a production-ready ML system** that's multi-region, auto-scales, stays under $50/month, and hits 99.9% availability.
 
 ## Before you start
 
@@ -44,7 +44,7 @@ pip install awscli azure-cli
 ## Assessment
 
 - **Quiz** — [`quizzes/final-quiz.md`](./quizzes/final-quiz.md), 50 questions covering all 8 lessons, 80% to pass
-- Three practical exercises: multi-cloud deployment, a cost-optimization challenge, and a network architecture design
+- Eight hands-on exercises (see [`exercises/`](./exercises/)): cost analysis, multi-cloud deployment, disaster recovery, cross-region replication, networking, managed services, multi-account security, and FinOps automation
 
 ## What's next
 

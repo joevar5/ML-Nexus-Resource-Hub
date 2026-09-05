@@ -1,480 +1,207 @@
-# Lesson 07: GPU Support in Docker
+# Lesson 06: GPU Support in Docker
 
-**Duration:** 5 hours
-**Objectives:** Run GPU-accelerated ML workloads in Docker containers
+GPU workloads need the driver, CUDA, and your ML framework to be on matching versions — and that's fragile to get right by hand on every machine. The NVIDIA Container Toolkit solves this: it lets a container use the host's GPU without the driver having to live inside the image, so one image runs unchanged on any host with a compatible driver.
 
-## Learning Objectives
+In this lesson you'll learn how to:
 
-By the end of this lesson, you will be able to:
+- Install and verify the NVIDIA Container Toolkit
+- Pick the right CUDA base image for training vs. inference
+- Allocate and monitor GPUs inside a container
+- Run multi-GPU training
 
-1. Install and configure NVIDIA Container Toolkit
-2. Run GPU-accelerated containers
-3. Use CUDA-enabled base images
-4. Map specific GPUs to containers
-5. Monitor GPU usage in containerized workloads
-6. Deploy multi-GPU training containers
-7. Troubleshoot common GPU container issues
+**Prerequisites:** a machine with an NVIDIA GPU and driver installed; comfort building Dockerfiles (Lessons 01-02).
 
-## Why GPU Containers?
+### Contents
 
-### The Challenge
+1. [Why GPU Containers](#why-gpu-containers)
+2. [NVIDIA Container Toolkit](#nvidia-container-toolkit)
+3. [Running GPU Containers](#running-gpu-containers)
+4. [CUDA Base Images](#cuda-base-images)
+5. [Building GPU-Enabled Images](#building-gpu-enabled-images)
+6. [GPU Allocation and Monitoring](#gpu-allocation-and-monitoring)
+7. [Multi-GPU Training](#multi-gpu-training)
+8. [Common Issues](#common-issues)
+9. [Practical Exercise](#practical-exercise)
+10. [Key Takeaways](#key-takeaways)
+11. [Additional Resources](#additional-resources)
 
-Machine learning training and inference often require GPUs for acceptable performance:
-- **Training**: 100x faster with GPU vs CPU
-- **Inference**: 10-50x faster for large models
-- **Cost**: More cost-effective (faster = cheaper cloud bills)
+---
 
-**But GPUs add complexity:**
-- CUDA drivers must match toolkit versions
-- Library dependencies are fragile
-- GPU resources need careful allocation
-- Environment setup is error-prone
+## Why GPU Containers
 
-### The Solution: GPU Containers
+Two pieces make GPU access work, and they live in different places:
 
-Docker containers with GPU support solve these problems:
+- **Driver** — lives on the **host**. Talks directly to the physical GPU. Never goes inside a container.
+- **CUDA libraries** — live **inside the container/image**. This is the version your code actually compiles/runs against.
 
-```
-┌──────────────────────────────────────────────┐
-│           GPU Container Benefits              │
-├──────────────────────────────────────────────┤
-│                                               │
-│  ✅ Reproducible GPU environments            │
-│  ✅ No driver/CUDA version conflicts         │
-│  ✅ Easy multi-GPU resource allocation       │
-│  ✅ Portable across different machines       │
-│  ✅ Isolation between workloads              │
-│                                               │
-└──────────────────────────────────────────────┘
+The **NVIDIA Container Toolkit** is what connects the two — it lets a container reach the host's GPU driver without needing its own copy of it:
+
+```mermaid
+flowchart TB
+    App["ML app (PyTorch/TF)"] --> CUDA["CUDA libraries (in container)"]
+    CUDA --> Toolkit["NVIDIA Container Toolkit"]
+    Toolkit --> Engine["Docker Engine"]
+    Engine --> Driver["NVIDIA Driver (host)"]
+    Driver --> GPU["GPU Hardware"]
 ```
 
-**Real-World Impact:**
-- Setup time: 2-3 hours → 5 minutes
-- Consistency: "works on my machine" eliminated
-- Resource utilization: 40% → 80%+ (better GPU sharing)
+> [!NOTE]
+> The only host requirement is a driver new enough to support your container's CUDA version — the CUDA libraries themselves travel with the image, not the host. That's why the same image runs unchanged on a laptop and a cloud GPU instance: swap hosts, keep the image, just make sure the host driver is recent enough.
+
+---
 
 ## NVIDIA Container Toolkit
 
-### Architecture
-
-```
-┌────────────────────────────────────────────────┐
-│                  Docker Container               │
-│  ┌──────────────────────────────────────────┐  │
-│  │     ML Application (PyTorch/TF)          │  │
-│  │              ↓                            │  │
-│  │        CUDA Libraries                     │  │
-│  └──────────────────────────────────────────┘  │
-└─────────────────────┬──────────────────────────┘
-                      │
-        ┌─────────────▼──────────────┐
-        │  NVIDIA Container Toolkit   │
-        │    (nvidia-docker2)         │
-        └─────────────┬───────────────┘
-                      │
-        ┌─────────────▼──────────────┐
-        │    Docker Engine            │
-        └─────────────┬───────────────┘
-                      │
-        ┌─────────────▼──────────────┐
-        │   NVIDIA Driver (Host)      │
-        └─────────────┬───────────────┘
-                      │
-        ┌─────────────▼──────────────┐
-        │      GPU Hardware           │
-        └─────────────────────────────┘
-```
-
-**Key Components:**
-1. **NVIDIA Driver** - On host OS (e.g., 525.125.06)
-2. **NVIDIA Container Toolkit** - Exposes GPUs to Docker
-3. **CUDA Libraries** - Inside container (can be different versions!)
-
-### Installation
-
-**Prerequisites:**
 ```bash
-# Check if you have NVIDIA GPU
+# Confirm hardware and driver first
 lspci | grep -i nvidia
-
-# Check NVIDIA driver
 nvidia-smi
-```
 
-**Install NVIDIA Container Toolkit:**
-
-```bash
-# Ubuntu/Debian
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+# Ubuntu/Debian install
+distribution=$(. /etc/os-release; echo $ID$VERSION_ID)
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | \
     sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
-
 curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
     sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
     sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 
-sudo apt-get update
-sudo apt-get install -y nvidia-container-toolkit
-
-# Configure Docker
 sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
-```
 
-**Verify Installation:**
-
-```bash
-# Test GPU access in container
+# Verify
 docker run --rm --gpus all nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
-
-# Should show your GPU(s)
 ```
+
+If the last command doesn't print the host's GPU(s), the toolkit isn't wired into the Docker runtime — check `nvidia-ctk --version` and that Docker restarted cleanly.
+
+---
 
 ## Running GPU Containers
 
-### Basic GPU Container
-
 ```bash
-# Run with all GPUs
-docker run --rm --gpus all nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
-
-# Run with specific number of GPUs
-docker run --rm --gpus 2 nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
-
-# Run with specific GPU device
-docker run --rm --gpus '"device=0"' nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
-
-# Run with multiple specific GPUs
-docker run --rm --gpus '"device=0,2"' nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
+docker run --rm --gpus all nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi        # all GPUs
+docker run --rm --gpus 2 nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi          # first 2
+docker run --rm --gpus '"device=0"' nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi   # GPU 0 only
+docker run --rm --gpus '"device=0,2"' nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi # GPUs 0 and 2
 ```
 
-### GPU Flags Explained
-
-```bash
-# All GPUs
---gpus all
-
-# Specific count
---gpus 2
-
-# Specific devices
---gpus '"device=0"'
---gpus '"device=0,1,3"'
-
-# GPU capabilities (for advanced use)
---gpus '"capabilities=compute,utility"'
-```
+---
 
 ## CUDA Base Images
 
-### NVIDIA Official Images
-
-**Image Naming Convention:**
-```
-nvidia/cuda:[CUDA_VERSION]-[FLAVOR]-[OS]
-
-Examples:
-nvidia/cuda:12.1.0-base-ubuntu22.04
-nvidia/cuda:12.1.0-runtime-ubuntu22.04
-nvidia/cuda:12.1.0-devel-ubuntu22.04
-nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04
-```
-
-**Flavors:**
+Naming: `nvidia/cuda:[CUDA_VERSION]-[FLAVOR]-[OS]`, e.g. `nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04`.
 
 | Flavor | Size | Contents | Use Case |
-|--------|------|----------|----------|
-| **base** | ~200MB | CUDA runtime only | Minimal GPU access |
-| **runtime** | ~1.5GB | CUDA runtime + libraries | Inference |
-| **devel** | ~3.5GB | Runtime + compilers, headers | Training, building from source |
-| **cudnn** | Varies | + cuDNN (deep learning) | Deep learning workloads |
+|---|---|---|---|
+| `base` | ~200MB | CUDA runtime only | Minimal GPU access, custom builds |
+| `runtime` | ~1.5GB | Runtime + libraries | Inference |
+| `devel` | ~3.5GB | Runtime + compilers, headers | Training, building CUDA extensions from source |
+| `cudnn` (add-on tag) | varies | + cuDNN | Any deep learning workload |
 
-### Choosing the Right Image
-
-```
-Need to compile CUDA code?
-├─ Yes → devel
-└─ No  → Do you need cuDNN?
-    ├─ Yes → cudnn8-runtime
-    └─ No  → runtime
-```
-
-**Examples:**
+Pick `devel` only if the build actually compiles CUDA code; otherwise `runtime` is smaller and has a smaller attack surface. Add `cudnn` for anything using PyTorch/TensorFlow's GPU convolution kernels.
 
 ```dockerfile
-# Inference (lightweight)
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
-
-# Training (need compilers)
-FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
-
-# Minimal GPU access
-FROM nvidia/cuda:12.1.0-base-ubuntu22.04
+FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04   # inference
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04     # training, needs compilers
+FROM nvidia/cuda:12.1.0-base-ubuntu22.04             # minimal GPU access
 ```
+
+---
 
 ## Building GPU-Enabled Images
 
-### PyTorch GPU Image
+The pattern is the same across frameworks: start from a CUDA base, install Python, install the framework's CUDA-matched build, verify GPU visibility at build time.
 
-**Dockerfile:**
 ```dockerfile
 FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
 
-# Install Python
-RUN apt-get update && apt-get install -y \
-    python3.11 \
-    python3-pip \
+RUN apt-get update && apt-get install -y python3.11 python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
-# Install PyTorch with CUDA 12.1
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir \
-    torch==2.1.0 torchvision==0.16.0 \
+RUN pip3 install --no-cache-dir torch==2.1.0 torchvision==0.16.0 \
     --index-url https://download.pytorch.org/whl/cu121
-
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . /app
-
-# Verify GPU access
 RUN python3 -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
 
 ENV PYTHONUNBUFFERED=1
-
 CMD ["python3", "train.py"]
 ```
 
-**Build and Run:**
-```bash
-# Build
-docker build -t pytorch-gpu:v1 .
+The critical detail is the `--index-url` — PyTorch wheels are built against a specific CUDA version, and pulling the plain PyPI wheel (CPU-only, or built for the wrong CUDA) is the single most common cause of "CUDA not available" inside a container that otherwise has GPU access.
 
-# Run with GPU
-docker run --rm --gpus all pytorch-gpu:v1
-```
+TensorFlow's GPU build is a single extras-tagged install: `pip3 install tensorflow[and-cuda]==2.15.0`. Hugging Face stacks add `transformers`, `accelerate`, and `bitsandbytes` on top of the same CUDA-matched PyTorch base.
 
-### TensorFlow GPU Image
+---
 
-**Dockerfile:**
-```dockerfile
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
+## GPU Allocation and Monitoring
 
-# Install Python
-RUN apt-get update && apt-get install -y \
-    python3.11 \
-    python3-pip \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-
-# Install TensorFlow with GPU support
-RUN pip3 install --no-cache-dir tensorflow[and-cuda]==2.15.0
-
-COPY . /app
-
-# Verify GPU
-RUN python3 -c "import tensorflow as tf; print('GPUs:', tf.config.list_physical_devices('GPU'))"
-
-CMD ["python3", "train.py"]
-```
-
-### Hugging Face Transformers GPU
-
-**Dockerfile:**
-```dockerfile
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
-
-RUN apt-get update && apt-get install -y \
-    python3.11 \
-    python3-pip \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-
-# Install transformers with PyTorch GPU support
-RUN pip3 install --no-cache-dir \
-    torch==2.1.0 \
-    --index-url https://download.pytorch.org/whl/cu121
-
-RUN pip3 install --no-cache-dir \
-    transformers==4.35.0 \
-    accelerate \
-    bitsandbytes
-
-COPY . /app
-
-CMD ["python3", "inference.py"]
-```
-
-## GPU Resource Management
-
-### Limiting GPU Memory
-
-**Set memory limit:**
-```bash
-# Limit to 4GB
-docker run --rm --gpus all \
-    -e CUDA_VISIBLE_DEVICES=0 \
-    -e PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:4096 \
-    pytorch-gpu:v1
-```
-
-**In Python code:**
-```python
-import torch
-
-# Limit GPU memory fraction
-torch.cuda.set_per_process_memory_fraction(0.5, device=0)  # Use 50% of GPU 0
-
-# Or set memory limit
-import os
-os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:512'
-```
-
-### Multi-GPU Allocation
+**Per-container GPU pinning** — run separate workers against separate GPUs:
 
 ```bash
-# Container 1: Use GPU 0
 docker run -d --name worker1 --gpus '"device=0"' pytorch-gpu:v1
-
-# Container 2: Use GPU 1
 docker run -d --name worker2 --gpus '"device=1"' pytorch-gpu:v1
-
-# Container 3: Use GPUs 2 and 3
 docker run -d --name worker3 --gpus '"device=2,3"' pytorch-gpu:v1
 ```
 
-### GPU Sharing (MIG - Multi-Instance GPU)
-
-For NVIDIA A100/H100 GPUs:
+**Memory control** — cap fragmentation-prone PyTorch allocations, or set a hard fraction in code:
 
 ```bash
-# Enable MIG mode (requires reboot)
-sudo nvidia-smi -mig 1
+docker run --rm --gpus all -e PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:4096 pytorch-gpu:v1
+```
 
-# Create GPU instances
-sudo nvidia-smi mig -cgi 9,9,9,9  # 4 instances
+```python
+torch.cuda.set_per_process_memory_fraction(0.5, device=0)  # cap at 50% of GPU 0
+```
 
-# Run container with MIG instance
+**MIG (Multi-Instance GPU)**, available on A100/H100, partitions one physical GPU into several isolated instances for finer-grained sharing:
+
+```bash
+sudo nvidia-smi -mig 1                 # enable, requires reboot
+sudo nvidia-smi mig -cgi 9,9,9,9       # create 4 instances
 docker run --rm --gpus '"device=0:0"' pytorch-gpu:v1
 ```
 
-## Monitoring GPU Usage
-
-### nvidia-smi in Containers
+**Monitoring**: `nvidia-smi` works the same way run against a container as on the host. For continuous metrics, NVIDIA's DCGM exporter feeds Prometheus:
 
 ```bash
-# Install nvidia-smi in container
-docker run --rm --gpus all nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
-
-# Monitor GPU while container runs
-docker run -d --name training --gpus all pytorch-gpu:v1
-watch -n 1 nvidia-smi
-```
-
-### DCGM (Data Center GPU Manager)
-
-```bash
-# Run DCGM exporter for Prometheus
-docker run -d \
-    --gpus all \
-    --name dcgm-exporter \
-    -p 9400:9400 \
-    nvidia/dcgm-exporter:latest
-
-# Scrape metrics
+docker run -d --gpus all --name dcgm-exporter -p 9400:9400 nvidia/dcgm-exporter:latest
 curl http://localhost:9400/metrics | grep gpu
 ```
 
-### Python Monitoring
+Watch `nvidia-smi dmon -s pucvmet` while training runs — utilization consistently under ~80% usually means the bottleneck is data loading, not the GPU. Fix it with more `DataLoader` workers and `pin_memory=True`, not a bigger GPU.
 
-**monitor_gpu.py:**
-```python
-import torch
-import time
-
-def monitor_gpu():
-    while True:
-        if torch.cuda.is_available():
-            for i in range(torch.cuda.device_count()):
-                mem_allocated = torch.cuda.memory_allocated(i) / 1024**3
-                mem_reserved = torch.cuda.memory_reserved(i) / 1024**3
-                print(f"GPU {i}: Allocated: {mem_allocated:.2f}GB, Reserved: {mem_reserved:.2f}GB")
-        time.sleep(5)
-
-if __name__ == "__main__":
-    monitor_gpu()
-```
+---
 
 ## Multi-GPU Training
 
-### Data Parallel Training
+`DataParallel` is the simplest path — one process, PyTorch splits batches across visible GPUs:
 
-**train.py:**
 ```python
-import torch
-import torch.nn as nn
-from torch.nn.parallel import DataParallel
-
-# Define model
 model = MyModel()
-
-# Use all available GPUs
 if torch.cuda.device_count() > 1:
-    print(f"Using {torch.cuda.device_count()} GPUs")
-    model = DataParallel(model)
-
+    model = torch.nn.DataParallel(model)
 model = model.cuda()
-
-# Training loop
-for batch in dataloader:
-    # Data automatically distributed across GPUs
-    outputs = model(batch)
 ```
 
-**Run:**
 ```bash
-# Use all GPUs
-docker run --rm --gpus all \
-    -v $(pwd)/data:/data \
-    pytorch-gpu:v1 python train.py
+docker run --rm --gpus all -v $(pwd)/data:/data pytorch-gpu:v1 python train.py
 ```
 
-### Distributed Data Parallel (DDP)
+`DistributedDataParallel` (DDP) scales further — one process per GPU, less Python-level overhead:
 
-**Dockerfile:**
 ```dockerfile
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
-
-RUN apt-get update && apt-get install -y \
-    python3.11 \
-    python3-pip \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-
-RUN pip3 install --no-cache-dir \
-    torch==2.1.0 \
-    --index-url https://download.pytorch.org/whl/cu121
-
-COPY . /app
-
-# Use all GPUs with DDP
-CMD ["python3", "-m", "torch.distributed.launch", \
-     "--nproc_per_node=auto", "train_ddp.py"]
+CMD ["python3", "-m", "torch.distributed.launch", "--nproc_per_node=auto", "train_ddp.py"]
 ```
 
-## Docker Compose with GPUs
+For multiple GPU-bound services on one host, pin each to a distinct device in Compose:
 
-**docker-compose.yml:**
 ```yaml
-version: '3.8'
-
 services:
-  # Training job on GPU 0
   trainer-1:
     build: ./trainer
     deploy:
@@ -484,11 +211,6 @@ services:
             - driver: nvidia
               device_ids: ['0']
               capabilities: [gpu]
-    volumes:
-      - training-data:/data
-      - model-outputs:/outputs
-
-  # Training job on GPU 1
   trainer-2:
     build: ./trainer
     deploy:
@@ -498,172 +220,52 @@ services:
             - driver: nvidia
               device_ids: ['1']
               capabilities: [gpu]
-    volumes:
-      - training-data:/data
-      - model-outputs:/outputs
-
-  # Inference service on GPU 2
-  inference:
-    build: ./inference
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['2']
-              capabilities: [gpu]
-    ports:
-      - "8000:8000"
-
-volumes:
-  training-data:
-  model-outputs:
 ```
 
-## Common GPU Container Issues
+---
 
-### Issue 1: CUDA Version Mismatch
+## Common Issues
 
-**Error:**
-```
-RuntimeError: CUDA version mismatch: PyTorch compiled with 12.1 but running with 11.8
-```
+| Symptom | Cause | Fix |
+|---|---|---|
+| `CUDA version mismatch` | Framework wheel built for a different CUDA than the base image | Match the `--index-url` CUDA tag to the base image's CUDA version |
+| `CUDA not available` inside container | Missing `--gpus` flag, or toolkit not configured | Run with `--gpus all`; re-check `nvidia-ctk --version` and `nvidia-smi` on host |
+| `CUDA out of memory` | Batch too large, or fragmentation | Smaller batch, `torch.cuda.empty_cache()`, gradient accumulation, or mixed precision (`torch.cuda.amp`) |
+| Low GPU utilization | Data loading bottleneck | More `DataLoader` workers, `pin_memory=True`, prefetch to GPU |
 
-**Solution:**
-```dockerfile
-# Match CUDA versions
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
+Mixed precision in practice:
 
-# Install PyTorch built for CUDA 12.1
-RUN pip install torch --index-url https://download.pytorch.org/whl/cu121
-```
-
-### Issue 2: GPU Not Visible
-
-**Error:**
-```
-RuntimeError: CUDA not available
-```
-
-**Checklist:**
-```bash
-# 1. Verify NVIDIA driver on host
-nvidia-smi
-
-# 2. Check Container Toolkit installation
-nvidia-ctk --version
-
-# 3. Run with --gpus flag
-docker run --gpus all ...  # Don't forget this!
-
-# 4. Check container sees GPU
-docker run --rm --gpus all nvidia/cuda:12.1.0-base nvidia-smi
-```
-
-### Issue 3: Out of Memory
-
-**Error:**
-```
-RuntimeError: CUDA out of memory
-```
-
-**Solutions:**
 ```python
-# 1. Reduce batch size
-batch_size = 16  # Try smaller value
-
-# 2. Clear cache
-torch.cuda.empty_cache()
-
-# 3. Use gradient accumulation
-for i, batch in enumerate(dataloader):
-    loss = model(batch)
-    loss = loss / accumulation_steps
-    loss.backward()
-
-    if (i + 1) % accumulation_steps == 0:
-        optimizer.step()
-        optimizer.zero_grad()
-
-# 4. Use mixed precision
 from torch.cuda.amp import autocast, GradScaler
 scaler = GradScaler()
-
 with autocast():
     outputs = model(inputs)
     loss = criterion(outputs, targets)
-
 scaler.scale(loss).backward()
 scaler.step(optimizer)
 scaler.update()
 ```
 
-### Issue 4: Slow Performance
+---
 
-**Diagnosis:**
-```bash
-# Monitor GPU utilization
-nvidia-smi dmon -s pucvmet
+## Practical Exercise
 
-# Should see high GPU utilization (>80%)
-# If low, you have a bottleneck (likely data loading)
-```
+Build a three-stage GPU training pipeline: preprocess (CPU) → train (GPU) → export to ONNX (CPU), wired together with Compose.
 
-**Solutions:**
-```python
-# Use multiple data loading workers
-train_loader = DataLoader(
-    dataset,
-    batch_size=32,
-    num_workers=4,  # Parallel data loading
-    pin_memory=True  # Faster GPU transfer
-)
+**Requirements:** preprocessing and export run in lightweight `python:3.11-slim` images; training runs in a CUDA image and requests one GPU; all three share data through named volumes; the whole pipeline runs with one `docker compose up`.
 
-# Prefetch to GPU
-from torch.utils.data import DataLoader
-from prefetch_generator import BackgroundGenerator
-
-class DataLoaderX(DataLoader):
-    def __iter__(self):
-        return BackgroundGenerator(super().__iter__())
-```
-
-## Hands-On Exercise: GPU Training Pipeline
-
-### Objective
-
-Build a complete GPU-accelerated training pipeline using Docker.
-
-### Requirements
-
-1. Multi-stage Dockerfile for training
-2. Data preprocessing container
-3. Training container with GPU
-4. Model export container
-5. Docker Compose to orchestrate
-
-### Project Structure
+<details>
+<summary><strong>Sample Solution</strong></summary>
 
 ```
 gpu-training/
 ├── docker-compose.yml
-├── preprocess/
-│   ├── Dockerfile
-│   └── preprocess.py
-├── train/
-│   ├── Dockerfile
-│   └── train.py
-└── export/
-    ├── Dockerfile
-    └── export.py
+├── preprocess/{Dockerfile, preprocess.py}
+├── train/{Dockerfile, train.py}
+└── export/{Dockerfile, export.py}
 ```
 
-### Implementation
-
-**docker-compose.yml:**
 ```yaml
-version: '3.8'
-
 services:
   preprocess:
     build: ./preprocess
@@ -674,8 +276,7 @@ services:
 
   train:
     build: ./train
-    depends_on:
-      - preprocess
+    depends_on: [preprocess]
     deploy:
       resources:
         reservations:
@@ -693,8 +294,7 @@ services:
 
   export:
     build: ./export
-    depends_on:
-      - train
+    depends_on: [train]
     volumes:
       - models:/models
       - artifacts:/artifacts
@@ -707,62 +307,27 @@ volumes:
   artifacts:
 ```
 
-**preprocess/Dockerfile:**
-```dockerfile
-FROM python:3.11-slim
+`train/Dockerfile` is the only stage that needs CUDA:
 
-WORKDIR /app
-RUN pip install --no-cache-dir pandas numpy scikit-learn
-
-COPY preprocess.py .
-CMD ["python", "preprocess.py"]
-```
-
-**preprocess/preprocess.py:**
-```python
-import pandas as pd
-from pathlib import Path
-from sklearn.model_selection import train_test_split
-
-RAW = Path("/data/raw")
-OUT = Path("/data/processed")
-OUT.mkdir(parents=True, exist_ok=True)
-
-df = pd.concat(pd.read_csv(p) for p in RAW.glob("*.csv"))
-df = df.dropna().drop_duplicates()
-train, test = train_test_split(df, test_size=0.2, random_state=42)
-train.to_parquet(OUT / "train.parquet")
-test.to_parquet(OUT / "test.parquet")
-print(f"preprocess: train={len(train)} test={len(test)}")
-```
-
-**train/Dockerfile:**
 ```dockerfile
 FROM nvidia/cuda:12.2.0-cudnn8-runtime-ubuntu22.04
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 python3-pip && \
-    rm -rf /var/lib/apt/lists/*
-
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 RUN pip3 install --no-cache-dir torch torchvision pandas pyarrow
-
 COPY train.py .
 CMD ["python3", "train.py"]
 ```
 
-**train/train.py:**
+`train/train.py` reads preprocessed parquet, trains a small classifier on whichever device is available, and writes `model.pt`:
+
 ```python
-import os
-import torch
-import torch.nn as nn
-import pandas as pd
+import os, torch, torch.nn as nn, pandas as pd
 from pathlib import Path
 
 EPOCHS = int(os.environ.get("EPOCHS", 10))
 BATCH_SIZE = int(os.environ.get("BATCH_SIZE", 32))
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"train: device={device}")
 
 train = pd.read_parquet("/data/train.parquet")
 X = torch.tensor(train.drop(columns=["label"]).values, dtype=torch.float32, device=device)
@@ -779,98 +344,35 @@ loss_fn = nn.CrossEntropyLoss()
 for epoch in range(EPOCHS):
     for i in range(0, len(X), BATCH_SIZE):
         opt.zero_grad()
-        out = model(X[i:i + BATCH_SIZE])
-        loss = loss_fn(out, y[i:i + BATCH_SIZE])
+        loss = loss_fn(model(X[i:i + BATCH_SIZE]), y[i:i + BATCH_SIZE])
         loss.backward()
         opt.step()
-    print(f"epoch={epoch} loss={loss.item():.4f}")
 
 Path("/models").mkdir(exist_ok=True)
 torch.save(model.state_dict(), "/models/model.pt")
 ```
 
-**export/Dockerfile:**
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-RUN pip install --no-cache-dir torch onnx
-
-COPY export.py .
-CMD ["python", "export.py"]
-```
-
-**export/export.py:**
-```python
-import torch
-import torch.nn as nn
-from pathlib import Path
-
-# Reconstruct the architecture identically to train.py.
-# In production, persist the architecture or use torch.jit.script.
-input_dim = 16  # match feature count
-num_classes = 10
-model = nn.Sequential(
-    nn.Linear(input_dim, 128), nn.ReLU(),
-    nn.Linear(128, num_classes),
-)
-model.load_state_dict(torch.load("/models/model.pt", map_location="cpu"))
-model.train(False)  # switch to inference mode (equivalent to .eval())
-
-dummy = torch.randn(1, input_dim)
-out = Path("/artifacts")
-out.mkdir(exist_ok=True)
-torch.onnx.export(model, dummy, out / "model.onnx", opset_version=17)
-print("export: wrote /artifacts/model.onnx")
-```
-
-Run the full pipeline with:
+`preprocess` and `export` stay on plain `python:3.11-slim` — no GPU needed for reading CSVs or exporting to ONNX. Run everything with:
 
 ```bash
 docker compose build
 docker compose up --abort-on-container-exit
+docker compose run train nvidia-smi   # confirm GPU visibility
 ```
 
-The train service requests one GPU via the `nvidia` driver. Verify GPU
-visibility inside the container with `docker compose run train nvidia-smi`.
-
-## Summary
-
-In this lesson, you learned:
-
-1. **NVIDIA Container Toolkit** - Installation and configuration
-2. **GPU Containers** - Running CUDA workloads in Docker
-3. **CUDA Base Images** - Choosing base, runtime, devel, cudnn variants
-4. **GPU Allocation** - Mapping specific GPUs to containers
-5. **Monitoring** - nvidia-smi, DCGM for GPU metrics
-6. **Multi-GPU** - Data parallel and distributed training
-7. **Troubleshooting** - Common issues and solutions
-
-**Key Takeaways:**
-- GPU containers eliminate driver/CUDA version conflicts
-- Use runtime images for inference, devel for training
-- Monitor GPU utilization to identify bottlenecks
-- Allocate GPUs explicitly in multi-GPU systems
-- Match CUDA versions between base image and frameworks
-
-## What's Next?
-
-In the next lesson, **08-production-best-practices.md**, you'll learn:
-- Security best practices for containers
-- Health checks and restart policies
-- Logging and monitoring in production
-- Resource limits (CPU, memory, GPU)
-- Production-ready Dockerfile templates
+</details>
 
 ---
 
-## Self-Check Questions
+## Key Takeaways
 
-1. What's the difference between CUDA base, runtime, and devel images?
-2. How do you run a container with access to GPU 2 only?
-3. What causes "CUDA version mismatch" errors?
-4. How do you monitor GPU memory usage in a running container?
-5. What's the difference between DataParallel and DistributedDataParallel?
+1. The NVIDIA Container Toolkit exposes the host driver to containers — CUDA libraries live inside the image, so the container's CUDA version can differ from what's "installed" on the host.
+2. Choose `runtime` for inference, `devel` only when compiling CUDA code, and add the `cudnn` variant for any deep learning framework.
+3. Match the framework's CUDA build (e.g., PyTorch's `--index-url`) to the base image's CUDA version — the most common source of "CUDA not available" errors.
+4. Pin GPUs explicitly (`--gpus '"device=N"'`) when running multiple GPU workloads on one host.
+5. Low GPU utilization usually points at a data loading bottleneck, not a GPU shortage.
+
+---
 
 ## Additional Resources
 
@@ -881,4 +383,4 @@ In the next lesson, **08-production-best-practices.md**, you'll learn:
 
 ---
 
-**Next:** [08-production-best-practices.md](./08-production-best-practices.md)
+**Next Lesson:** [07-production-best-practices.md](./07-production-best-practices.md) — security, health checks, and graceful shutdown for production containers

@@ -2,64 +2,61 @@
 
 ## Overview
 
-These hands-on exercises reinforce the concepts learned in Module 02. Each exercise builds practical skills in deploying and managing ML infrastructure across cloud platforms.
+These hands-on exercises reinforce the concepts learned in Module 02. Each exercise builds practical skills in deploying and managing ML infrastructure across cloud platforms — from cost analysis and multi-cloud deployment through disaster recovery, networking, managed services, security, and FinOps automation.
 
 ## Exercise List
 
-### Exercise 01: Multi-Cloud ML Deployment
-**Duration:** 3-4 hours
+### Exercise 01: Multi-Cloud Cost Analyzer
 **Difficulty:** Intermediate
-**File:** `exercise-01-multi-cloud.md`
+**Folder:** [`exercise-01-multi-cloud-cost-analyzer/`](./exercise-01-multi-cloud-cost-analyzer/)
 
-Deploy the same ML model across AWS, GCP, and Azure, comparing:
-- Deployment complexity
-- Performance characteristics
-- Cost differences
-- Management overhead
+Build a cost analysis tool that compares pricing across AWS, GCP, and Azure using their billing APIs, and generates cost optimization recommendations and interactive dashboards.
 
-### Exercise 02: Cloud Cost Optimization
-**Duration:** 2-3 hours
+### Exercise 02: Cloud ML Infrastructure Deployment
 **Difficulty:** Intermediate
-**File:** `exercise-02-cost-optimization.md`
+**Folder:** [`exercise-02-cloud-ml-infrastructure/`](./exercise-02-cloud-ml-infrastructure/)
 
-Analyze and optimize cloud spending for an ML workload:
-- Identify cost drivers
-- Implement cost-saving strategies
-- Set up billing alerts
-- Compare reserved vs on-demand vs spot instances
+Deploy identical ML infrastructure to AWS, GCP, and Azure using Terraform, and compare performance and cost across all three.
 
-### Exercise 03: Network Architecture Design
-**Duration:** 2-3 hours
+### Exercise 03: Cloud Disaster Recovery System
 **Difficulty:** Intermediate
-**File:** `exercise-03-networking.md`
+**Folder:** [`exercise-03-disaster-recovery/`](./exercise-03-disaster-recovery/)
 
-Design and implement secure network architecture:
-- VPC design with public and private subnets
-- Security groups and firewall rules
-- Load balancer configuration
-- VPN or private connectivity setup
+Design and build an automated backup, multi-region replication, and failover system, then test it against real RTO/RPO targets.
 
-### Exercise 04: Cloud Storage Pipeline
-**Duration:** 2-3 hours
-**Difficulty:** Beginner-Intermediate
-**File:** `exercise-04-storage-pipeline.md`
+### Exercise 04: Cross-Region Replication for ML Artifacts
+**Duration:** 3 hours · **Difficulty:** Intermediate
+**Prerequisites:** Exercises 01–03
+**Folder:** [`exercise-04-cross-region-replication/`](./exercise-04-cross-region-replication/)
 
-Build a data pipeline using cloud storage services:
-- Upload datasets to object storage
-- Implement data versioning
-- Set up caching layers
-- Optimize data transfer costs
+Build an `artifact-replicator` tool that keeps model artifacts and training datasets synchronized across two cloud regions, with conflict detection, bandwidth control, and integrity verification.
 
-### Exercise 05: Managed ML Service Comparison
-**Duration:** 3-4 hours
-**Difficulty:** Intermediate
-**File:** `exercise-05-managed-services.md`
+### Exercise 05: Cloud Networking for ML Workloads
+**Duration:** 3 hours · **Difficulty:** Intermediate
+**Folder:** [`exercise-05-cloud-networking-for-ml/`](./exercise-05-cloud-networking-for-ml/)
 
-Deploy the same model using managed services from each cloud:
-- AWS SageMaker
-- GCP Vertex AI
-- Azure Machine Learning
-- Compare features, ease of use, and costs
+Provision an ML-aware VPC with three subnet tiers across 3 AZs, an isolated GPU node pool, restricted NAT egress, and VPC Endpoints for S3/ECR/CloudWatch — then validate it with a connectivity test matrix.
+
+### Exercise 06: Managed ML Services Comparison
+**Duration:** 3 hours · **Difficulty:** Intermediate
+**Prerequisites:** Exercises 01–02
+**Folder:** [`exercise-06-managed-ml-services-comparison/`](./exercise-06-managed-ml-services-comparison/)
+
+Deploy the same model to SageMaker, Vertex AI, and Azure ML managed endpoints and produce a structured trade-off matrix for the "managed vs. roll-your-own" decision.
+
+### Exercise 07: Multi-Account / Multi-Project Security Architecture
+**Duration:** 3 hours · **Difficulty:** Intermediate+
+**Prerequisites:** AWS Organizations or GCP Folders, admin access
+**Folder:** [`exercise-07-multi-account-security/`](./exercise-07-multi-account-security/)
+
+Design a multi-account (or multi-project) security architecture: separate prod/staging/dev/sandbox environments, central audit logging, org-level guardrails, cross-account IAM, and a least-privilege CI deployment role.
+
+### Exercise 08: FinOps Automation for ML Infrastructure
+**Duration:** 3 hours · **Difficulty:** Intermediate
+**Prerequisites:** Exercises 01–07, AWS Cost Explorer access
+**Folder:** [`exercise-08-finops-automation/`](./exercise-08-finops-automation/)
+
+Build an `mlfinops` CLI that collects daily cloud spend per team/workload, attributes idle GPU/VM cost, surfaces top waste, and sends a weekly digest to Slack.
 
 ## Prerequisites
 
@@ -118,14 +115,6 @@ az consumption budget create \
   --time-grain Monthly
 ```
 
-### 3. Clone Exercise Templates
-
-```bash
-cd ~/ai-infrastructure-learning
-git clone <your-fork> exercises-module-02
-cd exercises-module-02
-```
-
 ## Exercise Guidelines
 
 ### Best Practices
@@ -156,30 +145,20 @@ If you get stuck:
 2. Check cloud provider documentation
 3. Search for error messages in Stack Overflow
 4. Ask questions in GitHub Discussions
-5. Review solution hints (provided for each exercise)
+5. Review solution hints (provided in each exercise's README)
 
 ## Completion Criteria
 
 You've successfully completed Module 02 exercises when you can:
 
-- [ ] Deploy ML models across multiple cloud platforms
-- [ ] Implement cost optimization strategies
-- [ ] Design secure network architectures
-- [ ] Build efficient data pipelines using cloud storage
-- [ ] Evaluate and use managed ML services
-- [ ] Troubleshoot common cloud deployment issues
-- [ ] Estimate and monitor cloud costs effectively
-
-## Time Estimates
-
-| Exercise | Estimated Time | Complexity |
-|----------|---------------|------------|
-| 01 - Multi-Cloud | 3-4 hours | Intermediate |
-| 02 - Cost Optimization | 2-3 hours | Intermediate |
-| 03 - Networking | 2-3 hours | Intermediate |
-| 04 - Storage Pipeline | 2-3 hours | Beginner-Intermediate |
-| 05 - Managed Services | 3-4 hours | Intermediate |
-| **Total** | **12-17 hours** | - |
+- [ ] Compare and optimize cloud costs across providers
+- [ ] Deploy ML infrastructure identically across AWS, GCP, and Azure
+- [ ] Design and test a disaster recovery plan against real RTO/RPO targets
+- [ ] Replicate ML artifacts across regions with integrity guarantees
+- [ ] Design an ML-aware, cost-conscious network architecture
+- [ ] Evaluate and use managed ML services from all three clouds
+- [ ] Design a least-privilege multi-account security architecture
+- [ ] Automate cloud cost attribution and reporting
 
 ## Cost Estimates
 
@@ -189,14 +168,7 @@ All exercises can be completed within free tier limits if you:
 - Stay within free tier hours (750 hours/month per service)
 - Use spot instances for non-critical workloads
 
-**Expected costs (if free tier exhausted):**
-- Exercise 01: $2-5
-- Exercise 02: $1-3
-- Exercise 03: $1-2
-- Exercise 04: $1-2
-- Exercise 05: $3-5
-
-**Total: ~$8-17 if free tier is exhausted**
+Expect a few dollars per exercise if free tier is exhausted — clean up promptly to avoid surprises, especially in Exercises 03, 05, and 07 where multi-region or multi-account resources are easy to forget.
 
 ## Additional Resources
 
@@ -218,13 +190,11 @@ All exercises can be completed within free tier limits if you:
 ## Next Steps
 
 After completing all exercises:
-1. Review your solutions and compare with provided solutions
-2. Complete the Module 02 quiz
+1. Review your solutions and compare with the provided solution hints
+2. Complete the Module 02 final quiz (`../quizzes/final-quiz.md`)
 3. Work on the Module 02 capstone project (optional but recommended)
 4. Proceed to Module 03: Containerization with Docker
 
 ---
 
 **Questions?** Open an issue in the GitHub repository or post in Discussions.
-
-**Need solutions?** Solution files are available in the `solutions/` branch after honest attempt at exercises.

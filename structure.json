@@ -1,5 +1,102 @@
 [
   {
+    "name": ".claude",
+    "type": "directory",
+    "children": [
+      {
+        "name": "settings.local.json",
+        "type": "file",
+        "path": ".claude/settings.local.json"
+      }
+    ]
+  },
+  {
+    "name": ".playwright-cli",
+    "type": "directory",
+    "children": [
+      {
+        "name": "page-2026-08-29T13-54-07-717Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T13-54-07-717Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T13-55-39-892Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T13-55-39-892Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T13-57-56-434Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T13-57-56-434Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T13-58-07-958Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T13-58-07-958Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T13-58-47-714Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T13-58-47-714Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T13-58-55-397Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T13-58-55-397Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T13-59-05-603Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T13-59-05-603Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T13-59-15-616Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T13-59-15-616Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T14-13-04-588Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T14-13-04-588Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T14-13-06-424Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T14-13-06-424Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T15-43-26-484Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T15-43-26-484Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T15-43-40-037Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T15-43-40-037Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T15-46-33-857Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T15-46-33-857Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T15-47-51-240Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T15-47-51-240Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T15-53-31-822Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T15-53-31-822Z.yml"
+      },
+      {
+        "name": "page-2026-08-29T15-53-47-360Z.yml",
+        "type": "file",
+        "path": ".playwright-cli/page-2026-08-29T15-53-47-360Z.yml"
+      }
+    ]
+  },
+  {
     "name": "AI Infrastructure Engineer",
     "type": "directory",
     "children": [
@@ -2122,14 +2219,14 @@
                     "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/08-multi-cloud-cost-optimization.md"
                   },
                   {
-                    "name": "Resources: Cloud Computing for ML",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/resources.md"
-                  },
-                  {
                     "name": "Module 02: Cloud Computing for ML Infrastructure",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/README.md"
+                  },
+                  {
+                    "name": "Resources: Cloud Computing for ML",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-02-cloud-computing/resources.md"
                   }
                 ]
               },
@@ -2142,118 +2239,39 @@
                     "type": "directory",
                     "children": [
                       {
-                        "name": "exercise-04-container-security",
-                        "type": "directory",
-                        "children": [
-                          {
-                            "name": "Exercise 04: Container Security Scanner",
-                            "type": "file",
-                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-04-container-security/README.md"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "exercise-05-image-optimizer",
-                        "type": "directory",
-                        "children": [
-                          {
-                            "name": "Exercise 05: Multi-Stage Build Optimizer",
-                            "type": "file",
-                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-05-image-optimizer/README.md"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "exercise-06-registry-manager",
-                        "type": "directory",
-                        "children": [
-                          {
-                            "name": "Exercise 06: Container Registry Manager",
-                            "type": "file",
-                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-06-registry-manager/README.md"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "exercise-07-buildkit-cache-optimization",
-                        "type": "directory",
-                        "children": [
-                          {
-                            "name": "Exercise 07: BuildKit Cache Optimization",
-                            "type": "file",
-                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-07-buildkit-cache-optimization/README.md"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "exercise-08-multi-arch-builds",
-                        "type": "directory",
-                        "children": [
-                          {
-                            "name": "Exercise 08: Multi-Architecture Builds (amd64 + arm64)",
-                            "type": "file",
-                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-08-multi-arch-builds/README.md"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "exercise-09-runtime-debugging",
-                        "type": "directory",
-                        "children": [
-                          {
-                            "name": "Exercise 09: Container Runtime Debugging",
-                            "type": "file",
-                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-09-runtime-debugging/README.md"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "exercise-10-sbom-and-supply-chain",
-                        "type": "directory",
-                        "children": [
-                          {
-                            "name": "Exercise 10: SBOM and Container Supply Chain",
-                            "type": "file",
-                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-10-sbom-and-supply-chain/README.md"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "exercise-11-ml-container-patterns",
-                        "type": "directory",
-                        "children": [
-                          {
-                            "name": "Exercise 11: ML-Specific Container Patterns",
-                            "type": "file",
-                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-11-ml-container-patterns/README.md"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "exercise-12-vulnerability-remediation",
-                        "type": "directory",
-                        "children": [
-                          {
-                            "name": "Exercise 12: Container Vulnerability Remediation Workflow",
-                            "type": "file",
-                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-12-vulnerability-remediation/README.md"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Exercise 01: Build Your First ML Dockerfile",
+                        "name": "Exercise 01: Dockerfile & Multi-Container Basics",
                         "type": "file",
                         "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-01-dockerfile.md"
                       },
                       {
-                        "name": "Exercise 02: Multi-Container ML Application",
+                        "name": "Exercise 02: GPU-Accelerated ML Container",
                         "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-02-multi-container.md"
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-02-gpu-container.md"
                       },
                       {
-                        "name": "Exercise 03: GPU-Accelerated ML Container",
+                        "name": "Exercise 03: Build & Cache Optimization",
                         "type": "file",
-                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-03-gpu-container.md"
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-03-build-optimization.md"
+                      },
+                      {
+                        "name": "Exercise 04: Container Registry Manager",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-04-registry-manager.md"
+                      },
+                      {
+                        "name": "Exercise 05: Container Security & Supply Chain",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-05-container-security.md"
+                      },
+                      {
+                        "name": "Exercise 06: Runtime Debugging & ML Container Patterns",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/exercise-06-runtime-patterns.md"
+                      },
+                      {
+                        "name": "Module 03 Exercises: Containerization with Docker",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/exercises/README.md"
                       }
                     ]
                   },
@@ -2310,44 +2328,39 @@
                     ]
                   },
                   {
-                    "name": "Lesson 01: Docker Introduction",
+                    "name": "Lesson 01: Dockerfiles for ML Applications",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/01-docker-introduction.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/01-dockerfile-ml-apps.md"
                   },
                   {
-                    "name": "Lesson 02: Dockerfiles for ML Applications",
+                    "name": "Lesson 02: Image Optimization",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/02-dockerfile-ml-apps.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/02-image-optimization.md"
                   },
                   {
-                    "name": "Lesson 03: Image Optimization",
+                    "name": "Lesson 03: Docker Networking and Volumes",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/03-image-optimization.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/03-docker-networking-volumes.md"
                   },
                   {
-                    "name": "Lesson 04: Docker Networking and Volumes",
+                    "name": "Lesson 04: Docker Compose for ML Applications",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/04-docker-networking-volumes.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/04-docker-compose.md"
                   },
                   {
-                    "name": "Lesson 05: Docker Compose for ML Applications",
+                    "name": "Lesson 05: Container Registries",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/05-docker-compose.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/05-container-registries.md"
                   },
                   {
-                    "name": "Lesson 06: Container Registries",
+                    "name": "Lesson 06: GPU Support in Docker",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/06-container-registries.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/06-gpu-docker.md"
                   },
                   {
-                    "name": "Lesson 07: GPU Support in Docker",
+                    "name": "Lesson 07: Production Best Practices",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/07-gpu-docker.md"
-                  },
-                  {
-                    "name": "Lesson 08: Production Best Practices",
-                    "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/08-production-best-practices.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-03-containerization/07-production-best-practices.md"
                   },
                   {
                     "name": "Module 03 Resources: Containerization with Docker",
@@ -4947,6 +4960,105 @@
     ]
   },
   {
+    "name": "Engineering Blog Dissections",
+    "type": "directory",
+    "children": [
+      {
+        "name": "Engineering Blog Dissections",
+        "type": "file",
+        "path": "Engineering Blog Dissections/README.md"
+      }
+    ]
+  },
+  {
+    "name": "GenAI Atlas",
+    "type": "directory",
+    "children": [
+      {
+        "name": "1. LLM Foundations",
+        "type": "directory",
+        "children": [
+          {
+            "name": "LLM Foundations",
+            "type": "file",
+            "path": "GenAI Atlas/1. LLM Foundations/README.md"
+          }
+        ]
+      },
+      {
+        "name": "2. Fine-Tuning & Alignment",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Fine-Tuning & Alignment",
+            "type": "file",
+            "path": "GenAI Atlas/2. Fine-Tuning & Alignment/README.md"
+          }
+        ]
+      },
+      {
+        "name": "3. Agents",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Agents",
+            "type": "file",
+            "path": "GenAI Atlas/3. Agents/README.md"
+          }
+        ]
+      },
+      {
+        "name": "4. RAG & Retrieval",
+        "type": "directory",
+        "children": [
+          {
+            "name": "RAG & Retrieval",
+            "type": "file",
+            "path": "GenAI Atlas/4. RAG & Retrieval/README.md"
+          }
+        ]
+      },
+      {
+        "name": "5. Prompt Engineering",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Prompt Engineering",
+            "type": "file",
+            "path": "GenAI Atlas/5. Prompt Engineering/README.md"
+          }
+        ]
+      },
+      {
+        "name": "6. Model Landscape",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Model Landscape",
+            "type": "file",
+            "path": "GenAI Atlas/6. Model Landscape/README.md"
+          }
+        ]
+      },
+      {
+        "name": "7. Evals & Observability",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Evals & Observability",
+            "type": "file",
+            "path": "GenAI Atlas/7. Evals & Observability/README.md"
+          }
+        ]
+      },
+      {
+        "name": "GenAI Atlas",
+        "type": "file",
+        "path": "GenAI Atlas/README.md"
+      }
+    ]
+  },
+  {
     "name": "ML and GenAI System Design",
     "type": "directory",
     "children": [
@@ -4998,17 +5110,6 @@
             "path": "ML and GenAI System Design/MLSD/README.md"
           }
         ]
-      }
-    ]
-  },
-  {
-    "name": "Research Paper Analysis",
-    "type": "directory",
-    "children": [
-      {
-        "name": "Test",
-        "type": "file",
-        "path": "Research Paper Analysis/test.md"
       }
     ]
   }

@@ -3,7 +3,7 @@
 **Total Questions:** 20
 **Passing Score:** 70% (14/20 correct)
 **Time Limit:** 40 minutes
-**Type:** Mixed (Multiple Choice, True/False, Short Answer)
+**Type:** Mixed (Multiple Choice, True/False)
 
 ---
 
@@ -27,9 +27,12 @@ B) Images are templates (read-only); containers are running instances of images 
 ### Question 2
 **True or False: Docker containers share the host OS kernel.**
 
+A) True
+B) False
+
 <details>
 <summary>Answer</summary>
-True - Containers use the host OS kernel, unlike VMs which run their own kernel. This makes containers lighter and faster than VMs.
+A) True - Containers use the host OS kernel, unlike VMs which run their own kernel. This makes containers lighter and faster than VMs.
 </details>
 
 ---
@@ -129,30 +132,27 @@ B) Smaller final image size by excluding build tools - Multi-stage builds allow 
 ### Question 9
 **True or False: COPY and ADD instructions are identical in functionality.**
 
+A) True
+B) False
+
 <details>
 <summary>Answer</summary>
-False - While both copy files, ADD has additional features (extract tar files, download from URLs). COPY is preferred for simple file copying as it's more explicit and predictable.
+B) False - While both copy files, ADD has additional features (extract tar files, download from URLs). COPY is preferred for simple file copying as it's more explicit and predictable.
 </details>
 
 ---
 
 ### Question 10
-**Short Answer: What file would you create to exclude files from Docker build context, and give two examples of what to exclude for ML projects?**
+**Which file would you create to exclude files (like `__pycache__/`, `.git/`, or large datasets) from the Docker build context?**
+
+A) `.gitignore`
+B) `.dockerignore`
+C) `Dockerfile.ignore`
+D) `.buildignore`
 
 <details>
-<summary>Sample Answer</summary>
-
-**File:** `.dockerignore`
-
-**Examples to exclude:**
-1. `__pycache__/` and `*.pyc` - Python bytecode files (not needed in container)
-2. `.git/` - Git repository history (large and unnecessary)
-3. `data/` or `datasets/` - Large training datasets (should be mounted as volumes)
-4. `venv/` or `.venv/` - Virtual environments (install fresh in container)
-5. `*.ipynb` - Jupyter notebooks (development files)
-6. `README.md`, `docs/` - Documentation (optional)
-
-(Any 2 valid examples acceptable)
+<summary>Answer</summary>
+B) `.dockerignore` - Excludes matching files/directories from the build context, which speeds up builds, shrinks images, and keeps secrets or large datasets from being copied in by accident. Common ML exclusions: `__pycache__/`, `.git/`, `data/`/`datasets/`, `venv/`, `*.ipynb`.
 </details>
 
 ---
@@ -207,9 +207,12 @@ A) `docker run -v /host/path:/container/path image` - The -v flag maps host dire
 ### Question 14
 **True or False: Containers on the default bridge network can communicate using container names.**
 
+A) True
+B) False
+
 <details>
 <summary>Answer</summary>
-False - Containers on the default bridge network must use IP addresses. Custom bridge networks support automatic DNS resolution, allowing containers to communicate via names.
+B) False - Containers on the default bridge network must use IP addresses. Custom bridge networks support automatic DNS resolution, allowing containers to communicate via names.
 </details>
 
 ---
@@ -262,34 +265,26 @@ B) `--gpus all` - Example: `docker run --gpus all nvidia/cuda:12.0-base nvidia-s
 ---
 
 ### Question 18
-**Short Answer: Explain the primary strategy for reducing Docker image size for ML applications.**
+**What is the primary strategy for reducing Docker image size for ML applications?**
+
+A) Install all dependencies with conda instead of pip
+B) Use multi-stage builds — build with full tooling in one stage, copy only the needed artifacts to a minimal runtime stage
+C) Combine every instruction into a single `RUN` command
+D) Always use the full (non-slim) base image so nothing is missing at runtime
 
 <details>
-<summary>Sample Answer</summary>
+<summary>Answer</summary>
+B) Multi-stage builds - build artifacts in a stage with compilers and build tools, then copy only the compiled artifacts into a minimal runtime stage:
 
-**Primary Strategy: Multi-Stage Builds**
-
-Build artifacts in one stage with all build tools (compilers, build-essential, etc.), then copy only necessary artifacts to a minimal runtime stage.
-
-**Example:**
 ```dockerfile
-# Stage 1: Build
-FROM python:3.11 as builder
-RUN pip install --user pytorch torchvision
+FROM python:3.11 AS builder
+RUN pip install --user torch torchvision
 
-# Stage 2: Runtime (much smaller)
 FROM python:3.11-slim
 COPY --from=builder /root/.local /root/.local
 ```
 
-**Additional strategies:**
-- Use slim/alpine base images
-- Minimize layers (combine RUN commands)
-- Remove build dependencies after installation
-- Use .dockerignore to exclude unnecessary files
-- Avoid copying large datasets into images
-
-(Core concept + example acceptable)
+Other contributing strategies: slim/alpine base images, minimizing layers, removing build dependencies after use, `.dockerignore`, and never copying large datasets into the image — but multi-stage builds are the single biggest lever, typically 50-80% smaller.
 </details>
 
 ---
@@ -297,9 +292,12 @@ COPY --from=builder /root/.local /root/.local
 ### Question 19
 **True or False: Using `nvidia/cuda` base images automatically gives you GPU support without NVIDIA Container Toolkit.**
 
+A) True
+B) False
+
 <details>
 <summary>Answer</summary>
-False - The NVIDIA Container Toolkit must be installed on the host to pass through GPU devices. The nvidia/cuda image contains CUDA libraries needed inside the container, but won't work without the toolkit on the host.
+B) False - The NVIDIA Container Toolkit must be installed on the host to pass through GPU devices. The nvidia/cuda image contains CUDA libraries needed inside the container, but won't work without the toolkit on the host.
 </details>
 
 ---
@@ -327,95 +325,3 @@ Note: depends_on only controls start order, not readiness. Use health checks for
 </details>
 
 ---
-
-## Scoring Guide
-
-### Grading Rubric
-
-- **18-20 correct (90-100%):** Excellent - You have mastered Docker containerization
-- **16-17 correct (80-89%):** Very Good - Strong understanding with minor gaps
-- **14-15 correct (70-79%):** Passing - Adequate knowledge, review areas where you struggled
-- **Below 14 (< 70%):** Not Passing - Review module material and retake quiz
-
-### What to Do Next
-
-**If you passed (≥ 70%):**
-1. Review any questions you got wrong
-2. Complete the Module 03 practical exercises
-3. Work on the practical assessment (build production-ready container)
-4. Proceed to Module 04: Kubernetes Fundamentals
-
-**If you didn't pass (< 70%):**
-1. Review lessons corresponding to questions you missed
-2. Practice writing Dockerfiles and building images
-3. Work through hands-on exercises again
-4. Retake quiz after additional study
-
----
-
-## Answer Key Summary
-
-1. B
-2. True
-3. C
-4. B
-5. B
-6. B
-7. B
-8. B
-9. False
-10. Short Answer (see details)
-11. B
-12. C
-13. A
-14. False
-15. A
-16. B
-17. B
-18. Short Answer (see details)
-19. False
-20. B
-
----
-
-## Key Concepts to Review
-
-### If you struggled with Section 1 (Fundamentals):
-- Review Lesson 01: Docker Introduction
-- Practice: Run containers, explore docker ps, docker logs, docker exec
-- Understand: Image vs container, layers, Docker architecture
-
-### If you struggled with Section 2 (Dockerfiles):
-- Review Lesson 02: Dockerfiles for ML Apps
-- Review Lesson 03: Image Optimization
-- Practice: Write Dockerfiles, build images, use multi-stage builds
-- Understand: Layer caching, instruction ordering, .dockerignore
-
-### If you struggled with Section 3 (Volumes/Networking):
-- Review Lesson 04: Docker Networking and Volumes
-- Practice: Mount volumes, connect containers, test networking
-- Understand: Volume persistence, network modes, DNS resolution
-
-### If you struggled with Section 4 (GPU/Optimization):
-- Review Lesson 07: GPU Support in Docker
-- Review Lesson 03: Image Optimization
-- Practice: Build optimized images, test GPU access
-- Understand: NVIDIA Container Toolkit, multi-stage builds, size optimization
-
----
-
-## Practical Application
-
-After passing the quiz, demonstrate skills by:
-
-1. **Build a production Dockerfile** for an ML model (< 500MB, multi-stage)
-2. **Use Docker Compose** to run model + database + cache
-3. **Enable GPU** in a container and run GPU-accelerated inference
-4. **Push image** to Docker Hub or cloud registry
-5. **Document** your work in a README with build instructions
-
----
-
-**Time to Review:** 20-30 minutes to review answers and understand mistakes
-
-**Ready for Module 04?** If you scored ≥ 70% and completed exercises, move forward to Kubernetes!

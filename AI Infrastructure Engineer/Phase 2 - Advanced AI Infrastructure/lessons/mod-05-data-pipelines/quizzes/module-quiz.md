@@ -37,7 +37,10 @@ D) Distributed Application Gateway
 ### Question 3
 True or False: In Airflow, tasks within a DAG can have circular dependencies.
 
-**Answer:** False (DAG must be acyclic - no cycles allowed)
+A) True
+B) False
+
+**Answer:** B (DAG must be acyclic - no cycles allowed)
 
 ---
 
@@ -91,7 +94,10 @@ D) Monitoring data quality
 ### Question 8
 True or False: DVC stores the actual data files in Git repositories.
 
-**Answer:** False (DVC stores metadata/pointers in Git, actual data in remote storage)
+A) True
+B) False
+
+**Answer:** B (DVC stores metadata/pointers in Git, actual data in remote storage)
 
 ---
 
@@ -148,7 +154,10 @@ D) A JSON file format
 ### Question 13
 True or False: In Spark, transformations are executed immediately when called.
 
-**Answer:** False (Transformations are lazy and only executed when an action is called)
+A) True
+B) False
+
+**Answer:** B (Transformations are lazy and only executed when an action is called)
 
 ---
 
@@ -205,7 +214,10 @@ D) A configuration file
 ### Question 18
 True or False: In Kafka, consumers in the same consumer group will receive duplicate messages.
 
-**Answer:** False (Messages are distributed among consumers in a group - load balancing)
+A) True
+B) False
+
+**Answer:** B (Messages are distributed among consumers in a group - load balancing)
 
 ---
 

@@ -121,11 +121,12 @@ function updateReaderDoneBtn() {
 // category opens to instead of loading a markdown file — used for card/UI-driven sections
 // that aren't backed by content files at all.
 const categories = [
-    { name: 'Infrastructure', dir: 'AI Infrastructure Engineer', icon: 'memory' },
-    { name: 'System Design', dir: 'ML and GenAI System Design', icon: 'schema' },
+    { name: 'AI Infrastructure Engineer', dir: 'AI Infrastructure Engineer', icon: 'memory' },
+    { name: 'ML & GenAI System Design', dir: 'ML and GenAI System Design', icon: 'schema' },
+    { name: 'GenAI Atlas', dir: 'GenAI Atlas', icon: 'auto_awesome', locked: true },
     { name: 'Coding', dir: 'Coding', icon: 'code', customView: 'coding' },
-    { name: 'Projects', dir: 'ML and GenAI Projects', icon: 'terminal', customView: 'projects' },
-    { name: 'Paper Analysis', dir: 'Research Paper Analysis', icon: 'description' }
+    { name: 'The Build Lab', dir: 'ML and GenAI Projects', icon: 'terminal', customView: 'projects' },
+    { name: 'Engineering Blog Dissections', dir: 'Engineering Blog Dissections', icon: 'description', locked: true }
 ];
 
 // Card data for the hand-built Projects view (#projects). Edit this array to add/remove cards —
@@ -561,13 +562,13 @@ function selectCategory(categoryName) {
 
 // Navigate dynamically to the first file of a category via URL hash
 function navigateToCategory(categoryName) {
-    if (categoryName === 'Paper Analysis') {
-        const displayName = 'Research Paper Analysis';
-        showToast(`The ${displayName} path is currently locked.`, 'warning');
-        return;
-    }
     const cat = categories.find(c => c.name === categoryName);
     if (!cat) return;
+
+    if (cat.locked) {
+        showToast(`The ${cat.name} path is currently locked.`, 'warning');
+        return;
+    }
 
     if (cat.customView) {
         window.location.hash = cat.customView;
@@ -685,7 +686,7 @@ async function loadStructure() {
         calculateStats();
 
         // Select first category by default
-        selectCategory('Infrastructure');
+        selectCategory('AI Infrastructure Engineer');
 
         handleRouting();
     } catch (err) {
@@ -1139,7 +1140,7 @@ function showProjectsView() {
 
     const catBtns = document.querySelectorAll('.cat-btn');
     catBtns.forEach(btn => {
-        if (btn.dataset.category === 'Projects') {
+        if (btn.dataset.category === 'The Build Lab') {
             btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg bg-primary-container text-on-primary-container font-medium transition-all text-left";
         } else {
             btn.className = "cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left";
@@ -1983,9 +1984,8 @@ async function loadFile(filePath) {
     // Auto switch category matching the loading file path
     const matchedCat = categories.find(c => filePath.startsWith(c.dir));
     if (matchedCat) {
-        if (matchedCat.name === 'Paper Analysis') {
-            const displayName = 'Research Paper Analysis';
-            showToast(`The ${displayName} path is currently locked.`, 'warning');
+        if (matchedCat.locked) {
+            showToast(`The ${matchedCat.name} path is currently locked.`, 'warning');
             goHome();
             return;
         }

@@ -1,6 +1,6 @@
 # Module 03: Containerization with Docker
 
-**Duration:** 35 hours · **Difficulty:** Intermediate · **Prerequisites:** Module 02
+**Duration:** 31 hours · **Difficulty:** Intermediate · **Prerequisites:** Module 02, Docker fundamentals (Phase 1)
 
 ## Overview
 
@@ -18,16 +18,17 @@ This module takes you from `docker run hello-world` to shipping production-grade
 
 ## Lessons
 
+Docker fundamentals (containers vs. VMs, the daemon, your first container) are covered in Phase 1's Docker & Containers module — this module picks up straight from there.
+
 | # | Lesson | Hours |
 |---|--------|-------|
-| 01 | [Docker Introduction](./01-docker-introduction.md) — containers vs. VMs, the Docker daemon, your first container | 4 |
-| 02 | [Dockerfiles for ML Apps](./02-dockerfile-ml-apps.md) — base images, installing PyTorch/TensorFlow, structuring an image | 5 |
-| 03 | [Image Optimization](./03-image-optimization.md) — multi-stage builds, layer caching, cutting image size 50–80% | 5 |
-| 04 | [Networking & Volumes](./04-docker-networking-volumes.md) — port mapping, container-to-container traffic, persistent storage | 5 |
-| 05 | [Docker Compose](./05-docker-compose.md) — orchestrating multi-service ML stacks | 5 |
-| 06 | [Container Registries](./06-container-registries.md) — Docker Hub, ECR, GCR, ACR, tagging strategy | 4 |
-| 07 | [GPU Support in Docker](./07-gpu-docker.md) — NVIDIA Container Toolkit, CUDA base images, multi-GPU containers | 5 |
-| 08 | [Production Best Practices](./08-production-best-practices.md) — security, health checks, graceful shutdown | 2 |
+| 01 | [Dockerfiles for ML Apps](./01-dockerfile-ml-apps.md) — base images, installing PyTorch/TensorFlow, structuring an image | 5 |
+| 02 | [Image Optimization](./02-image-optimization.md) — multi-stage builds, layer caching, cutting image size 50–80% | 5 |
+| 03 | [Networking & Volumes](./03-docker-networking-volumes.md) — port mapping, container-to-container traffic, persistent storage | 5 |
+| 04 | [Docker Compose](./04-docker-compose.md) — orchestrating multi-service ML stacks | 5 |
+| 05 | [Container Registries](./05-container-registries.md) — Docker Hub, ECR, GCR, ACR, tagging strategy | 4 |
+| 06 | [GPU Support in Docker](./06-gpu-docker.md) — NVIDIA Container Toolkit, CUDA base images, multi-GPU containers | 5 |
+| 07 | [Production Best Practices](./07-production-best-practices.md) — security, health checks, graceful shutdown | 2 |
 
 Each lesson has a hands-on exercise attached — don't skip them, this is a module you learn by doing, not reading.
 
