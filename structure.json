@@ -5067,6 +5067,11 @@
         "type": "directory",
         "children": [
           {
+            "name": "GenAI System Design (GenAI SD)",
+            "type": "file",
+            "path": "ML and GenAI System Design/GENAI SD/README.md"
+          },
+          {
             "name": "Gmail Smart Compose System Design",
             "type": "file",
             "path": "ML and GenAI System Design/GENAI SD/Gmail Smart Compose.md"
@@ -5098,6 +5103,11 @@
             "type": "directory",
             "children": [
               {
+                "name": "People You May Know (PYMK) System Design",
+                "type": "file",
+                "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/People You May Know.md"
+              },
+              {
                 "name": "Video Recommendation System System Design",
                 "type": "file",
                 "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Video Recommendation System.md"
@@ -5110,6 +5120,11 @@
             "path": "ML and GenAI System Design/MLSD/README.md"
           }
         ]
+      },
+      {
+        "name": "ML & GenAI System Design Repository",
+        "type": "file",
+        "path": "ML and GenAI System Design/README.md"
       }
     ]
   }

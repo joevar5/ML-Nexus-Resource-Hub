@@ -29,11 +29,10 @@ Select a topic below to explore or write its system design. Each document is pre
 *Systems designed to understand user preferences and deliver highly personalized item discovery.*
 
 *   [Video Recommendation System](1.%20Recommendation%20&%20Personalization/Video%20Recommendation%20System.md)
+*   [People You May Know](1.%20Recommendation%20&%20Personalization/People%20You%20May%20Know.md)
 
 More categories — Search & Retrieval, Ranking & Prediction, Trust & Safety, Computer Vision, and Forecasting & Time Series — are in progress and will be published here as they're finished.
 
-### GenAI System Design
-*Systems built around large language models — from grounding responses in external knowledge to generating personalized, context-aware text.*
+---
 
-*   [Retrieval-Augmented Generation (RAG) System Design](../GENAI%20SD/Retrieval-Augmented%20Generation.md)
-*   [Gmail Smart Compose System Design](../GENAI%20SD/Gmail%20Smart%20Compose.md)
+Looking for LLM-powered systems (RAG, personalized generation, etc.) instead? Head to **[GenAI System Design](../GENAI%20SD/README.md)**.
