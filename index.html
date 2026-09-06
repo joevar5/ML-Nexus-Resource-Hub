@@ -65,6 +65,10 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
+    <!-- driver.js for the Quick Revise guided tour -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.8.0/dist/driver.css">
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.8.0/dist/driver.js.iife.js"></script>
+
     <!-- Tailwind Config -->
     <script id="tailwind-config">
         tailwind.config = {
@@ -1164,6 +1168,12 @@
     <!-- Scroll to Top floating button -->
     <button id="scroll-top-btn" class="scroll-top-btn" aria-label="Scroll to Top">
         <span class="material-symbols-outlined">arrow_upward</span>
+    </button>
+
+    <!-- Quick Revise floating button: jumps to a Leitner-weighted lesson pick and starts a driver.js recap tour -->
+    <button id="quick-revise-btn" onclick="quickRevise()" class="quick-revise-fab hidden" aria-label="Quick Revise" title="Quick Revise">
+        <span class="material-symbols-outlined">bolt</span>
+        <span class="quick-revise-label">Quick Revise</span>
     </button>
 
     <!-- UI Logic and Rendering Script -->

@@ -99,6 +99,194 @@ function updateSidebarCompletionUI() {
     });
 }
 
+// ── Quick Revise: Leitner-system spaced repetition ──
+// Each quizzed lesson sits in a box (1 = just failed/new, 5 = mastered). Passing a quiz
+// moves it up a box (further out); failing resets it to box 1 (due again immediately).
+const SRS_STORAGE_KEY = 'revise_srs_v1';
+const SRS_BOX_INTERVAL_DAYS = [0, 1, 3, 7, 14]; // index 0 unused; box N -> index N
+
+function loadSrsData() {
+    try {
+        return JSON.parse(localStorage.getItem(SRS_STORAGE_KEY) || '{}');
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveSrsData(data) {
+    try {
+        localStorage.setItem(SRS_STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+        console.error('Failed to save revision schedule', e);
+    }
+}
+
+// Called once a lesson's quiz is fully answered, to move it through the Leitner boxes.
+function recordQuizResult(filePath, passed) {
+    const srsData = loadSrsData();
+    const prevBox = srsData[filePath]?.box || 0;
+    const nextBox = passed ? Math.min(prevBox + 1, 5) : 1;
+    const dueInDays = passed ? SRS_BOX_INTERVAL_DAYS[nextBox] : 0;
+
+    srsData[filePath] = {
+        box: nextBox,
+        dueAt: Date.now() + dueInDays * 24 * 60 * 60 * 1000,
+        reviewCount: (srsData[filePath]?.reviewCount || 0) + 1
+    };
+
+    saveSrsData(srsData);
+}
+
+// Returns { file, status } for a random Leitner-weighted lesson pick, or null if none exist.
+function pickReviseCandidate() {
+    // Scope to whichever lesson category the user is currently browsing — revising
+    // ML & GenAI System Design shouldn't jump you into AI Infrastructure Engineer.
+    const activeCat = categories.find(c => c.name === activeCategory && !c.customView && !c.locked);
+    const categoryDir = activeCat ? activeCat.dir : null;
+
+    let lessonFiles = flattenedFiles.filter(f => f.type === 'file' && isLessonFile(f.path));
+    if (categoryDir) {
+        lessonFiles = lessonFiles.filter(f => f.path.startsWith(categoryDir + '/'));
+    }
+    if (lessonFiles.length === 0) return null;
+
+    const srsData = loadSrsData();
+    const now = Date.now();
+
+    const withStatus = lessonFiles
+        .filter(f => f.path !== currentFilePath || lessonFiles.length === 1)
+        .map(f => {
+            const record = srsData[f.path];
+            if (!record) return { file: f, box: 0, due: true, status: 'New lesson' };
+            const due = record.dueAt <= now;
+            const boxLabel = record.box >= 5 ? 'Mastered' : `Box ${record.box}`;
+            return {
+                file: f,
+                box: record.box,
+                due,
+                status: due ? `${boxLabel} · due for revision` : `${boxLabel} · reviewed early`
+            };
+        });
+
+    // Prefer lessons that are new or overdue; only fall back to "everything's fresh" if
+    // literally nothing is due, so the button never goes dead.
+    const duePool = withStatus.filter(c => c.due);
+    const pool = duePool.length > 0 ? duePool : withStatus;
+
+    // Weight toward weaker boxes (lower box = higher weight; new/never-quizzed = highest).
+    const weighted = [];
+    pool.forEach(c => {
+        const weight = c.box === 0 ? 6 : Math.max(1, 6 - c.box);
+        for (let i = 0; i < weight; i++) weighted.push(c);
+    });
+
+    return weighted[Math.floor(Math.random() * weighted.length)];
+}
+
+// Quick Revise only makes sense while actually reading a lesson/quiz — hide the FAB on
+// Home, Coding, The Build Lab, and the Author page.
+function setQuickReviseVisible(visible) {
+    const btn = document.getElementById('quick-revise-btn');
+    if (!btn) return;
+    btn.classList.toggle('hidden', !visible);
+}
+
+// True for actual lesson + quiz content only — excludes exercises/labs/resources/projects/
+// assessments (code sandboxes like deployment.yaml) and anything outside the two lesson-driven
+// categories.
+function isLessonFile(path) {
+    if (!path.toLowerCase().endsWith('.md')) return false;
+
+    if (path.startsWith('AI Infrastructure Engineer/')) {
+        // Lecture notes are long-form reading, not a quick recap — only the quiz files
+        // (short, structured Q&A built for active recall) qualify here.
+        return path.includes('/lessons/') && path.includes('/quizzes/');
+    }
+
+    if (path.startsWith('ML and GenAI System Design/')) return true;
+
+    return false;
+}
+
+// Set right before navigating to a Quick Revise pick; loadFile() consumes them once the
+// picked lesson has finished rendering, to kick off the driver.js recap tour.
+let pendingReviseTour = false;
+let pendingReviseStatus = '';
+
+// Jump to a Leitner-weighted lesson pick (new/overdue lessons favored) so the user can
+// re-read it and retake its quiz.
+function quickRevise() {
+    const pick = pickReviseCandidate();
+
+    if (!pick) {
+        showToast('No lessons available to revise yet.', 'warning');
+        return;
+    }
+
+    pendingReviseTour = true;
+    pendingReviseStatus = pick.status;
+    window.location.hash = encodeURIComponent(pick.file.path);
+}
+
+// Guided driver.js recap tour: breadcrumb -> heading -> quiz (if the lesson has one).
+function startReviseTour() {
+    if (!window.driver || !window.driver.js) return;
+
+    const matchedFile = flattenedFiles.find(f => f.path === currentFilePath);
+    const lessonName = matchedFile ? matchedFile.name : currentFilePath.split('/').pop();
+    const statusLine = pendingReviseStatus ? `<br><span class="revise-status-badge">${escapeHtml(pendingReviseStatus)}</span>` : '';
+    pendingReviseStatus = '';
+
+    // makeQuizInteractive() builds #quiz-scoreboard only when it detects quiz-shaped
+    // content in the markdown — plain lesson docs (e.g. ML & GenAI System Design case
+    // studies) never get one, so the recap step shouldn't reference a quiz that isn't there.
+    const hasQuiz = !!document.getElementById('quiz-scoreboard');
+
+    const steps = [
+        {
+            element: '#breadcrumbs',
+            popover: {
+                title: 'Quick Revise ⚡',
+                description: `You're revisiting <strong>${escapeHtml(lessonName)}</strong>. Let's jog your memory.${statusLine}`,
+                side: 'bottom',
+                align: 'start'
+            }
+        },
+        {
+            element: '#markdown-content',
+            popover: {
+                title: 'Skim the key ideas',
+                description: hasQuiz
+                    ? 'Quickly scan back over the core concepts before the quiz.'
+                    : 'Quickly scan back over the core concepts to refresh your memory.',
+                side: 'top',
+                align: 'start'
+            }
+        }
+    ];
+
+    if (hasQuiz) {
+        steps.push({
+            element: '#quiz-scoreboard',
+            popover: {
+                title: 'Test yourself',
+                description: 'Retake the quiz below to check what stuck.',
+                side: 'top',
+                align: 'start'
+            }
+        });
+    }
+
+    const { driver } = window.driver.js;
+    driver({
+        showProgress: true,
+        overlayOpacity: 0.6,
+        stagePadding: 6,
+        smoothScroll: true,
+        steps
+    }).drive();
+}
+
 function updateReaderDoneBtn() {
     const btn = document.getElementById('mark-done-page-btn');
     const icon = document.getElementById('mark-done-page-icon');
@@ -134,7 +322,7 @@ const categories = [
 const mlProjects = [
     {
         title: 'MLForge',
-        description: 'A hands-on project that takes a model from a notebook to a real production server — its own FastAPI service, served on Kubernetes, every pipeline run tracked, and monitored like production, end to end.',
+        description: 'Engineered a full MLOps lifecycle from notebook to production: a FastAPI model-serving API deployed on Kubernetes, a tracked and versioned training pipeline, and live monitoring — the same path real ML platform teams ship on.',
         icon: 'rocket_launch',
         status: 'Live',
         tags: ['classical-ml'],
@@ -150,11 +338,35 @@ const mlProjects = [
     },
     {
         title: 'Retrievo',
-        description: 'An enterprise-grade Retrieval-Augmented Generation system for querying internal document repositories at scale: AI-based document parsing and chunking, vector-based indexing, CLIP-powered retrieval, optional RAFT fine-tuning, and a full 4-part evaluation framework to keep answers grounded and cited.',
+        description: 'Architected an enterprise-grade RAG system for searching internal knowledge bases at scale — AI-driven document parsing and chunking, vector search, CLIP-powered multimodal retrieval, optional RAFT fine-tuning, and a custom 4-part eval suite to keep answers grounded and cited.',
         icon: 'find_in_page',
         status: 'Live',
         tags: ['genai'],
         link: 'ML and GenAI System Design/GENAI SD/Retrieval-Augmented Generation.md'
+    },
+    {
+        title: 'GraphLink',
+        description: 'Designed a graph-based friend-recommendation system for a billion-user social network — GNN-powered edge prediction over mutual-connection signals, feeding a two-stage candidate generation + ranking pipeline behind a LinkedIn-style "People You May Know."',
+        icon: 'diversity_3',
+        status: 'Live',
+        tags: ['classical-ml'],
+        link: 'ML and GenAI System Design/MLSD/1. Recommendation & Personalization/People You May Know.md'
+    },
+    {
+        title: 'WatchNext',
+        description: 'Built a two-stage recommendation pipeline — candidate retrieval + ranking — over a 10-billion-video catalog, engineered for a sub-200ms serving budget: the same core architecture behind YouTube\'s home-feed engine.',
+        icon: 'smart_display',
+        status: 'Live',
+        tags: ['classical-ml'],
+        link: 'ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Video Recommendation System.md'
+    },
+    {
+        title: 'AutoDraft',
+        description: 'Implemented a decoder-only Transformer for real-time inline text generation, Gmail Smart Compose-style — trained on ~1 billion emails and tuned for imperceptible ~100ms latency with high-confidence-only, bias-checked suggestions.',
+        icon: 'edit_note',
+        status: 'Live',
+        tags: ['genai'],
+        link: 'ML and GenAI System Design/GENAI SD/Gmail Smart Compose.md'
     }
 ];
 
@@ -264,6 +476,7 @@ function renderCodingView() {
 // Display the hand-built Coding Toolkit view
 function showCodingView() {
     currentFilePath = '';
+    setQuickReviseVisible(false);
 
     document.getElementById('home-view').style.display = 'none';
     document.getElementById('reader-view').style.display = 'none';
@@ -978,6 +1191,7 @@ function showPhase2PrereqModal(decodedPath) {
 function goHome() {
     window.location.hash = '';
     currentFilePath = 'README.md';
+    setQuickReviseVisible(false);
 
     document.getElementById('home-view').style.display = 'block';
     document.getElementById('reader-view').style.display = 'none';
@@ -1007,6 +1221,7 @@ function goHome() {
 // Display Author Page
 function showAuthorPage() {
     currentFilePath = '';
+    setQuickReviseVisible(false);
 
     document.getElementById('home-view').style.display = 'none';
     document.getElementById('reader-view').style.display = 'none';
@@ -1124,6 +1339,7 @@ function renderProjectsView() {
 // Display the hand-built ML and GenAI Projects view
 function showProjectsView() {
     currentFilePath = '';
+    setQuickReviseVisible(false);
 
     document.getElementById('home-view').style.display = 'none';
     document.getElementById('reader-view').style.display = 'none';
@@ -1596,6 +1812,10 @@ function makeQuizInteractive() {
         } else {
             titleEl.textContent = 'Quiz in Progress';
         }
+
+        if (quizState.answered === quizState.total) {
+            recordQuizResult(currentFilePath, quizState.correct >= passingCount);
+        }
     }
 
     // ── Process each question ──
@@ -1964,6 +2184,7 @@ function escapeHtml(text) {
 async function loadFile(filePath) {
 
     currentFilePath = filePath;
+    setQuickReviseVisible(true);
 
     if (window.innerWidth < 768) {
         showToast('Best viewed on desktop for the full experience — code blocks, diagrams, and quizzes.', 'info', 4000);
@@ -2120,6 +2341,12 @@ async function loadFile(filePath) {
 
             buildTOC();
             makeQuizInteractive();
+
+            if (pendingReviseTour) {
+                pendingReviseTour = false;
+                // Let the quiz DOM (built synchronously above) settle before spotlighting it.
+                setTimeout(startReviseTour, 150);
+            }
         } else {
             // Render as code sandbox view
             const fileName = filePath.split('/').pop();
@@ -2300,20 +2527,24 @@ function handleSearch(query) {
             homeView.style.display = 'block';
             readerView.style.display = 'none';
             authorView.style.display = 'none';
+            setQuickReviseVisible(false);
         } else if (window.location.hash === '#about') {
             homeView.style.display = 'none';
             readerView.style.display = 'none';
             authorView.style.display = 'block';
+            setQuickReviseVisible(false);
         } else {
             homeView.style.display = 'none';
             readerView.style.display = 'grid';
             authorView.style.display = 'none';
+            setQuickReviseVisible(true);
         }
         searchView.style.display = 'none';
         errorView.style.display = 'none';
         return;
     }
 
+    setQuickReviseVisible(false);
     homeView.style.display = 'none';
     readerView.style.display = 'none';
     errorView.style.display = 'none';
