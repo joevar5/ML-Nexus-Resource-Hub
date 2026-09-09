@@ -311,7 +311,9 @@ function updateReaderDoneBtn() {
 const categories = [
     { name: 'AI Infrastructure Engineer', dir: 'AI Infrastructure Engineer', icon: 'memory' },
     { name: 'ML & GenAI System Design', dir: 'ML and GenAI System Design', icon: 'schema' },
-    { name: 'GenAI Atlas', dir: 'GenAI Atlas', icon: 'auto_awesome', locked: true },
+    // Only the Agents track (30-Day Agentic AI Interview Prep Path) is published so far —
+    // visibleFolders restricts the sidebar tree to that one subfolder until the rest unlocks.
+    { name: 'GenAI Atlas', dir: 'GenAI Atlas', icon: 'auto_awesome', visibleFolders: ['Agents'] },
     { name: 'Coding', dir: 'Coding', icon: 'code', customView: 'coding' },
     { name: 'The Build Lab', dir: 'ML and GenAI Projects', icon: 'terminal', customView: 'projects' },
     { name: 'Engineering Blog Dissections', dir: 'Engineering Blog Dissections', icon: 'description', locked: true }
@@ -762,7 +764,8 @@ function selectCategory(categoryName) {
     // Filter filesTree and render sidebar files navigation
     const targetNode = filesTree.find(node => node.name === cat.dir);
     if (targetNode && targetNode.children) {
-        renderSidebar(targetNode.children, document.getElementById('sidebar-menu'), cat.dir);
+        const visibleChildren = filterVisibleFolders(targetNode.children, cat.visibleFolders);
+        renderSidebar(visibleChildren, document.getElementById('sidebar-menu'), cat.dir);
     } else {
         document.getElementById('sidebar-menu').innerHTML = `
                     <div class="p-2 text-on-surface-variant/60 text-xs">
@@ -790,11 +793,20 @@ function navigateToCategory(categoryName) {
 
     const targetNode = filesTree.find(node => node.name === cat.dir);
     if (targetNode && targetNode.children) {
-        const firstFile = findFirstFile(targetNode.children);
+        const visibleChildren = filterVisibleFolders(targetNode.children, cat.visibleFolders);
+        const firstFile = findFirstFile(visibleChildren);
         if (firstFile) {
             window.location.hash = encodeURIComponent(firstFile.path);
         }
     }
+}
+
+// Restrict a directory's children to a named subset of subfolders (used while a category is
+// only partially published). Non-directory entries (e.g. a top-level README) always pass through.
+// With no allowlist given, all children pass through unchanged.
+function filterVisibleFolders(children, visibleFolders) {
+    if (!visibleFolders) return children;
+    return children.filter(n => n.type !== 'directory' || visibleFolders.includes(n.name));
 }
 
 // Recursive search for the first readable markdown file in category children

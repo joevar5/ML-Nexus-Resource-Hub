@@ -227,14 +227,12 @@
                 </div>
             </button>
             <button onclick="navigateToCategory('GenAI Atlas')"
-                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant/50 hover:bg-surface-container-high/30 transition-colors text-left cursor-not-allowed"
+                class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
                 data-category="GenAI Atlas">
                 <div class="flex items-center gap-2 overflow-hidden flex-1">
-                    <span class="material-symbols-outlined text-xl flex-shrink-0">lock</span>
+                    <span class="material-symbols-outlined text-xl flex-shrink-0">auto_awesome</span>
                     <span class="font-label text-sm truncate">GenAI Atlas</span>
                 </div>
-                <span
-                    class="font-label text-[9px] bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
             </button>
             <button onclick="navigateToCategory('Coding')"
                 class="cat-btn w-full flex items-center justify-between p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors text-left"
@@ -584,9 +582,9 @@
                                 </div>
                             </div>
 
-                            <!-- Node 03: GenAI Atlas (RIGHT, LOCKED) -->
+                            <!-- Node 03: GenAI Atlas (RIGHT) -->
                             <div onclick="navigateToCategory('GenAI Atlas')"
-                                class="flex flex-row items-center justify-between cursor-not-allowed group roadmap-row p-4 md:p-6 opacity-60">
+                                class="flex flex-row items-center justify-between cursor-pointer group roadmap-row p-4 md:p-6">
                                 <!-- Running Border Line -->
                                 <svg class="absolute inset-0 w-full h-full pointer-events-none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -599,20 +597,19 @@
 
                                 <!-- Center badge -->
                                 <div
-                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-highest text-on-surface-variant/80 border border-outline-variant flex items-center justify-center shadow z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-xl">lock</span>
+                                    class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg shadow-primary/20 z-10 ml-0 mr-auto md:mx-auto group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-xl">auto_awesome</span>
                                 </div>
 
                                 <!-- Right side text -->
                                 <div class="w-full md:w-[42%] pl-6 group-hover:scale-[1.01] transition-transform">
                                     <h3 class="font-display text-xl text-on-surface font-bold flex items-center gap-2">
                                         03. GenAI Atlas
-                                        <span
-                                            class="font-label text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 uppercase font-bold tracking-wider whitespace-nowrap flex-shrink-0">Locked</span>
                                     </h3>
                                     <p class="text-on-surface-variant text-sm mt-2 leading-relaxed">
                                         LLMs, fine-tuning, agents, and RAG — the concepts underneath every modern
-                                        GenAI system, distilled into primers you can actually use.
+                                        GenAI system. The Agents track is live first: a 30-day Agentic AI interview
+                                        prep path.
                                     </p>
                                 </div>
                             </div>

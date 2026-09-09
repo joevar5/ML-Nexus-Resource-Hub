@@ -4997,13 +4997,187 @@
         ]
       },
       {
-        "name": "3. Agents",
+        "name": "Agents",
         "type": "directory",
         "children": [
           {
-            "name": "Agents",
+            "name": "Phase 1 - Agent Foundations",
+            "type": "directory",
+            "children": [
+              {
+                "name": "Day 1: What is an AI Agent?",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 1 - Agent Foundations/01-what-is-an-ai-agent.md"
+              },
+              {
+                "name": "Day 2: The Agent Loop",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 1 - Agent Foundations/02-the-agent-loop.md"
+              },
+              {
+                "name": "Day 3: Goals and Task Breakdown",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 1 - Agent Foundations/03-goals-and-task-breakdown.md"
+              },
+              {
+                "name": "Day 4: State and Context",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 1 - Agent Foundations/04-state-and-context.md"
+              },
+              {
+                "name": "Day 5: Agent Failure Modes",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 1 - Agent Foundations/05-agent-failure-modes.md"
+              }
+            ]
+          },
+          {
+            "name": "Phase 2 - Tools and Execution",
+            "type": "directory",
+            "children": [
+              {
+                "name": "Day 6: Tool Calling Basics",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 2 - Tools and Execution/06-tool-calling-basics.md"
+              },
+              {
+                "name": "Day 7: Tool Schemas",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 2 - Tools and Execution/07-tool-schemas.md"
+              },
+              {
+                "name": "Day 8: Tool Error Handling",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 2 - Tools and Execution/08-tool-error-handling.md"
+              },
+              {
+                "name": "Day 9: Retries and Fallbacks",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 2 - Tools and Execution/09-retries-and-fallbacks.md"
+              },
+              {
+                "name": "Day 10: Structured Output",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 2 - Tools and Execution/10-structured-output.md"
+              },
+              {
+                "name": "Day 11: Multi-Step Tool Use",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 2 - Tools and Execution/11-multi-step-tool-use.md"
+              },
+              {
+                "name": "Day 12: Mini Project — Research Assistant",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 2 - Tools and Execution/12-mini-project-research-assistant.md"
+              }
+            ]
+          },
+          {
+            "name": "Phase 3 - RAG, Memory, and Evals",
+            "type": "directory",
+            "children": [
+              {
+                "name": "Day 13: RAG Basics",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 3 - RAG, Memory, and Evals/13-rag-basics.md"
+              },
+              {
+                "name": "Day 14: Chunking and Retrieval Quality",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 3 - RAG, Memory, and Evals/14-chunking-and-retrieval-quality.md"
+              },
+              {
+                "name": "Day 15: Citations and Grounded Answers",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 3 - RAG, Memory, and Evals/15-citations-and-grounded-answers.md"
+              },
+              {
+                "name": "Day 16: Memory in Agents",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 3 - RAG, Memory, and Evals/16-memory-in-agents.md"
+              },
+              {
+                "name": "Day 17: Short-Term vs. Long-Term Context",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 3 - RAG, Memory, and Evals/17-short-term-vs-long-term-context.md"
+              },
+              {
+                "name": "Day 18: Agent Evals",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 3 - RAG, Memory, and Evals/18-agent-evals.md"
+              },
+              {
+                "name": "Day 19: Scoring Agent Behavior",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 3 - RAG, Memory, and Evals/19-scoring-agent-behavior.md"
+              },
+              {
+                "name": "Day 20: Mini Project — Support Agent with RAG",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 3 - RAG, Memory, and Evals/20-mini-project-support-agent-with-rag.md"
+              }
+            ]
+          },
+          {
+            "name": "Phase 4 - Production and Interview Practice",
+            "type": "directory",
+            "children": [
+              {
+                "name": "Day 21: Guardrails",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/21-guardrails.md"
+              },
+              {
+                "name": "Day 22: Human-in-the-Loop",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/22-human-in-the-loop.md"
+              },
+              {
+                "name": "Day 23: Observability",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/23-observability.md"
+              },
+              {
+                "name": "Day 24: Debugging Agents",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/24-debugging-agents.md"
+              },
+              {
+                "name": "Day 25: Cost and Latency",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/25-cost-and-latency.md"
+              },
+              {
+                "name": "Day 26: Agent Architecture",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/26-agent-architecture.md"
+              },
+              {
+                "name": "Day 27: Interview Design Questions",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/27-interview-design-questions.md"
+              },
+              {
+                "name": "Day 28: Mixed Hard Problem",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/28-mixed-hard-problem.md"
+              },
+              {
+                "name": "Day 29: Capstone Project",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/29-capstone-project.md"
+              },
+              {
+                "name": "Day 30: Final Review",
+                "type": "file",
+                "path": "GenAI Atlas/Agents/Phase 4 - Production and Interview Practice/30-final-review.md"
+              }
+            ]
+          },
+          {
+            "name": "Agents — 30-Day Agentic AI Interview Prep Path",
             "type": "file",
-            "path": "GenAI Atlas/3. Agents/README.md"
+            "path": "GenAI Atlas/Agents/README.md"
           }
         ]
       },
