@@ -1,4 +1,4 @@
-# Lesson 08: Production LLM Best Practices
+# Lesson 09: Production LLM Best Practices
 
 ## Table of Contents
 1. [Introduction](#introduction)

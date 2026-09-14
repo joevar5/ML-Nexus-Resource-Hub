@@ -1,1695 +1,330 @@
 # Lesson 02: vLLM Deployment
 
-## Table of Contents
-1. [Introduction to vLLM](#introduction-to-vllm)
-2. [vLLM Architecture and Features](#vllm-architecture-and-features)
-3. [Installation and Setup](#installation-and-setup)
-4. [Basic vLLM Usage](#basic-vllm-usage)
-5. [Deploying LLMs with vLLM](#deploying-llms-with-vllm)
-6. [OpenAI-Compatible API Server](#openai-compatible-api-server)
-7. [Performance Optimization](#performance-optimization)
-8. [Monitoring vLLM Deployments](#monitoring-vllm-deployments)
-9. [Docker Deployment](#docker-deployment)
-10. [Kubernetes Deployment](#kubernetes-deployment)
+vLLM is a high-throughput, memory-efficient inference engine built at UC Berkeley that has become the de facto standard for production LLM serving. This lesson covers why it's fast, how to deploy it — from a Python script to Docker to Kubernetes — and how to keep it healthy in production.
+
+**Prerequisites:** [Lesson 01](./01-introduction-llm-infrastructure.md), a Linux box with an NVIDIA GPU (compute capability 7.0+) and CUDA 11.8+, Python 3.8+.
+
+### Contents
+
+1. [Why vLLM](#why-vllm)
+2. [Architecture: PagedAttention & Continuous Batching](#architecture-pagedattention--continuous-batching)
+3. [Installation](#installation)
+4. [Basic Usage](#basic-usage)
+5. [OpenAI-Compatible API Server](#openai-compatible-api-server)
+6. [Performance Tuning](#performance-tuning)
+7. [Multi-GPU & Tensor Parallelism](#multi-gpu--tensor-parallelism)
+8. [Beyond the Basics: Newer vLLM Features](#beyond-the-basics-newer-vllm-features)
+9. [Monitoring](#monitoring)
+10. [Docker & Kubernetes Deployment](#docker--kubernetes-deployment)
 11. [Production Best Practices](#production-best-practices)
-12. [Troubleshooting](#troubleshooting)
-13. [Summary](#summary)
+12. [Practical Exercise](#practical-exercise)
+13. [Key Takeaways](#key-takeaways)
+14. [Additional Resources](#additional-resources)
 
-## Introduction to vLLM
+---
 
-vLLM (Virtual LLM) is a high-throughput, memory-efficient inference engine specifically designed for Large Language Models. Developed by researchers at UC Berkeley, vLLM has become the de facto standard for production LLM serving due to its exceptional performance and ease of use.
+## Why vLLM
 
-### Why vLLM?
+The short version is that vLLM makes a GPU actually earn its cost. Plain Hugging Face Transformers leaves a lot of throughput on the table, and vLLM closes that gap — in practice you're looking at 10–20x higher throughput on the same hardware, mostly thanks to two ideas working together. PagedAttention manages the KV cache the way an operating system manages memory pages, so you stop wasting VRAM on cache space that's reserved but unused. And continuous batching means the GPU keeps working on other requests as soon as one finishes, instead of sitting idle waiting for a whole batch to wrap up together.
 
-**Performance Advantages:**
-- **10-20x higher throughput** compared to Hugging Face Transformers
-- **PagedAttention**: Revolutionary memory management technique
-- **Continuous batching**: Efficient request processing
-- **Optimized CUDA kernels**: Maximum GPU utilization
+It's also easy to adopt without rewriting your application: vLLM ships an OpenAI-compatible server, so `/v1/chat/completions` works as a near drop-in replacement if you're already building against that API shape. Model support is broad — the LLaMA family, Mistral/Mixtral, Falcon, GPT-2/J/NeoX, CodeLlama, Qwen, Yi — and it supports quantization methods like AWQ, GPTQ, and SqueezeLLM when you need to trade a little quality for a smaller memory footprint.
 
-**Production-Ready Features:**
-- OpenAI-compatible API server
-- Streaming responses
-- Multi-model support
-- Quantization support (AWQ, GPTQ)
-- Tensor parallelism for large models
+Model support moves fast, so it's worth checking the current list rather than trusting a snapshot: [docs.vllm.ai/models/supported_models](https://docs.vllm.ai/en/latest/models/supported_models.html)
 
-**Developer Experience:**
-- Simple Python API
-- Easy integration with existing code
-- Extensive model support
-- Active community and development
+---
 
-### Learning Objectives
+## Architecture: PagedAttention & Continuous Batching
 
-By the end of this lesson, you will be able to:
-- Understand vLLM architecture and PagedAttention
-- Install and configure vLLM for different environments
-- Deploy LLMs using vLLM's Python API
-- Set up OpenAI-compatible API servers
-- Optimize vLLM performance for production workloads
-- Deploy vLLM in Docker and Kubernetes
-- Monitor and troubleshoot vLLM deployments
-- Implement production best practices
+```mermaid
+flowchart TB
+    Sched["Request Scheduler<br/>(queuing, continuous batching, token budget)"]
+    Mem["Memory Manager<br/>(PagedAttention: dynamic KV cache blocks)"]
+    Exec["Model Executor<br/>(CUDA kernels, tensor parallelism)"]
 
-## vLLM Architecture and Features
+    Sched --> Mem --> Exec
 
-### Core Architecture
-
-vLLM's architecture is built around several key innovations:
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                    vLLM Architecture                     │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  ┌────────────────────────────────────────────────┐    │
-│  │         Request Scheduler (Front-end)          │    │
-│  │  - Request queuing and prioritization          │    │
-│  │  - Continuous batching logic                   │    │
-│  │  - Token budget management                     │    │
-│  └─────────────────┬──────────────────────────────┘    │
-│                    │                                     │
-│  ┌─────────────────▼──────────────────────────────┐    │
-│  │         Memory Manager (PagedAttention)        │    │
-│  │  - Dynamic KV cache allocation                 │    │
-│  │  - Memory block management                     │    │
-│  │  - Efficient memory sharing                    │    │
-│  └─────────────────┬──────────────────────────────┘    │
-│                    │                                     │
-│  ┌─────────────────▼──────────────────────────────┐    │
-│  │         Model Executor (Back-end)              │    │
-│  │  - Model inference                             │    │
-│  │  - Optimized CUDA kernels                      │    │
-│  │  - Tensor parallelism support                  │    │
-│  └────────────────────────────────────────────────┘    │
-│                                                          │
-└─────────────────────────────────────────────────────────┘
+    classDef sched fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:6,ry:6
+    classDef mem fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:6,ry:6
+    classDef exec fill:#059669,stroke:#065f46,color:#fff,rx:6,ry:6
+    class Sched sched
+    class Mem mem
+    class Exec exec
 ```
 
-### PagedAttention: The Key Innovation
+**PagedAttention** borrows an idea straight from operating systems: rather than reserving a fixed, worst-case chunk of memory for every request's KV cache up front, it splits that memory into blocks and hands them out on demand — so a short request doesn't sit on memory it'll never use, and parallel samples of the same prompt can even share blocks instead of duplicating them.
 
-PagedAttention is vLLM's breakthrough memory management technique, inspired by operating system paging.
+```mermaid
+flowchart LR
+    subgraph T["Traditional Allocation"]
+        direction LR
+        T1["Reserved: 2048 tokens"] -.-> T2["Used: ~100 tokens"]
+    end
 
-**Traditional Approach:**
-```
-┌────────────────────────────────────────┐
-│  Request 1: [KV Cache: 100 tokens]    │  Wastes space
-│  Allocated: 2048 tokens               │  if request is
-│  Wasted: 1948 tokens                  │  shorter
-└────────────────────────────────────────┘
-```
+    subgraph P["PagedAttention"]
+        direction LR
+        P1["Block"] --> P2["Block"] --> P3["Block"] -.->|"allocated as needed"| P4["..."]
+    end
 
-**PagedAttention Approach:**
-```
-┌────────────────────────────────────────┐
-│  Memory divided into blocks (e.g., 16) │
-│  Allocate only needed blocks           │
-│  Share blocks across requests          │
-│  Dynamic allocation as tokens generate │
-└────────────────────────────────────────┘
+    classDef waste fill:#dc2626,stroke:#991b1b,color:#fff,rx:6,ry:6
+    classDef used fill:#059669,stroke:#065f46,color:#fff,rx:6,ry:6
+    class T1 waste
+    class T2 used
+    class P1,P2,P3 used
 ```
 
-**Benefits:**
-- **Near-zero waste**: Only allocate what's needed
-- **Memory sharing**: Parallel sampling shares KV cache
-- **Dynamic growth**: Allocate blocks as sequence grows
-- **Higher batch sizes**: More requests fit in memory
+**Continuous batching** works the same way on the request side: instead of waiting for an entire batch to finish before starting the next one, it swaps a finished request out and slots a new one in on the very next iteration, so the GPU is never sitting there waiting on the slowest request in the batch.
 
-### Continuous Batching
+```mermaid
+flowchart LR
+    I1["Iteration 1<br/>A · B · C · D"] --> I2["Iteration 2<br/>B · C · D · E<br/>(A done, E added)"] --> I3["Iteration 3<br/>C · D · E · F<br/>(B done, F added)"]
 
-Unlike static batching, continuous batching allows vLLM to add new requests to a batch as soon as slots become available.
-
-```python
-# Traditional static batching
-# Batch 1: [Req A, Req B, Req C, Req D]
-# Wait for ALL to complete before starting Batch 2
-# Problem: If Req A finishes early, GPU sits idle
-
-# Continuous batching (vLLM)
-# Iteration 1: [Req A, Req B, Req C, Req D]
-# Iteration 2: [Req B, Req C, Req D, Req E]  # A done, E added
-# Iteration 3: [Req C, Req D, Req E, Req F]  # B done, F added
-# Result: GPU never idle!
+    classDef iter fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:6,ry:6
+    class I1,I2,I3 iter
 ```
 
-**Impact:**
-- 2-10x higher throughput
-- Better GPU utilization (60-90%)
-- Lower average latency
-- Smoother performance under variable load
+Put together, these two ideas are the whole reason vLLM outperforms naive serving: GPU utilization goes from the 20–40% typical of static batching up to 60–90%, which translates into 2–10x higher throughput on the same hardware.
 
-### Model Support
+---
 
-vLLM supports a wide range of LLM architectures:
-
-**Fully Supported:**
-- LLaMA / LLaMA 2 / LLaMA 3
-- Mistral / Mixtral
-- Falcon
-- GPT-2 / GPT-J / GPT-NeoX
-- OPT
-- BLOOM
-- CodeLlama
-- Yi
-- Qwen
-
-**Quantization Support:**
-- AWQ (4-bit)
-- GPTQ (4-bit, 8-bit)
-- SqueezeLLM
-
-**Check latest compatibility:** https://docs.vllm.ai/en/latest/models/supported_models.html
-
-## Installation and Setup
-
-### Prerequisites
-
-Before installing vLLM, ensure you have:
+## Installation
 
 ```bash
-# System requirements
-# - Linux OS (Ubuntu 20.04+ recommended)
-# - Python 3.8 or higher
-# - NVIDIA GPU with compute capability 7.0+ (V100, T4, A10, A100, etc.)
-# - CUDA 11.8 or higher
-# - 16GB+ system RAM
-
-# Check CUDA version
-nvidia-smi
-
-# Check Python version
-python --version
-```
-
-### Installation Methods
-
-#### Method 1: pip Install (Recommended for Quick Start)
-
-```bash
-# Create virtual environment
-python -m venv vllm-env
-source vllm-env/bin/activate
-
-# Install vLLM
+# Requirements: Linux, Python 3.8+, NVIDIA GPU (compute 7.0+), CUDA 11.8+, 16GB+ RAM
+nvidia-smi                     # confirm CUDA/driver
+python -m venv vllm-env && source vllm-env/bin/activate
 pip install vllm
-
-# Verify installation
 python -c "import vllm; print(vllm.__version__)"
 ```
 
-#### Method 2: Install with Specific CUDA Version
-
-```bash
-# For CUDA 11.8
-pip install vllm
-
-# For CUDA 12.1
-export VLLM_VERSION=0.2.7  # Check latest version
-export PYTHON_VERSION=310
-pip install https://github.com/vllm-project/vllm/releases/download/v${VLLM_VERSION}/vllm-${VLLM_VERSION}+cu121-cp${PYTHON_VERSION}-cp${PYTHON_VERSION}-manylinux1_x86_64.whl
-```
-
-#### Method 3: Build from Source (For Development)
-
-```bash
-# Clone repository
-git clone https://github.com/vllm-project/vllm.git
-cd vllm
-
-# Install build dependencies
-pip install -e .
-```
-
-### Post-Installation Verification
+**Verify with a small model** (works on 4GB+ GPU):
 
 ```python
-# test_vllm.py
 from vllm import LLM, SamplingParams
 
-# This test uses a small model - should work with 4GB+ GPU
-def test_vllm_installation():
-    """Test vLLM installation with a small model"""
-
-    # Initialize with a small model
-    llm = LLM(
-        model="facebook/opt-125m",  # Small 125M parameter model
-        max_model_len=512,
-        gpu_memory_utilization=0.3
-    )
-
-    # Simple generation test
-    prompts = ["Hello, how are you?"]
-    sampling_params = SamplingParams(temperature=0.8, max_tokens=50)
-
-    outputs = llm.generate(prompts, sampling_params)
-
-    for output in outputs:
-        print(f"Prompt: {output.prompt}")
-        print(f"Generated: {output.outputs[0].text}")
-        print("✓ vLLM installation successful!")
-
-if __name__ == "__main__":
-    test_vllm_installation()
-```
-
-Run the test:
-```bash
-python test_vllm.py
-```
-
-## Basic vLLM Usage
-
-### Python API - Offline Inference
-
-The simplest way to use vLLM is through its Python API for offline batch inference.
-
-```python
-# basic_usage.py
-from vllm import LLM, SamplingParams
-
-def basic_generation_example():
-    """Basic vLLM generation example"""
-
-    # Initialize the LLM
-    llm = LLM(
-        model="meta-llama/Llama-2-7b-chat-hf",
-        # Download from Hugging Face Hub
-        # Requires HF token for gated models
-    )
-
-    # Define sampling parameters
-    sampling_params = SamplingParams(
-        temperature=0.7,    # Randomness (0.0 = deterministic, 1.0 = creative)
-        top_p=0.9,         # Nucleus sampling
-        max_tokens=256,    # Maximum tokens to generate
-        stop=["</s>"]      # Stop sequences
-    )
-
-    # Single prompt
-    prompt = "Explain quantum computing in simple terms:"
-    outputs = llm.generate([prompt], sampling_params)
-
-    print(outputs[0].outputs[0].text)
-
-def batch_generation_example():
-    """Batch generation - vLLM's strength"""
-
-    llm = LLM(model="meta-llama/Llama-2-7b-chat-hf")
-
-    # Multiple prompts - processed efficiently in batch
-    prompts = [
-        "What is machine learning?",
-        "Explain neural networks.",
-        "What is deep learning?",
-        "Describe transformers architecture.",
-        "What are LLMs?"
-    ]
-
-    sampling_params = SamplingParams(temperature=0.7, max_tokens=100)
-
-    # All prompts processed in single call
-    outputs = llm.generate(prompts, sampling_params)
-
-    for prompt, output in zip(prompts, outputs):
-        print(f"\nPrompt: {prompt}")
-        print(f"Response: {output.outputs[0].text}")
-        print(f"Tokens: {len(output.outputs[0].token_ids)}")
-
-if __name__ == "__main__":
-    basic_generation_example()
-    # batch_generation_example()
-```
-
-### Advanced Sampling Parameters
-
-```python
-# advanced_sampling.py
-from vllm import SamplingParams
-
-class SamplingConfigurations:
-    """Different sampling configurations for various use cases"""
-
-    @staticmethod
-    def deterministic():
-        """For consistent, deterministic outputs"""
-        return SamplingParams(
-            temperature=0.0,
-            top_p=1.0,
-            max_tokens=512
-        )
-
-    @staticmethod
-    def creative():
-        """For creative, diverse outputs"""
-        return SamplingParams(
-            temperature=1.0,
-            top_p=0.95,
-            top_k=50,
-            max_tokens=1024
-        )
-
-    @staticmethod
-    def balanced():
-        """Balanced between creativity and coherence"""
-        return SamplingParams(
-            temperature=0.7,
-            top_p=0.9,
-            max_tokens=512,
-            frequency_penalty=0.1,  # Reduce repetition
-            presence_penalty=0.1    # Encourage diversity
-        )
-
-    @staticmethod
-    def code_generation():
-        """Optimized for code generation"""
-        return SamplingParams(
-            temperature=0.2,  # Lower for more accurate code
-            top_p=0.95,
-            max_tokens=2048,
-            stop=["```\n", "\n\n\n"]  # Stop at code block end
-        )
-
-    @staticmethod
-    def chat():
-        """Optimized for chat applications"""
-        return SamplingParams(
-            temperature=0.7,
-            top_p=0.9,
-            max_tokens=512,
-            repetition_penalty=1.1,  # Discourage repetition
-            stop=["User:", "Human:"]  # Stop at user turn
-        )
-
-# Usage example
-llm = LLM(model="meta-llama/Llama-2-7b-chat-hf")
-
-prompt = "Write a Python function to calculate fibonacci:"
-outputs = llm.generate(
-    [prompt],
-    SamplingConfigurations.code_generation()
-)
-
+llm = LLM(model="facebook/opt-125m", max_model_len=512, gpu_memory_utilization=0.3)
+outputs = llm.generate(["Hello, how are you?"], SamplingParams(temperature=0.8, max_tokens=50))
 print(outputs[0].outputs[0].text)
 ```
 
-### Multi-Turn Conversations
+---
+
+## Basic Usage
 
 ```python
-# conversation.py
 from vllm import LLM, SamplingParams
 
-class ConversationManager:
-    """Manage multi-turn conversations with vLLM"""
+llm = LLM(model="meta-llama/Llama-2-7b-chat-hf")  # requires HF token for gated models
+sampling_params = SamplingParams(temperature=0.7, top_p=0.9, max_tokens=256, stop=["</s>"])
 
-    def __init__(self, model_name: str):
-        self.llm = LLM(model=model_name)
-        self.conversations = {}  # Track conversation history
+# Batch generation is vLLM's strength — process many prompts in one call
+prompts = ["What is machine learning?", "Explain neural networks.", "What are LLMs?"]
+outputs = llm.generate(prompts, sampling_params)
 
-    def format_llama2_prompt(self, messages: list) -> str:
-        """Format messages for Llama 2 chat format"""
-        prompt = "<s>[INST] "
-
-        for i, msg in enumerate(messages):
-            if msg["role"] == "user":
-                if i > 0:
-                    prompt += f"[INST] {msg['content']} [/INST] "
-                else:
-                    prompt += f"{msg['content']} [/INST] "
-            elif msg["role"] == "assistant":
-                prompt += f"{msg['content']} </s>"
-
-        return prompt
-
-    def chat(self, conversation_id: str, user_message: str) -> str:
-        """Process a chat message and return response"""
-
-        # Initialize conversation if new
-        if conversation_id not in self.conversations:
-            self.conversations[conversation_id] = []
-
-        # Add user message
-        self.conversations[conversation_id].append({
-            "role": "user",
-            "content": user_message
-        })
-
-        # Format prompt
-        prompt = self.format_llama2_prompt(
-            self.conversations[conversation_id]
-        )
-
-        # Generate response
-        sampling_params = SamplingParams(
-            temperature=0.7,
-            max_tokens=512,
-            stop=["</s>"]
-        )
-
-        outputs = self.llm.generate([prompt], sampling_params)
-        response = outputs[0].outputs[0].text.strip()
-
-        # Add assistant response to history
-        self.conversations[conversation_id].append({
-            "role": "assistant",
-            "content": response
-        })
-
-        return response
-
-# Example usage
-manager = ConversationManager("meta-llama/Llama-2-7b-chat-hf")
-
-# Conversation 1
-print(manager.chat("user123", "Hello! What's your name?"))
-print(manager.chat("user123", "Can you help me with Python?"))
-print(manager.chat("user123", "Show me a for loop example."))
-
-# Conversation 2 (separate context)
-print(manager.chat("user456", "Tell me about machine learning."))
+for prompt, output in zip(prompts, outputs):
+    print(f"{prompt} -> {output.outputs[0].text}")
 ```
 
-## Deploying LLMs with vLLM
+### Sampling presets
 
-### Model Selection and Download
+| Use case | Config |
+|---|---|
+| Deterministic | `temperature=0.0, top_p=1.0` |
+| Creative | `temperature=1.0, top_p=0.95, top_k=50` |
+| Code generation | `temperature=0.2, top_p=0.95, stop=["\`\`\`\n"]` |
+| Chat | `temperature=0.7, repetition_penalty=1.1, stop=["User:"]` |
 
-```python
-# model_downloader.py
-from huggingface_hub import snapshot_download
-import os
+Multi-turn conversation state is just message history formatted into the model's chat template (e.g. Llama 2's `<s>[INST] ... [/INST]`) and re-sent each turn — vLLM itself is stateless per call.
 
-class ModelDownloader:
-    """Download and manage LLM models"""
-
-    def __init__(self, cache_dir: str = "./models"):
-        self.cache_dir = cache_dir
-        os.makedirs(cache_dir, exist_ok=True)
-
-    def download_model(
-        self,
-        model_id: str,
-        token: str = None,
-        quantization: str = None
-    ):
-        """Download model from Hugging Face Hub"""
-
-        print(f"Downloading {model_id}...")
-
-        # For gated models (Llama 2, etc.), you need a HF token
-        model_path = snapshot_download(
-            repo_id=model_id,
-            cache_dir=self.cache_dir,
-            token=token,
-            # Optionally download specific files
-            allow_patterns=["*.json", "*.safetensors", "*.model", "*.bin"]
-        )
-
-        print(f"Model downloaded to: {model_path}")
-        return model_path
-
-    def list_downloaded_models(self):
-        """List all downloaded models"""
-        models = []
-        for item in os.listdir(self.cache_dir):
-            model_path = os.path.join(self.cache_dir, item)
-            if os.path.isdir(model_path):
-                models.append(item)
-        return models
-
-# Example usage
-downloader = ModelDownloader()
-
-# Download popular open models
-models_to_download = [
-    "meta-llama/Llama-2-7b-chat-hf",  # Requires HF token
-    "mistralai/Mistral-7B-Instruct-v0.1",
-    "codellama/CodeLlama-7b-hf"
-]
-
-# Set your Hugging Face token
-HF_TOKEN = os.getenv("HF_TOKEN")
-
-for model_id in models_to_download:
-    downloader.download_model(model_id, token=HF_TOKEN)
-```
-
-### Production Deployment Configuration
-
-```python
-# production_config.py
-from vllm import LLM, SamplingParams
-from dataclasses import dataclass
-from typing import Optional
-
-@dataclass
-class vLLMConfig:
-    """Production-ready vLLM configuration"""
-
-    # Model settings
-    model: str
-    tokenizer: Optional[str] = None
-
-    # Memory settings
-    gpu_memory_utilization: float = 0.90  # Use 90% of GPU memory
-    max_model_len: int = 4096            # Maximum sequence length
-
-    # Performance settings
-    tensor_parallel_size: int = 1         # Number of GPUs for tensor parallelism
-    trust_remote_code: bool = False       # For custom model code
-
-    # Quantization
-    quantization: Optional[str] = None    # "awq", "gptq", or None
-
-    # Engine settings
-    max_num_seqs: int = 256              # Max concurrent sequences
-    max_num_batched_tokens: Optional[int] = None
-
-    # Logging
-    disable_log_stats: bool = False
-    disable_log_requests: bool = False
-
-class ProductionLLM:
-    """Production-ready LLM wrapper"""
-
-    def __init__(self, config: vLLMConfig):
-        self.config = config
-        self.llm = self._initialize_llm()
-
-    def _initialize_llm(self):
-        """Initialize vLLM with production settings"""
-        return LLM(
-            model=self.config.model,
-            tokenizer=self.config.tokenizer,
-            tensor_parallel_size=self.config.tensor_parallel_size,
-            gpu_memory_utilization=self.config.gpu_memory_utilization,
-            max_model_len=self.config.max_model_len,
-            trust_remote_code=self.config.trust_remote_code,
-            quantization=self.config.quantization,
-            max_num_seqs=self.config.max_num_seqs,
-            disable_log_stats=self.config.disable_log_stats
-        )
-
-    def generate(self, prompts, sampling_params):
-        """Generate with error handling"""
-        try:
-            outputs = self.llm.generate(prompts, sampling_params)
-            return outputs
-        except Exception as e:
-            print(f"Generation error: {e}")
-            raise
-
-# Example configurations
-
-# Small model config (for T4, development)
-small_config = vLLMConfig(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    gpu_memory_utilization=0.85,
-    max_model_len=2048,
-    tensor_parallel_size=1
-)
-
-# Medium model config (for A10G, production)
-medium_config = vLLMConfig(
-    model="meta-llama/Llama-2-13b-chat-hf",
-    gpu_memory_utilization=0.90,
-    max_model_len=4096,
-    tensor_parallel_size=1
-)
-
-# Large model config (for multi-GPU A100)
-large_config = vLLMConfig(
-    model="meta-llama/Llama-2-70b-chat-hf",
-    gpu_memory_utilization=0.95,
-    max_model_len=4096,
-    tensor_parallel_size=4  # 4 GPUs
-)
-
-# Quantized model config (for cost optimization)
-quantized_config = vLLMConfig(
-    model="TheBloke/Llama-2-7B-Chat-AWQ",
-    quantization="awq",
-    gpu_memory_utilization=0.90,
-    max_model_len=4096
-)
-
-# Usage
-llm = ProductionLLM(medium_config)
-outputs = llm.generate(
-    ["Hello, how are you?"],
-    SamplingParams(temperature=0.7, max_tokens=100)
-)
-```
-
-### Tensor Parallelism for Large Models
-
-```python
-# tensor_parallel.py
-from vllm import LLM
-
-def deploy_large_model_multi_gpu():
-    """Deploy 70B model across multiple GPUs"""
-
-    # Llama 2 70B requires ~140GB in FP16
-    # With 4x A100-40GB, we can distribute the model
-
-    llm = LLM(
-        model="meta-llama/Llama-2-70b-chat-hf",
-        tensor_parallel_size=4,  # Use 4 GPUs
-        gpu_memory_utilization=0.95,
-        max_model_len=4096,
-        # vLLM automatically splits model across GPUs
-    )
-
-    return llm
-
-# GPU allocation visualization:
-"""
-GPU 0: [Layers 0-19]  + [Attention heads 0-15]
-GPU 1: [Layers 20-39] + [Attention heads 16-31]
-GPU 2: [Layers 40-59] + [Attention heads 32-47]
-GPU 3: [Layers 60-79] + [Attention heads 48-63]
-
-Communication: All-reduce for attention, point-to-point for layers
-"""
-```
+---
 
 ## OpenAI-Compatible API Server
 
-One of vLLM's most powerful features is its built-in OpenAI-compatible API server.
-
-### Starting the API Server
-
 ```bash
-# Basic server start
 python -m vllm.entrypoints.openai.api_server \
     --model meta-llama/Llama-2-7b-chat-hf \
-    --host 0.0.0.0 \
-    --port 8000
-
-# Production server with optimizations
-python -m vllm.entrypoints.openai.api_server \
-    --model meta-llama/Llama-2-7b-chat-hf \
-    --host 0.0.0.0 \
-    --port 8000 \
-    --tensor-parallel-size 1 \
+    --host 0.0.0.0 --port 8000 \
     --gpu-memory-utilization 0.90 \
     --max-model-len 4096 \
-    --disable-log-requests \
     --served-model-name llama-2-7b-chat
 ```
 
-### API Server Configuration Script
+Then call it with the standard `openai` client — no code changes needed beyond `base_url`:
 
 ```python
-# api_server.py
-import subprocess
-import argparse
-from typing import Optional
-
-class vLLMAPIServer:
-    """Manage vLLM API server"""
-
-    def __init__(
-        self,
-        model: str,
-        host: str = "0.0.0.0",
-        port: int = 8000,
-        tensor_parallel_size: int = 1,
-        gpu_memory_utilization: float = 0.90,
-        max_model_len: int = 4096,
-        served_model_name: Optional[str] = None
-    ):
-        self.model = model
-        self.host = host
-        self.port = port
-        self.tensor_parallel_size = tensor_parallel_size
-        self.gpu_memory_utilization = gpu_memory_utilization
-        self.max_model_len = max_model_len
-        self.served_model_name = served_model_name or model.split("/")[-1]
-
-    def build_command(self) -> list:
-        """Build server startup command"""
-        cmd = [
-            "python", "-m", "vllm.entrypoints.openai.api_server",
-            "--model", self.model,
-            "--host", self.host,
-            "--port", str(self.port),
-            "--tensor-parallel-size", str(self.tensor_parallel_size),
-            "--gpu-memory-utilization", str(self.gpu_memory_utilization),
-            "--max-model-len", str(self.max_model_len),
-            "--served-model-name", self.served_model_name
-        ]
-        return cmd
-
-    def start(self):
-        """Start the API server"""
-        cmd = self.build_command()
-        print(f"Starting vLLM API server...")
-        print(f"Command: {' '.join(cmd)}")
-        print(f"API will be available at http://{self.host}:{self.port}")
-
-        # Run server (blocks)
-        subprocess.run(cmd)
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model", required=True)
-    parser.add_argument("--port", type=int, default=8000)
-    parser.add_argument("--tensor-parallel-size", type=int, default=1)
-
-    args = parser.parse_args()
-
-    server = vLLMAPIServer(
-        model=args.model,
-        port=args.port,
-        tensor_parallel_size=args.tensor_parallel_size
-    )
-
-    server.start()
-```
-
-### Using the OpenAI-Compatible API
-
-```python
-# client.py
 from openai import OpenAI
 
-# Point to vLLM server instead of OpenAI
-client = OpenAI(
-    base_url="http://localhost:8000/v1",
-    api_key="dummy"  # vLLM doesn't require real key by default
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="dummy")
+response = client.chat.completions.create(
+    model="llama-2-7b-chat",
+    messages=[{"role": "user", "content": "Explain quantum computing."}],
+    temperature=0.7, max_tokens=512
 )
+print(response.choices[0].message.content)
 
-# Chat completions (matches OpenAI API)
-def chat_completion_example():
-    response = client.chat.completions.create(
-        model="llama-2-7b-chat",  # Use served-model-name
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "Explain quantum computing."}
-        ],
-        temperature=0.7,
-        max_tokens=512
-    )
-
-    print(response.choices[0].message.content)
-
-# Streaming completions
-def streaming_example():
-    stream = client.chat.completions.create(
-        model="llama-2-7b-chat",
-        messages=[{"role": "user", "content": "Count from 1 to 10"}],
-        stream=True,
-        max_tokens=100
-    )
-
-    for chunk in stream:
-        if chunk.choices[0].delta.content:
-            print(chunk.choices[0].delta.content, end="", flush=True)
-    print()
-
-# Text completions (non-chat)
-def text_completion_example():
-    response = client.completions.create(
-        model="llama-2-7b-chat",
-        prompt="Once upon a time,",
-        max_tokens=100,
-        temperature=0.8
-    )
-
-    print(response.choices[0].text)
-
-if __name__ == "__main__":
-    chat_completion_example()
-    streaming_example()
-    text_completion_example()
+# Streaming works the same way as OpenAI's API
+stream = client.chat.completions.create(model="llama-2-7b-chat", messages=[...], stream=True)
+for chunk in stream:
+    if chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end="", flush=True)
 ```
 
-### Custom FastAPI Wrapper
-
-For more control, you can build a custom API around vLLM:
-
-```python
-# custom_api.py
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from vllm import LLM, SamplingParams
-from typing import List, Optional
-import uvicorn
-
-app = FastAPI(title="Custom vLLM API")
-
-# Initialize vLLM
-llm = LLM(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    gpu_memory_utilization=0.90
-)
-
-# Request/Response models
-class GenerationRequest(BaseModel):
-    prompt: str
-    max_tokens: int = 256
-    temperature: float = 0.7
-    top_p: float = 0.9
-    stop: Optional[List[str]] = None
-
-class GenerationResponse(BaseModel):
-    text: str
-    tokens_generated: int
-    finish_reason: str
-
-class BatchRequest(BaseModel):
-    prompts: List[str]
-    max_tokens: int = 256
-    temperature: float = 0.7
-
-# Endpoints
-@app.post("/generate", response_model=GenerationResponse)
-async def generate(request: GenerationRequest):
-    """Single generation endpoint"""
-    try:
-        sampling_params = SamplingParams(
-            temperature=request.temperature,
-            top_p=request.top_p,
-            max_tokens=request.max_tokens,
-            stop=request.stop
-        )
-
-        outputs = llm.generate([request.prompt], sampling_params)
-        output = outputs[0].outputs[0]
-
-        return GenerationResponse(
-            text=output.text,
-            tokens_generated=len(output.token_ids),
-            finish_reason=output.finish_reason
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/batch_generate")
-async def batch_generate(request: BatchRequest):
-    """Batch generation endpoint - vLLM's strength"""
-    try:
-        sampling_params = SamplingParams(
-            temperature=request.temperature,
-            max_tokens=request.max_tokens
-        )
-
-        outputs = llm.generate(request.prompts, sampling_params)
-
-        results = []
-        for output in outputs:
-            results.append({
-                "text": output.outputs[0].text,
-                "tokens": len(output.outputs[0].token_ids)
-            })
-
-        return {"results": results}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/health")
-async def health():
-    """Health check endpoint"""
-    return {"status": "healthy", "model": "llama-2-7b-chat"}
-
-@app.get("/model_info")
-async def model_info():
-    """Model information"""
-    return {
-        "model": "llama-2-7b-chat",
-        "max_model_len": 4096,
-        "tensor_parallel_size": 1
-    }
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-```
-
-## Performance Optimization
-
-### GPU Memory Optimization
-
-```python
-# memory_optimization.py
-
-def optimize_for_throughput(model_name: str):
-    """Maximize throughput - use most GPU memory"""
-    return LLM(
-        model=model_name,
-        gpu_memory_utilization=0.95,  # Use 95% of GPU memory
-        max_num_seqs=256,             # High concurrency
-        max_model_len=2048            # Shorter sequences = more batch
-    )
-
-def optimize_for_latency(model_name: str):
-    """Minimize latency - reduce batch size"""
-    return LLM(
-        model=model_name,
-        gpu_memory_utilization=0.80,  # Leave room for bursty traffic
-        max_num_seqs=32,              # Lower concurrency
-        max_model_len=4096            # Support longer sequences
-    )
-
-def optimize_for_long_context(model_name: str):
-    """Support very long contexts"""
-    return LLM(
-        model=model_name,
-        gpu_memory_utilization=0.90,
-        max_model_len=8192,           # Longer sequences
-        max_num_seqs=16               # Fewer concurrent requests
-    )
-```
-
-### Batching Strategies
-
-```python
-# batching.py
-from vllm import LLM, SamplingParams
-import asyncio
-from collections import deque
-import time
-
-class AdaptiveBatchProcessor:
-    """Adaptive batching for optimal throughput"""
-
-    def __init__(
-        self,
-        llm: LLM,
-        max_batch_size: int = 32,
-        max_wait_ms: int = 100
-    ):
-        self.llm = llm
-        self.max_batch_size = max_batch_size
-        self.max_wait_ms = max_wait_ms
-        self.queue = deque()
-        self.processing = False
-
-    async def add_request(self, prompt: str, sampling_params: SamplingParams):
-        """Add request to queue"""
-        future = asyncio.Future()
-        self.queue.append((prompt, sampling_params, future))
-
-        # Trigger processing if not already running
-        if not self.processing:
-            asyncio.create_task(self._process_batch())
-
-        return await future
-
-    async def _process_batch(self):
-        """Process queued requests in batches"""
-        self.processing = True
-        start_time = time.time()
-
-        while self.queue:
-            batch = []
-            prompts = []
-            params_list = []
-            futures = []
-
-            # Collect batch
-            while (len(batch) < self.max_batch_size and
-                   self.queue and
-                   (time.time() - start_time) * 1000 < self.max_wait_ms):
-                prompt, params, future = self.queue.popleft()
-                prompts.append(prompt)
-                params_list.append(params)
-                futures.append(future)
-                batch.append((prompt, params, future))
-
-            if not batch:
-                break
-
-            # Process batch
-            # Note: vLLM handles different sampling params per request
-            outputs = self.llm.generate(prompts, params_list[0])
-
-            # Resolve futures
-            for future, output in zip(futures, outputs):
-                future.set_result(output.outputs[0].text)
-
-            start_time = time.time()
-
-        self.processing = False
-
-# Usage
-llm = LLM(model="meta-llama/Llama-2-7b-chat-hf")
-processor = AdaptiveBatchProcessor(llm)
-
-async def handle_request(prompt: str):
-    params = SamplingParams(temperature=0.7, max_tokens=100)
-    result = await processor.add_request(prompt, params)
-    return result
-```
-
-### Benchmarking
-
-```python
-# benchmark.py
-import time
-import statistics
-from vllm import LLM, SamplingParams
-from typing import List
-
-class vLLMBenchmark:
-    """Benchmark vLLM performance"""
-
-    def __init__(self, model: str):
-        self.llm = LLM(
-            model=model,
-            gpu_memory_utilization=0.90
-        )
-        self.model = model
-
-    def benchmark_throughput(
-        self,
-        num_requests: int = 100,
-        prompt_length: int = 100,
-        output_length: int = 100
-    ):
-        """Measure throughput (requests/second)"""
-
-        # Generate test prompts
-        test_prompt = "Hello " * prompt_length
-        prompts = [test_prompt] * num_requests
-
-        sampling_params = SamplingParams(
-            temperature=0.0,
-            max_tokens=output_length
-        )
-
-        # Warm-up
-        self.llm.generate([test_prompt], sampling_params)
-
-        # Benchmark
-        start_time = time.time()
-        outputs = self.llm.generate(prompts, sampling_params)
-        end_time = time.time()
-
-        duration = end_time - start_time
-        throughput = num_requests / duration
-
-        # Calculate tokens
-        total_tokens = sum(
-            len(output.outputs[0].token_ids) for output in outputs
-        )
-        tokens_per_second = total_tokens / duration
-
-        return {
-            "num_requests": num_requests,
-            "duration_seconds": round(duration, 2),
-            "requests_per_second": round(throughput, 2),
-            "tokens_per_second": round(tokens_per_second, 2),
-            "average_latency_ms": round((duration / num_requests) * 1000, 2)
-        }
-
-    def benchmark_latency(
-        self,
-        num_trials: int = 50,
-        prompt_length: int = 100,
-        output_length: int = 100
-    ):
-        """Measure latency distribution"""
-
-        test_prompt = "Hello " * prompt_length
-        sampling_params = SamplingParams(
-            temperature=0.0,
-            max_tokens=output_length
-        )
-
-        latencies = []
-
-        for _ in range(num_trials):
-            start_time = time.time()
-            self.llm.generate([test_prompt], sampling_params)
-            end_time = time.time()
-            latencies.append((end_time - start_time) * 1000)  # ms
-
-        return {
-            "num_trials": num_trials,
-            "mean_latency_ms": round(statistics.mean(latencies), 2),
-            "median_latency_ms": round(statistics.median(latencies), 2),
-            "p95_latency_ms": round(sorted(latencies)[int(num_trials * 0.95)], 2),
-            "p99_latency_ms": round(sorted(latencies)[int(num_trials * 0.99)], 2),
-            "min_latency_ms": round(min(latencies), 2),
-            "max_latency_ms": round(max(latencies), 2)
-        }
-
-# Run benchmarks
-benchmark = vLLMBenchmark("meta-llama/Llama-2-7b-chat-hf")
-
-print("Throughput Benchmark:")
-print(benchmark.benchmark_throughput(num_requests=100))
-
-print("\nLatency Benchmark:")
-print(benchmark.benchmark_latency(num_trials=50))
-```
-
-## Monitoring vLLM Deployments
-
-### Metrics Collection
-
-```python
-# monitoring.py
-from prometheus_client import Counter, Histogram, Gauge, start_http_server
-from vllm import LLM, SamplingParams
-import time
-from functools import wraps
-
-# Prometheus metrics
-REQUEST_COUNT = Counter(
-    'vllm_requests_total',
-    'Total number of requests',
-    ['model', 'status']
-)
-
-REQUEST_DURATION = Histogram(
-    'vllm_request_duration_seconds',
-    'Request duration in seconds',
-    ['model']
-)
-
-TOKENS_GENERATED = Counter(
-    'vllm_tokens_generated_total',
-    'Total tokens generated',
-    ['model']
-)
-
-ACTIVE_REQUESTS = Gauge(
-    'vllm_active_requests',
-    'Number of active requests',
-    ['model']
-)
-
-GPU_MEMORY_USAGE = Gauge(
-    'vllm_gpu_memory_bytes',
-    'GPU memory usage in bytes',
-    ['gpu_id']
-)
-
-class MonitoredLLM:
-    """vLLM wrapper with monitoring"""
-
-    def __init__(self, model: str):
-        self.model_name = model
-        self.llm = LLM(model=model)
-
-        # Start Prometheus metrics server
-        start_http_server(8001)
-
-    def generate(self, prompts, sampling_params):
-        """Generate with monitoring"""
-
-        ACTIVE_REQUESTS.labels(model=self.model_name).inc()
-
-        start_time = time.time()
-        status = "success"
-
-        try:
-            outputs = self.llm.generate(prompts, sampling_params)
-
-            # Count tokens
-            total_tokens = sum(
-                len(output.outputs[0].token_ids) for output in outputs
-            )
-            TOKENS_GENERATED.labels(model=self.model_name).inc(total_tokens)
-
-            return outputs
-
-        except Exception as e:
-            status = "error"
-            raise
-
-        finally:
-            duration = time.time() - start_time
-
-            REQUEST_DURATION.labels(model=self.model_name).observe(duration)
-            REQUEST_COUNT.labels(model=self.model_name, status=status).inc()
-            ACTIVE_REQUESTS.labels(model=self.model_name).dec()
-
-# Usage
-monitored_llm = MonitoredLLM("meta-llama/Llama-2-7b-chat-hf")
-
-# Metrics available at http://localhost:8001/metrics
-```
-
-### Logging Configuration
-
-```python
-# logging_config.py
-import logging
-import sys
-from datetime import datetime
-
-def setup_vllm_logging(log_level=logging.INFO):
-    """Configure comprehensive logging for vLLM"""
-
-    # Create logger
-    logger = logging.getLogger("vllm_service")
-    logger.setLevel(log_level)
-
-    # Console handler
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(log_level)
-
-    # File handler
-    file_handler = logging.FileHandler(
-        f"vllm_service_{datetime.now().strftime('%Y%m%d')}.log"
-    )
-    file_handler.setLevel(log_level)
-
-    # Format
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-    console_handler.setFormatter(formatter)
-    file_handler.setFormatter(formatter)
-
-    logger.addHandler(console_handler)
-    logger.addHandler(file_handler)
-
-    return logger
-
-# Usage
-logger = setup_vllm_logging()
-
-logger.info("vLLM service starting...")
-logger.info("Model loaded successfully")
-logger.warning("High GPU memory usage detected")
-logger.error("Request failed with error: ...")
-```
-
-## Docker Deployment
-
-### Dockerfile for vLLM
-
-```dockerfile
-# Dockerfile
-FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
-
-# Install Python and dependencies
-RUN apt-get update && apt-get install -y \
-    python3.10 \
-    python3-pip \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create app directory
-WORKDIR /app
-
-# Install vLLM
-RUN pip3 install vllm
-
-# Copy application code
-COPY api_server.py /app/
-COPY requirements.txt /app/
-RUN pip3 install -r requirements.txt
-
-# Expose port
-EXPOSE 8000
-
-# Set environment variables
-ENV MODEL_NAME="meta-llama/Llama-2-7b-chat-hf"
-ENV HOST="0.0.0.0"
-ENV PORT="8000"
-
-# Run server
-CMD python3 -m vllm.entrypoints.openai.api_server \
-    --model ${MODEL_NAME} \
-    --host ${HOST} \
-    --port ${PORT} \
-    --tensor-parallel-size 1
-```
-
-### Docker Compose
-
-```yaml
-# docker-compose.yml
-version: '3.8'
-
-services:
-  vllm-server:
-    build: .
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=0
-      - MODEL_NAME=meta-llama/Llama-2-7b-chat-hf
-      - HF_TOKEN=${HF_TOKEN}
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./models:/root/.cache/huggingface
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - grafana-storage:/var/lib/grafana
-
-volumes:
-  grafana-storage:
-```
-
-### Build and Run
-
-```bash
-# Build image
-docker build -t vllm-server:latest .
-
-# Run container
-docker run --gpus all \
-  -p 8000:8000 \
-  -e MODEL_NAME="meta-llama/Llama-2-7b-chat-hf" \
-  -v $(pwd)/models:/root/.cache/huggingface \
-  vllm-server:latest
-
-# Or use docker-compose
-docker-compose up -d
-```
-
-## Kubernetes Deployment
-
-### Kubernetes Manifests
-
-```yaml
-# deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: vllm-serving
-  labels:
-    app: vllm-serving
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: vllm-serving
-  template:
-    metadata:
-      labels:
-        app: vllm-serving
-    spec:
-      containers:
-      - name: vllm-server
-        image: vllm-server:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: MODEL_NAME
-          value: "meta-llama/Llama-2-7b-chat-hf"
-        - name: HF_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: huggingface-token
-              key: token
-        resources:
-          requests:
-            nvidia.com/gpu: 1
-            memory: "32Gi"
-            cpu: "8"
-          limits:
-            nvidia.com/gpu: 1
-            memory: "32Gi"
-        volumeMounts:
-        - name: model-cache
-          mountPath: /root/.cache/huggingface
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 60
-          periodSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 60
-          periodSeconds: 10
-      volumes:
-      - name: model-cache
-        persistentVolumeClaim:
-          claimName: model-cache-pvc
+For custom endpoints (batch, health checks, model info) beyond the OpenAI spec, wrap vLLM in FastAPI — a `/generate`, `/batch_generate`, and `/health` endpoint around `llm.generate()` covers most needs.
 
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: vllm-service
-spec:
-  selector:
-    app: vllm-serving
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8000
-  type: LoadBalancer
+
+## Performance Tuning
+
+There's no single "best" vLLM config — you're always trading off against something, and the right settings depend on which of throughput, latency, or context length actually matters most for your workload:
+
+```mermaid
+flowchart LR
+    T["Optimize for Throughput<br/>gpu_mem=0.95 · max_num_seqs=256"]
+    L["Optimize for Latency<br/>gpu_mem=0.80 · max_num_seqs=32"]
+    C["Optimize for Long Context<br/>max_model_len=8192 · max_num_seqs=16"]
+
+    classDef throughput fill:#059669,stroke:#065f46,color:#fff,rx:6,ry:6
+    classDef latency fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:6,ry:6
+    classDef context fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:6,ry:6
+    class T throughput
+    class L latency
+    class C context
+```
+
+- **Chasing throughput?** Push `gpu_memory_utilization` and `max_num_seqs` as high as the GPU allows, and keep `max_model_len` short — more concurrent sequences means more requests processed per second, at the cost of any one request being slower.
+- **Chasing latency?** Do the opposite: keep `max_num_seqs` low so a handful of requests aren't competing for the same GPU cycles, and leave some memory headroom unused so a sudden burst of traffic doesn't tip the server into contention.
+- **Serving long documents?** Raise `max_model_len` to fit them, but expect to lower `max_num_seqs` in exchange — every sequence's KV cache scales with its length, so longer contexts leave room for fewer of them running at once.
+
+### Benchmark before and after any config change
+
+Don't trust intuition here — measure it. Three numbers tell you almost everything you need:
+
+- **Throughput** — send N identical prompts and divide `requests / total_duration`.
+- **Tokens per second** — `total_output_tokens / total_duration` over the same run.
+- **p95 / p99 latency** — run M single-request trials, sort the results, and read off the percentile you care about.
+
+One thing that trips people up: always send a warm-up request before you start timing. The first call pays for model compilation, and including that in your measurement will make every number look worse than what production traffic will actually see.
 
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: model-cache-pvc
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Gi
-  storageClassName: fast-ssd
+
+## Multi-GPU & Tensor Parallelism
+
+A single GPU eventually runs out of room — a 70B model at FP16 simply doesn't fit on one 80GB card once you account for the KV cache and activations on top of the weights. vLLM's fix is tensor parallelism: split each layer across multiple GPUs with a single flag, `--tensor-parallel-size 4`, so no one GPU has to hold the whole model. It's a one-line change to turn on here — the deeper mechanics (why the GPU interconnect matters, when to reach for pipeline parallelism instead) are covered in [Lesson 06: LLM Serving Optimization](./06-llm-serving-optimization.md#multi-gpu-inference).
+
+---
+
+## Beyond the Basics: Newer vLLM Features
+
+PagedAttention and continuous batching are the foundational ideas, but vLLM hasn't stood still. Two techniques worth knowing the names of: **speculative decoding**, where a small draft model guesses several tokens ahead for the main model to verify in one pass instead of generating them one at a time, and **prefix caching**, which reuses the KV cache across requests that share a common prefix (a repeated system prompt, for example) instead of recomputing it every time. Both are one-flag opt-ins in vLLM, and both get a full treatment — including *why* they work and how to benchmark the gain — in [Lesson 06: LLM Serving Optimization](./06-llm-serving-optimization.md).
+
+---
+
+## Monitoring
+
+```mermaid
+flowchart LR
+    App["vLLM Server"] --> M["Prometheus metrics<br/>(requests, latency, tokens, active reqs)"]
+    M --> Graf["Grafana"]
+    App --> L["Structured logs"] --> ELK["ELK / CloudWatch"]
 ```
 
-### Horizontal Pod Autoscaler
+| Metric | Type | Why it matters |
+|---|---|---|
+| `vllm_requests_total` | Counter | Volume + error rate (`status` label) |
+| `vllm_request_duration_seconds` | Histogram | Latency distribution (p50/p95/p99) |
+| `vllm_tokens_generated_total` | Counter | Throughput, cost attribution |
+| `vllm_active_requests` | Gauge | Current load — feeds autoscaling |
+| GPU memory / utilization | Gauge (DCGM/nvidia-smi) | Headroom before OOM |
 
-```yaml
-# hpa.yaml
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: vllm-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: vllm-serving
-  minReplicas: 2
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: nvidia.com/gpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Pods
-    pods:
-      metric:
-        name: vllm_active_requests
-      target:
-        type: AverageValue
-        averageValue: "50"
-  behavior:
-    scaleUp:
-      stabilizationWindowSeconds: 60
-      policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 30
-    scaleDown:
-      stabilizationWindowSeconds: 300
-      policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 60
+vLLM exposes Prometheus metrics natively via `--disable-log-stats=false`; wrap `llm.generate()` with your own `Counter`/`Histogram` calls if you need custom labels.
+
+---
+
+## Docker & Kubernetes Deployment
+
+Packaging vLLM for Docker is close to the simplest case in this lesson: a CUDA base image, `pip install vllm`, and a `CMD` that launches the OpenAI-compatible server from the earlier section — nothing vLLM-specific about the build itself. The part actually worth getting right is what you mount and expose: `--gpus all` so the container can see the GPU, and a volume for the Hugging Face cache directory so a restarted container reuses already-downloaded weights instead of re-pulling 10-100GB from the hub.
+
+Kubernetes is where the real design decisions live, since a single pod isn't a production deployment on its own:
+
+```mermaid
+flowchart TB
+    HPA["HPA<br/>(scale on GPU util + queue depth)"] --> Dep["Deployment<br/>(2-10 replicas)"]
+    Dep --> Pod1["Pod: vLLM + 1 GPU"]
+    Dep --> Pod2["Pod: vLLM + 1 GPU"]
+    Pod1 --> PVC["PVC: model cache<br/>(100Gi, fast-ssd)"]
+    Pod2 --> PVC
+    Svc["Service<br/>(LoadBalancer)"] --> Dep
+
+    classDef ctrl fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:6,ry:6
+    classDef pod fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:6,ry:6
+    classDef store fill:#059669,stroke:#065f46,color:#fff,rx:6,ry:6
+    class HPA,Svc ctrl
+    class Dep,Pod1,Pod2 pod
+    class PVC store
 ```
+
+A few things in this picture matter more than they might look:
+
+- **Each pod requests a whole GPU**, not a fraction of one — GPUs aren't slicable the way CPU cores are, so the resource request is `nvidia.com/gpu: 1`, full stop.
+- **A shared persistent volume backs the model cache** across pods, so scaling from 2 replicas to 10 doesn't mean 10 separate multi-GB downloads.
+- **Liveness and readiness probes hit `/health`**, and need a generous initial delay — a pod that's still loading a 13GB model into VRAM isn't ready for traffic yet, and Kubernetes shouldn't route to it just because the process has started.
+- **The HPA scales on GPU utilization and request queue depth, not CPU.** CPU usage on an LLM-serving pod barely moves regardless of load, so a CPU-based autoscaler will simply never trigger — scale on the signals that actually reflect GPU pressure.
+
+---
 
 ## Production Best Practices
 
-### 1. Model Caching Strategy
-
-```python
-# model_cache.py
-import os
-from pathlib import Path
-
-class ModelCache:
-    """Manage model caching for fast startup"""
-
-    def __init__(self, cache_dir: str = "/data/models"):
-        self.cache_dir = Path(cache_dir)
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
-
-    def preload_models(self, model_list: list):
-        """Preload models to cache"""
-        from huggingface_hub import snapshot_download
-
-        for model_id in model_list:
-            print(f"Preloading {model_id}...")
-            snapshot_download(
-                repo_id=model_id,
-                cache_dir=self.cache_dir,
-                token=os.getenv("HF_TOKEN")
-            )
-
-    def get_model_path(self, model_id: str) -> str:
-        """Get cached model path"""
-        # vLLM will automatically use cached models
-        return str(self.cache_dir)
-
-# In init container or startup script
-cache = ModelCache()
-cache.preload_models([
-    "meta-llama/Llama-2-7b-chat-hf",
-    "meta-llama/Llama-2-13b-chat-hf"
-])
-```
-
-### 2. Graceful Shutdown
-
-```python
-# graceful_shutdown.py
-import signal
-import sys
-
-class GracefulShutdown:
-    """Handle graceful shutdown of vLLM server"""
-
-    def __init__(self, server):
-        self.server = server
-        self.is_shutting_down = False
-
-        # Register signal handlers
-        signal.signal(signal.SIGTERM, self.handle_signal)
-        signal.signal(signal.SIGINT, self.handle_signal)
-
-    def handle_signal(self, signum, frame):
-        """Handle shutdown signal"""
-        if self.is_shutting_down:
-            return
-
-        print("Received shutdown signal, starting graceful shutdown...")
-        self.is_shutting_down = True
-
-        # Stop accepting new requests
-        # Complete in-flight requests
-        # Clean up resources
-
-        print("Shutdown complete")
-        sys.exit(0)
-```
-
-### 3. Health Checks
-
-```python
-# health_checks.py
-from fastapi import FastAPI
-from pydantic import BaseModel
-
-class HealthStatus(BaseModel):
-    status: str
-    model_loaded: bool
-    gpu_available: bool
-    active_requests: int
-
-@app.get("/health", response_model=HealthStatus)
-async def health_check():
-    """Comprehensive health check"""
-    import torch
-
-    return HealthStatus(
-        status="healthy",
-        model_loaded=True,  # Check if model is loaded
-        gpu_available=torch.cuda.is_available(),
-        active_requests=get_active_request_count()
-    )
-
-@app.get("/ready")
-async def readiness_check():
-    """Readiness check for K8s"""
-    # Check if server is ready to handle requests
-    if not model_loaded():
-        return {"ready": False}, 503
-    return {"ready": True}
-```
-
-## Troubleshooting
-
-### Common Issues and Solutions
-
-**Issue 1: Out of Memory (OOM)**
-```python
-# Solution: Reduce GPU memory utilization or max_model_len
-llm = LLM(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    gpu_memory_utilization=0.85,  # Reduce from 0.90
-    max_model_len=2048            # Reduce from 4096
-)
-```
-
-**Issue 2: Slow Cold Start**
-```bash
-# Solution: Preload models in init container
-# Use persistent volume for model cache
-```
-
-**Issue 3: Low Throughput**
-```python
-# Solution: Increase max_num_seqs
-llm = LLM(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    max_num_seqs=256  # Increase batch size
-)
-```
-
-**Issue 4: High Latency**
-```python
-# Solution: Reduce batch size for lower latency
-llm = LLM(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    max_num_seqs=32  # Smaller batches = lower latency
-)
-```
-
-## Summary
-
-This lesson covered comprehensive vLLM deployment:
-
-### Key Takeaways
-
-1. **vLLM's PagedAttention** provides 10-20x throughput improvement
-2. **Continuous batching** maximizes GPU utilization
-3. **OpenAI-compatible API** makes integration seamless
-4. **Tensor parallelism** enables serving large models
-5. **Production deployments** require monitoring, health checks, and graceful shutdown
-6. **Container orchestration** with Kubernetes enables scalable deployments
-
-### Next Steps
-
-In the next lesson, we'll explore RAG (Retrieval-Augmented Generation) systems, building on the vLLM deployment knowledge to create intelligent document-based question answering systems.
+- **Preload models onto a persistent volume** rather than letting each pod pull them from the hub — the fix for the most common complaint (slow cold starts) is almost always this, not a faster network.
+- **Handle SIGTERM gracefully** so a pod that's being scaled down or replaced finishes its in-flight requests instead of dropping them mid-generation.
+- **Put liveness and readiness probes on `/health`**, with enough initial delay for the model to finish loading — otherwise Kubernetes will route traffic to (or restart) a pod that just hasn't gotten to a ready state yet.
+- **Leave `gpu_memory_utilization` headroom** — running at 0.85–0.90 instead of pushing to 0.95+ gives you margin for traffic bursts without tipping into an out-of-memory crash, which is the single most common failure mode in production vLLM deployments. If you do hit an OOM, that headroom (or `max_model_len`) is usually the first thing to check, alongside actual VRAM usage via `nvidia-smi`.
+- **Canary new model versions** on a slice of traffic before a full cutover, the same way you would with any other service — a model swap is a deploy, and deserves the same caution.
+- **If throughput looks low, look at batch size before anything else** — a `max_num_seqs` that's too conservative for the GPU is a far more common cause than anything about the model or the request pattern. Conversely, if per-request latency is the complaint, that same setting is usually the fix in the other direction: lower it and trade some throughput back for responsiveness.
 
 ---
 
-**Next Lesson**: [03-rag-systems.md](./03-rag-systems.md)
+## Practical Exercise
+
+Deploy Llama-2-7B-chat behind an OpenAI-compatible API on a single A10G, then load-test it.
+
+**Requirements:** streaming responses · p95 < 3s for 100-token completions · survives a burst of 20 concurrent requests without OOM.
+
+Sketch your `LLM(...)` config and server flags before expanding the solution.
+
+<details>
+<summary><strong>Sample Solution</strong></summary>
+
+```bash
+python -m vllm.entrypoints.openai.api_server \
+    --model meta-llama/Llama-2-7b-chat-hf \
+    --gpu-memory-utilization 0.85 \
+    --max-model-len 4096 \
+    --max-num-seqs 64 \
+    --served-model-name llama-2-7b-chat
+```
+
+`gpu_memory_utilization=0.85` (not 0.95) leaves headroom for the 20-request burst; `max_num_seqs=64` balances throughput against the p95 latency target — push it lower if p95 slips under load. Validate with a benchmark script that fires 20 concurrent streaming requests and measures p95 end-to-end.
+
+</details>
+
+---
+
+## Key Takeaways
+
+1. PagedAttention + continuous batching are why vLLM beats naive Transformers serving by 10–20x
+2. The OpenAI-compatible API server means integration is usually a `base_url` change, not new code
+3. Tune `gpu_memory_utilization` and `max_num_seqs` as one throughput/latency/headroom trade-off, not independent knobs
+4. Production deployments need health probes, graceful shutdown, and a persistent model cache — not just a running container
+5. Autoscale on GPU utilization and queue depth, never plain CPU
+
+---
+
+## Additional Resources
+
+- [vLLM Documentation](https://docs.vllm.ai/)
+- [vLLM GitHub](https://github.com/vllm-project/vllm)
+- [PagedAttention Paper](https://arxiv.org/abs/2309.06180)
+- [vLLM Performance Tuning Guide](https://docs.vllm.ai/en/latest/serving/performance.html)
+
+---
+
+**Next Lesson:** [03-rag-systems.md](./03-rag-systems.md) — Retrieval-Augmented Generation

@@ -2194,4 +2194,4 @@ In the next lesson, we'll cover production LLM best practices including deployme
 
 ---
 
-**Next Lesson**: [08-production-llm-best-practices.md](./08-production-llm-best-practices.md)
+**Next Lesson**: [08-llm-infrastructure-for-agents.md](./08-llm-infrastructure-for-agents.md)
