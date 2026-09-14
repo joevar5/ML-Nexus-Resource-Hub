@@ -2,74 +2,181 @@
 
 ## Concept
 
-Hand an agent a vague goal ("improve our onboarding flow") and it will either stall or hallucinate a plan that looks reasonable but skips the actual constraints. Agents perform better when the goal is decomposed into a sequence of concrete, checkable subtasks before execution starts.
+**A goal is not a plan. Something has to turn one into the other.**
 
-Two decomposition strategies, in order of complexity — and if these sound familiar, they should: this is the same **Plan-and-Execute vs. ReAct** tradeoff from [Day 2](02-the-agent-loop.md#3-picking-a-loop-pattern), just viewed from the angle of "how do I break this goal down" rather than "how does the loop run."
+### 1. Why Break a Goal Down
 
-**1. Single-pass planning** (the decomposition-side view of **Plan-and-Execute**). The model produces a full task list up front, then executes it step by step. Cheap and predictable, but brittle — if step 3 reveals new information, the rest of the plan may no longer make sense, and a static plan won't adapt.
+Give an agent a vague goal like "improve our onboarding flow" and it will either freeze up (no clear first step) or guess a plan that looks fine but ignores real constraints. Neither looks like an error — it just quietly gives a wrong result.
+
+Fix: split the goal into small, checkable subtasks before doing anything. Small steps are easy to check. One big vague step isn't.
+
+### 2. Two Ways to Plan
+
+Same idea as [Day 2](02-the-agent-loop.md#3-picking-a-loop-pattern)'s ReAct vs. Plan-and-Execute, just applied to planning instead of the loop.
+
+**Single-pass** — write the whole plan first, then run it.
 
 ```
 Goal: "Summarize this repo's open issues by severity"
 Plan:
   1. List all open issues
-  2. Classify each by severity using labels or content
+  2. Classify each by severity
   3. Group and count by severity
   4. Write summary
 ```
 
-**2. Interleaved planning (plan-act-replan)** (the decomposition-side view of **ReAct**). The model plans one or two steps ahead, executes, observes the result, and re-plans. More expensive per task (more LLM calls) but handles surprises — an API returning unexpected data, a tool failing, a subtask turning out to be two subtasks.
+Cheap and easy to review. Weak point: if step 3 finds something unexpected, steps 1-2 don't know that and nothing adjusts.
 
-The failure mode to watch for either way: **goal drift**. Across many steps, an agent's sense of the original objective can degrade as history fills with tool output. Keeping the original goal string verbatim and re-injecting it into every prompt (not just relying on it being "somewhere in history") measurably reduces drift.
+**Interleaved (plan-act-replan)** — plan just one or two steps, run them, look at what actually happened, then plan the next bit based on that. No long plan gets locked in early, so nothing goes stale.
 
-## Coding Problem
+This costs more — you're paying for a planning call at almost every step instead of one call for the whole thing. But it pays off exactly when things don't go as expected: a tool returns something odd, an API errors out, or one step turns out to secretly be two. Single-pass would just plow ahead with its original plan; interleaved notices and re-plans right there.
 
-Write `decompose_goal(goal: str, max_subtasks: int) -> list[str]` that calls an LLM (mocked in your implementation) to produce a numbered subtask list, then validates the output: reject and re-request if the model returns more than `max_subtasks` items, returns 0 items, or returns items that are not strings. Cap retries at 2; on the third failure, return a single-item list `[goal]` as a fallback (treat the whole goal as one subtask rather than crashing).
+### 3. Which One to Use
 
-## Quiz
+Ask: **how predictable are the steps?**
 
-### Question 1: Decomposition Strategies
+- Predictable, fixed checklist → **single-pass**. Cheaper, easy to review upfront.
+- Depends on what you find as you go → **interleaved**. Costs more, but adapts.
 
-**What is the main tradeoff of single-pass planning vs. interleaved plan-act-replan?**
+Common middle ground: single-pass for the big phases, interleaved inside each phase.
 
-A) Single-pass is always more accurate
-B) Single-pass is cheaper and simpler but can't adapt when a step reveals new information
-C) Interleaved planning never uses more LLM calls
-D) There is no meaningful difference between the two
+### 4. Goal Drift
 
-**Answer**: B
+As an agent runs longer, tool results pile up and the original goal — said once, way back — gets buried. The agent starts following "what recent history suggests" instead of the real goal. This is called **goal drift**.
 
-**Explanation**: Single-pass planning produces the full plan upfront in one call, which is cheap but static. Interleaved planning re-plans after each step, costing more LLM calls but adapting to surprises the static plan couldn't anticipate.
+Fix: re-send the exact goal text with every single prompt, not just the first one. Don't rely on it being "somewhere up there."
 
-### Question 2: Goal Drift
+### 5. Check the Plan Before Trusting It
 
-**What causes "goal drift" in a long-running agent, and what mitigates it?**
+A plan comes from an LLM call, so it can come back broken — too many steps, zero steps, a step that isn't even text. Same rule as Day 2's tool calls: validate it, retry a couple of times, and if it still fails, fall back to something safe instead of looping forever.
 
-A) It's caused by the model being too small; only a larger model fixes it
-B) It's caused by the original goal getting buried in growing tool-output history; re-injecting the goal verbatim in every prompt mitigates it
-C) It's caused by using too many tools; removing tools fixes it
-D) It's an unfixable property of all LLMs
+### 6. Code: Single-Pass with Validation
 
-**Answer**: B
+```python
+import logging
 
-**Explanation**: As history accumulates tool outputs, the model's attention to the original objective (stated once, early) can weaken. Explicitly re-including the goal in every prompt keeps it salient regardless of how much history has piled up.
+logger = logging.getLogger("goal_decomposition")
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
-### Question 3: Handling Failure
+MAX_RETRIES = 2
 
-**In the coding problem, why cap decomposition retries and fall back to `[goal]` instead of retrying forever?**
 
-A) Retrying forever is fine as long as the API is free
-B) An unbounded retry loop can hang the whole agent on a single malformed response; a bounded fallback guarantees forward progress
-C) LLMs never return malformed output more than once
-D) The fallback is only for testing and should be removed in production
+def decompose_goal(goal: str, max_subtasks: int, llm_call=None) -> list[str]:
+    """Turn a goal into a validated list of subtasks."""
+    llm_call = llm_call or _mock_llm_call
 
-**Answer**: B
+    for attempt in range(MAX_RETRIES + 1):
+        raw = llm_call(goal, max_subtasks)
+        error = _validate(raw, max_subtasks)
 
-**Explanation**: Any loop without a bound is a liveness risk. Falling back to treating the goal as one subtask after a small number of retries guarantees the agent makes progress instead of hanging on a single bad LLM response.
+        if error is None:
+            logger.info("Decomposed on attempt %d: %s", attempt + 1, raw)
+            return raw
+
+        logger.warning("Attempt %d rejected: %s", attempt + 1, error)
+
+    # Retries used up — fall back instead of hanging.
+    logger.warning("All attempts failed; falling back to [goal]")
+    return [goal]
+
+
+def _validate(subtasks, max_subtasks: int) -> str | None:
+    if not isinstance(subtasks, list) or len(subtasks) == 0:
+        return "0 items or not a list"
+    if len(subtasks) > max_subtasks:
+        return f"{len(subtasks)} items, over max_subtasks={max_subtasks}"
+    if not all(isinstance(s, str) for s in subtasks):
+        return "an item is not a string"
+    return None
+
+
+def _mock_llm_call(goal: str, max_subtasks: int) -> list[str]:
+    return [f"Step {i + 1} toward: {goal}" for i in range(min(3, max_subtasks))]
+```
+
+Cap the retries, log every rejection, and always keep a fallback so the agent never just hangs.
+
+### 7. Plans as a Graph, Not a List
+
+A flat list assumes every step waits for the one before it. But often two steps don't depend on each other — "fetch revenue" and "fetch expenses" can run at the same time; only "calculate profit" needs both done. Model this as a **DAG**: each task has an id, a `depends_on` list, and a `tool_hint` (which tool handles it).
+
+A graph plan needs two extra checks a list didn't need:
+
+- **Dangling reference** — a task depends on an id that doesn't exist.
+- **Cycle** — task A depends on B, B depends on A. Nothing can ever run.
+
+```python
+def validate_plan(tasks: list[dict]) -> str | None:
+    """tasks: [{"id": str, "depends_on": list[str], "tool_hint": str}, ...]"""
+    ids = {t["id"] for t in tasks}
+
+    for t in tasks:
+        missing = [d for d in t["depends_on"] if d not in ids]
+        if missing:
+            return f"task {t['id']!r} depends on unknown task(s): {missing}"
+
+    # Kahn's algorithm: keep removing tasks with no unresolved deps.
+    # Anything left over at the end means a cycle.
+    remaining = {t["id"]: set(t["depends_on"]) for t in tasks}
+    resolved: set[str] = set()
+
+    while remaining:
+        ready = [tid for tid, deps in remaining.items() if deps <= resolved]
+        if not ready:
+            return f"cycle detected among: {sorted(remaining)}"
+        for tid in ready:
+            resolved.add(tid)
+            del remaining[tid]
+
+    return None
+```
+
+Once a plan passes both checks: run every task with no pending dependencies (in parallel if you want), and each time one finishes, check if it unblocked anything new. Same validate-then-run rule as section 5 — just applied to a graph instead of a list.
+
+*Further reading: [Building Effective AI Agents](https://www.anthropic.com/engineering/building-effective-agents) (Anthropic).*
 
 ## Interview Practice
 
-**1.** A user gives an agent the goal "clean up our AWS spend." Walk through how you'd decompose this into subtasks, and identify at which point you'd switch from single-pass planning to interleaved plan-act-replan, and why.
+**1.** Goal: "clean up our AWS spend." How would you decompose it, and when would you switch from single-pass to interleaved planning?
 
-**2.** Describe a concrete scenario where goal drift caused an agent to complete a task that technically matched its recent history but no longer matched the user's original intent. What single change would have prevented it?
+<details>
+<summary>Answer</summary>
 
-**3.** Compare single-pass planning and plan-act-replan on cost, latency, and robustness to surprises. If you had to pick one default for a new agent and only revisit the choice if it caused problems, which would you pick and why?
+Start single-pass: list resources, pull cost data, flag idle/oversized ones. That part is predictable — no need to re-plan after every step.
+
+Switch to interleaved once you're about to *act* (delete a volume, resize an instance). Now each decision depends on what the last check found, and a wrong guess is costly. Read-only investigation → single-pass. Risky actions → interleaved.
+</details>
+
+**2.** Describe a case where goal drift made an agent "succeed" at the wrong thing. What one change fixes it?
+
+<details>
+<summary>Answer</summary>
+
+Goal: "fix the bug causing checkout failures." Twenty steps in, the agent notices an unrelated but real issue and "fixes" that instead, since it's what's freshest in its context — then reports success. Nothing in the recent history was wrong; the original goal just got buried.
+
+Fix: re-send the exact goal text in every prompt, not just the first one.
+</details>
+
+**3.** Compare single-pass vs. plan-act-replan on cost, speed, and handling surprises. Which would you default to?
+
+<details>
+<summary>Answer</summary>
+
+Single-pass: one planning call, cheap, fast — but doesn't adapt if something unexpected happens.
+
+Plan-act-replan: a call before nearly every step, so it costs and takes more time — but handles surprises a fixed plan can't.
+
+Default to single-pass. It's cheaper, and you'll find out quickly if it's not enough. Only switch to interleaved once single-pass actually breaks.
+</details>
+
+**4.** Design a plan + execution engine for a 50-step pipeline with branching and error recovery.
+
+<details>
+<summary>Answer</summary>
+
+**Plan:** a DAG. Each task has an id, `depends_on`, a `tool_hint`, and a `status` (pending / running / done / failed / skipped).
+
+**Execution:** run every task whose dependencies are all `done` (in parallel if possible). Each time one finishes, check what it unblocked, then run those.
+
+**On failure:** mark that task `failed`, mark everything downstream `skipped` (they can never run now), but let every other branch keep going. Save status after each task finishes, so a crash means resuming from where it stopped, not starting over. Report done/failed/skipped clearly at the end instead of hiding it.
+</details>

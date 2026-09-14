@@ -205,6 +205,13 @@ function isLessonFile(path) {
 
     if (path.startsWith('ML and GenAI System Design/')) return true;
 
+    // GenAI Atlas lessons are numbered markdown files with quizzes inline (no separate
+    // quiz subfolder like AI Infra) — exclude README.md/track index pages, which aren't lessons.
+    if (path.startsWith('GenAI Atlas/')) {
+        const fileName = path.split('/').pop();
+        return fileName.toLowerCase() !== 'readme.md';
+    }
+
     return false;
 }
 

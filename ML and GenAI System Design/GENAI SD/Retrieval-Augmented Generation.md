@@ -184,6 +184,24 @@ We choose **vector-based retrieval** and index our 40M+ chunks accordingly.
   <img src="miscellaneous/rag_data_preparation_pipeline.png" alt="Data preparation steps from PDFs to indexed embeddings">
 </p>
 
+#### Choosing a Vector Index
+
+"Vector-based retrieval" still leaves one decision open: which index structure actually stores and searches the 40M+ embeddings. Every option is a trade-off between three axes — **recall quality**, **query speed**, and **memory footprint** — and you never get all three at once.
+
+| Index | Classification | Quality | Query Time | Memory | Best for |
+|---|---|---|---|---|---|
+| **Flat (brute-force)** | Exact scan | Very High (100% recall) | Medium–Slow | High | Small corpora or offline eval sets where exactness matters more than latency |
+| **LSH** | Hash-based | Moderate | Fast–Medium | High–Very High | Low-dimensional embeddings or small datasets |
+| **HNSW** | Graph-based | Very High | Very Fast | High–Very High (eats RAM) | Large, high-QPS production retrieval when memory isn't the constraint |
+| **IVF** | Cluster-based | High | Medium–Slow | High | Large-scale corpora needing high recall with reasonable memory/speed |
+| **Product Quantization (PQ)** | Cluster-based, compressed | Medium | Very Fast | Very Low | Memory-constrained deployments compressing high-dimensional vectors |
+
+At our 40M-chunk scale, a **flat index is out** — brute-force comparison against every vector doesn't meet interactive query latency. The real choice is between:
+*   **HNSW** if the serving fleet has RAM to spare and sub-millisecond p99 latency matters most — it's the fastest, highest-recall option, at the cost of holding a large graph resident in memory per replica.
+*   **IVF (optionally + PQ)** if memory is the binding constraint — IVF's cluster-then-search approach cuts the search space before comparing vectors, and layering PQ on top compresses the vectors themselves, trading a small recall hit for a much smaller memory footprint at scale.
+
+Most production RAG systems at this scale run **IVF+PQ** (e.g., FAISS `IndexIVFPQ`) as the default, and reserve pure HNSW for latency-critical paths where the memory cost is acceptable.
+
 ---
 
 ## 3. Model Development
