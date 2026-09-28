@@ -770,7 +770,7 @@
                     <div class="grid md:grid-cols-2 gap-12 items-center">
                         <div>
                             <span
-                                class="font-label text-xs uppercase tracking-[0.2em] text-tertiary font-semibold mb-4 block">AI
+                                class="font-label text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-4 block">AI
                                 Infrastructure Engineer · Agentic AI Systems</span>
                             <h1
                                 class="text-6xl md:text-7xl font-headline font-bold text-on-background leading-tight mb-6">
@@ -782,7 +782,10 @@
                                 architectures — while leading security as the Security Focal for IBM
                                 watsonx.governance.
                             </p>
-                            <div class="flex gap-4">
+                            <div class="flex flex-wrap gap-4">
+                                <a href="https://linkedin.com/in/joel-eapen" target="_blank" rel="noopener noreferrer"
+                                    class="px-8 py-4 bg-primary text-white rounded-full font-bold hover:bg-primary/90 transition-colors">Get
+                                    in touch</a>
                                 <button
                                     onclick="document.getElementById('narrative-section').scrollIntoView({ behavior: 'smooth' })"
                                     class="px-8 py-4 bg-surface-container-high text-on-surface rounded-full font-bold hover:bg-surface-dim transition-colors">Read
@@ -804,14 +807,14 @@
                 </section>
 
                 <!-- Biography Section: Tonal Layering -->
-                <section class="mb-24 grid md:grid-cols-3 gap-12 items-start" id="narrative-section">
-                    <div class="md:col-span-1 md:sticky md:top-24">
+                <section class="mb-24 grid lg:grid-cols-3 gap-12 items-start scroll-mt-24" id="narrative-section">
+                    <div class="lg:col-span-1 lg:sticky lg:top-24">
                         <h2 class="text-3xl font-headline font-bold text-on-background mb-4">The Narrative</h2>
-                        <div class="h-1 w-12 bg-tertiary mb-6"></div>
+                        <div class="h-1 w-12 bg-primary mb-6"></div>
                     </div>
-                    <div class="md:col-span-2 space-y-8 font-body text-lg text-on-surface leading-relaxed">
+                    <div class="lg:col-span-2 space-y-8 font-body text-lg text-on-surface leading-relaxed">
                         <p>
-                            Joel Varghese is an <span class="text-primary font-semibold">AI Infrastructure Engineer &
+                            I'm an <span class="text-primary font-semibold">AI Infrastructure Engineer &
                                 Security Focal</span> with 3+ years of experience building, securing, and operating
                             the infrastructure behind production-grade AI/ML, generative AI, and agentic systems at
                             scale — from GPU-backed LLM serving and RAG retrieval pipelines to the tool-calling,
@@ -819,14 +822,12 @@
                         </p>
 
                         <!-- Interactive Focus Cards -->
-                        <div class="grid sm:grid-cols-2 gap-6 mt-8 pt-4">
+                        <div class="grid xl:grid-cols-2 gap-6 mt-8 pt-4">
                             <!-- ML Card -->
-                            <div class="flip-card-container w-full group cursor-default"
-                                style="height: 460px; min-height: 460px;">
-                                <div class="flip-card-inner" style="height: 460px; min-height: 460px;">
+                            <div class="flip-card-container w-full group cursor-default">
+                                <div class="flip-card-inner">
                                     <!-- Front Face -->
-                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center"
-                                        style="height: 460px; min-height: 460px;">
+                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center">
                                         <div class="flex flex-col items-center justify-center flex-1">
                                             <div
                                                 class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
@@ -834,11 +835,12 @@
                                             </div>
                                             <h3
                                                 class="text-3xl font-headline font-bold text-on-surface leading-tight tracking-tight">
-                                                AI Infrastructure
+                                                Infrastructure
                                                 <span
-                                                    class="text-primary block text-sm font-label uppercase tracking-[0.2em] font-bold mt-2">Engineer
-                                                    · Agentic AI</span>
+                                                    class="text-primary block text-sm font-label uppercase tracking-[0.2em] font-bold mt-2">&amp;
+                                                    Agentic AI</span>
                                             </h3>
+                                            <p class="mt-4 text-sm text-on-surface-variant">2.4x faster inference · 35% lower compute cost</p>
                                         </div>
                                         <div class="w-full mt-4 pt-4 border-t border-outline-variant/50">
                                             <div class="flex flex-wrap justify-center gap-1.5">
@@ -859,11 +861,11 @@
                                                 <span
                                                     class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">K8s</span>
                                             </div>
+                                            <button type="button" class="flip-toggle mt-3" aria-expanded="false" aria-label="Show infrastructure and agentic AI impact"><span>See impact</span><span class="material-symbols-outlined text-base">arrow_forward</span></button>
                                         </div>
                                     </div>
                                     <!-- Back Face -->
-                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between"
-                                        style="height: 460px; min-height: 460px;">
+                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center gap-3 mb-3">
                                                 <span
@@ -872,7 +874,7 @@
                                                     Impact</h3>
                                             </div>
                                             <ul
-                                                class="text-[13px] text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
+                                                class="text-sm text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
                                                 <li>Deployed high-throughput LLM serving with <strong>vLLM</strong>
                                                     (PagedAttention, continuous batching) — <strong>2.4x</strong>
                                                     throughput, <strong>35%</strong> lower cost.</li>
@@ -885,17 +887,16 @@
                                                     guardrails — deployed on <strong>Docker & Kubernetes</strong>.</li>
                                             </ul>
                                         </div>
+                                        <button type="button" class="flip-toggle self-start mt-4" aria-expanded="true" aria-label="Back to summary"><span class="material-symbols-outlined text-base">arrow_back</span><span>Back</span></button>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Security Card -->
-                            <div class="flip-card-container w-full group cursor-default"
-                                style="height: 460px; min-height: 460px;">
-                                <div class="flip-card-inner" style="height: 460px; min-height: 460px;">
+                            <div class="flip-card-container w-full group cursor-default">
+                                <div class="flip-card-inner">
                                     <!-- Front Face -->
-                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center"
-                                        style="height: 460px; min-height: 460px;">
+                                    <div class="flip-card-front p-8 border border-outline-variant bg-surface-container-low hover:border-primary transition-all duration-300 flex flex-col justify-between items-center text-center">
                                         <div class="flex flex-col items-center justify-center flex-1">
                                             <div
                                                 class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-md">
@@ -908,6 +909,7 @@
                                                     class="text-primary block text-sm font-label uppercase tracking-[0.2em] font-bold mt-2">Focal
                                                     / Engineer</span>
                                             </h3>
+                                            <p class="mt-4 text-sm text-on-surface-variant">Security Focal, IBM watsonx.governance</p>
                                         </div>
                                         <div class="w-full mt-4 pt-4 border-t border-outline-variant/50">
                                             <div class="flex flex-wrap justify-center gap-1.5">
@@ -929,11 +931,11 @@
                                                 <span
                                                     class="px-2 py-0.5 text-xs rounded bg-surface-container-highest text-on-surface-variant group-hover:bg-primary/10 group-hover:text-primary transition-colors">IAM</span>
                                             </div>
+                                            <button type="button" class="flip-toggle mt-3" aria-expanded="false" aria-label="Show security impact"><span>See impact</span><span class="material-symbols-outlined text-base">arrow_forward</span></button>
                                         </div>
                                     </div>
                                     <!-- Back Face -->
-                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between"
-                                        style="height: 460px; min-height: 460px;">
+                                    <div class="flip-card-back p-6 border border-primary bg-surface-container-low flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center gap-3 mb-3">
                                                 <span
@@ -942,7 +944,7 @@
                                                 </h3>
                                             </div>
                                             <ul
-                                                class="text-[13px] text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
+                                                class="text-sm text-on-surface-variant leading-relaxed list-disc pl-4 space-y-3 text-left">
                                                 <li>Serving as <strong>Security Focal for IBM
                                                         watsonx.governance</strong>, spearheading threat modeling,
                                                     security reviews, and risk assessments.</li>
@@ -955,6 +957,7 @@
                                                         HIPAA</strong>, and FIPS requirements.</li>
                                             </ul>
                                         </div>
+                                        <button type="button" class="flip-toggle self-start mt-4" aria-expanded="true" aria-label="Back to summary"><span class="material-symbols-outlined text-base">arrow_back</span><span>Back</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -968,50 +971,45 @@
                 <section class="mb-24" id="learn-with-me">
                     <div class="text-center mb-12">
                         <h2 class="text-4xl font-headline font-bold mb-4">Learn With Me</h2>
-                        <p class="font-body text-on-surface-variant text-lg max-w-2xl mx-auto leading-relaxed">
-                            ML Nexus is what I wish I'd had while learning AI infrastructure — free, hands-on, and
+                        <p class="font-body text-on-surface-variant text-lg max-w-2xl mx-auto leading-relaxed text-balance">
+                            ML Nexus is what I wish I'd had while learning AI infrastructure — free, <span class="whitespace-nowrap">hands-on</span>, and
                             written for people who want to build, not just read.
                         </p>
                     </div>
 
-                    <div class="grid sm:grid-cols-3 gap-6 mb-10">
-                        <div class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant text-center">
-                            <div id="stat-modules" class="text-5xl font-headline font-bold text-primary mb-2">19</div>
-                            <div class="font-label text-sm text-on-surface-variant">Infrastructure modules</div>
-                        </div>
-                        <div class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant text-center">
-                            <div id="stat-projects" class="text-5xl font-headline font-bold text-primary mb-2">8</div>
-                            <div class="font-label text-sm text-on-surface-variant">Hands-on projects</div>
-                        </div>
-                        <div class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant text-center">
-                            <div id="stat-agent-lessons" class="text-5xl font-headline font-bold text-primary mb-2">30
-                            </div>
-                            <div class="font-label text-sm text-on-surface-variant">Agentic AI lessons</div>
-                        </div>
-                    </div>
+                    <p class="flex flex-wrap justify-center items-baseline gap-x-10 gap-y-3 font-body text-on-surface-variant mb-10">
+                        <span><span id="stat-modules" class="text-3xl font-headline font-bold text-primary">19</span> infrastructure modules</span>
+                        <span><span id="stat-projects" class="text-3xl font-headline font-bold text-primary">8</span> hands-on projects</span>
+                        <span><span id="stat-agent-lessons" class="text-3xl font-headline font-bold text-primary">30</span> agentic AI lessons</span>
+                    </p>
 
                     <div class="p-8 bg-surface-container-low rounded-2xl border border-outline-variant mb-10">
                         <h3 class="text-2xl font-headline font-bold mb-6">What you'll learn</h3>
                         <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-4 font-body text-on-surface leading-relaxed">
                             <li class="flex gap-3"><span
-                                    class="material-symbols-outlined text-primary">memory</span><span>Serve LLMs in
+                                    class="material-symbols-outlined text-primary">memory</span><span class="text-balance">Serve LLMs in
                                     production with vLLM, GPUs, and Kubernetes</span></li>
                             <li class="flex gap-3"><span
-                                    class="material-symbols-outlined text-primary">find_in_page</span><span>Build RAG
+                                    class="material-symbols-outlined text-primary">find_in_page</span><span class="text-balance">Build RAG
                                     systems with vector databases, hybrid search, and re-ranking</span></li>
                             <li class="flex gap-3"><span
-                                    class="material-symbols-outlined text-primary">tune</span><span>Fine-tune models
+                                    class="material-symbols-outlined text-primary">tune</span><span class="text-balance">Fine-tune models
                                     with LoRA and QLoRA on a single GPU</span></li>
                             <li class="flex gap-3"><span
-                                    class="material-symbols-outlined text-primary">auto_awesome</span><span>Design
+                                    class="material-symbols-outlined text-primary">auto_awesome</span><span class="text-balance">Design
                                     agentic AI: tool-calling, memory, guardrails, and evals</span></li>
                         </ul>
                     </div>
 
                     <div class="flex flex-wrap justify-center gap-4">
+                        <button type="button" onclick="navigateToCategory('AI Infrastructure Engineer')"
+                            class="px-8 py-4 bg-primary text-white rounded-full font-bold hover:bg-primary/90 transition-colors inline-flex items-center gap-2">
+                            <span>Start learning</span>
+                            <span class="material-symbols-outlined text-xl">arrow_forward</span>
+                        </button>
                         <a href="https://github.com/joevar5/ML-Nexus-Resource-Hub" target="_blank"
                             rel="noopener noreferrer"
-                            class="px-8 py-4 bg-primary text-white rounded-full font-bold hover:bg-primary/90 transition-colors inline-flex items-center gap-2">
+                            class="px-8 py-4 bg-surface-container-high text-on-surface rounded-full font-bold hover:bg-surface-dim transition-colors inline-flex items-center gap-2">
                             <span class="material-symbols-outlined text-xl">star</span>
                             <span>Star the repo</span>
                         </a>
@@ -1027,11 +1025,11 @@
                 <!-- Explore Other Works Section -->
                 <section class="mb-24">
                     <div class="text-center mb-16">
-                        <h2 class="text-4xl font-headline font-bold mb-4">Explore Other Works</h2>
+                        <h2 class="text-4xl font-headline font-bold mb-4">Build Lab &amp; Tracks</h2>
                         <p class="font-label text-on-surface-variant tracking-wide">DIVING DEEPER INTO AI
                             INFRASTRUCTURE, AGENTS & SYSTEMS</p>
                     </div>
-                    <div class="grid md:grid-cols-3 gap-8">
+                    <div class="grid lg:grid-cols-3 gap-8">
                         <div
                             class="explore-track-card p-8 bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary flex flex-col justify-between group text-left">
                             <div>
@@ -1045,18 +1043,18 @@
                                     AI, and production-level system design you can apply in real-world development.
                                 </p>
                             </div>
-                            <div class="flex flex-wrap gap-3">
-                                <button onclick="navigateToCategory('AI Infrastructure Engineer')" class="explore-track-btn">
+                            <div class="flex flex-col gap-3">
+                                <button onclick="navigateToCategory('AI Infrastructure Engineer')" class="explore-track-btn w-full justify-between">
                                     <span class="material-symbols-outlined text-base">memory</span>
-                                    <span>AI Infrastructure Engineer</span>
+                                    <span>Infra Track</span>
                                     <span class="material-symbols-outlined text-sm explore-track-btn-arrow">arrow_forward</span>
                                 </button>
-                                <button onclick="navigateToCategory('GenAI Atlas')" class="explore-track-btn">
+                                <button onclick="navigateToCategory('GenAI Atlas')" class="explore-track-btn w-full justify-between">
                                     <span class="material-symbols-outlined text-base">auto_awesome</span>
                                     <span>GenAI Atlas: Agents</span>
                                     <span class="material-symbols-outlined text-sm explore-track-btn-arrow">arrow_forward</span>
                                 </button>
-                                <button onclick="navigateToCategory('ML & GenAI System Design')" class="explore-track-btn">
+                                <button onclick="navigateToCategory('ML & GenAI System Design')" class="explore-track-btn w-full justify-between">
                                     <span class="material-symbols-outlined text-base">schema</span>
                                     <span>ML & GenAI System Design</span>
                                     <span class="material-symbols-outlined text-sm explore-track-btn-arrow">arrow_forward</span>
@@ -1077,7 +1075,7 @@
                                 </p>
                             </div>
                             <button onclick="navigateToCategory('The Build Lab')"
-                                class="self-start px-6 py-2.5 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label">
+                                class="self-start px-6 py-3 bg-primary/10 text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-label">
                                 Go to The Build Lab
                             </button>
                         </div>
@@ -1091,7 +1089,7 @@
                                 <h3 class="text-2xl font-headline font-bold mb-6">Research Papers &amp; Patents</h3>
                                 <div class="space-y-4">
                                     <a href="https://www.researchgate.net/profile/Joel-Eapen-3" target="_blank"
-                                        rel="noopener noreferrer" class="group/link block">
+                                        rel="noopener noreferrer" class="group/link block py-2.5">
                                         <h4
                                             class="text-base font-label font-bold text-on-surface group-hover/link:text-primary transition-colors flex items-center gap-1.5">
                                             <span>ResearchGate Profile</span>
@@ -1099,7 +1097,7 @@
                                         </h4>
                                     </a>
                                     <a href="https://www.ijaresm.com/image-classification-of-white-blood-cells-using-deep-learning-models"
-                                        target="_blank" rel="noopener noreferrer" class="group/link block">
+                                        target="_blank" rel="noopener noreferrer" class="group/link block py-2.5">
                                         <h4
                                             class="text-base font-label font-bold text-on-surface group-hover/link:text-primary transition-colors flex items-center gap-1.5">
                                             <span>WBC Classification Paper</span>
@@ -1116,11 +1114,9 @@
                 <section
                     class="relative overflow-hidden rounded-[2rem] p-12 nexus-gradient text-white flex justify-center text-center">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-tertiary/20 rounded-full blur-3xl -ml-24 -mb-24">
-                    </div>
                     <div class="relative z-10 max-w-2xl">
                         <h2 class="text-4xl font-headline font-bold mb-6">Let's build the future, bit by bit.</h2>
-                        <p class="text-white/80 font-body text-lg mb-8">
+                        <p class="text-white font-body text-lg mb-8">
                             Always open to collaborating on open-source AI infrastructure projects, discussing
                             agentic systems and distributed systems, or exploring opportunities in AI infrastructure
                             and platform engineering.
@@ -1130,25 +1126,24 @@
                                 target="_blank" rel="noopener noreferrer">
                                 <div
                                     class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all">
-                                    <span class="material-symbols-outlined font-normal text-xl">hub</span>
+                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
                                 </div>
-                                <span class="text-[10px] font-label uppercase tracking-widest opacity-60">GitHub</span>
+                                <span class="text-xs font-label font-semibold">GitHub</span>
                             </a>
                             <a class="flex flex-col items-center gap-2 group" href="https://linkedin.com/in/joel-eapen"
                                 target="_blank" rel="noopener noreferrer">
                                 <div
                                     class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all">
-                                    <span class="material-symbols-outlined font-normal text-xl">work</span>
+                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                                 </div>
-                                <span
-                                    class="text-[10px] font-label uppercase tracking-widest opacity-60">LinkedIn</span>
+                                <span class="text-xs font-label font-semibold">LinkedIn</span>
                             </a>
                             <a class="flex flex-col items-center gap-2 group" href="mailto:joelvar541@gmail.com">
                                 <div
                                     class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all">
                                     <span class="material-symbols-outlined font-normal text-xl">mail</span>
                                 </div>
-                                <span class="text-[10px] font-label uppercase tracking-widest opacity-60">Email</span>
+                                <span class="text-xs font-label font-semibold">Email</span>
                             </a>
                         </div>
                     </div>

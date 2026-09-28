@@ -1271,6 +1271,32 @@ function showAuthorPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// About-page flip cards: hover flips for mouse users (CSS); the "See impact" / "Back" buttons give
+// keyboard and touch users the same reveal. The hidden face is visibility:hidden, so focus moves
+// to the matching button once the flip reaches its halfway point.
+function setFlipCard(card, flipped) {
+    card.classList.toggle('is-flipped', flipped);
+    card.querySelectorAll('.flip-toggle').forEach(btn => btn.setAttribute('aria-expanded', String(flipped)));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(() => {
+        const face = card.querySelector(flipped ? '.flip-card-back' : '.flip-card-front');
+        const target = face && face.querySelector('.flip-toggle');
+        if (target) target.focus({ preventScroll: true });
+    }, reduceMotion ? 0 : 400);
+}
+
+document.addEventListener('click', (e) => {
+    const toggle = e.target.closest('.flip-toggle');
+    if (!toggle) return;
+    const card = toggle.closest('.flip-card-container');
+    if (card) setFlipCard(card, !card.classList.contains('is-flipped'));
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.flip-card-container.is-flipped').forEach(card => setFlipCard(card, false));
+});
+
 // Fills the "Learn with me" stat tiles on the About page from the live file tree, so the
 // numbers track the content instead of going stale as lessons are added.
 function populateLearnStats() {

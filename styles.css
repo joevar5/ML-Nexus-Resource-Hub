@@ -904,34 +904,62 @@
         }
 
         /* ── Premium Flip Cards ── */
+        /* Both faces sit in one grid cell, so the card is as tall as its longer face at any
+           width — no fixed height to overflow. Hover flips for mouse users; the .flip-toggle
+           buttons (keyboard, touch) add .is-flipped. The hidden face is visibility:hidden so
+           its controls leave the tab order; the switch lands at the flip's halfway point. */
         .flip-card-container {
             perspective: 1000px;
-            height: 440px !important;
-            min-height: 440px !important;
         }
         .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100% !important;
-            min-height: 440px !important;
+            display: grid;
+            height: 100%;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
         }
-        .flip-card-container:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
         .flip-card-front, .flip-card-back {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100% !important;
-            min-height: 440px !important;
+            grid-area: 1 / 1;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             border-radius: 12px;
+            transition: visibility 0s linear 0.3s;
         }
         .flip-card-back {
             transform: rotateY(180deg);
+            visibility: hidden;
+        }
+        .flip-card-container.is-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-container.is-flipped .flip-card-front { visibility: hidden; }
+        .flip-card-container.is-flipped .flip-card-back { visibility: visible; }
+        @media (hover: hover) {
+            .flip-card-container:hover .flip-card-inner {
+                transform: rotateY(180deg);
+            }
+            .flip-card-container:hover .flip-card-front { visibility: hidden; }
+            .flip-card-container:hover .flip-card-back { visibility: visible; }
+        }
+        .flip-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 44px;
+            padding: 0 14px;
+            border-radius: 8px;
+            color: var(--color-primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .flip-toggle:hover {
+            background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .flip-card-inner, .flip-card-front, .flip-card-back {
+                transition: none;
+            }
         }
 
         /* 🔔 Bell Ringing Animations */
