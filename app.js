@@ -1265,8 +1265,36 @@ function showAuthorPage() {
     // Highlight About the Author button in sidebar footer
     document.getElementById('about-author-link').className = 'flex items-center gap-md p-3 bg-primary-container text-on-primary-container rounded-lg transition-colors';
 
+    populateLearnStats();
+
     document.getElementById('progress-bar').style.width = '0%';
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Fills the "Learn with me" stat tiles on the About page from the live file tree, so the
+// numbers track the content instead of going stale as lessons are added.
+function populateLearnStats() {
+    let modules = 0, projects = 0, agentLessons = 0;
+
+    (function walk(nodes, path) {
+        for (const node of nodes) {
+            if (node.type === 'directory') {
+                if (/^mod-\d+/.test(node.name)) modules++;
+                if (/^project-\d+/.test(node.name)) projects++;
+                walk(node.children || [], `${path}/${node.name}`);
+            } else if (path.startsWith('/GenAI Atlas/Agents/Phase')) {
+                agentLessons++;
+            }
+        }
+    })(filesTree, '');
+
+    const set = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    };
+    set('stat-modules', modules);
+    set('stat-projects', projects);
+    set('stat-agent-lessons', agentLessons);
 }
 
 // Navigate from a hand-built view (e.g. Projects cards) into a real content file

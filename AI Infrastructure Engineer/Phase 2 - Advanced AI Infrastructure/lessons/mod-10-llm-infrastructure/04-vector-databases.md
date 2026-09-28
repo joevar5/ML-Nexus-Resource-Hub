@@ -1,819 +1,446 @@
 # Lesson 04: Vector Databases
 
-## Table of Contents
-1. [Introduction](#introduction)
-2. [Vector Database Fundamentals](#vector-database-fundamentals)
-3. [Detailed Comparison](#detailed-comparison)
-4. [Qdrant Deep Dive](#qdrant-deep-dive)
-5. [Weaviate Deep Dive](#weaviate-deep-dive)
-6. [Chroma Deep Dive](#chroma-deep-dive)
-7. [Pinecone Deep Dive](#pinecone-deep-dive)
-8. [Milvus and FAISS](#milvus-and-faiss)
-9. [Deployment Strategies](#deployment-strategies)
-10. [Vector Indexing](#vector-indexing)
-11. [Scaling Strategies](#scaling-strategies)
-12. [Kubernetes Deployments](#kubernetes-deployments)
-13. [Monitoring and Performance](#monitoring-and-performance)
-14. [Cost Optimization](#cost-optimization)
-15. [Summary](#summary)
+A vector database is the piece of infrastructure [Lesson 03](./03-rag-systems.md) waved at and moved past: the thing that actually stores millions of embeddings and answers "which of these are closest to this query vector?" in milliseconds. Get this layer wrong and nothing downstream — chunking, re-ranking, prompt assembly — can save you, since a RAG system's answer quality has a hard ceiling at whatever retrieval actually returns.
 
-## Introduction
+This lesson goes deep on what Lesson 03 only had room for a table on: how similarity search actually works under the hood, how to pick between the major databases, how to deploy one for production, and how to scale and monitor it once real traffic shows up.
 
-Vector databases are specialized databases optimized for storing, indexing, and searching high-dimensional vectors (embeddings). They are essential infrastructure for RAG systems, semantic search, recommendation engines, and other AI applications.
+**Prerequisites:** [Lesson 01](./01-introduction-llm-infrastructure.md), [Lesson 03: RAG Systems](./03-rag-systems.md) (this lesson deep-dives the vector database piece that lesson only introduced).
 
-### Learning Objectives
+### Contents
 
-- Understand vector database architecture and indexing
-- Compare major vector database options
-- Deploy vector databases in production
-- Optimize performance and costs
-- Implement proper monitoring and scaling
-- Choose the right vector database for your use case
+1. [Why Vector Search Needs Special Infrastructure](#why-vector-search-needs-special-infrastructure)
+2. [How Similarity Search Works](#how-similarity-search-works)
+3. [Choosing a Vector Database](#choosing-a-vector-database)
+4. [Vector Indexing and Quantization](#vector-indexing-and-quantization)
+5. [Qdrant in Practice](#qdrant-in-practice)
+6. [Other Vector Databases at a Glance](#other-vector-databases-at-a-glance)
+7. [Deployment: Self-Hosted, Managed, or Serverless](#deployment-self-hosted-managed-or-serverless)
+8. [Scaling and Cost](#scaling-and-cost)
+9. [Monitoring](#monitoring)
+10. [Practical Exercise](#practical-exercise)
+11. [Key Takeaways](#key-takeaways)
+12. [Additional Resources](#additional-resources)
 
-## Vector Database Fundamentals
+---
 
-### What is a Vector Database?
+## Why Vector Search Needs Special Infrastructure
 
-A vector database is purpose-built for:
-- Storing high-dimensional vectors (embeddings)
-- Efficient similarity search (ANN - Approximate Nearest Neighbor)
-- Metadata filtering alongside vector search
-- Horizontal scaling for billions of vectors
-- Real-time updates and queries
+An embedding is a list of a few hundred to a few thousand floats. "Find the nearest ones to this query" sounds simple — compute the distance to every vector you have, sort, take the top few. That works fine at 10,000 vectors. At 100 million, computing 100 million distances per query is hopeless, and that's before you add the other things a real system needs: filtering by metadata (only this tenant's documents, only docs from the last 30 days), handling constant inserts and updates without rebuilding everything from scratch, and staying fast while doing all of it concurrently for many users. A regular relational or document database wasn't built for any of that — a vector database is purpose-built for exactly this shape of problem.
 
-### Key Concepts
+---
 
-**Embeddings**: Dense vector representations of data
-```python
-text = "Machine learning is amazing"
-embedding = [0.12, -0.45, 0.78, ..., 0.23]  # 768 dimensions
+## How Similarity Search Works
+
+"Closest" needs a definition before it means anything. Three distance metrics cover almost every case:
+
+| Metric | What it measures | Use it when |
+|---|---|---|
+| Cosine similarity | Angle between two vectors, ignoring magnitude | Default for text embeddings |
+| Dot product | Cosine similarity, if vectors are pre-normalized | Same result as cosine, cheaper to compute |
+| Euclidean (L2) | Straight-line distance | Magnitude itself carries meaning (rare for text) |
+
+Once you've picked a metric, the harder problem is *searching* efficiently. Comparing a query against every stored vector is called exact (brute-force) search — perfectly accurate, but linear in the size of your collection. Every production vector database instead uses **Approximate Nearest Neighbor (ANN)** search: an index structure that finds *almost certainly* the closest vectors, in a fraction of the time, by not checking everything.
+
+```mermaid
+flowchart LR
+    subgraph E["Exact Search (brute-force)"]
+        direction LR
+        E1["100% recall, always correct"] -.-> E2["O(n) per query — too slow past ~100K vectors"]
+    end
+
+    subgraph A["Approximate Search (ANN)"]
+        direction LR
+        A1["Sub-linear, scales to billions"] -.-> A2["~95-99% recall — a tunable trade, not a guarantee"]
+    end
+
+    classDef good fill:#059669,stroke:#065f46,color:#fff,rx:6,ry:6
+    classDef bad fill:#dc2626,stroke:#991b1b,color:#fff,rx:6,ry:6
+    class E1,A1 good
+    class E2,A2 bad
 ```
 
-**Similarity Metrics**:
-- **Cosine Similarity**: Measures angle between vectors
-- **Euclidean Distance**: Straight-line distance
-- **Dot Product**: Inner product of vectors
+That recall trade-off is a dial, not a fixed cost — every ANN index exposes parameters (covered in the next section) that let you push closer to exact-search accuracy at the price of speed, or vice versa.
 
-**Indexing Algorithms**:
-- **HNSW** (Hierarchical Navigable Small World): Fast, memory-intensive
-- **IVF** (Inverted File Index): Good balance
-- **LSH** (Locality Sensitive Hashing): Fast approximate search
-- **ANNOY**: Tree-based, memory-efficient
+---
 
-## Detailed Comparison
+## Choosing a Vector Database
 
-### Feature Comparison Matrix
+| Database | Type | Language | Hybrid Search | Best for |
+|---|---|---|---|---|
+| **pgvector** | Open-source (Postgres extension) | C | ✅ (via `tsvector`) | Teams already on Postgres, embeddings next to relational data |
+| **Qdrant** | Open-source/Managed | Rust | ✅ | Performance, self-hosted, rich filtering |
+| **Weaviate** | Open-source/Managed | Go | ✅ | Hybrid search, GraphQL, multi-modal |
+| **Chroma** | Open-source | Python | ❌ | Prototyping, embedded, small datasets |
+| **Pinecone** | Managed | Proprietary | ❌ | Zero-ops production, willing to pay for it |
+| **Milvus** | Open-source | C++/Python | ✅ | Billion-scale, distributed deployments |
 
-| Feature | Qdrant | Weaviate | Chroma | Pinecone | Milvus |
-|---------|--------|----------|--------|----------|--------|
-| **Open Source** | ✅ | ✅ | ✅ | ❌ | ✅ |
-| **Managed Cloud** | ✅ | ✅ | ❌ | ✅ | ✅ |
-| **Language** | Rust | Go | Python | Proprietary | C++/Python |
-| **Filtering** | Excellent | Excellent | Basic | Good | Excellent |
-| **Performance** | Excellent | Very Good | Good | Excellent | Excellent |
-| **Ease of Use** | Very Good | Good | Excellent | Excellent | Moderate |
-| **Hybrid Search** | ✅ | ✅ | ❌ | ❌ | ✅ |
-| **Multi-tenancy** | ✅ | ✅ | ❌ | ✅ | ✅ |
-| **GraphQL** | ❌ | ✅ | ❌ | ❌ | ❌ |
+For most new projects, the honest default is: if you already run Postgres, try `pgvector` first — it's one command away, not a new system. Otherwise, prototype in Chroma because it needs zero setup, move to Qdrant when you need real performance and self-hosting, and only reach for Pinecone or a fully managed option once you've decided the ops burden genuinely isn't worth taking on yourselves.
 
-### When to Use Each
+> [!NOTE]
+> **Industry trend (2026) — pgvector as the Default**
+>
+> **What it is:** `pgvector`, a Postgres extension, has grown from "good enough for a prototype" into a production-grade vector store — extensions like `pgvectorscale` have pushed its performance to the point of beating dedicated vector databases at scale in independent benchmarks.
+>
+> **Why it's picked over the others:** Most teams already run Postgres for their application data. Adding `pgvector` means one fewer service to deploy, monitor, and back up, instead of standing up and operating a whole separate database just for embeddings.
+>
+> **Where it's used:** Teams already on Postgres default to `pgvector` for small-to-mid scale (up to tens of millions of vectors). Dedicated databases still win at the extremes — Qdrant, Weaviate, and Milvus for very large scale or heavy metadata filtering, and Pinecone when a team wants zero infrastructure to manage. *(Source: [State of Vector Databases, Q2 2026 — Actian](https://www.actian.com/blog/developer/state-of-vector-databases-q2-2026/))*
 
-**Qdrant**:
-```python
-# High performance, complex filtering, self-hosted
-use_cases = [
-    "Production RAG systems",
-    "High-throughput applications",
-    "Complex metadata filtering",
-    "Cost-conscious deployments"
-]
+---
+
+## Vector Indexing and Quantization
+
+| Algorithm | Idea | Trade-off |
+|---|---|---|
+| **HNSW** | Multi-layer graph of nearest neighbors | Fastest queries, most memory-hungry — the default in most databases |
+| **IVF** | Cluster vectors, search only the nearest clusters | Lower memory than HNSW, needs a training pass |
+| **DiskANN** | Graph index designed to live on SSD, not RAM | Handles billions of vectors on far less RAM, slightly higher latency |
+| **LSH** | Hash similar vectors into the same buckets | Simple, fast to build, generally lower recall than the above |
+
+### The Four Algorithms, Visually
+
+The quickest way to keep these straight: each one answers "where do I even look?" differently.
+
+```mermaid
+flowchart LR
+    A((A)) --- B((B)) --- C((C))
+    D((D)) --- E((E))
+    B --- E
+    A --- D
+
+    classDef node fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:20,ry:20
+    class A,B,C,D,E node
 ```
 
-**Weaviate**:
-```python
-# Hybrid search, GraphQL, knowledge graphs
-use_cases = [
-    "Hybrid vector + keyword search",
-    "GraphQL API requirements",
-    "Multi-modal search (text, images)",
-    "Knowledge graph applications"
-]
+**HNSW — a graph.** Hop from neighbor to neighbor, each hop getting closer to the query, until you can't get any closer.
+
+```mermaid
+flowchart LR
+    subgraph C1["Cluster A"]
+        direction LR
+        A1((•)) ~~~ A2((•)) ~~~ A3((•))
+    end
+    subgraph C2["Cluster B"]
+        direction LR
+        B1((•)) ~~~ B2((•)) ~~~ B3((•))
+    end
+    Q["Query"] -.->|"search only this cluster"| C1
+
+    classDef q fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:6,ry:6
+    classDef pt fill:#059669,stroke:#065f46,color:#fff,rx:20,ry:20
+    class Q q
+    class A1,A2,A3,B1,B2,B3 pt
 ```
 
-**Chroma**:
-```python
-# Development, prototyping, embedded
-use_cases = [
-    "Rapid prototyping",
-    "Small to medium datasets",
-    "Embedded in applications",
-    "Development and testing"
-]
+**IVF — clusters.** Group vectors into clusters ahead of time; at query time, find the right cluster(s) first and only search inside those.
+
+```mermaid
+flowchart TB
+    RAM["RAM<br/>(small in-memory index)"] --> SSD["SSD-Resident Graph<br/>(the bulk of the index)"]
+    SSD --> Cand["Candidate Vectors"]
+
+    classDef mem fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:6,ry:6
+    classDef disk fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:6,ry:6
+    classDef out fill:#059669,stroke:#065f46,color:#fff,rx:6,ry:6
+    class RAM mem
+    class SSD disk
+    class Cand out
 ```
 
-**Pinecone**:
-```python
-# Fully managed, enterprise, scale
-use_cases = [
-    "Fully managed solution needed",
-    "Enterprise support required",
-    "Massive scale (billions of vectors)",
-    "Don't want to manage infrastructure"
-]
+**DiskANN — a graph too big for RAM.** Same graph idea as HNSW, but it lives on SSD instead, with only a small piece kept in memory — trading a little latency for a lot less RAM.
+
+```mermaid
+flowchart LR
+    V["Vectors"] --> H["Hash Function"]
+    H --> B1["Bucket 1"]
+    H --> B2["Bucket 2"]
+    H --> B3["Bucket 3"]
+
+    classDef in fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:6,ry:6
+    classDef proc fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:6,ry:6
+    classDef out fill:#059669,stroke:#065f46,color:#fff,rx:6,ry:6
+    class V in
+    class H proc
+    class B1,B2,B3 out
 ```
 
-## Qdrant Deep Dive
+**LSH — buckets.** Hash similar vectors so they land in the same bucket; at query time, hash the query and only check that bucket.
 
-### Architecture
+HNSW is the one you'll tune most often, and it comes down to three knobs: `m` (connections per node — higher means better recall, more memory), `ef_construct` (candidate list size while building — higher means a better index, slower to build), and `ef` (the same idea, but set per-query at search time — higher means better recall, slower search). The full config is shown in [Qdrant in Practice](#qdrant-in-practice) below.
+
+Once an index no longer fits comfortably in RAM, **quantization** trades a small amount of accuracy for a large amount of memory:
+
+| Method | How it works | Storage reduction | Quality impact |
+|---|---|---|---|
+| Scalar (int8) | Rounds each float32 dimension to one of 256 buckets, stored as a single byte | 4x | Minimal |
+| Product | Splits the vector into sub-vectors, replaces each with the ID of its nearest pre-computed centroid | 16–64x | Moderate |
+| Binary | Keeps only the sign of each dimension (+/−) as a single bit, compared later with Hamming distance | ~32x | Noticeable — best on high-dimensional vectors with a rescoring pass |
+
+```mermaid
+flowchart LR
+    Full["Full Vector<br/>[0.12, -0.83, 0.44, ...]<br/>float32 — 4 bytes/dim"] --> Scalar["Scalar (int8)<br/>1 byte/dim"]
+    Full --> Binary["Binary<br/>1 bit/dim"]
+
+    classDef full fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:6,ry:6
+    classDef small fill:#059669,stroke:#065f46,color:#fff,rx:6,ry:6
+    class Full full
+    class Scalar,Binary small
+```
+
+Quantization shrinks each *number* in the vector, not the vector's length — same dimensions, smaller footprint per dimension. That's why it stacks with any indexing algorithm above: you can run HNSW or DiskANN over quantized vectors just as easily as full-precision ones.
+
+> [!NOTE]
+> **Industry trend (2026) — Binary Quantization + DiskANN for Billion-Scale Search**
+>
+> **What it is:** Binary quantization compresses each dimension of a vector down to a single bit and scores candidates with cheap Hamming-distance comparisons instead of floating-point math. DiskANN-style graph indexes are built to live on SSD rather than RAM, so the index doesn't need to fit in memory at all.
+>
+> **Why it's picked over the others:** Plain HNSW keeps its whole graph in RAM, which gets expensive fast once you're past tens of millions of vectors — binary quantization and disk-resident indexes are how databases keep serving billion-vector collections without requiring a machine with a terabyte of RAM.
+>
+> **Where it's used:** Major open-source databases (Milvus, and others building on the open DiskANN library) now ship HNSW as the default for quality-sensitive, moderate-scale collections, with IVF/DiskANN and scalar-or-binary quantization as the standard escape hatch once a collection outgrows what fits in RAM. *(Source: [Best Open Source Vector Databases in 2026 — Chat2DB](https://chat2db.ai/resources/blog/best-open-source-vector-databases-2026))*
+
+---
+
+## Qdrant in Practice
 
 ```python
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct
-import numpy as np
+from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
 
-# Initialize client
-client = QdrantClient(host="localhost", port=6333)
+client = QdrantClient(url="http://localhost:6333")  # docker run -p 6333:6333 qdrant/qdrant
 
-# Create collection
+# Create a collection tuned for production: quantized to cut memory, HNSW for speed
 client.create_collection(
-    collection_name="my_collection",
-    vectors_config=VectorParams(
-        size=768,  # Embedding dimension
-        distance=Distance.COSINE
-    )
+    collection_name="documents",
+    vectors_config=VectorParams(size=768, distance=Distance.COSINE),
+    hnsw_config={"m": 16, "ef_construct": 100},
+    quantization_config={"scalar": {"type": "int8", "quantile": 0.99, "always_ram": True}},
 )
 
-# Insert vectors
-points = [
-    PointStruct(
-        id=1,
-        vector=np.random.rand(768).tolist(),
-        payload={"text": "Sample document", "category": "tech"}
-    )
-    for i in range(1000)
-]
-
+# Insert
 client.upsert(
-    collection_name="my_collection",
-    points=points
+    collection_name="documents",
+    points=[PointStruct(id=1, vector=embedding, payload={"text": "...", "source": "handbook.pdf"})],
 )
 
-# Search
+# Search, optionally scoped with a metadata filter
 results = client.search(
-    collection_name="my_collection",
-    query_vector=np.random.rand(768).tolist(),
-    limit=10
+    collection_name="documents",
+    query_vector=query_embedding,
+    query_filter=Filter(must=[FieldCondition(key="source", match=MatchValue(value="handbook.pdf"))]),
+    limit=10,
 )
 ```
 
-### Advanced Features
+Qdrant is used as the running example throughout this module because its defaults are close to production-ready out of the box — the same client and collection API shown here scales from a laptop Docker container to a multi-node cluster.
 
-```python
-from qdrant_client.models import Filter, FieldCondition, MatchValue
+---
 
-# Filtered search
-results = client.search(
-    collection_name="my_collection",
-    query_vector=query_vector,
-    query_filter=Filter(
-        must=[
-            FieldCondition(
-                key="category",
-                match=MatchValue(value="tech")
-            )
-        ]
-    ),
-    limit=10
-)
+## Other Vector Databases at a Glance
 
-# Scroll through all vectors
-records, next_offset = client.scroll(
-    collection_name="my_collection",
-    limit=100,
-    with_payload=True,
-    with_vectors=False
-)
+Each of these makes a genuinely different trade-off worth knowing, even if Qdrant stays your default.
 
-# Batch operations
-client.upsert(
-    collection_name="my_collection",
-    points=points,
-    wait=True  # Wait for operation to complete
-)
+**pgvector (PostgreSQL)** is probably the option you already have without realizing it. It's just an add-on for Postgres that lets a normal table have a column for embeddings, the same way it has columns for text or numbers. So your vectors sit right next to the rest of your data, in the same database:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+CREATE TABLE documents (
+    id bigserial PRIMARY KEY,
+    content text,
+    source text,
+    embedding vector(768)
+);
+CREATE INDEX ON documents USING hnsw (embedding vector_cosine_ops);
+
+-- nearest neighbors, filtered with a normal SQL WHERE clause
+SELECT content FROM documents
+WHERE source = 'handbook.pdf'
+ORDER BY embedding <=> '[0.12, -0.83, ...]'
+LIMIT 10;
 ```
 
-### Qdrant Production Deployment
+It's not the fastest option here — a dedicated vector database will out-perform it at very large scale. Its real advantage is simplicity: no second database to set up, back up, or keep in sync. Your embeddings get backed up, replicated, and secured the exact same way the rest of your data already is.
 
-```yaml
-# docker-compose.yml
-version: '3.8'
-
-services:
-  qdrant:
-    image: qdrant/qdrant:latest
-    ports:
-      - "6333:6333"
-      - "6334:6334"  # gRPC port
-    volumes:
-      - ./qdrant_data:/qdrant/storage
-    environment:
-      - QDRANT__SERVICE__GRPC_PORT=6334
-    restart: always
-```
-
-```python
-# Production configuration
-client = QdrantClient(
-    host="localhost",
-    port=6333,
-    grpc_port=6334,
-    prefer_grpc=True,  # Use gRPC for better performance
-    timeout=60
-)
-
-# Optimize for performance
-client.create_collection(
-    collection_name="production",
-    vectors_config=VectorParams(
-        size=768,
-        distance=Distance.COSINE
-    ),
-    optimizers_config={
-        "memmap_threshold": 20000,  # Use memory-mapped files
-        "indexing_threshold": 10000
-    },
-    quantization_config={
-        "scalar": {
-            "type": "int8",
-            "quantile": 0.99,
-            "always_ram": True
-        }
-    }
-)
-```
-
-## Weaviate Deep Dive
-
-### Setup and Basic Usage
+**Weaviate** auto-generates embeddings from a schema and treats hybrid search as a first-class, one-parameter feature. You define a "class" (its data model), point it at an embedding model, and Weaviate handles vectorizing your data as it comes in — you never call an embedding model yourself. Its signature feature is the `alpha` knob below: one number to slide between pure keyword search and pure vector search, instead of implementing that fusion logic by hand:
 
 ```python
 import weaviate
 
-# Initialize client
 client = weaviate.Client("http://localhost:8080")
-
-# Create schema
-schema = {
-    "class": "Document",
-    "vectorizer": "text2vec-transformers",
-    "moduleConfig": {
-        "text2vec-transformers": {
-            "model": "sentence-transformers/all-MiniLM-L6-v2"
-        }
-    },
-    "properties": [
-        {
-            "name": "content",
-            "dataType": ["text"]
-        },
-        {
-            "name": "category",
-            "dataType": ["string"]
-        }
-    ]
-}
-
-client.schema.create_class(schema)
-
-# Insert data (automatic vectorization)
-client.data_object.create(
-    {
-        "content": "Machine learning is a subset of AI",
-        "category": "technology"
-    },
-    "Document"
+result = (
+    client.query.get("Document", ["content"])
+    .with_hybrid(query="machine learning", alpha=0.5)  # 0 = keyword only, 1 = vector only
+    .with_limit(10)
+    .do()
 )
-
-# Search
-result = client.query.get(
-    "Document",
-    ["content", "category"]
-).with_near_text({
-    "concepts": ["artificial intelligence"]
-}).with_limit(10).do()
 ```
 
-### Hybrid Search
-
-```python
-# Combine vector and keyword search
-result = client.query.get(
-    "Document",
-    ["content", "category"]
-).with_hybrid(
-    query="machine learning",
-    alpha=0.5  # 0=keyword only, 1=vector only
-).with_limit(10).do()
-```
-
-### Weaviate Deployment
-
-```yaml
-# docker-compose.yml
-version: '3.8'
-services:
-  weaviate:
-    image: semitechnologies/weaviate:latest
-    ports:
-      - "8080:8080"
-    environment:
-      QUERY_DEFAULTS_LIMIT: 25
-      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
-      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
-      DEFAULT_VECTORIZER_MODULE: 'text2vec-transformers'
-      ENABLE_MODULES: 'text2vec-transformers'
-      TRANSFORMERS_INFERENCE_API: 'http://t2v-transformers:8080'
-    volumes:
-      - ./weaviate_data:/var/lib/weaviate
-
-  t2v-transformers:
-    image: semitechnologies/transformers-inference:sentence-transformers-all-MiniLM-L6-v2
-    environment:
-      ENABLE_CUDA: '0'
-```
-
-## Chroma Deep Dive
-
-### Setup and Usage
+**Chroma** is the fastest path from zero to a working prototype — an embedded, in-process database with no server to run, similar to how SQLite needs no separate database server. It ships with a default embedding model built in, so `collection.add()` and `collection.query()` above just work on raw text with no setup — great for getting something running today, less suited to production traffic at real scale or across multiple machines:
 
 ```python
 import chromadb
-from chromadb.config import Settings
 
-# Persistent client
 client = chromadb.PersistentClient(path="./chroma_db")
-
-# Create collection
-collection = client.create_collection(
-    name="my_collection",
-    metadata={"hnsw:space": "cosine"}
-)
-
-# Add documents (automatic embedding with default model)
-collection.add(
-    documents=[
-        "This is a document about machine learning",
-        "This document is about natural language processing"
-    ],
-    metadatas=[
-        {"category": "ML"},
-        {"category": "NLP"}
-    ],
-    ids=["doc1", "doc2"]
-)
-
-# Query
-results = collection.query(
-    query_texts=["What is machine learning?"],
-    n_results=10
-)
-
-print(results)
+collection = client.create_collection("docs")
+collection.add(documents=["RAG grounds answers in retrieved text."], ids=["doc1"])
+results = collection.query(query_texts=["What is RAG?"], n_results=5)
 ```
 
-### Custom Embedding Function
+**Pinecone** is the managed option — no infrastructure to run, and namespaces give you multi-tenancy for free. You never touch a server, an index, or a scaling decision directly; Pinecone runs entirely as an API you call, which is exactly the trade a team makes when it decides infrastructure ops isn't where it wants to spend engineering time. Namespaces are the built-in answer to "keep tenant A's vectors from ever showing up in tenant B's search results" — one keyword argument instead of separate collections or manual filtering:
 
 ```python
-from chromadb.utils import embedding_functions
+from pinecone import Pinecone
 
-# Use custom embedding function
-sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-    model_name="all-mpnet-base-v2"
-)
-
-collection = client.create_collection(
-    name="custom_embeddings",
-    embedding_function=sentence_transformer_ef
-)
-
-# Or use OpenAI
-openai_ef = embedding_functions.OpenAIEmbeddingFunction(
-    api_key="your-api-key",
-    model_name="text-embedding-ada-002"
-)
+pc = Pinecone(api_key="your-api-key")
+index = pc.Index("my-index")
+index.upsert(vectors=[("id1", embedding, {"text": "..."})], namespace="tenant_123")
+results = index.query(vector=query_embedding, top_k=10, namespace="tenant_123")
 ```
 
-## Pinecone Deep Dive
-
-### Setup and Usage
-
-```python
-import pinecone
-
-# Initialize
-pinecone.init(
-    api_key="your-api-key",
-    environment="us-west1-gcp"
-)
-
-# Create index
-pinecone.create_index(
-    "my-index",
-    dimension=768,
-    metric="cosine",
-    pods=1,
-    replicas=1,
-    pod_type="p1.x1"
-)
-
-# Connect to index
-index = pinecone.Index("my-index")
-
-# Upsert vectors
-vectors = [
-    ("id1", [0.1] * 768, {"text": "Document 1"}),
-    ("id2", [0.2] * 768, {"text": "Document 2"})
-]
-
-index.upsert(vectors=vectors)
-
-# Query
-results = index.query(
-    vector=[0.15] * 768,
-    top_k=10,
-    include_metadata=True
-)
-```
-
-### Pinecone Namespaces
-
-```python
-# Use namespaces for multi-tenancy
-index.upsert(
-    vectors=vectors,
-    namespace="user_123"
-)
-
-# Query specific namespace
-results = index.query(
-    vector=query_vector,
-    top_k=10,
-    namespace="user_123"
-)
-```
-
-## Deployment Strategies
-
-### Self-Hosted vs. Managed
-
-```python
-deployment_decision_matrix = {
-    "self_hosted": {
-        "pros": [
-            "Full control",
-            "Lower long-term costs",
-            "Data privacy",
-            "Custom optimizations"
-        ],
-        "cons": [
-            "Operations overhead",
-            "Scaling complexity",
-            "Maintenance burden"
-        ],
-        "recommended_for": [
-            "Qdrant",
-            "Weaviate",
-            "Milvus",
-            "Chroma"
-        ]
-    },
-    "managed": {
-        "pros": [
-            "No operations overhead",
-            "Automatic scaling",
-            "Enterprise support",
-            "Managed backups"
-        ],
-        "cons": [
-            "Higher costs",
-            "Less control",
-            "Vendor lock-in"
-        ],
-        "recommended_for": [
-            "Pinecone",
-            "Weaviate Cloud",
-            "Qdrant Cloud"
-        ]
-    }
-}
-```
-
-### Kubernetes Deployment (Qdrant)
-
-```yaml
-# qdrant-deployment.yaml
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: qdrant
-spec:
-  serviceName: qdrant
-  replicas: 3
-  selector:
-    matchLabels:
-      app: qdrant
-  template:
-    metadata:
-      labels:
-        app: qdrant
-    spec:
-      containers:
-      - name: qdrant
-        image: qdrant/qdrant:latest
-        ports:
-        - containerPort: 6333
-          name: http
-        - containerPort: 6334
-          name: grpc
-        volumeMounts:
-        - name: qdrant-storage
-          mountPath: /qdrant/storage
-        resources:
-          requests:
-            memory: "4Gi"
-            cpu: "2"
-          limits:
-            memory: "8Gi"
-            cpu: "4"
-  volumeClaimTemplates:
-  - metadata:
-      name: qdrant-storage
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 100Gi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: qdrant
-spec:
-  clusterIP: None
-  selector:
-    app: qdrant
-  ports:
-  - port: 6333
-    name: http
-  - port: 6334
-    name: grpc
+
+## Deployment: Self-Hosted, Managed, or Serverless
+
+| | Self-hosted (Qdrant, Weaviate, Milvus) | Managed (Pinecone, cloud offerings) | Serverless (object-storage-backed) |
+|---|---|---|---|
+| Ops burden | You run it | Vendor runs it | Vendor runs it, you pay per use |
+| Cost shape | Fixed infra cost | Per-pod/tier pricing | Usage-based, scales to zero |
+| Best for | Cost-conscious teams, custom tuning | Teams that don't want infra at all | Spiky or unpredictable traffic |
+
+`pgvector` doesn't fit neatly into one column — it's really "whichever deployment model your Postgres already uses." Self-host Postgres yourself and it's self-hosted; run it on a managed Postgres service (Amazon RDS, Supabase, Neon) and it's managed, with zero extra setup beyond enabling the extension. That's the whole appeal: you're not choosing a new deployment model at all, just reusing the one you already have.
+
+For a self-hosted cluster, Kubernetes is where the real decisions live:
+
+```mermaid
+flowchart TB
+    Svc["Service<br/>(headless, per-pod routing)"] --> Pod1["Pod: Qdrant + PVC"]
+    Svc --> Pod2["Pod: Qdrant + PVC"]
+    Svc --> Pod3["Pod: Qdrant + PVC"]
+
+    classDef ctrl fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:6,ry:6
+    classDef pod fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:6,ry:6
+    class Svc ctrl
+    class Pod1,Pod2,Pod3 pod
 ```
 
-## Vector Indexing
+- **StatefulSet, not Deployment** — each replica owns its own persistent volume and needs a stable identity; a Deployment's interchangeable pods don't fit a database.
+- **Resource requests reflect the index living in RAM** — under-request memory and HNSW's graph gets evicted, turning fast queries into disk thrashing.
+- **A shared collection across replicas needs replication configured explicitly** (Qdrant's `replication_factor`, Weaviate's `replicationFactor`) — a plain StatefulSet gives you separate, unsynced databases, not a cluster.
 
-### HNSW (Hierarchical Navigable Small World)
+> [!NOTE]
+> **Industry trend (2026) — Serverless, Object-Storage-Backed Vector Search**
+>
+> **What it is:** A newer class of vector database (Turbopuffer, AWS S3 Vectors) stores vectors directly on object storage like S3, with a memory/SSD cache in front, instead of keeping the whole index resident in RAM on dedicated machines.
+>
+> **Why it's picked over the others:** Object storage is dramatically cheaper than provisioned RAM or SSD, and this architecture scales to zero when idle — you're not paying for a warm cluster sized for peak load 24/7. Reported production numbers back this up: one company cut vector search costs by 95% after migrating.
+>
+> **Where it's used:** Companies with large, spiky, or cost-sensitive workloads — reported production users include Cursor, Notion, and several other AI-native products — pick this over a self-hosted cluster specifically to avoid paying for idle capacity. Traditional self-hosted databases (Qdrant, Weaviate, Milvus) still win when you need the lowest possible latency or full control over the index. *(Source: [turbopuffer — fast search engine built on object storage](https://turbopuffer.com/))*
+
+---
+
+## Scaling and Cost
+
+Once one machine isn't enough, there are two different problems to solve, and it's easy to mix them up: **sharding** splits your data across multiple machines so each one holds less, and **replication** copies the same data onto multiple machines so losing one doesn't lose your data.
+
+**Sharding — splitting the data up:**
+
+| Strategy | How it splits data |
+|---|---|
+| By tenant | Each customer/user's vectors on their own shard — clean isolation |
+| By hash | Spreads data out evenly, so no single shard gets overloaded |
+| By time | Recent data on fast shards, older data moved somewhere cheaper |
+
+**Replication — copying the data for safety:** this is a separate setting from sharding, and it exists purely so one machine going down doesn't take your database with it. Qdrant and Weaviate both have a simple `replication_factor` setting for this — set it to 2 and every piece of data lives on two machines instead of one.
+
+Rough monthly costs, just to set expectations (real pricing depends on usage and any negotiated deal):
+
+| Option | Small collection | Production scale |
+|---|---|---|
+| Self-hosted Qdrant | ~$30 (4GB instance) | ~$300 (64GB instance) |
+| Qdrant Cloud | ~$25 | ~$500 |
+| Pinecone | ~$70 (1 pod) | ~$500+ (custom) |
+| Weaviate Cloud | Free tier available | ~$500 (custom) |
+| Turbopuffer | Pay-per-use, no minimum | Scales with usage — reported ~10x cheaper than the options above at high volume |
+
+Turbopuffer's pricing works differently from the rest of this table on purpose: instead of paying for a fixed-size instance whether you use it or not, you pay for the storage and queries you actually make, because it keeps the data on cheap object storage (like S3) instead of an always-on server. That's why it doesn't fit the "small vs. production" split the same way — a quiet collection costs close to nothing, and a busy one scales up smoothly instead of needing you to size an instance in advance.
+
+The single biggest cost lever, though, is quantization, not which vendor you pick — a 4–64x storage reduction (see the table earlier in this lesson) is often the difference between needing a 64GB instance and a 4GB one, which matters more than any pricing-tier negotiation.
+
+---
+
+## Monitoring
+
+| Metric | Type | Why it matters |
+|---|---|---|
+| Query latency (p50/p95/p99) | Histogram | User-facing responsiveness |
+| Vectors indexed vs. total | Gauge | Lag between ingestion and searchability |
+| Memory usage | Gauge | Headroom before the index no longer fits in RAM |
+| Search recall (sampled) | Gauge | Whether ANN parameters are still tuned correctly |
 
 ```python
-# HNSW is the most popular indexing algorithm
+info = client.get_collection("documents")
+print(info.vectors_count, info.indexed_vectors_count, info.status)
+```
 
-# Qdrant HNSW configuration
+A gap between `vectors_count` and `indexed_vectors_count` means recently-inserted vectors aren't searchable yet — worth alerting on directly if your application assumes near-real-time indexing.
+
+---
+
+## Practical Exercise
+
+Migrate a 50,000-document Chroma prototype to a production-ready Qdrant deployment.
+
+**Requirements:** metadata filtering still works · quantization is enabled to cut memory roughly in half · the deployment exposes a health check a Kubernetes readiness probe can use.
+
+Sketch your collection config before expanding the solution.
+
+<details>
+<summary><strong>Sample Solution</strong></summary>
+
+```python
+from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams
+
+client = QdrantClient(url="http://localhost:6333")
+
 client.create_collection(
-    collection_name="hnsw_collection",
-    vectors_config=VectorParams(
-        size=768,
-        distance=Distance.COSINE
-    ),
-    hnsw_config={
-        "m": 16,  # Number of connections per layer
-        "ef_construct": 100,  # Size of dynamic candidate list
-        "full_scan_threshold": 10000
-    }
+    collection_name="documents",
+    vectors_config=VectorParams(size=768, distance=Distance.COSINE),
+    quantization_config={"scalar": {"type": "int8", "quantile": 0.99, "always_ram": True}},
 )
+# int8 scalar quantization: ~4x memory reduction, minimal recall loss — appropriate
+# for a "cut memory roughly in half (or better)" requirement without a full re-architecture.
 
-# Tuning parameters:
-# m: Higher = better recall, more memory
-# ef_construct: Higher = better index quality, slower indexing
-# ef (search-time): Higher = better recall, slower search
+# Qdrant exposes GET /healthz out of the box — point the readiness probe there directly,
+# with enough initial delay for the 50K-vector collection to finish loading.
 ```
 
-### IVF (Inverted File Index)
+Metadata filtering needs no migration work here — it was payload-based in Chroma and stays payload-based in Qdrant, just re-inserted through `PointStruct.payload` instead of Chroma's `metadatas` argument.
 
-```python
-# Common in FAISS and Milvus
-import faiss
-
-# Create IVF index
-dimension = 768
-nlist = 100  # Number of clusters
-
-quantizer = faiss.IndexFlatL2(dimension)
-index = faiss.IndexIVFFlat(quantizer, dimension, nlist)
-
-# Train index
-index.train(training_vectors)
-
-# Add vectors
-index.add(vectors)
-
-# Search
-index.nprobe = 10  # Number of clusters to search
-distances, indices = index.search(query_vectors, k=10)
-```
-
-## Scaling Strategies
-
-### Horizontal Scaling
-
-```python
-class VectorDBScaling:
-    """Scaling strategies for vector databases"""
-
-    @staticmethod
-    def sharding_strategy():
-        """
-        Split data across multiple nodes
-        """
-        strategies = {
-            "by_tenant": "Shard by user/tenant ID",
-            "by_category": "Shard by metadata category",
-            "by_hash": "Hash-based sharding",
-            "by_time": "Time-based partitioning"
-        }
-        return strategies
-
-    @staticmethod
-    def replication_strategy():
-        """
-        Replicate data for high availability
-        """
-        configs = {
-            "qdrant": {
-                "replication_factor": 2,
-                "write_consistency_factor": 1
-            },
-            "weaviate": {
-                "replicationFactor": 2
-            }
-        }
-        return configs
-```
-
-### Performance Optimization
-
-```python
-optimization_techniques = {
-    "indexing": {
-        "hnsw_tuning": "Adjust m and ef_construct",
-        "quantization": "Use scalar or product quantization",
-        "filtering": "Use payload indexes for metadata"
-    },
-    "search": {
-        "batch_queries": "Process multiple queries together",
-        "ef_tuning": "Adjust search-time ef parameter",
-        "result_caching": "Cache frequent queries"
-    },
-    "storage": {
-        "quantization": "Reduce memory footprint",
-        "mmap": "Use memory-mapped files",
-        "compression": "Compress stored data"
-    }
-}
-```
-
-## Monitoring and Performance
-
-### Metrics to Track
-
-```python
-from prometheus_client import Counter, Histogram, Gauge
-
-# Vector database metrics
-VECTOR_DB_QUERIES = Counter(
-    'vector_db_queries_total',
-    'Total vector DB queries',
-    ['collection', 'status']
-)
-
-VECTOR_DB_LATENCY = Histogram(
-    'vector_db_query_duration_seconds',
-    'Query duration',
-    ['collection']
-)
-
-VECTOR_DB_SIZE = Gauge(
-    'vector_db_collection_size',
-    'Number of vectors in collection',
-    ['collection']
-)
-
-INDEX_QUALITY = Gauge(
-    'vector_db_index_quality',
-    'Index quality metrics',
-    ['collection', 'metric']
-)
-```
-
-### Qdrant Monitoring
-
-```python
-# Get collection info
-info = client.get_collection("my_collection")
-
-metrics = {
-    "vectors_count": info.vectors_count,
-    "indexed_vectors_count": info.indexed_vectors_count,
-    "points_count": info.points_count,
-    "segments_count": len(info.segments),
-    "status": info.status
-}
-
-# Monitor index quality
-for segment in info.segments:
-    print(f"Segment: {segment.segment_id}")
-    print(f"  Vectors: {segment.num_vectors}")
-    print(f"  Deleted: {segment.num_deleted_vectors}")
-```
-
-## Cost Optimization
-
-### Strategies
-
-```python
-class CostOptimization:
-    """Cost optimization for vector databases"""
-
-    @staticmethod
-    def quantization():
-        """
-        Reduce memory and storage costs
-        """
-        return {
-            "scalar_quantization": "4-8x reduction, minimal quality loss",
-            "product_quantization": "16-64x reduction, moderate quality loss",
-            "binary_quantization": "32x reduction, significant quality loss"
-        }
-
-    @staticmethod
-    def rightsizing():
-        """
-        Choose appropriate instance sizes
-        """
-        guidelines = {
-            "development": "Small instances, Chroma or single Qdrant",
-            "production_small": "1-2 nodes, moderate resources",
-            "production_large": "3+ nodes, high resources, replication"
-        }
-        return guidelines
-
-    @staticmethod
-    def caching():
-        """
-        Reduce query costs
-        """
-        return {
-            "query_caching": "Cache frequent queries",
-            "result_caching": "Cache search results",
-            "embedding_caching": "Cache embeddings"
-        }
-```
-
-### Cost Comparison
-
-```python
-monthly_cost_estimates = {
-    "qdrant_cloud": {
-        "starter": 25,  # 1GB
-        "standard": 100,  # 4GB
-        "business": 500   # 32GB
-    },
-    "pinecone": {
-        "starter": 70,   # 1 pod
-        "standard": 140,  # 2 pods
-        "enterprise": 500  # Custom
-    },
-    "self_hosted_qdrant": {
-        "small": 30,  # 4GB RAM instance
-        "medium": 100,  # 16GB RAM instance
-        "large": 300   # 64GB RAM instance
-    },
-    "weaviate_cloud": {
-        "sandbox": 0,    # Free tier
-        "standard": 100,  # Production
-        "enterprise": 500  # Custom
-    }
-}
-```
-
-## Summary
-
-Vector databases are critical infrastructure for LLM applications. Key takeaways:
-
-1. **Choose based on needs**: Qdrant for performance, Weaviate for hybrid search, Chroma for development, Pinecone for managed
-2. **Indexing matters**: HNSW for most cases, tune parameters for your workload
-3. **Scale appropriately**: Use sharding and replication for large deployments
-4. **Monitor actively**: Track query latency, index quality, and costs
-5. **Optimize costs**: Quantization, caching, and rightsizing save money
+</details>
 
 ---
 
-**Next Lesson**: [05-llm-fine-tuning-infrastructure.md](./05-llm-fine-tuning-infrastructure.md)
+## Key Takeaways
+
+1. A vector database exists because brute-force nearest-neighbor search doesn't scale — ANN indexing (HNSW, IVF, DiskANN, LSH) trades a small, tunable amount of recall for orders-of-magnitude more speed
+2. If you already run Postgres, try `pgvector` before standing up a second database — it's slower at extreme scale, but removes an entire category of ops problems by keeping embeddings in the same transactions and backups as the rest of your data
+3. Qdrant, Weaviate, Chroma, and Pinecone each occupy a different point on the same trade-off: performance and control vs. convenience and managed ops
+4. HNSW is the default index for quality; DiskANN and quantization (scalar, product, binary) are what you reach for once a collection stops fitting in RAM
+5. Deployment isn't binary — self-hosted, managed, and serverless (Turbopuffer, S3 Vectors) trade ops burden against cost shape, and pay-per-use serverless options fit spiky traffic that a fixed instance size doesn't
+6. Kubernetes deployment for a vector database means a StatefulSet with per-pod storage and explicit replication, not a stateless Deployment
+7. Scaling is two separate problems — sharding splits data across machines, replication copies it for availability — and quantization is usually the single biggest cost lever, bigger than picking a cheaper vendor tier
+8. Monitor the gap between inserted and indexed vector counts, not just query latency — it's the metric that catches silent indexing lag
+
+---
+
+## Additional Resources
+
+- [Qdrant Documentation](https://qdrant.tech/documentation/)
+- [Weaviate Documentation](https://weaviate.io/developers/weaviate)
+- [HNSW Paper](https://arxiv.org/abs/1603.09320)
+- [DiskANN Paper](https://proceedings.neurips.cc/paper/2019/hash/09853c7fb1d3f8ee67a61b6bf4a7f8e6-Abstract.html)
+- [turbopuffer: fast search built on object storage](https://turbopuffer.com/)
+- [State of Vector Databases, Q2 2026 — Actian](https://www.actian.com/blog/developer/state-of-vector-databases-q2-2026/)
+
+---
+
+**Next Lesson:** [05-llm-fine-tuning-infrastructure.md](./05-llm-fine-tuning-infrastructure.md) — LLM Fine-Tuning Infrastructure

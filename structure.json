@@ -4205,9 +4205,14 @@
                     "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/07-llm-platform-architecture.md"
                   },
                   {
-                    "name": "Lesson 08: Production LLM Best Practices",
+                    "name": "Lesson 08: LLM Infrastructure for Agentic Systems",
                     "type": "file",
-                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/08-production-llm-best-practices.md"
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/08-llm-infrastructure-for-agents.md"
+                  },
+                  {
+                    "name": "Lesson 09: Production LLM Best Practices",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/09-production-llm-best-practices.md"
                   },
                   {
                     "name": "Module 10: LLM Infrastructure",
@@ -4215,7 +4220,7 @@
                     "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/README.md"
                   },
                   {
-                    "name": "Module 10: LLM Infrastructure - Resources",
+                    "name": "Resources: LLM Infrastructure",
                     "type": "file",
                     "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/lessons/mod-10-llm-infrastructure/resources.md"
                   }
@@ -4997,6 +5002,50 @@
         ]
       },
       {
+        "name": "4. RAG & Retrieval",
+        "type": "directory",
+        "children": [
+          {
+            "name": "RAG & Retrieval",
+            "type": "file",
+            "path": "GenAI Atlas/4. RAG & Retrieval/README.md"
+          }
+        ]
+      },
+      {
+        "name": "5. Prompt Engineering",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Prompt Engineering",
+            "type": "file",
+            "path": "GenAI Atlas/5. Prompt Engineering/README.md"
+          }
+        ]
+      },
+      {
+        "name": "6. Model Landscape",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Model Landscape",
+            "type": "file",
+            "path": "GenAI Atlas/6. Model Landscape/README.md"
+          }
+        ]
+      },
+      {
+        "name": "7. Evals & Observability",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Evals & Observability",
+            "type": "file",
+            "path": "GenAI Atlas/7. Evals & Observability/README.md"
+          }
+        ]
+      },
+      {
         "name": "Agents",
         "type": "directory",
         "children": [
@@ -5178,50 +5227,6 @@
             "name": "Agents — 30-Day Agentic AI Interview Prep Path",
             "type": "file",
             "path": "GenAI Atlas/Agents/README.md"
-          }
-        ]
-      },
-      {
-        "name": "4. RAG & Retrieval",
-        "type": "directory",
-        "children": [
-          {
-            "name": "RAG & Retrieval",
-            "type": "file",
-            "path": "GenAI Atlas/4. RAG & Retrieval/README.md"
-          }
-        ]
-      },
-      {
-        "name": "5. Prompt Engineering",
-        "type": "directory",
-        "children": [
-          {
-            "name": "Prompt Engineering",
-            "type": "file",
-            "path": "GenAI Atlas/5. Prompt Engineering/README.md"
-          }
-        ]
-      },
-      {
-        "name": "6. Model Landscape",
-        "type": "directory",
-        "children": [
-          {
-            "name": "Model Landscape",
-            "type": "file",
-            "path": "GenAI Atlas/6. Model Landscape/README.md"
-          }
-        ]
-      },
-      {
-        "name": "7. Evals & Observability",
-        "type": "directory",
-        "children": [
-          {
-            "name": "Evals & Observability",
-            "type": "file",
-            "path": "GenAI Atlas/7. Evals & Observability/README.md"
           }
         ]
       },
