@@ -1,0 +1,41 @@
+/* InferenceStack logo animation.
+   Load: the stack assembles, each layer's halves sliding in around the chevron, top to bottom.
+   Hover: a pulse passes through the layers in order, like a forward pass. */
+.logo-mark .lm-l,
+.logo-mark .lm-r {
+    transform-box: fill-box;
+    animation: lm-in-l 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--i) * 110ms);
+}
+
+.logo-mark .lm-r {
+    animation-name: lm-in-r;
+}
+
+@keyframes lm-in-l {
+    from { opacity: 0; transform: translateX(-16px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes lm-in-r {
+    from { opacity: 0; transform: translateX(16px); }
+    to { opacity: 1; transform: none; }
+}
+
+.logo-home:hover .logo-mark .lm-row {
+    animation: lm-pulse 0.55s ease-in-out both;
+    animation-delay: calc(var(--i) * 90ms);
+}
+
+@keyframes lm-pulse {
+    0%, 100% { opacity: 1; }
+    45% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logo-mark .lm-l,
+    .logo-mark .lm-r,
+    .logo-home:hover .logo-mark .lm-row {
+        animation: none;
+    }
+}

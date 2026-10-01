@@ -4,8 +4,11 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>ML Nexus Hub - ML & GenAI Infrastructure playground</title>
-    <link rel="icon" type="image/png" href="favicon.png" />
+    <title>InferenceStack - A hands-on path from zero to production for AI infrastructure</title>
+    <link rel="icon" href="assets/icons/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="assets/icons/site.webmanifest" />
     <meta name="description"
         content="A premium interactive index and resource hub for machine learning systems, project scaffolds, and infrastructure engineering modules." />
     <meta name="theme-color" content="#faf9fa" media="(prefers-color-scheme: light)" />
@@ -13,12 +16,12 @@
 
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="ML Nexus Hub - ML & GenAI Infrastructure playground" />
+    <meta property="og:title" content="InferenceStack - A hands-on path from zero to production for AI infrastructure" />
     <meta property="og:description"
         content="A structured, hands-on path from zero to production — covering Docker, Kubernetes, GPU systems, model serving, and GenAI pipelines. Free, no paywalls." />
     <meta property="og:image" content="https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/logo.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ML Nexus Hub - ML & GenAI Infrastructure playground" />
+    <meta name="twitter:title" content="InferenceStack - A hands-on path from zero to production for AI infrastructure" />
     <meta name="twitter:description"
         content="A structured, hands-on path from zero to production — covering Docker, Kubernetes, GPU systems, model serving, and GenAI pipelines. Free, no paywalls." />
     <meta name="twitter:image" content="https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/logo.png" />
@@ -127,6 +130,7 @@
 
     <!-- Custom CSS variables & Premium Styles -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/logo.css">
 </head>
 
 <body class="bg-background text-on-surface overflow-x-hidden min-h-screen flex flex-col pt-16 animate-fade-in">
@@ -162,7 +166,14 @@
             <button id="menu-toggle-btn"
                 class="md:hidden text-on-surface-variant hover:text-primary transition-colors material-symbols-outlined">menu</button>
             <span onclick="goHome()"
-                class="font-display text-2xl font-bold text-primary tracking-tight cursor-pointer">ML Nexus Hub</span>
+                class="logo-home flex items-center gap-2 font-display text-2xl font-bold text-primary tracking-tight cursor-pointer">
+                <svg class="logo-mark w-8 h-8 shrink-0" viewBox="0 0 256 256" fill="currentColor" role="img"
+                    aria-label="InferenceStack logo" xmlns="http://www.w3.org/2000/svg">
+                    <g class="lm-row" style="--i:0"><path class="lm-l" d="M40 44H82L134 96H40Z" /><path class="lm-r" d="M102 44H216V96H154Z" /></g>
+                    <g class="lm-row" style="--i:1"><path class="lm-l" d="M40 102H140L166 128 140 154H40Z" /><path class="lm-r" d="M160 102H216V154H160L186 128Z" /></g>
+                    <g class="lm-row" style="--i:2"><path class="lm-l" d="M40 160H134L82 212H40Z" /><path class="lm-r" d="M154 160H216V212H102Z" /></g>
+                </svg>
+                InferenceStack</span>
         </div>
 
         <!-- Live Search Bar -->
@@ -972,7 +983,7 @@
                     <div class="text-center mb-12">
                         <h2 class="text-4xl font-headline font-bold mb-4">Learn With Me</h2>
                         <p class="font-body text-on-surface-variant text-lg max-w-2xl mx-auto leading-relaxed text-balance">
-                            ML Nexus is what I wish I'd had while learning AI infrastructure — free, <span class="whitespace-nowrap">hands-on</span>, and
+                            InferenceStack is what I wish I'd had while learning AI infrastructure — free, <span class="whitespace-nowrap">hands-on</span>, and
                             written for people who want to build, not just read.
                         </p>
                     </div>

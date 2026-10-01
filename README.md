@@ -1,6 +1,6 @@
-# ML Nexus: The ML & Generative AI Infrastructure Playground
+# InferenceStack: A Hands-On Path to AI Infrastructure
 
-Welcome to **ML Nexus**—a curated, open-source repository designed to help you survive and thrive in the wild worlds of Machine Learning, MLOps, and Generative AI.
+Welcome to **InferenceStack**—a curated, open-source repository designed to help you survive and thrive in the wild worlds of Machine Learning, MLOps, and Generative AI.
 
 Most ML resources out there are either purely theoretical (which won't help you when your Kubernetes pod is in a crash loop at 3 AM) or locked behind absurd paywalls. I built this repo by collaborating with AI assistants and burning real API tokens to synthesize, structure, and share deep infrastructure knowledge.
 
