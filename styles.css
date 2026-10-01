@@ -666,6 +666,7 @@
         .mag-lens {
             display: none;
             position: fixed;
+            box-sizing: border-box; /* 180px total, matches LENS_SIZE / LENS_BORDER in app.js */
             width: 180px;
             height: 180px;
             border-radius: 50%;
@@ -706,15 +707,22 @@
             margin: 1.5em 0;
         }
 
-        /* Make images & mermaid diagrams show a zoom cursor hint */
+        /* Make images & mermaid diagrams show a zoom cursor hint. The native cursor is only
+           hidden (the lens acts as the cursor) while the lens is actually visible, so a
+           lens that fails to show can never leave the user with no cursor at all. There is
+           deliberately no hover transform: scaling the element would shift its bounding box
+           under the lens and make the magnified view jitter. */
         .markdown-body img,
         .markdown-body .mermaid svg {
+            cursor: zoom-in;
+            transition: box-shadow 0.2s ease;
+        }
+        body.mag-on .markdown-body img,
+        body.mag-on .markdown-body .mermaid svg {
             cursor: none;
-            transition: transform 0.2s ease;
         }
         .markdown-body img:hover,
         .markdown-body .mermaid:hover svg {
-            transform: scale(1.015);
             box-shadow: 0 4px 20px color-mix(in srgb, var(--color-primary) 18%, transparent);
         }
 

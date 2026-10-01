@@ -1524,29 +1524,37 @@ function addCopyButtons() {
     });
 }
 
-// ── Zoom Lightbox for Images & Mermaid Diagrams ──
-// initZoomLightbox() is called again after every lesson navigation (to bind the
-// magnifier to that page's images/diagrams), so the one-time page-chrome listeners
-// (close button, wheel zoom, drag-to-pan, Escape) are guarded to attach only once —
-// otherwise they'd pile up and fire multiple times per action after a few navigations.
+// ── Zoom Lightbox & Magnifier for Images & Mermaid Diagrams ──
+// initZoomLightbox() is called after every lesson navigation, but everything here is
+// event-delegated from `document`, so it only needs to be wired up ONCE for the whole
+// session. Delegation matters for two reasons:
+//   1. It works for whatever is on screen right now — including Mermaid diagrams that
+//      finish rendering late or get re-rendered in place (theme toggle) — with no
+//      per-element listeners to lose, duplicate, or leave dangling.
+//   2. The lens is fully stateless: every mouse move (and every scroll) re-checks what is
+//      under the pointer and shows or hides the lens accordingly, so it cannot get stuck
+//      on screen after the hovered element moves, changes, or disappears.
 let zoomLightboxGlobalInitialized = false;
+let zoomHideLens = () => {};
 
 function initZoomLightbox() {
+    // Repeat calls (one per navigation) just make sure no lens survives the page swap.
+    zoomHideLens();
+    if (zoomLightboxGlobalInitialized) return;
+    zoomLightboxGlobalInitialized = true;
+
     const lightbox = document.getElementById('zoom-lightbox');
     const contentWrap = document.getElementById('zoom-lightbox-content');
     const zoomLevel = document.getElementById('zoom-level');
     const magLens = document.getElementById('mag-lens');
+    const markdownRoot = document.getElementById('markdown-content');
     const MAG_SCALE = 2.5;
     const LENS_SIZE = 180;
+    const LENS_BORDER = 3; // keep in sync with .mag-lens border in styles.css
     let scale = 1, translateX = 0, translateY = 0;
     let isDragging = false, startX = 0, startY = 0;
 
-    // #mag-lens lives outside #markdown-content, so it survives lesson navigation.
-    // If the mouse was hovering a diagram when the page navigated away, the hovered
-    // element got wiped by innerHTML replacement without ever firing 'mouseleave',
-    // leaving the lens stuck active. Reset it defensively on every (re)init.
-    magLens.classList.remove('active');
-
+    // ── Lightbox ──
     function applyTransform() {
         contentWrap.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
         zoomLevel.textContent = Math.round(scale * 100) + '%';
@@ -1572,13 +1580,21 @@ function initZoomLightbox() {
         document.body.style.overflow = '';
     }
 
-    // ── Magnifier: convert element to image URL for background ──
+    // ── Magnifier ──
+    // The zoomable thing under a given event target: an <img>, or the outermost <svg> of a
+    // Mermaid diagram (not a nested icon <svg> inside it).
+    function zoomableAt(target) {
+        if (!target || !target.closest) return null;
+        const img = target.closest('#markdown-content img');
+        if (img) return img;
+        const diagram = target.closest('#markdown-content .mermaid');
+        return diagram ? diagram.querySelector('svg') : null;
+    }
+
     function getImageURL(el) {
-        if (el.tagName === 'IMG') return el.src;
-        // For SVG (mermaid), serialize to data URL
-        const svgEl = el.tagName === 'svg' ? el : el.querySelector('svg');
-        if (!svgEl) return null;
-        const clone = svgEl.cloneNode(true);
+        if (el.tagName === 'IMG') return el.currentSrc || el.src;
+        // Mermaid SVG: serialize to a data URL the lens can use as a background image
+        const clone = el.cloneNode(true);
         clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
         // Inject current theme's text color into the SVG so it is preserved in the data URL image
@@ -1593,78 +1609,84 @@ function initZoomLightbox() {
         return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
     }
 
-    // ── Attach magnifier to each zoomable element ──
-    function attachMagnifier(el) {
-        let imgURL = null;
-        let naturalW = 0, naturalH = 0;
+    let hoverEl = null;      // element the lens is currently magnifying
+    let lensURL = null;      // its image URL (recomputed only when the hovered element changes)
+    let appliedURL = null;   // URL currently set as the lens background
+    let lastX = 0, lastY = 0;
 
-        el.addEventListener('mouseenter', () => {
-            imgURL = getImageURL(el);
-            if (!imgURL) return;
-            // Get rendered size
-            const rect = el.getBoundingClientRect();
-            naturalW = rect.width;
-            naturalH = rect.height;
-            magLens.style.backgroundImage = `url("${imgURL}")`;
-            magLens.style.backgroundSize = `${naturalW * MAG_SCALE}px ${naturalH * MAG_SCALE}px`;
-            magLens.classList.add('active');
-        });
+    function hideLens() {
+        magLens.classList.remove('active');
+        document.body.classList.remove('mag-on');
+        hoverEl = null;
+        lensURL = null;
+    }
+    zoomHideLens = hideLens;
 
-        el.addEventListener('mousemove', (e) => {
-            if (!imgURL) return;
-            const rect = el.getBoundingClientRect();
-            // Cursor position relative to the element (0-1)
-            const ratioX = (e.clientX - rect.left) / rect.width;
-            const ratioY = (e.clientY - rect.top) / rect.height;
-            // Background position so the cursor area is centered in the lens
-            const bgX = ratioX * naturalW * MAG_SCALE - LENS_SIZE / 2;
-            const bgY = ratioY * naturalH * MAG_SCALE - LENS_SIZE / 2;
-            magLens.style.backgroundPosition = `-${bgX}px -${bgY}px`;
-            // Position the lens near the cursor
-            magLens.style.left = `${e.clientX - LENS_SIZE / 2}px`;
-            magLens.style.top = `${e.clientY - LENS_SIZE / 2}px`;
-        });
+    // Show/move/hide the lens for a pointer at (x, y) whose event target is `target`.
+    function syncLens(x, y, target) {
+        const el = zoomableAt(target);
+        if (!el) { hideLens(); return; }
 
-        el.addEventListener('mouseleave', () => {
-            magLens.classList.remove('active');
-            imgURL = null;
-        });
+        if (el !== hoverEl) {
+            hoverEl = el;
+            lensURL = getImageURL(el);
+        }
+        if (!lensURL) { hideLens(); return; }
 
-        // Click opens the full lightbox
-        el.addEventListener('click', (e) => {
-            e.stopPropagation();
-            magLens.classList.remove('active');
-            openLightbox(el);
-        });
+        const rect = el.getBoundingClientRect();
+        if (!rect.width || !rect.height) { hideLens(); return; }
+
+        if (appliedURL !== lensURL) {
+            magLens.style.backgroundImage = `url("${lensURL}")`;
+            appliedURL = lensURL;
+        }
+        magLens.style.backgroundSize = `${rect.width * MAG_SCALE}px ${rect.height * MAG_SCALE}px`;
+
+        // Offset of the background so the point under the cursor sits at the lens center.
+        // These offsets are routinely NEGATIVE (cursor within ~36px of the top/left edge —
+        // which is most of the area of a small diagram), so they must be interpolated as
+        // signed numbers. Writing `-${bgX}px` produced the invalid value `--45px`, which the
+        // browser silently rejects, freezing the lens content in place.
+        const centerOffset = (LENS_SIZE - LENS_BORDER * 2) / 2;
+        const bgX = (x - rect.left) * MAG_SCALE - centerOffset;
+        const bgY = (y - rect.top) * MAG_SCALE - centerOffset;
+        magLens.style.backgroundPosition = `${-bgX}px ${-bgY}px`;
+
+        magLens.style.left = `${x - LENS_SIZE / 2}px`;
+        magLens.style.top = `${y - LENS_SIZE / 2}px`;
+        magLens.classList.add('active');
+        document.body.classList.add('mag-on');
     }
 
-    // Attach to all images
-    document.querySelectorAll('#markdown-content img').forEach(img => attachMagnifier(img));
-    // Attach to all mermaid SVGs
-    document.querySelectorAll('#markdown-content .mermaid svg').forEach(svg => {
-        svg.style.cursor = 'none';
-        attachMagnifier(svg);
-    });
-
-    // ── Self-healing watchdog ──
-    // Catches every other way the lens can be left stuck: Mermaid re-rendering a
-    // diagram in place (e.g. on theme toggle), the mouse leaving the browser window
-    // entirely, or any future DOM-swap that removes a hovered element without firing
-    // 'mouseleave'. Runs continuously but is a no-op unless the lens is visible.
     document.addEventListener('mousemove', (e) => {
-        if (!magLens.classList.contains('active')) return;
-        const overZoomable = e.target.closest && e.target.closest('#markdown-content img, #markdown-content .mermaid svg');
-        if (!overZoomable) magLens.classList.remove('active');
-    });
-    document.addEventListener('mouseleave', () => magLens.classList.remove('active'));
+        lastX = e.clientX; lastY = e.clientY;
+        syncLens(e.clientX, e.clientY, e.target);
+    }, { passive: true });
 
-    // The page chrome below (close button, Escape, zoom buttons, wheel, drag-to-pan)
-    // targets elements that live outside #markdown-content and are never recreated,
-    // so it only needs to be wired up once across the whole session.
-    if (zoomLightboxGlobalInitialized) return;
-    zoomLightboxGlobalInitialized = true;
+    // Scrolling moves content under a stationary cursor without firing mousemove, which
+    // used to strand the lens over the wrong spot. Re-check what is under the pointer.
+    // (capture = true so scrolls of inner scroll containers are caught too)
+    document.addEventListener('scroll', () => {
+        if (!hoverEl) return;
+        syncLens(lastX, lastY, document.elementFromPoint(lastX, lastY));
+    }, { passive: true, capture: true });
 
-    // Close lightbox
+    // Pointer left the browser window / window lost focus: no more mousemoves will arrive.
+    document.addEventListener('mouseout', (e) => { if (!e.relatedTarget) hideLens(); });
+    window.addEventListener('blur', hideLens);
+
+    // Click on an image/diagram opens the full lightbox. Capture phase on the content root
+    // so it runs before (and stops) the SPA link-interceptor, same as the old per-element
+    // click handler that called stopPropagation().
+    markdownRoot.addEventListener('click', (e) => {
+        const el = zoomableAt(e.target);
+        if (!el) return;
+        e.stopPropagation();
+        hideLens();
+        openLightbox(el);
+    }, true);
+
+    // ── Lightbox chrome ──
     document.getElementById('zoom-close').addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
@@ -2371,6 +2393,8 @@ async function loadFile(filePath) {
             // replacement below removes it without firing 'mouseleave' — hide the
             // magnifier lens immediately rather than leaving it stuck on screen.
             document.getElementById('mag-lens')?.classList.remove('active');
+            document.body.classList.remove('mag-on');
+            zoomHideLens();
             markdownContentDiv.innerHTML = parsedHtml;
 
             // Convert mermaid code blocks into renderable <pre class="mermaid"> elements
