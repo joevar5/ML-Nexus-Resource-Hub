@@ -11,6 +11,28 @@
     ]
   },
   {
+    "name": ".impeccable",
+    "type": "directory",
+    "children": [
+      {
+        "name": "critique",
+        "type": "directory",
+        "children": [
+          {
+            "name": "Critique: About page (#about, index.html lines 766-1158)",
+            "type": "file",
+            "path": ".impeccable/critique/2026-09-28T03-34-58Z__index-html.md"
+          }
+        ]
+      },
+      {
+        "name": "hook.cache.json",
+        "type": "file",
+        "path": ".impeccable/hook.cache.json"
+      }
+    ]
+  },
+  {
     "name": ".playwright-cli",
     "type": "directory",
     "children": [
