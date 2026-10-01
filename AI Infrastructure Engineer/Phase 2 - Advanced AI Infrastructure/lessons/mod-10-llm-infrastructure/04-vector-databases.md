@@ -89,16 +89,20 @@ For most new projects, the honest default is: if you already run Postgres, try `
 
 ## Vector Indexing and Quantization
 
+Every database in the table above picks from the same small set of ANN algorithms under the hood — the choice of index is what actually determines your speed/memory/recall trade-off, more than which vendor's name is on the box. Four algorithms cover nearly every production system, and once an index stops fitting comfortably in RAM, quantization is the other lever: it shrinks how much space each vector takes up, independent of which indexing algorithm you're running.
+
 | Algorithm | Idea | Trade-off |
 |---|---|---|
-| **HNSW** | Multi-layer graph of nearest neighbors | Fastest queries, most memory-hungry — the default in most databases |
-| **IVF** | Cluster vectors, search only the nearest clusters | Lower memory than HNSW, needs a training pass |
-| **DiskANN** | Graph index designed to live on SSD, not RAM | Handles billions of vectors on far less RAM, slightly higher latency |
-| **LSH** | Hash similar vectors into the same buckets | Simple, fast to build, generally lower recall than the above |
+| **HNSW** (Hierarchical Navigable Small World) | Multi-layer graph of nearest neighbors | Fastest queries, most memory-hungry — the default in most databases |
+| **IVF** (Inverted File Index) | Cluster vectors, search only the nearest clusters | Lower memory than HNSW, needs a training pass |
+| **DiskANN** (Disk-based Approximate Nearest Neighbor) | Graph index designed to live on SSD, not RAM | Handles billions of vectors on far less RAM, slightly higher latency |
+| **LSH** (Locality-Sensitive Hashing) | Hash similar vectors into the same buckets | Simple, fast to build, generally lower recall than the above |
 
 ### The Four Algorithms, Visually
 
 The quickest way to keep these straight: each one answers "where do I even look?" differently.
+
+**HNSW — a graph.** Hop from neighbor to neighbor, each hop getting closer to the query, until you can't get any closer.
 
 ```mermaid
 flowchart LR
@@ -111,7 +115,7 @@ flowchart LR
     class A,B,C,D,E node
 ```
 
-**HNSW — a graph.** Hop from neighbor to neighbor, each hop getting closer to the query, until you can't get any closer.
+**IVF — clusters.** Group vectors into clusters ahead of time; at query time, find the right cluster(s) first and only search inside those.
 
 ```mermaid
 flowchart LR
@@ -131,7 +135,7 @@ flowchart LR
     class A1,A2,A3,B1,B2,B3 pt
 ```
 
-**IVF — clusters.** Group vectors into clusters ahead of time; at query time, find the right cluster(s) first and only search inside those.
+**DiskANN — a graph too big for RAM.** Same graph idea as HNSW, but it lives on SSD instead, with only a small piece kept in memory — trading a little latency for a lot less RAM.
 
 ```mermaid
 flowchart TB
@@ -146,7 +150,7 @@ flowchart TB
     class Cand out
 ```
 
-**DiskANN — a graph too big for RAM.** Same graph idea as HNSW, but it lives on SSD instead, with only a small piece kept in memory — trading a little latency for a lot less RAM.
+**LSH — buckets.** Hash similar vectors so they land in the same bucket; at query time, hash the query and only check that bucket.
 
 ```mermaid
 flowchart LR
@@ -162,8 +166,6 @@ flowchart LR
     class H proc
     class B1,B2,B3 out
 ```
-
-**LSH — buckets.** Hash similar vectors so they land in the same bucket; at query time, hash the query and only check that bucket.
 
 HNSW is the one you'll tune most often, and it comes down to three knobs: `m` (connections per node — higher means better recall, more memory), `ef_construct` (candidate list size while building — higher means a better index, slower to build), and `ef` (the same idea, but set per-query at search time — higher means better recall, slower search). The full config is shown in [Qdrant in Practice](#qdrant-in-practice) below.
 
