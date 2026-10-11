@@ -1,6 +1,6 @@
 # Project Assessment Rubric
 
-This rubric is used to evaluate project submissions across all three projects.
+This rubric is used to evaluate project submissions across all six Phase 2 projects (101 to 106).
 
 ---
 
@@ -269,3 +269,18 @@ This rubric is used to evaluate project submissions across all three projects.
 
 **Evaluator:** ________________
 **Date:** ________________
+
+---
+
+## LLM Project Add-On (Projects 101 to 106)
+
+Score these in addition to the categories above. Each is pass/needs-work, and every claim needs a link or number.
+
+| Criterion | Evidence required |
+|---|---|
+| **Baseline and held-out eval** | A baseline score and a result on data the model never saw, in a table in the README |
+| **Reproducible numbers** | Metrics match the linked W&B or MLflow run, and the README says how to rerun |
+| **Failure analysis** | Wrong answers grouped by type, with one fix and its measured effect |
+| **Cost and latency stated** | TTFT, TPOT, and cost per million tokens (or per 1,000 queries) |
+| **Guardrails** | Inputs and outputs validated, with write or unsafe actions blocked where relevant |
+| **Public artifacts** | Links to the Kaggle notebook, Hugging Face model or dataset, and W&B project, with no secrets exposed |
