@@ -12,6 +12,7 @@ log = logging.getLogger(__name__)
 
 DATASET = "b-mc2/sql-create-context"
 REVISION = "9d80a6a118b838d9defc3798d659a54a2ac2ff37"  # pinned: a changed upstream dataset must not silently change results
+FIELDS = ("question", "context", "answer")  # fixed order: column order from the loader differs between machines
 OUT_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
@@ -50,7 +51,7 @@ def save(train: Dataset, test: Dataset, out_dir: Path = OUT_DIR) -> dict:
     manifest = {"dataset": DATASET, "revision": REVISION}
     for name, d in (("train", train), ("test", test)):
         path = out_dir / f"{name}.jsonl"
-        path.write_text("".join(json.dumps(r) + "\n" for r in d))
+        path.write_text("".join(json.dumps({k: r[k] for k in FIELDS}) + "\n" for r in d))
         manifest[name] = {"rows": len(d), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
     return manifest

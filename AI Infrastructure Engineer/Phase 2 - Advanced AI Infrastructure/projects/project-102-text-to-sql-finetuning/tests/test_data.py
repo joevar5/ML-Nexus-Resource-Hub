@@ -1,7 +1,9 @@
 import pytest
 from datasets import Dataset
 
-from src.data import dedupe_by_question, split
+import json
+
+from src.data import FIELDS, dedupe_by_question, save, split
 
 
 def make(n, dupes=0):
@@ -33,3 +35,12 @@ def test_different_seed_gives_different_split():
 def test_bad_test_size_rejected(n_test):
     with pytest.raises(ValueError):
         split(make(100), n_test, 1)
+
+
+def test_save_checksum_ignores_column_order(tmp_path):
+    a = Dataset.from_list([{"answer": "a", "question": "q", "context": "c"}])
+    b = Dataset.from_list([{"question": "q", "context": "c", "answer": "a"}])
+    ma = save(a, a, tmp_path / "a")
+    mb = save(b, b, tmp_path / "b")
+    assert ma["train"]["sha256"] == mb["train"]["sha256"]
+    assert list(json.loads((tmp_path / "a" / "train.jsonl").read_text().splitlines()[0])) == list(FIELDS)
