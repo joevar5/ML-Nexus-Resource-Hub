@@ -38,6 +38,9 @@ Work one phase at a time, with a check at the end of each. Tick a box only when 
   - [x] 1.2 Dedupe and split into train and test
   - [x] 1.3 Write `run_sql` and test it
 - [ ] **Phase 2:** baseline
+  - [x] 2.1 `src/prompt.py`: one prompt format and an SQL extractor
+  - [x] 2.2 `src/eval.py`: score a model on the 200 test questions
+  - [ ] 2.3 Pick a small Qwen coder model and run the baseline on Kaggle
 - [ ] **Phase 3:** train
 - [ ] **Phase 4:** evaluate and fix
 - [ ] **Phase 5:** guardrails
