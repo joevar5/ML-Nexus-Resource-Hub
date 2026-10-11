@@ -1,89 +1,129 @@
-# Exercise 05: Fine-Tuning at Scale (LoRA + QLoRA + Distributed)
+# Exercise 05: Fine-Tuning at Scale (LoRA, QLoRA, Multi-GPU)
 
 **Duration:** 4 hours
 **Difficulty:** Advanced
-**Prerequisites:** Lab 04 (LoRA basics); multi-GPU setup
+**Prerequisites:** [Lab 04](../../labs/lab-04-lora-finetune.md) and [Lesson 05: LLM Fine-Tuning Infrastructure](../../05-llm-fine-tuning-infrastructure.md)
+**Hardware:** 1 GPU with 24 GB for Steps 1–2, 2 or more GPUs for Step 3
 
-## Objective
+**Start here:** do [Project 104: LLM Fine-Tuning](../../../../projects/project-102-text-to-sql-finetuning/) first. This exercise is its Part 2.
 
-Scale a fine-tuning workflow from single-GPU LoRA to multi-GPU QLoRA on a 13B model. Track experiments, save adapters, serve via vLLM with LoRA hot-swap.
+## Goal
 
-## Requirements
+Take one fine-tuning job from a small model on one GPU to a bigger model on one GPU (QLoRA), then to several GPUs. Track every run, and serve the finished adapter with vLLM.
 
-1. Train LoRA on 1 GPU (baseline).
-2. Train QLoRA (4-bit) on 1 GPU for a larger model.
-3. Multi-GPU DDP for an even larger model.
-4. Adapter checkpoints managed via MLflow.
-5. Serve trained adapter via vLLM `--enable-lora`.
+## Why it matters
 
-## Step-by-step
+Most fine-tuning starts small and then hits a wall: the model you want does not fit, or training takes too long. Each fix (4-bit loading, sharding across GPUs) has its own failure modes. Doing all three once, on the same task, shows you which one to reach for.
 
-### Step 1 — Single-GPU LoRA baseline (45 min)
-Per lab 04. Pick a 3B-7B model (Phi-3-mini or Llama-3.2-3B). Use ~500 instruction examples.
+## Before you start
 
-### Step 2 — QLoRA for 13B (60 min)
+Keep the task, data, and eval set the same in every step. Use the ones from Project 104, or about 500–2,000 instruction examples of your own. Hold out an eval set and score the base model first. Without that baseline you cannot tell whether any run helped.
+
+Pick models by size, not by name, because model names change. Look for a current open model near each size on Hugging Face:
+
+| Step | Model size | Example families |
+|---|---|---|
+| 1 | 3B–8B | Llama 3.x, Qwen 2.5/3, Phi |
+| 2 | 13B–14B | Qwen 2.5 14B, or the closest current model |
+| 3 | 30B+ | Whatever fits your GPU count with sharding |
+
+## Steps
+
+### Step 1: LoRA on one GPU, the baseline (45 min)
+
+Train a LoRA adapter on the 3B–8B model, following Lab 04. Log training time, peak GPU memory (`torch.cuda.max_memory_allocated()`), tokens per second, and the eval score.
+
+### Step 2: QLoRA on a bigger model (60 min)
+
+Load the 13B–14B model in 4-bit and train a LoRA adapter on top of it.
+
 ```python
-from transformers import BitsAndBytesConfig
-bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
-                          bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_use_double_quant=True)
-model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3-13B-Instruct",
-                                              quantization_config=bnb, device_map="auto")
-```
-13B model in 4-bit fits in ~10 GB VRAM (vs ~26 GB fp16). Now trainable on a single 24GB consumer GPU.
+import torch
+from transformers import AutoModelForCausalLM, BitsAndBytesConfig
 
-### Step 3 — DDP across 2-4 GPUs (60 min)
+bnb = BitsAndBytesConfig(
+    load_in_4bit=True, bnb_4bit_quant_type="nf4",
+    bnb_4bit_use_double_quant=True, bnb_4bit_compute_dtype=torch.bfloat16,
+)
+model = AutoModelForCausalLM.from_pretrained(MODEL, quantization_config=bnb, device_map="auto")
+```
+
+4-bit weights take roughly a quarter of the memory of 16-bit ones, so a 14B model's weights drop from about 28 GB to about 8–10 GB. Training memory is higher than that, because of activations and optimizer state. Turn on gradient checkpointing and measure your real peak.
+
+Compare with Step 1: how much slower is a step, and how much better is the eval score?
+
+### Step 3: Train across several GPUs (60 min)
+
+Plain data parallelism (DDP) gives every GPU a full copy of the model. It makes training faster, but it does not make a bigger model fit. To fit a bigger model, you shard the model and optimizer state across GPUs with FSDP or DeepSpeed ZeRO (see Step 6 of the lesson).
+
+Use the Hugging Face `Trainer` and let `accelerate` handle the launch. You do not need to write the training loop by hand.
+
 ```bash
-accelerate config    # configure for multi-GPU
-accelerate launch finetune.py
+accelerate config            # choose multi-GPU, then FSDP or DeepSpeed
+accelerate launch train.py
 ```
-Use HuggingFace `accelerate`:
+
+Run it twice and compare:
+
+1. **DDP** on the Step 1 model. Check that throughput grows roughly with the number of GPUs.
+2. **FSDP or DeepSpeed ZeRO-3** on a model that did not fit in Step 2's setup. Check per-GPU memory.
+
+### Step 4: Track every run in MLflow (15 min)
+
 ```python
-from accelerate import Accelerator
-accelerator = Accelerator()
-model, opt, train_loader = accelerator.prepare(model, opt, train_loader)
-for batch in train_loader:
-    with accelerator.accumulate(model):
-        loss = model(**batch).loss
-        accelerator.backward(loss)
-        opt.step(); opt.zero_grad()
-```
-Scales near-linearly across GPUs.
+import mlflow
 
-### Step 4 — Track in MLflow (15 min)
-```python
-mlflow.log_params({"base_model": "Llama-3-13B", "lora_r": 16, "lora_alpha": 32, "batch_size": 2})
-mlflow.log_metric("train_loss", loss, step=global_step)
-mlflow.log_artifact("./adapter/")    # at end of training
+mlflow.set_experiment("finetune-at-scale")
+with mlflow.start_run(run_name="qlora-14b"):
+    mlflow.log_params({"base_model": MODEL, "method": "qlora", "lora_r": 16, "lora_alpha": 32,
+                       "effective_batch": 16})
+    # the Trainer can also log loss for you with report_to="mlflow"
+    mlflow.log_metric("eval_exact_match", score)
+    mlflow.log_artifacts("./adapter", artifact_path="adapter")
 ```
 
-### Step 5 — Adapter promotion (15 min)
-Register the adapter directory in MLflow Model Registry. Promote to Staging based on eval set perplexity.
+Add the training time, peak memory, and GPU type to each run, so you can compare cost, not just quality.
 
-### Step 6 — Serve via vLLM (30 min)
+### Step 5: Register and promote an adapter (15 min)
+
+Register the best adapter in the MLflow Model Registry. Promote it based on your eval score on the held-out set. Use aliases such as `staging` and `production`, because MLflow's older fixed "stages" are being phased out in favor of aliases.
+
+Eval loss is a weak signal for this. Use your task metric (exact match, rubric, or judge score) and compare it with the base model.
+
+### Step 6: Serve the adapter with vLLM (30 min)
+
 ```bash
-vllm serve meta-llama/Llama-3-13B-Instruct \
-  --enable-lora \
-  --lora-modules my-adapter=/path/to/adapter \
-  --max-loras 4
+vllm serve BASE_MODEL --enable-lora \
+  --lora-modules my-adapter=/path/to/adapter --max-loras 4
 ```
+
 ```python
-client.chat.completions.create(model="my-adapter", messages=[...])
+client.chat.completions.create(model="my-adapter", messages=[...])   # your adapter
+client.chat.completions.create(model="BASE_MODEL", messages=[...])   # the base model
 ```
+
+One server now answers as both. Send the same 50 eval prompts to each and compare. Note that the adapter must have been trained on the same base model that vLLM is serving. If you trained against a 4-bit model, check the vLLM docs on how quantized bases and LoRA work together.
 
 ## Deliverables
 
-1. 3 training runs (LoRA, QLoRA, DDP).
-2. MLflow tracking for all.
-3. Adapter served + producing responses different from base.
+1. Three or more tracked runs: LoRA, QLoRA, and a multi-GPU run.
+2. A results table with model size, method, GPUs, peak memory per GPU, time, cost estimate, and eval score.
+3. An adapter registered in MLflow with a `staging` alias.
+4. A served adapter whose answers differ from the base model in the way you trained for.
+5. A short note: for a new project, which setup would you start with and why?
 
-## Validation
+## Check yourself
 
-- [ ] QLoRA fits a 13B model in single GPU.
-- [ ] Multi-GPU achieves ~Nx speedup on N GPUs.
-- [ ] Served adapter has measurable behavior shift from base.
+- [ ] You have a baseline score for the untrained model.
+- [ ] The QLoRA run fits on one GPU, and you know its real peak memory.
+- [ ] You can explain why DDP did not help with memory but FSDP or ZeRO did.
+- [ ] The served adapter beats the base model on your eval set.
 
 ## Common pitfalls
 
-- **Adapter target_modules wrong** — Different architectures use different module names; print model to discover.
-- **GradScaler with bf16** — bf16 doesn't need GradScaler; fp16 does.
-- **Saving full model instead of adapter** — `model.save_pretrained()` saves merged weights; use `peft_model.save_pretrained()` for just adapter.
+- **Wrong `target_modules`.** Module names differ between architectures. Use `target_modules="all-linear"`, or print the model to see the layer names.
+- **Mixed precision mismatch.** bf16 does not need a gradient scaler, but fp16 does. On a GPU with no bf16 support (such as a T4), use fp16 everywhere.
+- **Saving the wrong thing.** Saving a `PeftModel` writes only the small adapter. Merging into a full model is a separate step, and you should merge into a full-precision base, not a 4-bit one.
+- **Expecting DDP to fit a bigger model.** It will not. Each GPU still holds the whole model.
+- **Judging by loss.** A falling loss does not mean the model does the task better. Score the held-out set.
+- **Forgetting the serving bill.** Training can cost a few dollars, but an always-on GPU to serve it costs far more. Multi-LoRA serving shares one GPU between many adapters.

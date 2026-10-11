@@ -1,2223 +1,611 @@
 # Lesson 06: LLM Serving Optimization
 
-## Table of Contents
-1. [Introduction](#introduction)
-2. [Model Quantization Techniques](#model-quantization-techniques)
-3. [Flash Attention 2](#flash-attention-2)
-4. [Continuous Batching](#continuous-batching)
-5. [Dynamic Batching Strategies](#dynamic-batching-strategies)
-6. [Multi-GPU Inference](#multi-gpu-inference)
-7. [Pipeline Parallelism](#pipeline-parallelism)
-8. [KV Cache Management](#kv-cache-management)
-9. [Prompt Caching](#prompt-caching)
-10. [Speculative Decoding](#speculative-decoding)
-11. [Benchmarking LLM Inference](#benchmarking-llm-inference)
-12. [Cost vs Performance Trade-offs](#cost-vs-performance-trade-offs)
-13. [Production Optimization Checklist](#production-optimization-checklist)
-14. [Summary](#summary)
-
-## Introduction
-
-Optimizing LLM serving is critical for both cost efficiency and user experience. This lesson covers advanced techniques to maximize throughput, minimize latency, and reduce infrastructure costs for LLM inference.
-
-### Learning Objectives
-
-After completing this lesson, you will be able to:
-- Implement various quantization techniques (GPTQ, AWQ, GGUF, bitsandbytes)
-- Use Flash Attention 2 for faster inference
-- Implement continuous and dynamic batching
-- Configure multi-GPU inference with tensor and pipeline parallelism
-- Optimize KV cache management
-- Implement prompt caching strategies
-- Use speculative decoding for faster generation
-- Benchmark and analyze LLM performance
-- Make informed cost vs performance trade-off decisions
-
-## Model Quantization Techniques
-
-### Understanding Quantization
-
-Quantization reduces the precision of model weights and activations, trading minimal accuracy for significant memory and compute savings.
-
-```python
-# Quantization precision comparison
-quantization_comparison = {
-    'FP32': {
-        'bits_per_param': 32,
-        'memory_factor': 1.0,
-        'speed_factor': 1.0,
-        'accuracy': 'Baseline',
-        'use_case': 'Research, maximum accuracy'
-    },
-    'FP16': {
-        'bits_per_param': 16,
-        'memory_factor': 0.5,
-        'speed_factor': 1.5,
-        'accuracy': '~100% of FP32',
-        'use_case': 'Standard production deployment'
-    },
-    'INT8': {
-        'bits_per_param': 8,
-        'memory_factor': 0.25,
-        'speed_factor': 2.0,
-        'accuracy': '98-99% of FP32',
-        'use_case': 'Memory-constrained deployments'
-    },
-    'INT4': {
-        'bits_per_param': 4,
-        'memory_factor': 0.125,
-        'speed_factor': 2.5,
-        'accuracy': '95-98% of FP32',
-        'use_case': 'Edge devices, maximum throughput'
-    }
-}
-
-
-def calculate_quantization_savings(model_size_b: float, from_precision: str, to_precision: str):
-    """
-    Calculate memory and cost savings from quantization
-    """
-    precision_bytes = {
-        'FP32': 4,
-        'FP16': 2,
-        'BF16': 2,
-        'INT8': 1,
-        'INT4': 0.5
-    }
-
-    original_memory_gb = model_size_b * precision_bytes[from_precision]
-    quantized_memory_gb = model_size_b * precision_bytes[to_precision]
-
-    memory_reduction = original_memory_gb / quantized_memory_gb
-    memory_saved_gb = original_memory_gb - quantized_memory_gb
-
-    return {
-        'original_memory_gb': round(original_memory_gb, 2),
-        'quantized_memory_gb': round(quantized_memory_gb, 2),
-        'memory_saved_gb': round(memory_saved_gb, 2),
-        'reduction_factor': f"{memory_reduction:.1f}x",
-        'percentage_saved': f"{(memory_saved_gb / original_memory_gb) * 100:.1f}%"
-    }
-
-
-# Example: Llama 2 70B
-print("Llama 2 70B: FP16 → INT4")
-print(calculate_quantization_savings(70, 'FP16', 'INT4'))
-# Can fit 70B model in 35GB instead of 140GB!
-```
-
-### GPTQ (Generative Pre-trained Transformer Quantization)
-
-GPTQ is a post-training quantization method optimized for generative models.
-
-```python
-# Install dependencies
-# pip install auto-gptq optimum
-
-from transformers import AutoModelForCausalLM, AutoTokenizer, GPTQConfig
-
-# GPTQ quantization configuration
-gptq_config = GPTQConfig(
-    bits=4,                          # Quantization bits
-    dataset="c4",                    # Calibration dataset
-    tokenizer=None,                  # Will be set below
-    group_size=128,                  # Group size for quantization
-    damp_percent=0.01,               # Damping percentage
-    desc_act=False,                  # Activate descending order
-    sym=True,                        # Symmetric quantization
-    true_sequential=True,            # Sequential quantization
-    use_cuda_fp16=True,              # Use CUDA FP16
-    model_seqlen=2048,              # Model sequence length
-)
-
-# Load and quantize model
-model_name = "meta-llama/Llama-2-7b-hf"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-gptq_config.tokenizer = tokenizer
-
-# Quantize (this takes time - run once, save the result)
-model = AutoModelForCausalLM.from_pretrained(
-    model_name,
-    quantization_config=gptq_config,
-    device_map="auto"
-)
-
-# Save quantized model
-model.save_pretrained("./llama-2-7b-gptq-4bit")
-tokenizer.save_pretrained("./llama-2-7b-gptq-4bit")
-
-# Later, load the quantized model (fast)
-quantized_model = AutoModelForCausalLM.from_pretrained(
-    "./llama-2-7b-gptq-4bit",
-    device_map="auto"
-)
-```
-
-### AWQ (Activation-aware Weight Quantization)
-
-AWQ protects important weights based on activation statistics, achieving better accuracy than GPTQ.
-
-```python
-# Install dependencies
-# pip install autoawq
-
-from awq import AutoAWQForCausalLM
-from transformers import AutoTokenizer
-
-model_name = "meta-llama/Llama-2-7b-hf"
-quant_path = "llama-2-7b-awq-4bit"
-
-# Load model
-model = AutoAWQForCausalLM.from_pretrained(model_name)
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-
-# Quantization configuration
-quant_config = {
-    "zero_point": True,
-    "q_group_size": 128,
-    "w_bit": 4,
-    "version": "GEMM"
-}
-
-# Quantize (using calibration data)
-model.quantize(tokenizer, quant_config=quant_config)
-
-# Save quantized model
-model.save_quantized(quant_path)
-tokenizer.save_pretrained(quant_path)
-
-# Load for inference
-model = AutoAWQForCausalLM.from_quantized(
-    quant_path,
-    fuse_layers=True,  # Fuse layers for faster inference
-    device_map="auto"
-)
-```
-
-### GGUF (GPT-Generated Unified Format)
-
-GGUF is used primarily with llama.cpp for CPU and edge deployment.
-
-```bash
-# Convert model to GGUF format
-# Install llama.cpp
-git clone https://github.com/ggerganov/llama.cpp
-cd llama.cpp
-make
-
-# Convert Hugging Face model to GGUF
-python convert.py /path/to/llama-2-7b --outtype q4_0 --outfile llama-2-7b-q4_0.gguf
-
-# Quantization types:
-# q4_0: 4-bit (smallest, fastest)
-# q4_1: 4-bit (better quality)
-# q5_0: 5-bit
-# q5_1: 5-bit (better quality)
-# q8_0: 8-bit (best quality)
-
-# Run inference
-./main -m llama-2-7b-q4_0.gguf -p "Once upon a time" -n 128
-```
-
-### bitsandbytes Quantization
-
-bitsandbytes provides easy-to-use quantization for Hugging Face models.
-
-```python
-from transformers import AutoModelForCausalLM, BitsAndBytesConfig
-import torch
-
-# 8-bit quantization
-bnb_config_8bit = BitsAndBytesConfig(
-    load_in_8bit=True,
-    llm_int8_threshold=6.0,           # Outlier threshold
-    llm_int8_has_fp16_weight=False,   # Use INT8 for all
-)
-
-model_8bit = AutoModelForCausalLM.from_pretrained(
-    "meta-llama/Llama-2-7b-hf",
-    quantization_config=bnb_config_8bit,
-    device_map="auto"
-)
-
-# 4-bit quantization (NF4)
-bnb_config_4bit = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_compute_dtype=torch.bfloat16,
-    bnb_4bit_quant_type="nf4",        # NormalFloat4
-    bnb_4bit_use_double_quant=True,   # Double quantization
-)
-
-model_4bit = AutoModelForCausalLM.from_pretrained(
-    "meta-llama/Llama-2-7b-hf",
-    quantization_config=bnb_config_4bit,
-    device_map="auto"
-)
-
-# Memory usage comparison
-print(f"8-bit model memory: {model_8bit.get_memory_footprint() / 1e9:.2f} GB")
-print(f"4-bit model memory: {model_4bit.get_memory_footprint() / 1e9:.2f} GB")
-```
-
-### Quantization Comparison
-
-```python
-# Comprehensive quantization benchmark
-class QuantizationBenchmark:
-    """
-    Compare different quantization methods
-    """
-    def __init__(self, model_name: str):
-        self.model_name = model_name
-        self.results = {}
-
-    def benchmark_method(self, method: str, config: dict):
-        """
-        Benchmark a specific quantization method
-        """
-        import time
-        import torch
-
-        # Load model based on method
-        start_time = time.time()
-
-        if method == 'fp16':
-            model = AutoModelForCausalLM.from_pretrained(
-                self.model_name,
-                torch_dtype=torch.float16,
-                device_map="auto"
-            )
-        elif method == 'gptq':
-            model = AutoModelForCausalLM.from_pretrained(
-                config['model_path'],
-                device_map="auto"
-            )
-        elif method == 'awq':
-            from awq import AutoAWQForCausalLM
-            model = AutoAWQForCausalLM.from_quantized(
-                config['model_path'],
-                fuse_layers=True,
-                device_map="auto"
-            )
-        elif method == 'bnb_8bit':
-            bnb_config = BitsAndBytesConfig(load_in_8bit=True)
-            model = AutoModelForCausalLM.from_pretrained(
-                self.model_name,
-                quantization_config=bnb_config,
-                device_map="auto"
-            )
-        elif method == 'bnb_4bit':
-            bnb_config = BitsAndBytesConfig(
-                load_in_4bit=True,
-                bnb_4bit_compute_dtype=torch.bfloat16,
-                bnb_4bit_quant_type="nf4"
-            )
-            model = AutoModelForCausalLM.from_pretrained(
-                self.model_name,
-                quantization_config=bnb_config,
-                device_map="auto"
-            )
-
-        load_time = time.time() - start_time
-
-        # Get memory usage
-        memory_gb = model.get_memory_footprint() / 1e9
-
-        # Benchmark inference
-        tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        prompt = "Once upon a time"
-        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-
-        # Warmup
-        for _ in range(3):
-            with torch.no_grad():
-                _ = model.generate(**inputs, max_new_tokens=10)
-
-        # Measure
-        num_runs = 10
-        start_time = time.time()
-        for _ in range(num_runs):
-            with torch.no_grad():
-                outputs = model.generate(**inputs, max_new_tokens=50)
-        inference_time = (time.time() - start_time) / num_runs
-
-        # Calculate tokens per second
-        tokens_generated = 50
-        tokens_per_sec = tokens_generated / inference_time
-
-        self.results[method] = {
-            'load_time_sec': round(load_time, 2),
-            'memory_gb': round(memory_gb, 2),
-            'inference_time_sec': round(inference_time, 3),
-            'tokens_per_sec': round(tokens_per_sec, 2)
-        }
-
-        return self.results[method]
-
-    def compare_all(self):
-        """
-        Compare all available quantization methods
-        """
-        methods = ['fp16', 'bnb_8bit', 'bnb_4bit']
-
-        for method in methods:
-            print(f"\nBenchmarking {method}...")
-            try:
-                result = self.benchmark_method(method, {})
-                print(f"Results: {result}")
-            except Exception as e:
-                print(f"Failed: {e}")
-
-        return self.results
-
-
-# Usage
-benchmark = QuantizationBenchmark("meta-llama/Llama-2-7b-hf")
-results = benchmark.compare_all()
-```
-
-## Flash Attention 2
-
-### What is Flash Attention?
-
-Flash Attention is an optimized attention algorithm that reduces memory usage and improves speed without changing the output.
-
-**Key benefits:**
-- 2-4x faster attention computation
-- Reduced memory usage (enables longer contexts)
-- Mathematically equivalent to standard attention
-
-```python
-# Using Flash Attention 2 with vLLM
-from vllm import LLM, SamplingParams
-
-# Flash Attention 2 is enabled by default in vLLM
-llm = LLM(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    tensor_parallel_size=1,
-    gpu_memory_utilization=0.95,
-    max_model_len=4096,
-    # Flash Attention 2 automatically used if available
-)
-
-# For Hugging Face Transformers
-from transformers import AutoModelForCausalLM
-import torch
-
-model = AutoModelForCausalLM.from_pretrained(
-    "meta-llama/Llama-2-7b-chat-hf",
-    torch_dtype=torch.float16,
-    device_map="auto",
-    attn_implementation="flash_attention_2"  # Enable Flash Attention 2
-)
-```
-
-### Flash Attention Performance Impact
-
-```python
-# Flash Attention benchmark comparison
-class FlashAttentionBenchmark:
-    """
-    Compare standard attention vs Flash Attention
-    """
-    def __init__(self, model_name: str):
-        self.model_name = model_name
-
-    def benchmark_attention(self, use_flash: bool, sequence_length: int):
-        """
-        Benchmark with/without Flash Attention
-        """
-        import time
-        import torch
-
-        # Load model
-        if use_flash:
-            model = AutoModelForCausalLM.from_pretrained(
-                self.model_name,
-                torch_dtype=torch.float16,
-                device_map="auto",
-                attn_implementation="flash_attention_2"
-            )
-        else:
-            model = AutoModelForCausalLM.from_pretrained(
-                self.model_name,
-                torch_dtype=torch.float16,
-                device_map="auto",
-                attn_implementation="eager"  # Standard attention
-            )
-
-        tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-
-        # Create long prompt
-        prompt = "Hello " * (sequence_length // 2)
-        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-
-        # Warmup
-        for _ in range(3):
-            with torch.no_grad():
-                _ = model.generate(**inputs, max_new_tokens=10)
-
-        # Measure
-        num_runs = 5
-        start_time = time.time()
-        for _ in range(num_runs):
-            with torch.no_grad():
-                outputs = model.generate(**inputs, max_new_tokens=50)
-
-        avg_time = (time.time() - start_time) / num_runs
-
-        # Memory usage
-        memory_gb = torch.cuda.max_memory_allocated() / 1e9
-
-        return {
-            'attention_type': 'Flash Attention 2' if use_flash else 'Standard',
-            'sequence_length': sequence_length,
-            'avg_time_sec': round(avg_time, 3),
-            'memory_gb': round(memory_gb, 2),
-            'tokens_per_sec': round(50 / avg_time, 2)
-        }
-
-    def compare(self, sequence_lengths=[512, 1024, 2048, 4096]):
-        """
-        Compare Flash vs Standard across different sequence lengths
-        """
-        results = []
-
-        for seq_len in sequence_lengths:
-            print(f"\nTesting sequence length: {seq_len}")
-
-            # Standard attention
-            std_result = self.benchmark_attention(False, seq_len)
-            print(f"Standard: {std_result}")
-
-            # Flash attention
-            flash_result = self.benchmark_attention(True, seq_len)
-            print(f"Flash: {flash_result}")
-
-            # Calculate improvement
-            speedup = std_result['avg_time_sec'] / flash_result['avg_time_sec']
-            memory_savings = std_result['memory_gb'] - flash_result['memory_gb']
-
-            results.append({
-                'sequence_length': seq_len,
-                'standard_time': std_result['avg_time_sec'],
-                'flash_time': flash_result['avg_time_sec'],
-                'speedup': f"{speedup:.2f}x",
-                'memory_savings_gb': round(memory_savings, 2)
-            })
-
-        return results
-
-
-# Usage
-benchmark = FlashAttentionBenchmark("meta-llama/Llama-2-7b-chat-hf")
-results = benchmark.compare()
-```
-
-### Enabling Flash Attention in Production
-
-```python
-# Dockerfile for Flash Attention support
-"""
-FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
-
-# Install dependencies
-RUN apt-get update && apt-get install -y python3-pip git
-
-# Install Flash Attention 2
-RUN pip install packaging ninja
-RUN pip install flash-attn --no-build-isolation
-
-# Install vLLM with Flash Attention support
-RUN pip install vllm
-
-# Your application code
-COPY . /app
-WORKDIR /app
-
-CMD ["python", "serve.py"]
-"""
-
-# Kubernetes deployment with Flash Attention
-"""
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: llm-server-flash-attn
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: llm-server
-  template:
-    metadata:
-      labels:
-        app: llm-server
-    spec:
-      containers:
-      - name: vllm
-        image: your-registry/vllm-flash-attn:latest
-        resources:
-          limits:
-            nvidia.com/gpu: 1
-            memory: 32Gi
-          requests:
-            nvidia.com/gpu: 1
-            memory: 32Gi
-        env:
-        - name: MODEL_NAME
-          value: "meta-llama/Llama-2-7b-chat-hf"
-        - name: MAX_MODEL_LEN
-          value: "4096"
-        ports:
-        - containerPort: 8000
-"""
-```
-
-## Continuous Batching
-
-### Understanding Continuous Batching
-
-Traditional batching waits for all requests to complete before processing new ones. Continuous batching (also called "iteration-level batching") adds new requests as soon as slots become available.
-
-```python
-# Visualization of batching strategies
-"""
-Traditional Static Batching:
-Time: 0s    1s    2s    3s    4s    5s
-Req1: [================]
-Req2: [================]
-Req3: [================]
-Req4:                   [================]
-Req5:                   [================]
-Req6:                   [================]
-
-Continuous Batching:
-Time: 0s    1s    2s    3s    4s    5s
-Req1: [================]
-Req2: [================]
-Req3: [================]
-Req4:      [================]
-Req5:           [================]
-Req6:                [================]
-
-Result: Continuous batching achieves higher GPU utilization and lower average latency!
-"""
-```
-
-### vLLM Continuous Batching
-
-vLLM implements continuous batching by default through its PagedAttention mechanism:
-
-```python
-from vllm import LLM, SamplingParams
-from typing import List
-
-# Initialize vLLM with optimized settings for continuous batching
-llm = LLM(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    tensor_parallel_size=1,
-    max_num_batched_tokens=8192,      # Max tokens in a batch
-    max_num_seqs=256,                 # Max concurrent sequences
-    gpu_memory_utilization=0.90,      # Leave headroom for dynamic batching
-    enable_prefix_caching=True,       # Cache common prefixes
-)
-
-# Sampling parameters
-sampling_params = SamplingParams(
-    temperature=0.8,
-    top_p=0.95,
-    max_tokens=256
-)
-
-# Process multiple requests (continuous batching happens automatically)
-prompts = [
-    "Write a story about",
-    "Explain quantum computing",
-    "What is the capital of",
-    # ... hundreds of prompts
-]
-
-# vLLM automatically batches and schedules these efficiently
-outputs = llm.generate(prompts, sampling_params)
-
-for output in outputs:
-    print(f"Prompt: {output.prompt}")
-    print(f"Output: {output.outputs[0].text}\n")
-```
-
-### Continuous Batching Metrics
-
-```python
-# Monitor continuous batching performance
-class ContinuousBatchingMonitor:
-    """
-    Monitor continuous batching metrics
-    """
-    def __init__(self):
-        self.metrics = {
-            'batch_sizes': [],
-            'queue_lengths': [],
-            'gpu_utilization': [],
-            'throughput': []
-        }
-
-    def collect_metrics(self, batch_size: int, queue_length: int, gpu_util: float):
-        """
-        Collect metrics during serving
-        """
-        self.metrics['batch_sizes'].append(batch_size)
-        self.metrics['queue_lengths'].append(queue_length)
-        self.metrics['gpu_utilization'].append(gpu_util)
-
-    def calculate_throughput(self, tokens_generated: int, time_elapsed: float):
-        """
-        Calculate tokens per second
-        """
-        throughput = tokens_generated / time_elapsed
-        self.metrics['throughput'].append(throughput)
-        return throughput
-
-    def report(self):
-        """
-        Generate performance report
-        """
-        import numpy as np
-
-        report = {
-            'avg_batch_size': np.mean(self.metrics['batch_sizes']),
-            'p95_batch_size': np.percentile(self.metrics['batch_sizes'], 95),
-            'avg_queue_length': np.mean(self.metrics['queue_lengths']),
-            'avg_gpu_utilization': np.mean(self.metrics['gpu_utilization']),
-            'avg_throughput': np.mean(self.metrics['throughput'])
-        }
-
-        return report
-
-
-# Integration with vLLM server
-"""
-# In your vLLM server code:
-monitor = ContinuousBatchingMonitor()
-
-# After each batch
-monitor.collect_metrics(
-    batch_size=current_batch_size,
-    queue_length=len(request_queue),
-    gpu_util=get_gpu_utilization()
-)
-
-# Periodically log report
-if time.time() - last_report_time > 60:
-    print(monitor.report())
-    last_report_time = time.time()
-"""
-```
-
-## Dynamic Batching Strategies
-
-### Adaptive Batch Sizing
-
-```python
-class AdaptiveBatcher:
-    """
-    Dynamically adjust batch size based on request patterns
-    """
-    def __init__(
-        self,
-        min_batch_size: int = 1,
-        max_batch_size: int = 32,
-        target_latency_ms: float = 100
-    ):
-        self.min_batch_size = min_batch_size
-        self.max_batch_size = max_batch_size
-        self.target_latency_ms = target_latency_ms
-        self.current_batch_size = min_batch_size
-        self.latency_history = []
-
-    def adjust_batch_size(self, observed_latency_ms: float):
-        """
-        Adjust batch size based on observed latency
-        """
-        self.latency_history.append(observed_latency_ms)
-
-        # Keep last 100 measurements
-        if len(self.latency_history) > 100:
-            self.latency_history.pop(0)
-
-        # Calculate average latency
-        avg_latency = sum(self.latency_history) / len(self.latency_history)
-
-        # Adjust batch size
-        if avg_latency < self.target_latency_ms * 0.8:
-            # Latency is good, increase batch size
-            self.current_batch_size = min(
-                self.current_batch_size + 1,
-                self.max_batch_size
-            )
-        elif avg_latency > self.target_latency_ms * 1.2:
-            # Latency is too high, decrease batch size
-            self.current_batch_size = max(
-                self.current_batch_size - 1,
-                self.min_batch_size
-            )
-
-        return self.current_batch_size
-
-    def get_batch_size(self) -> int:
-        """
-        Get current recommended batch size
-        """
-        return self.current_batch_size
-
-
-# Usage in serving loop
-batcher = AdaptiveBatcher(
-    min_batch_size=1,
-    max_batch_size=64,
-    target_latency_ms=100
-)
-
-while True:
-    # Get current batch size
-    batch_size = batcher.get_batch_size()
-
-    # Process batch
-    start_time = time.time()
-    outputs = process_batch(requests[:batch_size])
-    latency_ms = (time.time() - start_time) * 1000
-
-    # Adjust for next iteration
-    batcher.adjust_batch_size(latency_ms)
-```
-
-### Priority-Based Batching
-
-```python
-from queue import PriorityQueue
-import time
-from dataclasses import dataclass, field
-from typing import Any
-
-@dataclass(order=True)
-class PrioritizedRequest:
-    """
-    Request with priority for batching
-    """
-    priority: int
-    timestamp: float = field(compare=False)
-    request_id: str = field(compare=False)
-    prompt: str = field(compare=False)
-    params: Any = field(compare=False)
-
-
-class PriorityBatcher:
-    """
-    Batch requests based on priority
-    """
-    def __init__(self, batch_size: int = 8):
-        self.batch_size = batch_size
-        self.queue = PriorityQueue()
-
-    def add_request(
-        self,
-        request_id: str,
-        prompt: str,
-        priority: int = 5,  # 1 = highest, 10 = lowest
-        params: dict = None
-    ):
-        """
-        Add request to queue with priority
-        """
-        request = PrioritizedRequest(
-            priority=priority,
-            timestamp=time.time(),
-            request_id=request_id,
-            prompt=prompt,
-            params=params or {}
-        )
-        self.queue.put(request)
-
-    def get_batch(self):
-        """
-        Get next batch, prioritizing high-priority requests
-        """
-        batch = []
-        while len(batch) < self.batch_size and not self.queue.empty():
-            batch.append(self.queue.get())
-
-        return batch
-
-    def has_requests(self):
-        """
-        Check if there are pending requests
-        """
-        return not self.queue.empty()
-
-
-# Usage
-batcher = PriorityBatcher(batch_size=8)
-
-# Add requests with different priorities
-batcher.add_request("req1", "Regular prompt", priority=5)
-batcher.add_request("req2", "Important prompt", priority=1)  # Processed first
-batcher.add_request("req3", "Low priority prompt", priority=10)
-
-# Get batch (high priority first)
-batch = batcher.get_batch()
-```
-
-## Multi-GPU Inference
-
-### Tensor Parallelism
-
-Tensor parallelism splits individual layers across GPUs for large models that don't fit on a single GPU.
-
-```python
-# vLLM with tensor parallelism
-from vllm import LLM, SamplingParams
-
-# Split model across 4 GPUs
-llm = LLM(
-    model="meta-llama/Llama-2-70b-chat-hf",
-    tensor_parallel_size=4,           # Use 4 GPUs
-    gpu_memory_utilization=0.95,
-    max_model_len=4096,
-    dtype="float16"
-)
-
-# Usage is the same
-outputs = llm.generate(prompts, sampling_params)
-```
-
-### Tensor Parallelism Configuration
-
-```python
-# Calculate optimal tensor parallel size
-def calculate_tensor_parallel_size(
-    model_size_b: float,
-    available_gpus: list,
-    precision: str = "fp16"
-):
-    """
-    Calculate optimal number of GPUs for tensor parallelism
-    """
-    # Memory calculation
-    precision_bytes = {'fp32': 4, 'fp16': 2, 'int8': 1}
-    model_memory_gb = model_size_b * precision_bytes[precision]
-
-    # Add overhead for KV cache and activations (50%)
-    total_memory_needed = model_memory_gb * 1.5
-
-    # GPU memory (GB)
-    gpu_memory = {
-        'T4': 16,
-        'A10G': 24,
-        'A100-40GB': 40,
-        'A100-80GB': 80
-    }
-
-    configurations = []
-
-    for gpu_type in available_gpus:
-        single_gpu_memory = gpu_memory[gpu_type]
-
-        # Calculate minimum GPUs needed
-        min_gpus = int(np.ceil(total_memory_needed / single_gpu_memory))
-
-        # Tensor parallel size should be power of 2
-        tp_sizes = [1, 2, 4, 8]
-        valid_tp_sizes = [tp for tp in tp_sizes if tp >= min_gpus]
-
-        for tp in valid_tp_sizes:
-            memory_per_gpu = total_memory_needed / tp
-            utilization = memory_per_gpu / single_gpu_memory
-
-            if utilization <= 0.95:  # Leave some headroom
-                configurations.append({
-                    'gpu_type': gpu_type,
-                    'tensor_parallel_size': tp,
-                    'memory_per_gpu_gb': round(memory_per_gpu, 2),
-                    'utilization': f"{utilization * 100:.1f}%",
-                    'total_gpus_needed': tp
-                })
-
-    return configurations
-
-
-# Example: Llama 2 70B
-configs = calculate_tensor_parallel_size(
-    model_size_b=70,
-    available_gpus=['A10G', 'A100-40GB', 'A100-80GB'],
-    precision='fp16'
-)
-
-print("Optimal configurations for Llama 2 70B:")
-for config in configs:
-    print(config)
-```
-
-### Ray Serve for Multi-Model Multi-GPU
-
-```python
-# Deploy multiple models across GPUs with Ray Serve
-from ray import serve
-import ray
-from vllm import LLM, SamplingParams
-
-# Initialize Ray
-ray.init()
-
-@serve.deployment(
-    ray_actor_options={"num_gpus": 1},
-    autoscaling_config={"min_replicas": 1, "max_replicas": 4}
-)
-class LLMDeployment:
-    def __init__(self, model_name: str):
-        self.llm = LLM(
-            model=model_name,
-            tensor_parallel_size=1,
-            gpu_memory_utilization=0.90
-        )
-        self.sampling_params = SamplingParams(
-            temperature=0.8,
-            top_p=0.95,
-            max_tokens=256
-        )
-
-    def __call__(self, request):
-        prompt = request.query_params.get("prompt")
-        outputs = self.llm.generate([prompt], self.sampling_params)
-        return {"text": outputs[0].outputs[0].text}
-
-
-# Deploy multiple models
-serve.run(
-    LLMDeployment.bind(model_name="meta-llama/Llama-2-7b-chat-hf"),
-    name="llama-7b",
-    route_prefix="/v1/llama-7b"
-)
-
-serve.run(
-    LLMDeployment.bind(model_name="mistralai/Mistral-7B-Instruct-v0.1"),
-    name="mistral-7b",
-    route_prefix="/v1/mistral-7b"
-)
-
-# Each model automatically gets its own GPU(s) via Ray's scheduling
-```
-
-## Pipeline Parallelism
-
-### Understanding Pipeline Parallelism
-
-Pipeline parallelism splits the model into stages, with each stage on a different GPU. Good for very large models and high throughput.
-
-```python
-# Pipeline parallelism visualization
-"""
-GPU 0: [Layers 0-7  ]  →  [Layers 0-7  ]  →  [Layers 0-7  ]
-GPU 1: [Layers 8-15 ]  →  [Layers 8-15 ]  →  [Layers 8-15 ]
-GPU 2: [Layers 16-23]  →  [Layers 16-23]  →  [Layers 16-23]
-GPU 3: [Layers 24-31]  →  [Layers 24-31]  →  [Layers 24-31]
-
-Time:  Batch 1         Batch 2         Batch 3
-
-Pipeline parallelism allows processing multiple batches simultaneously!
-"""
-```
-
-### DeepSpeed Inference Pipeline
-
-```python
-# DeepSpeed inference with pipeline parallelism
-import deepspeed
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-model_name = "meta-llama/Llama-2-70b-hf"
-
-# Load model
-model = AutoModelForCausalLM.from_pretrained(model_name)
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-
-# DeepSpeed inference configuration
-ds_config = {
-    "fp16": {
-        "enabled": True
-    },
-    "bf16": {
-        "enabled": False
-    },
-    "zero_optimization": {
-        "stage": 3,
-        "offload_param": {
-            "device": "cpu"
-        }
-    },
-    "tensor_parallel": {
-        "tp_size": 4  # 4-way tensor parallelism
-    },
-    "pipeline_parallel": {
-        "pp_size": 2  # 2-way pipeline parallelism
-    }
-}
-
-# Initialize DeepSpeed engine
-engine = deepspeed.init_inference(
-    model=model,
-    config=ds_config,
-    tensor_parallel={"tp_size": 4},
-    dtype=torch.float16,
-    replace_with_kernel_inject=True
-)
-
-# Use model for inference
-inputs = tokenizer("Hello, world!", return_tensors="pt")
-outputs = engine.module.generate(**inputs, max_new_tokens=50)
-print(tokenizer.decode(outputs[0]))
-```
-
-## KV Cache Management
-
-### Understanding KV Cache
-
-The KV (Key-Value) cache stores attention keys and values from previous tokens to avoid recomputation during generation.
-
-```python
-# KV cache memory calculation
-def calculate_kv_cache_memory(
-    batch_size: int,
-    sequence_length: int,
-    num_layers: int,
-    hidden_size: int,
-    num_attention_heads: int,
-    precision_bytes: int = 2  # FP16
-):
-    """
-    Calculate KV cache memory requirements
-    """
-    # Keys and Values for each layer
-    # Each: (batch_size, num_heads, seq_length, head_dim)
-    head_dim = hidden_size // num_attention_heads
-
-    # Memory per layer (keys + values)
-    memory_per_layer = (
-        2 *  # keys and values
-        batch_size *
-        num_attention_heads *
-        sequence_length *
-        head_dim *
-        precision_bytes
-    )
-
-    total_memory = memory_per_layer * num_layers
-
-    return {
-        'memory_per_layer_mb': memory_per_layer / (1024**2),
-        'total_memory_mb': total_memory / (1024**2),
-        'total_memory_gb': total_memory / (1024**3)
-    }
-
-
-# Example: Llama 2 7B with batch of 8
-kv_cache = calculate_kv_cache_memory(
-    batch_size=8,
-    sequence_length=2048,
-    num_layers=32,
-    hidden_size=4096,
-    num_attention_heads=32
-)
-print(f"KV Cache for batch of 8: {kv_cache['total_memory_gb']:.2f} GB")
-```
-
-### PagedAttention (vLLM's Approach)
-
-PagedAttention manages KV cache like virtual memory, allowing efficient memory usage and dynamic batching.
-
-```python
-# vLLM with optimized KV cache management
-from vllm import LLM, SamplingParams
-
-llm = LLM(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    tensor_parallel_size=1,
-    max_model_len=4096,
-    gpu_memory_utilization=0.90,  # Reserve memory for KV cache
-    # PagedAttention automatically manages KV cache efficiently
-)
-
-# vLLM benefits:
-# - Non-contiguous KV cache (like virtual memory paging)
-# - Efficient memory sharing for common prefixes
-# - Dynamic allocation based on actual sequence length
-```
-
-### KV Cache Optimization Strategies
-
-```python
-class KVCacheOptimizer:
-    """
-    Strategies for optimizing KV cache usage
-    """
-    @staticmethod
-    def estimate_max_batch_size(
-        available_memory_gb: float,
-        model_memory_gb: float,
-        sequence_length: int,
-        kv_cache_per_token_mb: float
-    ):
-        """
-        Estimate maximum batch size given memory constraints
-        """
-        # Available memory for KV cache
-        kv_cache_memory_gb = available_memory_gb - model_memory_gb
-
-        # Memory per sequence
-        memory_per_sequence_mb = sequence_length * kv_cache_per_token_mb
-        memory_per_sequence_gb = memory_per_sequence_mb / 1024
-
-        # Maximum batch size
-        max_batch_size = int(kv_cache_memory_gb / memory_per_sequence_gb)
-
-        return max(1, max_batch_size)
-
-    @staticmethod
-    def optimize_for_throughput(
-        target_throughput_tokens_per_sec: int,
-        model_tokens_per_sec_single: int,
-        available_memory_gb: float,
-        model_memory_gb: float
-    ):
-        """
-        Find optimal configuration for target throughput
-        """
-        # Calculate required batch size
-        required_batch = target_throughput_tokens_per_sec / model_tokens_per_sec_single
-
-        # Check if memory allows this batch size
-        max_batch = KVCacheOptimizer.estimate_max_batch_size(
-            available_memory_gb=available_memory_gb,
-            model_memory_gb=model_memory_gb,
-            sequence_length=2048,  # Assume 2K context
-            kv_cache_per_token_mb=0.5  # Rough estimate
-        )
-
-        if required_batch <= max_batch:
-            return {
-                'feasible': True,
-                'recommended_batch_size': int(required_batch),
-                'max_batch_size': max_batch
-            }
-        else:
-            return {
-                'feasible': False,
-                'required_batch_size': int(required_batch),
-                'max_batch_size': max_batch,
-                'suggestion': 'Need more GPUs or smaller model'
-            }
-
-
-# Usage
-optimizer = KVCacheOptimizer()
-
-config = optimizer.optimize_for_throughput(
-    target_throughput_tokens_per_sec=1000,
-    model_tokens_per_sec_single=50,
-    available_memory_gb=80,
-    model_memory_gb=14
-)
-print(config)
-```
-
-## Prompt Caching
-
-### Automatic Prefix Caching
-
-Cache common prompt prefixes to avoid recomputing them.
-
-```python
-# vLLM with prefix caching
-from vllm import LLM, SamplingParams
-
-llm = LLM(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    enable_prefix_caching=True,  # Enable prefix caching
-    max_model_len=4096
-)
-
-# Common system prompt
-system_prompt = """You are a helpful AI assistant. You are knowledgeable,
-accurate, and always strive to provide the best possible answers."""
-
-# Multiple requests with same prefix
-prompts = [
-    f"{system_prompt}\n\nUser: What is Python?\nAssistant:",
-    f"{system_prompt}\n\nUser: What is JavaScript?\nAssistant:",
-    f"{system_prompt}\n\nUser: What is Rust?\nAssistant:",
-]
-
-# First request processes full prompt
-# Subsequent requests reuse cached system prompt computation!
-outputs = llm.generate(prompts, SamplingParams(max_tokens=100))
-```
-
-### Manual Response Caching
-
-```python
-import hashlib
-import json
-from typing import Optional
-import redis
-
-class LLMResponseCache:
-    """
-    Cache LLM responses for identical requests
-    """
-    def __init__(self, redis_host: str = "localhost", redis_port: int = 6379):
-        self.redis_client = redis.Redis(
-            host=redis_host,
-            port=redis_port,
-            decode_responses=True
-        )
-        self.ttl_seconds = 3600  # 1 hour cache
-
-    def _generate_cache_key(self, prompt: str, params: dict) -> str:
-        """
-        Generate cache key from prompt and parameters
-        """
-        cache_input = {
-            'prompt': prompt,
-            'params': params
-        }
-        cache_str = json.dumps(cache_input, sort_keys=True)
-        return hashlib.md5(cache_str.encode()).hexdigest()
-
-    def get(self, prompt: str, params: dict) -> Optional[str]:
-        """
-        Get cached response if available
-        """
-        key = self._generate_cache_key(prompt, params)
-        cached = self.redis_client.get(key)
-
-        if cached:
-            # Update stats
-            self.redis_client.incr("cache_hits")
-            return cached
-
-        self.redis_client.incr("cache_misses")
-        return None
-
-    def set(self, prompt: str, params: dict, response: str):
-        """
-        Cache response
-        """
-        key = self._generate_cache_key(prompt, params)
-        self.redis_client.setex(key, self.ttl_seconds, response)
-
-    def get_stats(self):
-        """
-        Get cache statistics
-        """
-        hits = int(self.redis_client.get("cache_hits") or 0)
-        misses = int(self.redis_client.get("cache_misses") or 0)
-        total = hits + misses
-
-        return {
-            'hits': hits,
-            'misses': misses,
-            'total_requests': total,
-            'hit_rate': (hits / total * 100) if total > 0 else 0
-        }
-
-
-# Usage with LLM serving
-cache = LLMResponseCache()
-
-def generate_with_cache(prompt: str, params: dict):
-    """
-    Generate response with caching
-    """
-    # Check cache first
-    cached_response = cache.get(prompt, params)
-    if cached_response:
-        return cached_response
-
-    # Generate new response
-    response = llm.generate([prompt], SamplingParams(**params))
-    response_text = response[0].outputs[0].text
-
-    # Cache result
-    cache.set(prompt, params, response_text)
-
-    return response_text
-```
-
-### Semantic Caching
-
-```python
-from sentence_transformers import SentenceTransformer
-import numpy as np
-from typing import List, Tuple
-
-class SemanticCache:
-    """
-    Cache based on semantic similarity rather than exact matches
-    """
-    def __init__(self, similarity_threshold: float = 0.95):
-        self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-        self.cache = []  # List of (embedding, prompt, response)
-        self.similarity_threshold = similarity_threshold
-
-    def _get_embedding(self, text: str) -> np.ndarray:
-        """
-        Get embedding for text
-        """
-        return self.embedding_model.encode(text)
-
-    def _cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
-        """
-        Calculate cosine similarity between vectors
-        """
-        return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
-
-    def get(self, prompt: str) -> Optional[str]:
-        """
-        Get cached response if semantically similar prompt exists
-        """
-        if not self.cache:
-            return None
-
-        # Get embedding for new prompt
-        prompt_embedding = self._get_embedding(prompt)
-
-        # Find most similar cached prompt
-        max_similarity = 0
-        best_match = None
-
-        for cached_embedding, cached_prompt, cached_response in self.cache:
-            similarity = self._cosine_similarity(prompt_embedding, cached_embedding)
-
-            if similarity > max_similarity:
-                max_similarity = similarity
-                best_match = cached_response
-
-        # Return if above threshold
-        if max_similarity >= self.similarity_threshold:
-            return best_match
-
-        return None
-
-    def set(self, prompt: str, response: str):
-        """
-        Add prompt and response to cache
-        """
-        embedding = self._get_embedding(prompt)
-        self.cache.append((embedding, prompt, response))
-
-        # Limit cache size
-        if len(self.cache) > 1000:
-            self.cache.pop(0)
-
-
-# Usage
-semantic_cache = SemanticCache(similarity_threshold=0.95)
-
-# First query
-prompt1 = "What is machine learning?"
-response1 = generate_llm_response(prompt1)
-semantic_cache.set(prompt1, response1)
-
-# Similar query (will hit cache)
-prompt2 = "Can you explain machine learning?"
-cached = semantic_cache.get(prompt2)  # Returns response1!
-```
-
-## Speculative Decoding
-
-### What is Speculative Decoding?
-
-Speculative decoding uses a small "draft" model to generate candidate tokens quickly, then verifies them with the larger target model in parallel. This can achieve 2-3x speedup.
-
-```python
-# Speculative decoding with vLLM
-from vllm import LLM, SamplingParams
-
-# Target model (large, accurate)
-target_model = LLM(
-    model="meta-llama/Llama-2-70b-chat-hf",
-    tensor_parallel_size=4
-)
-
-# Draft model (small, fast)
-draft_model = LLM(
-    model="meta-llama/Llama-2-7b-chat-hf",
-    tensor_parallel_size=1
-)
-
-# Enable speculative decoding
-target_model.enable_speculative_decoding(
-    draft_model=draft_model,
-    num_speculative_tokens=5  # Generate 5 tokens ahead
-)
-
-# Use normally - speculative decoding happens automatically
-outputs = target_model.generate(prompts, sampling_params)
-```
-
-### Implementing Speculative Decoding
-
-```python
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-class SpeculativeDecoder:
-    """
-    Implement speculative decoding manually
-    """
-    def __init__(
-        self,
-        target_model_name: str,
-        draft_model_name: str,
-        num_speculative_tokens: int = 5
-    ):
-        # Load models
-        self.target_model = AutoModelForCausalLM.from_pretrained(
-            target_model_name,
-            torch_dtype=torch.float16,
-            device_map="auto"
-        )
-        self.draft_model = AutoModelForCausalLM.from_pretrained(
-            draft_model_name,
-            torch_dtype=torch.float16,
-            device_map="auto"
-        )
-        self.tokenizer = AutoTokenizer.from_pretrained(target_model_name)
-        self.num_speculative_tokens = num_speculative_tokens
-
-    def generate(self, prompt: str, max_tokens: int = 100):
-        """
-        Generate text using speculative decoding
-        """
-        # Tokenize prompt
-        input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(
-            self.target_model.device
-        )
-
-        generated_tokens = []
-        accepted_tokens = 0
-        total_drafted_tokens = 0
-
-        while len(generated_tokens) < max_tokens:
-            # Step 1: Draft model generates K tokens
-            draft_tokens = self._draft_generate(
-                input_ids,
-                num_tokens=self.num_speculative_tokens
-            )
-            total_drafted_tokens += len(draft_tokens)
-
-            # Step 2: Target model verifies all at once (parallel)
-            accepted = self._verify_tokens(input_ids, draft_tokens)
-            accepted_tokens += len(accepted)
-
-            # Step 3: Add accepted tokens
-            generated_tokens.extend(accepted)
-            input_ids = torch.cat([
-                input_ids,
-                torch.tensor([accepted], device=input_ids.device)
-            ], dim=1)
-
-            # If not all tokens accepted, generate one more with target model
-            if len(accepted) < len(draft_tokens):
-                next_token = self._target_generate_one(input_ids)
-                generated_tokens.append(next_token)
-                input_ids = torch.cat([
-                    input_ids,
-                    torch.tensor([[next_token]], device=input_ids.device)
-                ], dim=1)
-                accepted_tokens += 1
-
-        # Calculate acceptance rate
-        acceptance_rate = accepted_tokens / total_drafted_tokens if total_drafted_tokens > 0 else 0
-
-        # Decode
-        output_text = self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
-
-        return {
-            'text': output_text,
-            'acceptance_rate': acceptance_rate,
-            'total_tokens': len(generated_tokens)
-        }
-
-    def _draft_generate(self, input_ids: torch.Tensor, num_tokens: int):
-        """
-        Generate tokens with draft model
-        """
-        draft_tokens = []
-
-        with torch.no_grad():
-            current_ids = input_ids
-
-            for _ in range(num_tokens):
-                outputs = self.draft_model(current_ids)
-                next_token = outputs.logits[:, -1, :].argmax(dim=-1)
-                draft_tokens.append(next_token.item())
-                current_ids = torch.cat([
-                    current_ids,
-                    next_token.unsqueeze(0)
-                ], dim=1)
-
-        return draft_tokens
-
-    def _verify_tokens(self, input_ids: torch.Tensor, draft_tokens: list):
-        """
-        Verify draft tokens with target model (parallel)
-        """
-        # Create input with all draft tokens
-        all_ids = torch.cat([
-            input_ids,
-            torch.tensor([draft_tokens], device=input_ids.device)
-        ], dim=1)
-
-        # Get target model's predictions for all positions at once
-        with torch.no_grad():
-            outputs = self.target_model(all_ids)
-            predictions = outputs.logits[:, -len(draft_tokens)-1:-1, :].argmax(dim=-1)
-
-        # Check which tokens match
-        accepted = []
-        for i, (pred, draft) in enumerate(zip(predictions[0], draft_tokens)):
-            if pred.item() == draft:
-                accepted.append(draft)
-            else:
-                break  # Stop at first mismatch
-
-        return accepted
-
-    def _target_generate_one(self, input_ids: torch.Tensor):
-        """
-        Generate one token with target model
-        """
-        with torch.no_grad():
-            outputs = self.target_model(input_ids)
-            next_token = outputs.logits[:, -1, :].argmax(dim=-1)
-        return next_token.item()
-
-
-# Usage
-decoder = SpeculativeDecoder(
-    target_model_name="meta-llama/Llama-2-13b-chat-hf",
-    draft_model_name="meta-llama/Llama-2-7b-chat-hf",
-    num_speculative_tokens=5
-)
-
-result = decoder.generate("Once upon a time", max_tokens=100)
-print(f"Generated: {result['text']}")
-print(f"Acceptance rate: {result['acceptance_rate']:.2%}")
-```
-
-## Benchmarking LLM Inference
-
-### Comprehensive Benchmark Suite
-
-```python
-import time
-import torch
-import numpy as np
-from typing import List, Dict
-from dataclasses import dataclass
-
-@dataclass
-class BenchmarkResult:
-    """
-    Results from a benchmark run
-    """
-    metric_name: str
-    value: float
-    unit: str
-    percentile: Optional[int] = None
-
-
-class LLMBenchmark:
-    """
-    Comprehensive LLM inference benchmarking
-    """
-    def __init__(self, model, tokenizer):
-        self.model = model
-        self.tokenizer = tokenizer
-        self.results = {}
-
-    def benchmark_latency(
-        self,
-        prompts: List[str],
-        max_tokens: int = 50,
-        num_warmup: int = 3,
-        num_runs: int = 10
-    ):
-        """
-        Benchmark inference latency
-        """
-        # Warmup
-        for _ in range(num_warmup):
-            inputs = self.tokenizer(prompts[0], return_tensors="pt").to(self.model.device)
-            with torch.no_grad():
-                _ = self.model.generate(**inputs, max_new_tokens=10)
-
-        # Measure
-        latencies = []
-        for _ in range(num_runs):
-            for prompt in prompts:
-                inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
-
-                start_time = time.time()
-                with torch.no_grad():
-                    outputs = self.model.generate(**inputs, max_new_tokens=max_tokens)
-                latency = time.time() - start_time
-
-                latencies.append(latency * 1000)  # Convert to ms
-
-        # Calculate statistics
-        self.results['latency'] = {
-            'mean_ms': np.mean(latencies),
-            'median_ms': np.median(latencies),
-            'p50_ms': np.percentile(latencies, 50),
-            'p95_ms': np.percentile(latencies, 95),
-            'p99_ms': np.percentile(latencies, 99),
-            'min_ms': np.min(latencies),
-            'max_ms': np.max(latencies),
-            'std_ms': np.std(latencies)
-        }
-
-        return self.results['latency']
-
-    def benchmark_throughput(
-        self,
-        prompts: List[str],
-        max_tokens: int = 50,
-        duration_seconds: int = 60
-    ):
-        """
-        Benchmark throughput (requests per second)
-        """
-        start_time = time.time()
-        num_requests = 0
-        total_tokens = 0
-
-        while time.time() - start_time < duration_seconds:
-            prompt = prompts[num_requests % len(prompts)]
-            inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
-
-            with torch.no_grad():
-                outputs = self.model.generate(**inputs, max_new_tokens=max_tokens)
-
-            num_requests += 1
-            total_tokens += outputs.shape[1]
-
-        elapsed = time.time() - start_time
-
-        self.results['throughput'] = {
-            'requests_per_second': num_requests / elapsed,
-            'tokens_per_second': total_tokens / elapsed,
-            'total_requests': num_requests,
-            'total_tokens': total_tokens,
-            'duration_seconds': elapsed
-        }
-
-        return self.results['throughput']
-
-    def benchmark_memory(self):
-        """
-        Benchmark GPU memory usage
-        """
-        torch.cuda.reset_peak_memory_stats()
-
-        # Run a few inferences
-        prompt = "Hello, world!"
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
-
-        with torch.no_grad():
-            _ = self.model.generate(**inputs, max_new_tokens=100)
-
-        # Get memory stats
-        allocated_gb = torch.cuda.memory_allocated() / 1e9
-        reserved_gb = torch.cuda.memory_reserved() / 1e9
-        peak_gb = torch.cuda.max_memory_allocated() / 1e9
-
-        self.results['memory'] = {
-            'allocated_gb': allocated_gb,
-            'reserved_gb': reserved_gb,
-            'peak_gb': peak_gb
-        }
-
-        return self.results['memory']
-
-    def benchmark_scaling(
-        self,
-        base_prompt: str,
-        sequence_lengths: List[int] = [128, 256, 512, 1024, 2048]
-    ):
-        """
-        Benchmark how latency scales with sequence length
-        """
-        scaling_results = []
-
-        for seq_len in sequence_lengths:
-            # Create prompt of specific length
-            tokens = self.tokenizer.encode(base_prompt)
-            while len(tokens) < seq_len:
-                tokens.extend(tokens[:min(len(tokens), seq_len - len(tokens))])
-            tokens = tokens[:seq_len]
-            prompt = self.tokenizer.decode(tokens)
-
-            # Measure latency
-            inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
-
-            latencies = []
-            for _ in range(5):
-                start_time = time.time()
-                with torch.no_grad():
-                    _ = self.model.generate(**inputs, max_new_tokens=50)
-                latencies.append((time.time() - start_time) * 1000)
-
-            scaling_results.append({
-                'sequence_length': seq_len,
-                'avg_latency_ms': np.mean(latencies),
-                'tokens_per_second': 50 / (np.mean(latencies) / 1000)
-            })
-
-        self.results['scaling'] = scaling_results
-        return scaling_results
-
-    def generate_report(self):
-        """
-        Generate comprehensive benchmark report
-        """
-        print("=" * 60)
-        print("LLM INFERENCE BENCHMARK REPORT")
-        print("=" * 60)
-
-        if 'latency' in self.results:
-            print("\nLatency Metrics:")
-            for key, value in self.results['latency'].items():
-                print(f"  {key}: {value:.2f}")
-
-        if 'throughput' in self.results:
-            print("\nThroughput Metrics:")
-            for key, value in self.results['throughput'].items():
-                print(f"  {key}: {value:.2f}")
-
-        if 'memory' in self.results:
-            print("\nMemory Metrics:")
-            for key, value in self.results['memory'].items():
-                print(f"  {key}: {value:.2f}")
-
-        if 'scaling' in self.results:
-            print("\nScaling Analysis:")
-            for result in self.results['scaling']:
-                print(f"  Seq Length {result['sequence_length']}: "
-                      f"{result['avg_latency_ms']:.2f}ms, "
-                      f"{result['tokens_per_second']:.2f} tokens/sec")
-
-        print("=" * 60)
-
-
-# Usage
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-model = AutoModelForCausalLM.from_pretrained(
-    "meta-llama/Llama-2-7b-chat-hf",
-    torch_dtype=torch.float16,
-    device_map="auto"
-)
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
-
-benchmark = LLMBenchmark(model, tokenizer)
-
-# Run benchmarks
-prompts = [
-    "What is machine learning?",
-    "Explain quantum computing",
-    "Write a story about"
-]
-
-benchmark.benchmark_latency(prompts)
-benchmark.benchmark_throughput(prompts, duration_seconds=30)
-benchmark.benchmark_memory()
-benchmark.benchmark_scaling("Hello world")
-
-# Generate report
-benchmark.generate_report()
-```
-
-## Cost vs Performance Trade-offs
-
-### Optimization Decision Framework
-
-```python
-class CostPerformanceOptimizer:
-    """
-    Framework for making cost vs performance trade-off decisions
-    """
-    def __init__(self):
-        self.gpu_costs = {
-            'T4': 0.40,
-            'A10G': 1.20,
-            'A100-40GB': 3.50,
-            'A100-80GB': 5.00
-        }
-
-        self.performance_factors = {
-            'T4': 1.0,
-            'A10G': 2.5,
-            'A100-40GB': 5.0,
-            'A100-80GB': 5.5
-        }
-
-    def analyze_configuration(
-        self,
-        gpu_type: str,
-        quantization: str,
-        batch_size: int,
-        requests_per_day: int,
-        target_latency_ms: int
-    ):
-        """
-        Analyze a specific configuration
-        """
-        # Base performance
-        base_performance = self.performance_factors[gpu_type]
-
-        # Quantization impact
-        quant_speedup = {
-            'fp16': 1.0,
-            'int8': 1.5,
-            'int4': 2.0
-        }[quantization]
-
-        # Effective performance
-        effective_performance = base_performance * quant_speedup
-
-        # Batch size impact on latency
-        latency_penalty = 1 + (batch_size - 1) * 0.1
-
-        # Estimated latency
-        estimated_latency_ms = 100 / effective_performance * latency_penalty
-
-        # Meets SLA?
-        meets_sla = estimated_latency_ms <= target_latency_ms
-
-        # Cost calculation
-        requests_per_second = requests_per_day / 86400
-        gpus_needed = max(1, requests_per_second / (effective_performance * batch_size))
-
-        monthly_cost = gpus_needed * self.gpu_costs[gpu_type] * 24 * 30
-
-        # Cost per request
-        cost_per_request = monthly_cost / requests_per_day / 30
-
-        return {
-            'configuration': {
-                'gpu_type': gpu_type,
-                'quantization': quantization,
-                'batch_size': batch_size
-            },
-            'performance': {
-                'estimated_latency_ms': round(estimated_latency_ms, 2),
-                'meets_sla': meets_sla,
-                'effective_performance': round(effective_performance, 2)
-            },
-            'cost': {
-                'gpus_needed': round(gpus_needed, 2),
-                'monthly_cost': round(monthly_cost, 2),
-                'cost_per_request': round(cost_per_request, 6)
-            },
-            'score': self._calculate_score(
-                meets_sla, cost_per_request, estimated_latency_ms, target_latency_ms
-            )
-        }
-
-    def _calculate_score(
-        self,
-        meets_sla: bool,
-        cost_per_request: float,
-        latency_ms: float,
-        target_latency_ms: int
-    ):
-        """
-        Calculate overall score (higher is better)
-        """
-        if not meets_sla:
-            return 0  # Doesn't meet requirements
-
-        # Score based on cost efficiency and latency margin
-        latency_margin = (target_latency_ms - latency_ms) / target_latency_ms
-        cost_score = 1 / (cost_per_request * 1000)  # Lower cost = higher score
-
-        return cost_score * (1 + latency_margin)
-
-    def find_optimal_configuration(
-        self,
-        requests_per_day: int,
-        target_latency_ms: int,
-        budget_per_month: float = None
-    ):
-        """
-        Find optimal configuration
-        """
-        configurations = []
-
-        for gpu_type in ['T4', 'A10G', 'A100-40GB']:
-            for quantization in ['fp16', 'int8', 'int4']:
-                for batch_size in [1, 2, 4, 8, 16]:
-                    config = self.analyze_configuration(
-                        gpu_type=gpu_type,
-                        quantization=quantization,
-                        batch_size=batch_size,
-                        requests_per_day=requests_per_day,
-                        target_latency_ms=target_latency_ms
-                    )
-
-                    # Filter by budget if specified
-                    if budget_per_month and config['cost']['monthly_cost'] > budget_per_month:
-                        continue
-
-                    if config['score'] > 0:
-                        configurations.append(config)
-
-        # Sort by score
-        configurations.sort(key=lambda x: x['score'], reverse=True)
-
-        return configurations[:5]  # Top 5
-
-
-# Usage
-optimizer = CostPerformanceOptimizer()
-
-# Find best configuration
-optimal_configs = optimizer.find_optimal_configuration(
-    requests_per_day=100000,
-    target_latency_ms=200,
-    budget_per_month=5000
-)
-
-print("Top 5 configurations:")
-for i, config in enumerate(optimal_configs, 1):
-    print(f"\n{i}. Configuration:")
-    print(f"   GPU: {config['configuration']['gpu_type']}")
-    print(f"   Quantization: {config['configuration']['quantization']}")
-    print(f"   Batch Size: {config['configuration']['batch_size']}")
-    print(f"   Latency: {config['performance']['estimated_latency_ms']}ms")
-    print(f"   Monthly Cost: ${config['cost']['monthly_cost']}")
-    print(f"   Cost per Request: ${config['cost']['cost_per_request']}")
-    print(f"   Score: {config['score']:.2f}")
-```
-
-## Production Optimization Checklist
-
-```python
-# Production optimization checklist
-production_checklist = {
-    "Model Selection": {
-        "tasks": [
-            "Choose smallest model that meets accuracy requirements",
-            "Benchmark multiple model sizes",
-            "Consider fine-tuned smaller models vs larger base models",
-            "Evaluate domain-specific models"
-        ],
-        "verification": "Run A/B tests to validate model choice"
-    },
-    "Quantization": {
-        "tasks": [
-            "Test INT8 quantization (98-99% accuracy, 50% cost reduction)",
-            "Consider INT4 for non-critical workloads",
-            "Benchmark GPTQ vs AWQ vs bitsandbytes",
-            "Validate output quality after quantization"
-        ],
-        "verification": "Quality metrics within 2% of baseline"
-    },
-    "Serving Framework": {
-        "tasks": [
-            "Use vLLM for production (best throughput)",
-            "Enable Flash Attention 2",
-            "Configure continuous batching",
-            "Enable prefix caching for common prompts"
-        ],
-        "verification": "Achieve 3x+ throughput vs naive implementation"
-    },
-    "GPU Configuration": {
-        "tasks": [
-            "Right-size GPU tier (don't over-provision)",
-            "Configure tensor parallelism for large models",
-            "Set optimal gpu_memory_utilization (0.85-0.95)",
-            "Monitor actual GPU utilization"
-        ],
-        "verification": "GPU utilization consistently >70%"
-    },
-    "Batching": {
-        "tasks": [
-            "Configure max_num_batched_tokens appropriately",
-            "Set max_num_seqs based on workload",
-            "Monitor batch size distribution",
-            "Tune timeout parameters"
-        ],
-        "verification": "Average batch size >8 under load"
-    },
-    "Caching": {
-        "tasks": [
-            "Implement response caching (Redis)",
-            "Enable prefix caching in vLLM",
-            "Consider semantic caching for similar queries",
-            "Set appropriate cache TTLs"
-        ],
-        "verification": "Cache hit rate >30%"
-    },
-    "Monitoring": {
-        "tasks": [
-            "Track latency percentiles (p50, p95, p99)",
-            "Monitor GPU utilization and memory",
-            "Track throughput (tokens/sec, requests/sec)",
-            "Monitor cost per request",
-            "Alert on SLA violations"
-        ],
-        "verification": "Full observability dashboard operational"
-    },
-    "Cost Optimization": {
-        "tasks": [
-            "Use spot instances where appropriate",
-            "Implement auto-scaling",
-            "Right-size for actual traffic patterns",
-            "Review and optimize monthly"
-        ],
-        "verification": "Cost per request tracked and optimized"
-    }
-}
-
-
-# Automated checklist verification
-class ProductionReadinessChecker:
-    """
-    Verify production optimization checklist
-    """
-    def __init__(self):
-        self.checks = {}
-
-    def check_quantization(self, model):
-        """
-        Verify quantization is enabled
-        """
-        # Check if model is quantized
-        quantized = hasattr(model, 'quantization_config')
-        self.checks['quantization'] = quantized
-        return quantized
-
-    def check_flash_attention(self, model):
-        """
-        Verify Flash Attention is enabled
-        """
-        # Check model config
-        has_flash = getattr(model.config, '_attn_implementation', None) == 'flash_attention_2'
-        self.checks['flash_attention'] = has_flash
-        return has_flash
-
-    def check_gpu_utilization(self, target_utilization: float = 0.70):
-        """
-        Verify GPU utilization meets target
-        """
-        import torch
-        if not torch.cuda.is_available():
-            return False
-
-        # Get current utilization (this is simplified)
-        allocated = torch.cuda.memory_allocated() / torch.cuda.get_device_properties(0).total_memory
-        self.checks['gpu_utilization'] = allocated >= target_utilization
-        return allocated >= target_utilization
-
-    def check_monitoring(self, prometheus_endpoint: str):
-        """
-        Verify monitoring is configured
-        """
-        import requests
-        try:
-            response = requests.get(f"{prometheus_endpoint}/metrics", timeout=5)
-            has_monitoring = response.status_code == 200
-            self.checks['monitoring'] = has_monitoring
-            return has_monitoring
-        except:
-            self.checks['monitoring'] = False
-            return False
-
-    def generate_report(self):
-        """
-        Generate readiness report
-        """
-        total_checks = len(self.checks)
-        passed_checks = sum(self.checks.values())
-
-        print("=" * 60)
-        print("PRODUCTION READINESS REPORT")
-        print("=" * 60)
-        print(f"\nPassed: {passed_checks}/{total_checks} checks\n")
-
-        for check_name, passed in self.checks.items():
-            status = "✓ PASS" if passed else "✗ FAIL"
-            print(f"{status}: {check_name}")
-
-        print("\n" + "=" * 60)
-
-        if passed_checks == total_checks:
-            print("✓ System is production ready!")
-        else:
-            print("✗ System needs optimization before production deployment")
-
-        return passed_checks == total_checks
-```
-
-## Summary
-
-This lesson covered comprehensive optimization techniques for LLM serving:
-
-### Key Takeaways
-
-1. **Quantization**: 50-75% cost reduction with minimal quality loss
-   - INT8: Best quality/cost trade-off
-   - INT4: Maximum cost reduction
-   - GPTQ, AWQ for post-training quantization
-
-2. **Flash Attention 2**: 2-4x speedup with no quality loss
-   - Enabled by default in vLLM
-   - Enables longer context windows
-
-3. **Continuous Batching**: 3-10x throughput improvement
-   - Automatic in vLLM
-   - Maximizes GPU utilization
-
-4. **Multi-GPU Inference**: Scale to largest models
-   - Tensor parallelism for model splitting
-   - Pipeline parallelism for throughput
-
-5. **Caching**: 30-60% cost reduction
-   - Response caching for identical requests
-   - Prefix caching for common prompts
-   - Semantic caching for similar queries
-
-6. **Speculative Decoding**: 2-3x speedup
-   - Use small draft model + large target model
-   - Best for high-quality requirements
-
-7. **Benchmarking**: Measure everything
-   - Latency, throughput, memory
-   - Scaling characteristics
-   - Cost per request
-
-8. **Production Checklist**: Systematic optimization
-   - Quantization + Flash Attention + Caching = baseline
-   - Monitor and iterate
-   - Balance cost vs performance
-
-### Next Steps
-
-In the next lesson, we'll cover complete LLM platform architecture, including multi-model serving, API gateways, monitoring, and security.
+[Lesson 02](./02-vllm-deployment.md) got a model serving behind an API, and [Lesson 05](./05-llm-fine-tuning-infrastructure.md) produced a model worth serving. This lesson is about making that deployment cheaper and faster without changing what the model says. The weights stay the same, or very nearly. What changes is how many useful tokens each GPU-hour produces, and how long each user waits for them.
+
+The lesson has three parts. First, **what serving optimization is all about**: what it can and can't fix, and the few numbers you measure it with. Second, **the core logic**: why generating text is limited by memory instead of compute, and how that one fact explains quantization, batching, caching, and speculative decoding. Third, a **step-by-step guide** that takes a baseline deployment through measurement, quantization, scheduling, caching, speculative decoding, and multi-GPU scaling, ending with a cost per million tokens you can defend.
+
+**Prerequisites:** [Lesson 01](./01-introduction-llm-infrastructure.md), [Lesson 02: vLLM Deployment](./02-vllm-deployment.md) (PagedAttention and continuous batching are introduced there, and this lesson builds on them), [Lesson 05](./05-llm-fine-tuning-infrastructure.md#core-logic-of-fine-tuning) (the memory arithmetic and the 4-bit quantization of QLoRA).
+
+### Contents
+
+1. [Introduction: What Serving Optimization Is All About](#introduction-what-serving-optimization-is-all-about)
+2. [Core Logic of Serving Optimization](#core-logic-of-serving-optimization)
+3. [Step-by-Step: Optimizing an LLM Deployment](#step-by-step-optimizing-an-llm-deployment)
+4. [Step 1: Set Targets and Measure a Baseline](#step-1-set-targets-and-measure-a-baseline)
+5. [Step 2: Shrink the Weights with Quantization](#step-2-shrink-the-weights-with-quantization)
+6. [Step 3: Use the Right Attention Kernel](#step-3-use-the-right-attention-kernel)
+7. [Step 4: Tune the Scheduler](#step-4-tune-the-scheduler)
+8. [Step 5: Stop Recomputing Work You Already Did](#step-5-stop-recomputing-work-you-already-did)
+9. [Step 6: Speculative Decoding](#step-6-speculative-decoding)
+10. [Step 7: Scale Across GPUs](#step-7-scale-across-gpus)
+11. [Step 8: Re-Measure and Price It](#step-8-re-measure-and-price-it)
+12. [Practical Exercise](#practical-exercise)
+13. [Key Takeaways](#key-takeaways)
+14. [Additional Resources](#additional-resources)
 
 ---
 
-**Next Lesson**: [07-llm-platform-architecture.md](./07-llm-platform-architecture.md)
+## Introduction: What Serving Optimization Is All About
+
+### The Goal: More Useful Tokens per Dollar
+
+A GPU costs the same per hour whether it is busy or idle. A serving deployment is therefore a machine that turns GPU-hours into tokens, and optimization is anything that raises the number of tokens produced per hour without breaking the experience of the people waiting for them. Two failure modes bracket the problem: a lightly loaded GPU wastes money, and a heavily loaded one makes users wait.
+
+Almost every technique in this lesson attacks one of five things:
+
+| What is being wasted | Techniques that attack it |
+|---|---|
+| **GPU memory capacity**: weights and KV cache crowd out concurrent requests | Quantization, KV cache quantization, PagedAttention |
+| **Memory bandwidth**: every generated token re-reads the whole model | Quantization, batching, speculative decoding |
+| **Compute**: the arithmetic units sit idle between requests | Continuous batching, chunked prefill, better kernels |
+| **Repeated work**: the same prefix or the same question is processed again | Prefix caching, response caching |
+| **Too little hardware for one model**: it doesn't fit, or it's too slow on one GPU | Tensor, pipeline, and data parallelism |
+
+### What Optimization Can and Can't Do
+
+Serving optimization changes how fast and how cheaply a model runs. It doesn't change what the model knows or how well it follows instructions, with one important exception: **lossy techniques** (aggressive quantization, semantic caching) trade a small amount of answer quality for speed or cost, so each needs a quality check. Lossless techniques (continuous batching, FlashAttention, prefix caching, speculative decoding) change nothing about the output beyond floating-point noise.
+
+It also can't rescue a wrong choice made earlier. If a 70B model is serving a task a fine-tuned 8B model would handle well, the largest saving is choosing the smaller model, which is exactly what [Lesson 05](./05-llm-fine-tuning-infrastructure.md) is for. Do that first, then optimize what you picked.
+
+### The Numbers You Measure
+
+Four numbers describe a serving deployment, and every decision below is judged against them:
+
+| Metric | Meaning | Who feels it |
+|---|---|---|
+| **TTFT** (time to first token) | Wait between sending a request and seeing the first token. Dominated by *prefill*, which processes the prompt | Anyone watching a chat window |
+| **TPOT / ITL** (time per output token / inter-token latency) | Gap between consecutive streamed tokens. Dominated by *decode* | Anyone reading the stream |
+| **Throughput** | Tokens (or requests) per second across *all* users | Whoever pays the GPU bill |
+| **Goodput** | Requests per second that *also* meet the TTFT and TPOT targets | Both |
+
+Throughput and latency pull in opposite directions: a bigger batch gives the GPU more to do per step, so total tokens per second rise, but each individual request waits longer. Goodput is the number that resolves the tension, because it counts a request only if it was fast enough.
+
+> [!NOTE]
+> **Industry trend (2026) — Goodput, Not Raw Throughput, Is the Target**
+>
+> **What it is:** Goodput is the rate of completed requests that also meet explicit latency targets, usually a TTFT limit and a TPOT limit. A request that finishes but misses either target adds to throughput and not to goodput. A CNCF post from July 2026 tuned vLLM on a single A10G and found configurations with about 50% more combined token throughput whose p95 TPOT was nearly ten times worse. If the only constraint set was TTFT, the search happily traded away streaming smoothness.
+>
+> **Why it's picked over the others:** Peak tokens per second is easy to measure and easy to game. Goodput forces the question "fast enough for whom?" up front, and it can change which configuration wins. The post's reasoning workload had a different best configuration once a TPOT target was added.
+>
+> **Where it's used:** `vllm bench serve` reports a goodput figure when you pass service-level objectives, GuideLLM sweeps load against latency targets, and vLLM's own 2026 disaggregated-serving guide uses goodput as its main success metric. *(Sources: [Why goodput matters more than throughput for LLM serving — CNCF](https://www.cncf.io/blog/2026/07/20/why-goodput-matters-more-than-throughput-for-llm-serving/), [Taking vLLM Apart: A Practical Guide to Disaggregated Serving — vLLM Blog](https://vllm.ai/blog/2026-09-29-disaggregated-serving-guide))*
+
+---
+
+## Core Logic of Serving Optimization
+
+### Two Phases With Opposite Bottlenecks
+
+Generating a reply happens in two phases that stress the GPU in opposite ways:
+
+```mermaid
+flowchart LR
+    A["<b>Prefill</b><br/>Read the whole prompt in one pass<br/>Thousands of tokens at once<br/><i>Compute-bound</i><br/>Sets TTFT"]
+    B["<b>Decode</b><br/>Produce one token per step,<br/>feeding each back in<br/><i>Memory-bandwidth-bound</i><br/>Sets TPOT"]
+
+    A -->|"KV cache of the prompt stays in GPU memory"| B
+    B -->|"repeat until the end token"| B
+
+    classDef prefill fill:#0f766e,stroke:#115e59,color:#fff,rx:8,ry:8
+    classDef decode fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:8,ry:8
+    class A prefill
+    class B decode
+```
+
+**Prefill** handles every prompt token in parallel, so the GPU's arithmetic units are saturated. It is compute-bound, and a long prompt means a long wait for the first token.
+
+**Decode** is different. Each step produces a single token, but to do it the GPU must stream the *entire model* from memory through its compute units. The arithmetic per byte moved is tiny, so the units mostly wait for data. Decode is **memory-bandwidth-bound**, and since most of a reply's time is spent decoding, this is where most optimization effort goes.
+
+### The One Equation Worth Remembering
+
+Because each decode step reads every weight once, the fastest a single request can possibly stream is limited by memory bandwidth:
+
+```
+max tokens/sec per request  ≈  memory bandwidth ÷ bytes of weights
+```
+
+For an 8B-parameter model in 16-bit precision (about 16 GB of weights):
+
+| GPU | Memory bandwidth | Ceiling for one request |
+|---|---|---|
+| A10G | ~600 GB/s | ~37 tokens/sec |
+| A100 80GB | ~2.0 TB/s | ~125 tokens/sec |
+| H100 80GB | ~3.35 TB/s | ~210 tokens/sec |
+
+*Theoretical upper bounds from published bandwidth figures. Real numbers are lower, because the KV cache must be read too and kernels never reach peak bandwidth.*
+
+Look at what this equation says, because it explains most of the lesson:
+
+- **Quantization speeds up decode.** Halve the bytes of weights and the ceiling doubles. A 4-bit model reads about a quarter of the data a 16-bit one does.
+- **Batching is nearly free throughput.** One pass over the weights can serve *every request in the batch at once*. Sixteen concurrent requests cost roughly the same weight traffic as one, so throughput rises almost linearly with batch size until something else (KV cache memory, or compute) becomes the limit.
+- **Speculative decoding exists** to get several tokens out of one weight read instead of one.
+- **More GPUs help** by splitting the weights, so each GPU reads only its share.
+
+### The KV Cache: Where the Memory Actually Goes
+
+After weights, the other large consumer of GPU memory is the **KV cache**, the attention keys and values the model keeps for every token of every active request so it never recomputes them. Its size per token is:
+
+```
+KV bytes per token = 2 (K and V) × layers × KV heads × head dimension × bytes per value
+```
+
+```python
+def kv_bytes_per_token(layers, kv_heads, head_dim, dtype_bytes=2):
+    return 2 * layers * kv_heads * head_dim * dtype_bytes
+
+# Llama-2-7B: full multi-head attention, 32 KV heads
+assert kv_bytes_per_token(32, 32, 128) == 512 * 1024        # 0.5 MB per token
+# Llama-3.1-8B: grouped-query attention, 8 KV heads
+assert kv_bytes_per_token(32, 8, 128) == 128 * 1024         # 128 KiB per token
+# Llama-3.1-70B: grouped-query attention, 8 KV heads, 80 layers
+assert kv_bytes_per_token(80, 8, 128) == 320 * 1024         # 320 KiB per token
+```
+
+Two things to notice. First, KV memory grows with **tokens in flight**, meaning concurrent requests times their context length, so long contexts and high concurrency compete for the same memory. Second, modern models use **grouped-query attention (GQA)**, which shares each KV head across several query heads. Llama-3.1-8B stores a quarter of the KV data per token that Llama-2-7B did. When you estimate memory, use the model's `num_key_value_heads`, not its attention head count, or you will overestimate by 4x or more.
+
+Putting weights and KV cache together gives the capacity math used throughout the steps below. On a 24 GB A10G with `gpu_memory_utilization=0.90`, assuming about 1.5 GB for activations and CUDA overhead:
+
+```python
+def kv_tokens_that_fit(gpu_gb, util, weights_gb, kv_per_token_bytes, overhead_gb=1.5):
+    kv_gb = gpu_gb * util - weights_gb - overhead_gb
+    return max(0, int(kv_gb * 1e9 / kv_per_token_bytes))
+
+# Llama-3.1-8B, 16-bit weights (~16 GB) vs. 4-bit weights (~4.5 GB incl. scales)
+print(kv_tokens_that_fit(24, 0.90, 16.0, 128 * 1024))   # ≈ 30,900 tokens, about 15 requests of 2k tokens
+print(kv_tokens_that_fit(24, 0.90, 4.5, 128 * 1024))    # ≈ 119,000 tokens, about 58 requests of 2k tokens
+```
+
+Shrinking the weights from 16 GB to about 4.5 GB didn't just save memory. It freed room for roughly **four times as many concurrent requests**, which is where much of the throughput gain from quantization comes from.
+
+### Mapping Bottlenecks to Levers
+
+| Symptom | Likely bottleneck | First lever |
+|---|---|---|
+| Slow streaming (high TPOT) at low load | Decode is bandwidth-bound | Quantization, speculative decoding |
+| Slow first token (high TTFT) on long prompts | Prefill is compute-bound | Prefix caching, chunked prefill, more GPUs |
+| Throughput stops growing as load rises, requests queue | KV cache full or batch limit hit | Quantize weights and KV cache, raise limits |
+| Latency spikes under bursts, occasional preemptions | KV cache exhaustion | Lower `max_num_seqs`, more headroom |
+| Model doesn't fit on one GPU | Weights alone exceed memory | Quantization first, then tensor parallelism |
+
+---
+
+## Step-by-Step: Optimizing an LLM Deployment
+
+The rest of the lesson walks through the process in order. Each step ends with a **checkpoint** so you know it is done before moving on. The order matters: measure first, then apply the cheap and lossless levers, and only then the ones that need a quality check.
+
+```mermaid
+flowchart LR
+    S1["1 Baseline"] --> S2["2 Quantize"] --> S3["3 Attention kernel"] --> S4["4 Scheduler"] --> S5["5 Caching"] --> S6["6 Speculative decoding"] --> S7["7 Multi-GPU"] --> S8["8 Re-measure + price"]
+
+    classDef step fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:6,ry:6
+    class S1,S2,S3,S4,S5,S6,S7,S8 step
+```
+
+Not every step applies to every deployment. Step 6 helps latency-sensitive workloads at modest load and can hurt at saturation, and Step 7 only matters when one GPU isn't enough. Step 8 sends you back to Step 1's numbers.
+
+### Step 1: Set Targets and Measure a Baseline
+
+An optimization without a before-and-after number is a guess. Write down the targets first, since they decide which levers are worth pulling:
+
+| Target | Example | Why you need it |
+|---|---|---|
+| TTFT limit | p95 < 1 s | Chat feels broken above this |
+| TPOT limit | p95 < 50 ms (about 20 tokens/sec) | Streaming faster than reading speed is fine, slower stutters |
+| Workload shape | 600-token prompts, 200-token replies, 20 concurrent users | Prompt length and reply length stress different phases |
+| Quality bar | Within 1–2 points of the unoptimized model on your eval set | Makes the lossy techniques accountable |
+
+Then measure the unoptimized deployment under load that looks like production. vLLM ships a benchmark client for exactly this:
+
+```bash
+# Terminal 1: the server under test
+vllm serve meta-llama/Llama-3.1-8B-Instruct --max-model-len 4096 --gpu-memory-utilization 0.90
+
+# Terminal 2: fire load at it and report TTFT / TPOT / ITL percentiles and goodput
+vllm bench serve \
+    --model meta-llama/Llama-3.1-8B-Instruct \
+    --dataset-name random --random-input-len 600 --random-output-len 200 \
+    --num-prompts 200 --max-concurrency 20 \
+    --goodput ttft:1000 tpot:50
+```
+
+Flag names change between vLLM releases, so run `vllm bench serve --help` for your installed version. `GuideLLM` is a separate load generator that sweeps request rates and reports where your latency targets stop being met, which is useful for finding the *limit* of a deployment instead of one operating point.
+
+A few habits keep the numbers honest. Send a warm-up request first, because the first call pays for compilation and cache setup. Run long enough for the queue to reach a steady state. Always report percentiles (p50, p95, p99), never only the mean, because the slowest requests are the ones users complain about. And measure through a client that streams, or you won't see TTFT at all.
+
+> **Checkpoint:** You have a table of TTFT, TPOT, throughput, and goodput for the unoptimized server at your target concurrency, plus a saved eval-set score for quality.
+
+### Step 2: Shrink the Weights with Quantization
+
+Quantization stores weights (and sometimes activations) in fewer bits. From the core logic, that does three things at once: the model fits on a smaller GPU, decode gets faster because less data moves per token, and the freed memory holds more KV cache, so more requests run concurrently.
+
+**What changes between formats.** The names read as `W<weight bits>A<activation bits>`. `W4A16` means 4-bit weights with 16-bit activations (*weight-only*). `W8A8` quantizes activations too, which lets the GPU use its fast 8-bit math units and speeds up compute-bound work as well.
+
+| Format | Memory vs. 16-bit | Best for | Hardware needed (vLLM) |
+|---|---|---|---|
+| **FP8 W8A8** | 2x smaller | High-end GPUs, near-lossless, fast prefill *and* decode | Ada (L4, L40S) or Hopper (H100) or newer; AMD supported |
+| **INT8 W8A8** | 2x smaller | Broad GPU support, small quality cost if calibrated | Turing and newer |
+| **INT4 W4A16** (GPTQ, AWQ) | ~3.5–4x smaller | Smallest memory, best cost on mid-tier GPUs | Ampere and newer for AWQ and Marlin kernels (T4 supported too) |
+| **GGUF** (Q4_K_M, Q8_0, and others) | 2–4x smaller | CPU, Apple Silicon, and edge via llama.cpp or Ollama | Runs almost anywhere |
+| **bitsandbytes NF4** | ~4x smaller | Fine-tuning (QLoRA, [Lesson 05](./05-llm-fine-tuning-infrastructure.md#qlora-quantize-the-frozen-base)), not high-throughput serving | Any CUDA GPU |
+
+*Memory ratios follow the bytes-per-parameter arithmetic: FP16 is 2 bytes, INT8/FP8 is 1, INT4 is 0.5. Quantization scales and zero-points add a little on top. An A10G is Ampere, so FP8 W8A8 isn't available there and INT4 W4A16 is the usual choice.*
+
+**How much quality does it cost?** A large 2025 study ("Give Me BF16 or Give Me Death?", over 500,000 evaluations on Llama-3.1 models) found that FP8 W8A8 was essentially lossless, INT8 W8A8 lost about 1–3% when properly tuned, and weight-only INT4 was competitive with 8-bit. It concluded that W4A16 is the most cost-efficient for latency-sensitive, low-concurrency serving, while W8A8 formats win for high-concurrency serving of mid-size and large models on high-end GPUs. That matches the core logic: weight-only formats attack the bandwidth bottleneck, and 8-bit math also helps the compute-bound regime. Treat this as a prior, not a promise, since your task and model may behave differently, which is why the quality bar from Step 1 exists.
+
+**The fastest path.** vLLM can quantize FP8 on the fly when it loads a model, with no preparation:
+
+```python
+from vllm import LLM
+
+llm = LLM(model="meta-llama/Llama-3.1-8B-Instruct", quantization="fp8")  # needs Ada or Hopper
+```
+
+For a checkpoint you control and want to reuse, quantize once offline with **LLM Compressor**, the vLLM project's recommended tool, and serve the saved result like any other model:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from llmcompressor import oneshot
+from llmcompressor.modifiers.quantization import QuantizationModifier
+
+model_id = "meta-llama/Llama-3.1-8B-Instruct"
+model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype="auto")
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+# FP8 with dynamic activation scales needs no calibration data
+recipe = QuantizationModifier(targets="Linear", scheme="FP8_DYNAMIC", ignore=["lm_head"])
+oneshot(model=model, recipe=recipe)
+
+model.save_pretrained("Llama-3.1-8B-Instruct-FP8")
+tokenizer.save_pretrained("Llama-3.1-8B-Instruct-FP8")
+# serve with: vllm serve ./Llama-3.1-8B-Instruct-FP8
+```
+
+INT4 schemes (AWQ, GPTQ) additionally need a small calibration dataset so the quantizer can see which weights matter most. Use the examples in the LLM Compressor repository for your installed version, since recipe class names have moved between releases. Often the simplest route is to download a pre-quantized checkpoint from the Hugging Face Hub and run the quality check yourself.
+
+**Quantize the KV cache too.** Weights aren't the only thing that can shrink. Storing the KV cache in FP8 halves its footprint, so twice as many tokens fit in flight:
+
+```python
+llm = LLM(model="meta-llama/Llama-3.1-8B-Instruct", kv_cache_dtype="fp8")
+```
+
+This is lossy and its effect grows with context length, so include a long-context case in your quality check.
+
+> [!NOTE]
+> **Industry trend (2026) — LLM Compressor Replaces the Per-Format Tooling**
+>
+> **What it is:** LLM Compressor is the vLLM project's library for producing quantized checkpoints, and vLLM's quantization docs name it the recommended starting point for FP8, INT8, and INT4 deployment. The older standalone tool AutoAWQ is officially deprecated and no longer maintained, with its functionality adopted into LLM Compressor. The quantization methods themselves (AWQ, GPTQ) live on, but a lot of older tutorials, including earlier versions of this lesson, point at tooling that has since been retired.
+>
+> **Why it's picked over the others:** One library covers weight-only and weight-plus-activation schemes and saves checkpoints in a format vLLM loads directly, so you don't juggle a different tool per method. It also tracks hardware support as it changes.
+>
+> **Where it's used:** The compatibility table in vLLM's docs is the source of truth for which format runs on which GPU generation, and it changes between releases, so check it before choosing a format for new hardware. *(Sources: [Quantization — vLLM docs](https://docs.vllm.ai/en/latest/features/quantization/), [AutoAWQ deprecation notice — PyPI](https://pypi.org/project/autoawq), ["Give Me BF16 or Give Me Death"? Accuracy-Performance Trade-Offs in LLM Quantization — arXiv](https://arxiv.org/html/2411.02355v3))*
+
+> **Checkpoint:** The quantized model scores within your quality bar on the Step 1 eval set (including a long-context case), and re-running the Step 1 benchmark shows higher goodput or a smaller GPU doing the same job.
+
+### Step 3: Use the Right Attention Kernel
+
+Attention is where a naive implementation wastes the most memory traffic. The textbook version builds a full N×N score matrix for a prompt of N tokens, writes it out to the GPU's main memory (HBM), and reads it back, and for long prompts those reads and writes dominate the runtime.
+
+**FlashAttention** computes exactly the same result without ever storing that matrix. It processes the inputs in small tiles that fit in the GPU's fast on-chip SRAM and combines partial results as it goes, which makes it an *IO-aware* algorithm: the arithmetic is unchanged, but the memory traffic drops sharply. That makes prefill faster and lets long contexts fit, with no quality change at all.
+
+Two practical points keep this step short:
+
+- **In vLLM you do nothing.** It selects an attention backend automatically for your GPU and bundles its own kernels. Don't install the standalone `flash-attn` package alongside it hoping to speed things up; it isn't what vLLM's serving path uses.
+- **In Hugging Face Transformers you choose.** The default PyTorch scaled-dot-product attention (`sdpa`) is already fast. `flash_attention_2` needs the `flash-attn` package and an Ampere-or-newer GPU:
+
+```python
+import torch
+from transformers import AutoModelForCausalLM
+
+model = AutoModelForCausalLM.from_pretrained(
+    "meta-llama/Llama-3.1-8B-Instruct",
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+    attn_implementation="flash_attention_2",   # or "sdpa" (default) / "eager" (slow, for debugging)
+)
+```
+
+Keep the expectation honest. FlashAttention mainly helps **prefill and long contexts**. During decode each step reads the KV cache and weights, which is bandwidth work FlashAttention doesn't change, so it won't fix a high TPOT on short prompts.
+
+> **Checkpoint:** You know which attention backend your server is using (check the startup log), and you haven't added a manual kernel install that vLLM ignores.
+
+### Step 4: Tune the Scheduler
+
+This step raises utilization with no quality cost. [Lesson 02](./02-vllm-deployment.md#architecture-pagedattention--continuous-batching) introduced **continuous batching**: instead of waiting for a whole batch to finish, the scheduler swaps finished requests out and new ones in at *every decode step*. That removes the head-of-line blocking of static batching, where a batch is held up by its longest reply, and it is the largest single throughput win in modern servers. PagedAttention is a separate idea about *memory*: it hands out KV cache in small blocks so no request reserves space it won't use. The two work together but solve different problems.
+
+```text
+Static batching:      [A A A A A A][B B B B B B]   short replies wait for the longest in the batch
+                      [C C . . . .]                 idle slots (.) while one request finishes
+
+Continuous batching:  [A A A][D D D D][F F]        a finished request's slot is refilled
+                      [B B B B B][E E E E]          on the very next step
+                      [C C][G G G G G G]
+```
+
+You don't implement any of this, since vLLM does it. Your job is to set the limits that bound it. Three settings carry most of the tuning:
+
+| Setting | What it limits | Raise it for | Lower it for |
+|---|---|---|---|
+| `max_num_seqs` | Requests running at once | Throughput | Lower per-request latency |
+| `max_num_batched_tokens` | Tokens processed per step (prefill chunk budget plus decode tokens) | Faster TTFT and throughput (try 8192 and above on big GPUs) | Smoother TPOT (try 2048) |
+| `gpu_memory_utilization` | Fraction of GPU memory vLLM may claim | More KV cache and concurrency | Headroom against out-of-memory crashes |
+
+**Chunked prefill** is what makes the middle setting work. A long prompt's prefill is split into chunks, and each step schedules the waiting decodes first and fills the remaining token budget with prefill chunks. Without it, one 8,000-token prompt would monopolize a step and freeze every streaming user, causing a spike in their TPOT. In current vLLM it is on by default where supported. A smaller token budget protects streaming smoothness (TPOT), and a larger one favors first-token speed (TTFT) and total throughput.
+
+**Preemption** is the warning sign. When the KV cache fills up, vLLM evicts a running request and recomputes it later, which shows up as latency spikes. If your metrics show preemptions, lower `max_num_seqs` or `max_num_batched_tokens`, raise `gpu_memory_utilization` if there is headroom, or free memory with quantization (Step 2) or more GPUs (Step 7).
+
+```bash
+vllm serve meta-llama/Llama-3.1-8B-Instruct \
+    --max-num-seqs 64 \
+    --max-num-batched-tokens 4096 \
+    --gpu-memory-utilization 0.90
+```
+
+Change **one setting at a time** and re-run the Step 1 benchmark, since the settings interact and the best values depend on your prompt and reply lengths. Resist writing your own adaptive batcher or priority queue around the engine. The engine already schedules at the token level, which a request-level wrapper can't do as well.
+
+> **Checkpoint:** You can name which of TTFT, TPOT, or throughput each of your three settings was tuned for, the benchmark shows no preemption storms, and goodput beats the Step 1 baseline.
+
+### Step 5: Stop Recomputing Work You Already Did
+
+The cheapest token is the one you don't generate. Three kinds of caching remove repeated work, at three different layers.
+
+**Prefix caching** reuses the KV cache for a prompt prefix that was already processed. Chat apps send the same system prompt, tool definitions, and few-shot examples with every request, and RAG pipelines ([Lesson 03](./03-rag-systems.md)) often repeat long shared context. With prefix caching, only the *new* tail of the prompt goes through prefill, which cuts TTFT and prefill compute and costs nothing in quality:
+
+```python
+llm = LLM(model="meta-llama/Llama-3.1-8B-Instruct", enable_prefix_caching=True)
+```
+
+Recent vLLM versions may enable it by default, so set it explicitly and confirm in the logs and metrics. The matching is by exact token prefix, so **structure prompts with the stable parts first**: system prompt, then tools, then examples, then the per-request user text last. Putting a timestamp or user name at the top of the prompt changes the prefix and defeats the cache. Prefix caching only speeds up prefill. It doesn't help decode, and it gives nothing when replies are long and dominate the runtime or when requests share no prefix.
+
+**Exact response caching** returns a stored answer when the identical request arrives again. It is only safe when the answer is deterministic, so cache requests with `temperature=0` (or a fixed seed), and include everything that affects the output in the key:
+
+```python
+import hashlib, json
+
+def cache_key(model: str, messages: list, params: dict) -> str:
+    payload = json.dumps({"model": model, "messages": messages, "params": params}, sort_keys=True)
+    return hashlib.sha256(payload.encode()).hexdigest()
+
+def should_cache(params: dict) -> bool:
+    return params.get("temperature", 1.0) == 0   # sampled outputs shouldn't be replayed
+```
+
+Store it in Redis with a TTL. The key must include the model *version*, so a model update invalidates old answers, and in a multi-tenant system it must include the tenant, or one customer can receive another's answer.
+
+**Semantic caching** matches *similar* questions by embedding similarity ([Lesson 04](./04-vector-databases.md) covers the vector search). It can save a lot on repetitive traffic such as FAQs, but it is the one cache that is **lossy by design**: a threshold that is too loose returns a confident answer to a question that merely sounds alike ("how do I cancel my plan" and "how do I cancel my neighbor's plan"). Start with a high similarity threshold, limit it to narrow, low-stakes traffic, measure wrong-answer rate on labeled pairs before enabling it, and keep it per-tenant. Don't use it where answers depend on user-specific data.
+
+> **Checkpoint:** Your prompts put stable content first, prefix caching is confirmed on and its hit rate is visible in metrics, and any response cache is limited to deterministic requests with a key that includes model version and tenant.
+
+### Step 6: Speculative Decoding
+
+Decode is bandwidth-bound: the GPU spends most of each step waiting on a full read of the weights to produce *one* token. **Speculative decoding** gets several tokens out of one such read. A cheap *drafter* guesses the next few tokens, and the full model **verifies all the guesses in a single forward pass**, which costs about the same as generating one token because that pass is bandwidth-bound anyway. Guesses that match what the full model would have produced are accepted, and decoding continues from the first mismatch.
+
+```mermaid
+flowchart LR
+    D["Drafter proposes<br/>k tokens cheaply"] --> V["Full model verifies<br/>all k in ONE pass"]
+    V -->|"accept the matching prefix,<br/>plus one token from the full model"| N["Append, then draft again"]
+    N --> D
+
+    classDef draft fill:#0ea5e9,stroke:#0369a1,color:#fff,rx:8,ry:8
+    classDef verify fill:#7c3aed,stroke:#5b21b6,color:#fff,rx:8,ry:8
+    classDef next fill:#0f766e,stroke:#115e59,color:#fff,rx:8,ry:8
+    class D draft
+    class V verify
+    class N next
+```
+
+Because the full model always has the final say, the output distribution matches ordinary decoding, so speculative decoding is **lossless** up to floating-point effects. With greedy sampling the output is the same text. The speedup depends on the **acceptance rate**: if the drafter is usually right, you get close to k tokens per step, and if it is usually wrong you pay for drafting and gain nothing.
+
+The drafter can be several things, with different costs:
+
+| Method | Drafter | Setup cost | Works best when |
+|---|---|---|---|
+| **N-gram / suffix** | Copies likely continuations from the prompt or earlier text | None: no extra model | Output repeats the input (summarization, code edits, extraction, RAG answers) |
+| **Draft model** | A small model from the same family (needs the same vocabulary) | Extra memory for the small model | General text, when a good small sibling exists |
+| **EAGLE / MTP** | A small trained head attached to the target model | Needs a matching head checkpoint | General text where you want the largest latency cut |
+
+Start with n-gram, which needs no extra model and is a cheap experiment:
+
+```bash
+vllm serve meta-llama/Llama-3.1-8B-Instruct \
+    --speculative-config '{"method": "ngram", "num_speculative_tokens": 4, "prompt_lookup_min": 2, "prompt_lookup_max": 5}'
+```
+
+```python
+# The same configuration offline, here with a small draft model instead
+from vllm import LLM
+
+llm = LLM(
+    model="Qwen/Qwen3-8B",
+    speculative_config={
+        "method": "draft_model",
+        "model": "HuggingFaceTB/SmolLM2-135M-Instruct",
+        "num_speculative_tokens": 3,
+    },
+)
+```
+
+**When it helps and when it hurts.** Speculative decoding spends spare compute to save bandwidth, so it shines at low to medium load, where the GPU has idle arithmetic capacity and the goal is a lower TPOT. At high load the batch already keeps the GPU busy, so the verification work competes with real requests and gains shrink or turn negative. This makes it a **latency tool, not a throughput tool**. Judge it by goodput at your *actual* concurrency, not by a single-request demo. If the acceptance rate (reported in vLLM's metrics) is low, reduce `num_speculative_tokens`. Known limits depend on release, but at the time of writing pipeline parallelism doesn't compose with it, and a draft model's tensor parallelism is set with `draft_tensor_parallel_size`, not `tensor_parallel_size`.
+
+> [!NOTE]
+> **Industry trend (2026) — Speculative Decoding Became a Config Block, With Many Drafters**
+>
+> **What it is:** In vLLM, speculative decoding is configured through a single `speculative_config` (`--speculative-config` on the server), and the `method` field now selects among many drafters: n-gram and suffix decoding that need no extra model, a separate draft model, EAGLE-style heads, multi-token prediction (MTP) built into some models, and others. The older `enable_speculative_decoding(...)` style calls found in many tutorials aren't how the engine is configured today.
+>
+> **Why it's picked over the others:** The model-based methods give the largest latency reductions, and n-gram or suffix decoding gives modest gains with essentially no setup and no extra load at peak traffic. vLLM's docs target medium-to-low request rates and memory-bound workloads, and report smaller gains at high load.
+>
+> **Where it's used:** It is now a standard option for latency-sensitive chat, coding assistants, and agents, where TPOT is the user-visible metric. Real gains depend on the model family, traffic, hardware, and sampling settings, so benchmark it on your own workload. *(Source: [Speculative Decoding — vLLM docs](https://docs.vllm.ai/en/latest/features/speculative_decoding/))*
+
+> **Checkpoint:** You've measured goodput with and without speculative decoding at your real concurrency, you know the acceptance rate, and you've kept it only if it wins there.
+
+### Step 7: Scale Across GPUs
+
+Skip this step if the model fits on one GPU with room for KV cache, which quantization (Step 2) often achieves. Reach for more GPUs when the model doesn't fit, or when you need more throughput than one GPU gives. There are four ways to spread work, and picking the right one matters more than the flag syntax:
+
+| Strategy | What it splits | Communication cost | Use it when |
+|---|---|---|---|
+| **Tensor parallelism (TP)** | Every layer's weights across GPUs, which all work on each token together | High: synchronizes on every layer, needs a fast link | The model doesn't fit on one GPU, or you want more KV room per GPU |
+| **Pipeline parallelism (PP)** | Groups of layers across GPUs, in stages | Low: only activations passed between stages | TP is maxed out, or you span multiple nodes |
+| **Data parallelism (DP)** | Nothing: whole copies of the model | None between copies | The model fits, and you want more throughput |
+| **Expert parallelism (EP)** | The experts of a mixture-of-experts model | Moderate | MoE models |
+
+```text
+Tensor parallel (2 GPUs):     Pipeline parallel (2 GPUs):    Data parallel (2 GPUs):
+GPU0: ½ of every layer        GPU0: layers 1–16              GPU0: full model  ← request stream A
+GPU1: ½ of every layer        GPU1: layers 17–32             GPU1: full model  ← request stream B
+(talk after every layer)      (talk once between stages)     (never talk)
+```
+
+A few rules keep the decision simple:
+
+- **Use the smallest TP that fits the model with KV room.** Each extra GPU in a TP group adds synchronization on every layer, so 8-way TP is slower per GPU than 2-way. TP wants a fast interconnect such as NVLink, which usually means staying inside one node. The TP degree also has to divide the model's attention heads evenly.
+- **Prefer replicas over bigger TP when the model fits.** Four independent copies at TP=1 usually beat one copy at TP=4 for throughput, because they don't pay for synchronization. A load balancer in front of the replicas is the topic of [Lesson 07](./07-llm-platform-architecture.md).
+- **Use PP to reach across nodes**, where the interconnect is slower, because it moves much less data than TP.
+- **Mix them when needed.** A 405B-class model on two 8-GPU nodes might use TP=8 inside each node and PP=2 across them.
+
+A sizing check before you rent hardware:
+
+```python
+import math
+
+def min_gpus(weights_gb, gpu_gb, util=0.90, overhead_gb=1.5, kv_budget_gb=10):
+    """Smallest power-of-two TP size with room for weights, overhead, and a KV cache budget per GPU."""
+    for tp in (1, 2, 4, 8):
+        usable = gpu_gb * util - overhead_gb
+        if weights_gb / tp + kv_budget_gb / tp <= usable:
+            return tp
+    return None
+
+# Llama-3.1-70B: ~140 GB at 16-bit, ~35 GB at INT4 (A100 80GB cards)
+print(min_gpus(140, 80))   # 4   (FP16 needs several GPUs)
+print(min_gpus(35, 80))    # 1   (INT4 fits on one)
+```
+
+Launching is a flag. The rest is where the GPUs are placed:
+
+```bash
+# 4-way tensor parallel on one node
+vllm serve meta-llama/Llama-3.1-70B-Instruct --tensor-parallel-size 4
+
+# 2-way tensor x 2-way pipeline across two nodes (needs a Ray or multiprocessing cluster)
+vllm serve meta-llama/Llama-3.1-70B-Instruct --tensor-parallel-size 2 --pipeline-parallel-size 2
+```
+
+Notice what the sizing check shows: the 70B model that needs a multi-GPU node at 16-bit fits on a single 80 GB card at 4-bit, which can be cheaper and faster than the four-GPU version once synchronization costs are counted. Quantize before you parallelize.
+
+> [!NOTE]
+> **Industry trend (2026) — Disaggregated Prefill and Decode**
+>
+> **What it is:** Since prefill is compute-bound and decode is bandwidth-bound, you can run them on **separate groups of GPUs**, each tuned for its own job, and ship the prompt's KV cache from the prefill group to the decode group (usually over RDMA). This stops a long prompt's prefill from interrupting other users' streaming, so tail inter-token latency improves.
+>
+> **Why it's picked over the others:** It raises goodput when tail ITL is what breaks your target under load, with long prompts at high concurrency. It is not free. vLLM's own guide is blunt that it doesn't improve raw throughput, that the KV transfer adds directly to TTFT (a 10,000-token prompt on a 70B model is about 3 GB of KV cache, roughly 65 ms over a 400 Gb/s link before overhead), and that you now operate several services with a new failure mode. In their single-node test on two L40S GPUs without NVLink, TTFT got worse at every request rate even though tail ITL improved.
+>
+> **Where it's used:** More than a dozen KV transfer connectors exist upstream (NIXL, LMCache, Mooncake, and others), and orchestrators such as llm-d and NVIDIA Dynamo run it on Kubernetes. Measure first. If chunked prefill (Step 4) already meets your tail-latency target, you don't need it. *(Source: [Taking vLLM Apart: A Practical Guide to Disaggregated Serving — vLLM Blog](https://vllm.ai/blog/2026-09-29-disaggregated-serving-guide))*
+
+> **Checkpoint:** You chose a parallelism strategy by checking whether the model fits on one GPU after quantization, you use the smallest TP that works, and the benchmark shows the added GPUs actually raised goodput.
+
+### Step 8: Re-Measure and Price It
+
+Repeat the Step 1 benchmark on the final configuration and put the two tables side by side. Then convert the result into the number the business cares about, cost per million tokens:
+
+```
+$ per 1M tokens  =  (GPU $ per hour) ÷ (tokens per second × 3600) × 1,000,000
+```
+
+```python
+def cost_per_million_tokens(gpu_hourly_usd: float, tokens_per_sec: float) -> float:
+    return gpu_hourly_usd / (tokens_per_sec * 3600) * 1_000_000
+
+# Illustrative numbers: replace with your measured goodput-level throughput and your real hourly price
+assert round(cost_per_million_tokens(1.20, 1500), 3) == 0.222    # A10G at 1,500 tokens/sec aggregate
+```
+
+Always use throughput measured *at the load where targets are still met* (goodput-level), not the saturation maximum, because a GPU run at a throughput that blows your latency targets isn't really delivering that capacity. Also divide by realistic utilization. A GPU that serves 1,500 tokens/sec at peak but averages 30% load costs more than three times the figure above per token you actually sell. This is the argument for autoscaling and for sharing a base model across workloads, as the multi-LoRA note in [Lesson 05](./05-llm-fine-tuning-infrastructure.md#step-8-evaluate-merge-and-serve) described.
+
+Finish with a short readiness check. Each row has a way to *verify* it, because "enabled" isn't the same as "working":
+
+| Area | Check | How to verify |
+|---|---|---|
+| Targets | TTFT, TPOT, and quality bar written down | The Step 1 table exists and is current |
+| Quantization | Chosen format runs on your GPU generation, quality within bar | Eval score on held-out set, including long context |
+| Scheduler | Limits tuned, no preemption storms | Preemption count in the vLLM metrics stays near zero under load |
+| Caching | Prefix cache on, response cache limited to deterministic requests | Hit rate in metrics, keys include model version and tenant |
+| Speculative decoding | Kept only if it wins at real concurrency | Goodput with and without, plus acceptance rate |
+| GPU use | Utilization is high *while serving real traffic* | GPU utilization from DCGM or `nvidia-smi`, not memory allocated, since vLLM pre-allocates memory and always looks full |
+| Monitoring | Latency percentiles, queue depth, GPU metrics, cost per token | Dashboard and alerts on TTFT and TPOT, not only on errors |
+| Rollout | New settings canaried like any other deploy | A slice of traffic, with the Step 1 numbers compared |
+
+> **Checkpoint:** You can state the before and after for TTFT, TPOT, goodput, and cost per million tokens, and every optimization that stayed on has a measurement that justifies it.
+
+---
+
+## Practical Exercise
+
+Optimize a Llama-3.1-8B-Instruct deployment on a single 24 GB GPU (an A10G or similar) for **20 concurrent chat users**, with 600-token prompts, 200-token replies, and targets of **p95 TTFT under 1 second and p95 TPOT under 50 ms**. Report goodput and cost per million tokens before and after.
+
+Sketch your plan before expanding the solution: which levers will you pull, in what order, and what would make you undo each one?
+
+*No GPU? Do the same exercise on a Mac with llama.cpp or Ollama: compare a Q8_0 and a Q4_K_M GGUF of the same model on tokens per second and on answers to 20 questions you can judge yourself. It teaches the same speed-versus-quality trade-off.*
+
+<details>
+<summary><strong>Sample Solution</strong></summary>
+
+```bash
+# 1. Baseline: 16-bit weights, default scheduler
+vllm serve meta-llama/Llama-3.1-8B-Instruct --max-model-len 2048 --gpu-memory-utilization 0.90
+vllm bench serve --model meta-llama/Llama-3.1-8B-Instruct \
+    --dataset-name random --random-input-len 600 --random-output-len 200 \
+    --num-prompts 200 --max-concurrency 20 --goodput ttft:1000 tpot:50
+
+# 2. INT4 W4A16 (AWQ or GPTQ checkpoint; FP8 isn't available on an Ampere A10G)
+vllm serve <int4-checkpoint-of-llama-3.1-8b> --max-model-len 2048 --gpu-memory-utilization 0.90
+
+# 3. Scheduler: 20 users need only ~20 sequences, so cap it and trim the token budget for smooth streaming
+vllm serve <int4-checkpoint-of-llama-3.1-8b> --max-model-len 2048 \
+    --max-num-seqs 32 --max-num-batched-tokens 4096 --enable-prefix-caching
+```
+
+What to expect and why:
+
+- **The baseline is memory-starved.** From the core logic, 16 GB of weights leaves room for only about 15 requests of 2k tokens, so 20 concurrent users can already queue or trigger preemption, which shows up as a poor TTFT.
+- **INT4 is the big lever on this GPU.** It cuts weight traffic roughly 3.5x, so TPOT drops, and the freed memory holds about four times as many requests, so the queueing disappears. Run your eval set to confirm quality held.
+- **The scheduler step is about not over-provisioning.** With 20 users, `max_num_seqs=32` is plenty. A smaller `max_num_batched_tokens` keeps long prefills from stuttering other users' streams, at a small cost to TTFT.
+- **Prefix caching depends on your prompts.** If every request starts with the same 300-token system prompt, it cuts TTFT. With random prompts it does nothing, which is a fair thing for your benchmark to reveal.
+- **Speculative decoding is optional here.** Try n-gram and keep it only if goodput improves at 20 users. On a lightly loaded GPU it usually helps TPOT a little, and on a saturated one it can hurt.
+- **Report the price.** Divide the A10G hourly rate by the *goodput-level* tokens per second you measured, and state the ratio between before and after.
+
+</details>
+
+---
+
+## Key Takeaways
+
+1. Serving optimization turns GPU-hours into more tokens at acceptable latency. Judge it by **goodput** (requests that meet the TTFT and TPOT targets), not by raw tokens per second
+2. Generation has two phases: **prefill** is compute-bound and sets TTFT, **decode** is memory-bandwidth-bound and sets TPOT. Per-request decode speed is roughly memory bandwidth divided by weight bytes
+3. That one fact explains the levers: quantization cuts bytes read per token, batching shares one weight read across many requests, speculative decoding gets several tokens from one read, and more GPUs split the read
+4. KV cache memory per token is `2 × layers × KV heads × head dim × bytes`, and grouped-query attention shrinks it a lot. Weights plus KV cache decide how many requests fit, and shrinking weights frees room for roughly proportionally more concurrency
+5. Quantize first: FP8 is near-lossless on Ada and Hopper GPUs, INT8 costs a few percent, and INT4 weight-only is usually the best value on mid-tier GPUs. Use LLM Compressor, check the vLLM hardware table, and always verify quality on your own eval set
+6. Continuous batching and PagedAttention are different ideas (scheduling versus memory). Tune `max_num_seqs`, `max_num_batched_tokens`, and `gpu_memory_utilization` one at a time against a benchmark, and treat preemptions as the warning sign
+7. FlashAttention is an IO-aware exact kernel that mainly helps prefill and long contexts. In vLLM it is automatic, so there is nothing to install
+8. Prefix caching is lossless, so put stable prompt content first. Cache whole responses only for deterministic requests, with model version and tenant in the key, and treat semantic caching as lossy
+9. Speculative decoding is lossless and cuts latency at low to medium load, but can hurt at saturation. Judge it by goodput at your real concurrency and by acceptance rate
+10. Use the smallest tensor-parallel size that fits, prefer replicas over bigger TP when the model fits, and quantize before you parallelize. Disaggregated prefill and decode only pays off when tail ITL breaks your target and the KV transfer is fast
+11. Price every change as cost per million tokens at goodput-level throughput and realistic utilization. If you can't show the before-and-after number, you haven't finished the optimization
+
+---
+
+## Additional Resources
+
+- [vLLM Optimization and Tuning Guide](https://docs.vllm.ai/en/latest/configuration/optimization/)
+- [vLLM Quantization Docs (hardware compatibility table)](https://docs.vllm.ai/en/latest/features/quantization/)
+- [vLLM Speculative Decoding Docs](https://docs.vllm.ai/en/latest/features/speculative_decoding/)
+- [LLM Compressor](https://github.com/vllm-project/llm-compressor)
+- [GuideLLM](https://github.com/vllm-project/guidellm)
+- [Why goodput matters more than throughput for LLM serving — CNCF](https://www.cncf.io/blog/2026/07/20/why-goodput-matters-more-than-throughput-for-llm-serving/)
+- [Taking vLLM Apart: A Practical Guide to Disaggregated Serving — vLLM Blog](https://vllm.ai/blog/2026-09-29-disaggregated-serving-guide)
+- ["Give Me BF16 or Give Me Death"? Accuracy-Performance Trade-Offs in LLM Quantization (arXiv)](https://arxiv.org/abs/2411.02355)
+- [Efficient Memory Management for LLM Serving with PagedAttention](https://arxiv.org/abs/2309.06180)
+- [FlashAttention Paper (Dao et al., 2022)](https://arxiv.org/abs/2205.14135)
+- [Fast Inference from Transformers via Speculative Decoding (Leviathan et al., 2022)](https://arxiv.org/abs/2211.17192)
+
+---
+
+**Next Lesson:** [07-llm-platform-architecture.md](./07-llm-platform-architecture.md) — LLM Platform Architecture

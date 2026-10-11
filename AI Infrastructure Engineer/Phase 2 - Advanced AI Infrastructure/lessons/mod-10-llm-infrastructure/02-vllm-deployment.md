@@ -208,7 +208,7 @@ One thing that trips people up: always send a warm-up request before you start t
 
 ## Multi-GPU & Tensor Parallelism
 
-A single GPU eventually runs out of room — a 70B model at FP16 simply doesn't fit on one 80GB card once you account for the KV cache and activations on top of the weights. vLLM's fix is tensor parallelism: split each layer across multiple GPUs with a single flag, `--tensor-parallel-size 4`, so no one GPU has to hold the whole model. It's a one-line change to turn on here — the deeper mechanics (why the GPU interconnect matters, when to reach for pipeline parallelism instead) are covered in [Lesson 06: LLM Serving Optimization](./06-llm-serving-optimization.md#multi-gpu-inference).
+A single GPU eventually runs out of room — a 70B model at FP16 simply doesn't fit on one 80GB card once you account for the KV cache and activations on top of the weights. vLLM's fix is tensor parallelism: split each layer across multiple GPUs with a single flag, `--tensor-parallel-size 4`, so no one GPU has to hold the whole model. It's a one-line change to turn on here — the deeper mechanics (why the GPU interconnect matters, when to reach for pipeline parallelism instead) are covered in [Lesson 06: LLM Serving Optimization](./06-llm-serving-optimization.md#step-7-scale-across-gpus).
 
 ---
 

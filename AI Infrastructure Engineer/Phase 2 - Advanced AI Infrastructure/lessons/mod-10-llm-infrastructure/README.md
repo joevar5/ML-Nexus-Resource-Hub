@@ -23,10 +23,13 @@ This is the module where everything else in the curriculum comes together. LLMs 
 | 03 | [RAG Systems](./03-rag-systems.md) — chunking, retrieval, ranking, evaluation | 10 |
 | 04 | [Vector Databases](./04-vector-databases.md) — Qdrant/Weaviate/Chroma, deployment and tuning | 10 |
 | 05 | [LLM Fine-Tuning Infrastructure](./05-llm-fine-tuning-infrastructure.md) — LoRA, QLoRA, distributed fine-tuning | 12 |
-| 06 | [LLM Serving Optimization](./06-llm-serving-optimization.md) — quantization, Flash Attention, batching | 10 |
+| 06 | [LLM Serving Optimization](./06-llm-serving-optimization.md) — quantization, scheduling, caching, speculative decoding, multi-GPU | 10 |
 | 07 | [LLM Platform Architecture](./07-llm-platform-architecture.md) — multi-model serving, routing, caching | 10 |
 | 08 | [LLM Infrastructure for Agentic Systems](./08-llm-infrastructure-for-agents.md) — tool calling, state/memory, multi-step orchestration | 10 |
 | 09 | [Production LLM Best Practices](./09-production-llm-best-practices.md) — HA, security, compliance, operations | 10 |
+| 10 | [Text-to-SQL and Evaluation by Execution](./10-text-to-sql-and-execution-eval.md) — execution accuracy, failure analysis, SQL guardrails | 6 |
+| 11 | [Autoscaling on Queue Depth (KEDA)](./11-autoscaling-on-queue-depth-keda.md) — scaling GPU replicas on vLLM queue depth | 5 |
+| 12 | [Preference Tuning With DPO](./12-preference-tuning-dpo.md) — optional, improve a model from its own failures | 4 |
 
 RAG (Lessons 03–04) is covered as one retrieval pattern among several you'll use — the same vector-DB infrastructure shows up again in Lesson 08 as agent memory, so it's worth building well the first time even if grounding chat responses isn't your main use case.
 

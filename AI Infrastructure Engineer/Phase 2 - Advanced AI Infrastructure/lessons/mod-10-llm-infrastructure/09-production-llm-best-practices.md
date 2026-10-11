@@ -2272,4 +2272,6 @@ This lesson covered production best practices for LLM systems:
 
 **Congratulations!** You've completed the LLM Infrastructure module. You now have the knowledge to build and operate production-grade LLM systems.
 
+**Next Lesson:** [10 - Text-to-SQL and Evaluation by Execution](./10-text-to-sql-and-execution-eval.md)
+
 **Module Complete**: [10-llm-infrastructure](./README.md)

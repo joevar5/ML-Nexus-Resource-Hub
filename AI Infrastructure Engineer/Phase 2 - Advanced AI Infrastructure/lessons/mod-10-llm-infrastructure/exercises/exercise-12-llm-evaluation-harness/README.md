@@ -1,145 +1,130 @@
-# Exercise 12: LLM Evaluation Infrastructure
+# Exercise 12: LLM Evaluation Harness
 
 **Duration:** 3 hours
 **Difficulty:** Intermediate
-**Prerequisites:** Exercise 10
+**Prerequisites:** [Exercise 10](../exercise-10-prompt-management/README.md) and [Lesson 09: Production LLM Best Practices](../../09-production-llm-best-practices.md)
+**Hardware:** A model endpoint for the app, and a second, different model for judging
 
-## Objective
+## Goal
 
-Build a reproducible scoring harness for LLM applications using LLM-as-judge and reference-based metrics. Track scores over time; alert on regression.
+Build a repeatable way to answer "is this version of our LLM app better or worse than the last one?" You will create a test set, score it in several ways, run it automatically on every change and every night, and get an alert when quality drops.
 
-## Why this matters
+## Why it matters
 
-LLM apps can silently degrade — a model upgrade, a prompt change, a retrieval drift. Without continuous scoring, you discover the regression from customer complaints. With it, you catch it in CI.
+LLM apps get worse without anyone touching them: a provider updates a model, retrieval drifts, a prompt gets edited. Without scoring, you hear about it from customers. With it, you hear about it in CI.
 
-## Requirements
+Evaluation is also how you make every other decision in this module, such as which model to use, whether quantization hurt, and whether a new prompt helps. A good harness is the most reusable thing you will build.
 
-1. Scoring set with 100+ examples covering 5 categories.
-2. Multiple scoring approaches: reference-based (BLEU, exact match), LLM-as-judge, regex assertions.
-3. Scoring runs on every PR + nightly on prod.
-4. Score persisted; trend dashboard.
-5. Regression alert when score drops > 2pp.
+## Before you start
 
-## Step-by-step
+Know the three kinds of checks, from cheapest to most expensive:
 
-### Step 1 — Scoring set design (45 min)
+1. **Rule checks.** Valid JSON, required fields, forbidden phrases, exact match. Fast, free, and reliable. Use them wherever they fit.
+2. **Reference-based metrics.** Compare to a known answer, such as exact match or F1. Older text-overlap metrics like BLEU and ROUGE correlate poorly with quality for chat answers, so use them only where wording really must match.
+3. **LLM-as-judge.** A model grades the answer against a rubric. It handles open-ended answers, but it has biases and costs money, so you must check the judge too.
+
+Several open-source tools do much of this already (promptfoo, DeepEval, Ragas for RAG, Langfuse and Phoenix for logging and experiments, and `lm-evaluation-harness` for model benchmarks). Skim one before you start, then build a small version yourself so you understand what it does. Decide at the end whether to adopt a tool.
+
+## Steps
+
+### Step 1: Design the test set (45 min)
+
+Write at least 100 cases across at least five categories. Mix easy cases with the ones that are likely to break:
+
+| Category | Examples |
+|---|---|
+| Happy path | The questions most users ask |
+| Edge cases | Empty input, very long input, typos, other languages |
+| Adversarial | Attempts to override instructions or leak the prompt |
+| Ambiguous | Cases where the right answer is to ask or escalate |
+| Regressions | Every bug you have ever fixed, as a new case |
+
+Mine real traffic for cases (with personal data removed), because invented questions are always too clean.
+
 ```yaml
-# scoring/cases.yaml
-- id: greet_001
-  category: greeting
-  input: "Hello"
-  expected_contains: ["hello", "hi", "greetings"]
-  expected_json_keys: ["answer"]
-  expected_needs_human: false
-
-- id: refund_simple_001
+- id: refund_001
   category: support
   input: "How do I get a refund?"
-  reference_answer: "Visit the order page, click 'Request Refund', and select the item."
-  llm_judge_criteria: "Does the response correctly explain the refund process?"
-
-- id: escalate_001
-  category: support
-  input: "I want to speak to a manager about my account being hacked"
-  expected_needs_human: true
-  llm_judge_criteria: "Does the response escalate appropriately?"
+  checks:
+    - json_valid
+    - { field_equals: { needs_human: false } }
+    - { judge: "Does the answer correctly explain how to request a refund, without inventing policy?" }
 ```
 
-Build at least 100 examples balanced across happy path, edge cases, adversarial, ambiguity.
+Split the set into a **dev set** you tune against and a **locked set** you only report on.
 
-### Step 2 — Scoring methods (60 min)
+### Step 2: Scoring functions (60 min)
+
+Write each check as a small function that returns pass or fail, plus a reason. A reason makes failures easy to debug.
+
 ```python
-def score_contains(response, expected):
-    text = response["answer"].lower()
-    return all(s in text for s in expected)
+import json
 
-def score_json_schema(response, expected_keys):
-    return set(response.keys()) >= set(expected_keys)
+def check_json_valid(resp: str):
+    try:
+        json.loads(resp); return True, ""
+    except ValueError as e:
+        return False, f"invalid JSON: {e}"
 
-def score_llm_judge(response, criteria):
-    judge = OpenAI()
-    r = judge.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role":"system","content":"You are an evaluator. Reply with only YES or NO."},
-            {"role":"user","content":f"Criteria: {criteria}\nResponse: {response}\nDoes the response meet the criteria?"},
-        ],
-        max_tokens=5, temperature=0,
-    )
-    return r.choices[0].message.content.strip().upper() == "YES"
-
-def score_case(app, case):
-    resp = app(case["input"])
-    scores = {}
-    if "expected_contains" in case:
-        scores["contains"] = score_contains(resp, case["expected_contains"])
-    if "expected_json_keys" in case:
-        scores["json_schema"] = score_json_schema(resp, case["expected_json_keys"])
-    if "llm_judge_criteria" in case:
-        scores["llm_judge"] = score_llm_judge(resp, case["llm_judge_criteria"])
-    return {"case_id": case["id"], "scores": scores, "passed": all(scores.values())}
+def check_judge(question: str, resp: str, rubric: str):
+    prompt = (f"Question: {question}\nAnswer: {resp}\nRubric: {rubric}\n"
+              'Reply as JSON: {"reason": "<one sentence>", "pass": true or false}')
+    out = judge.chat.completions.create(model=JUDGE_MODEL, temperature=0, messages=[
+        {"role": "user", "content": prompt}],
+        response_format={"type": "json_object"})
+    verdict = json.loads(out.choices[0].message.content)
+    return verdict["pass"], verdict["reason"]
 ```
 
-### Step 3 — Scoring runner (30 min)
-```python
-def run_scoring(app, scoring_set_path):
-    cases = yaml.safe_load(open(scoring_set_path))
-    results = [score_case(app, c) for c in cases]
-    pass_rate = sum(r["passed"] for r in results) / len(results)
-    return {"timestamp": time.time(), "pass_rate": pass_rate, "n": len(results), "details": results}
-```
+Make the judge better:
+- Use a **different model** from the one being tested. A model scores its own answers too kindly.
+- Ask for the **reason first**, then the verdict.
+- Prefer a **specific rubric** ("states the 30-day limit") over a vague one ("is helpful").
+- **Calibrate it**: have a person label 30–50 answers, then measure how often the judge agrees. If agreement is low, fix the rubric before trusting any scores.
+- For comparing two versions, show both answers and swap their order on half the cases. Judges tend to prefer the first one.
 
-### Step 4 — Persist results (15 min)
-Store each run in S3 or a database:
-```python
-import boto3
-s3.put_object(Bucket="scoring-runs", Key=f"runs/{run_id}.json", Body=json.dumps(result))
-```
+### Step 3: The runner (30 min)
 
-### Step 5 — Trend dashboard (30 min)
-Grafana with Athena over S3:
-```sql
-SELECT date_trunc('day', from_unixtime(timestamp)) AS day,
-       AVG(pass_rate) AS pass_rate,
-       category
-FROM scoring_runs
-GROUP BY 1, category
-ORDER BY 1 DESC;
-```
+Run each case several times (3 is a good start) because outputs vary even at temperature 0. Report the pass rate and a confidence interval. Run cases in parallel with a concurrency limit.
 
-### Step 6 — CI integration (15 min)
-```yaml
-- name: Run scoring
-  run: |
-    pass_rate=$(python run_scoring.py | jq .pass_rate)
-    if (( $(echo "$pass_rate < 0.85" | bc -l) )); then
-      echo "Scoring pass rate $pass_rate < 0.85; blocking."
-      exit 1
-    fi
-```
+Store, for every run: the git commit, the prompt version, the model and its settings, the test set version, and per-case results. A score without that information cannot be reproduced.
 
-### Step 7 — Nightly + regression alerts (15 min)
-Scheduled job runs scoring against prod. If 7-day-rolling pass_rate drops by > 2pp, alert.
+### Step 4: Store results and show trends (45 min)
+
+Put results in a database table (Postgres, ClickHouse, or even SQLite to start), with one row per case per run. A Grafana or Metabase dashboard on top gives you the trend. Break the pass rate down **by category**, because one overall number hides a category that has collapsed.
+
+### Step 5: CI gate (15 min)
+
+On every pull request, run the suite and compare it to the main branch. Block the merge if the pass rate drops by more than the noise level you measured in Step 3, or if any critical case fails. A fixed global bar like "85%" lets a real regression through when the current score is 97%.
+
+### Step 6: Nightly run on production (15 min)
+
+Run the suite against the live system every night, since models and data can change under you. Alert when the 7-day average drops by more than 2 percentage points, or when any category drops sharply. Test the alert by making a deliberately bad prompt and checking that it fires.
+
+### Step 7: Evaluate real traffic too (15 min)
+
+A fixed test set eventually goes stale. Sample a small share of production conversations, grade them with your judge, and track the score. Add the failures you find to the test set. This loop is how the set stays useful.
 
 ## Deliverables
 
-1. Scoring set (100+ cases).
-2. Scoring runner + scoring functions.
-3. CI integration.
-4. Nightly job.
-5. Trend dashboard.
-6. `SCORING_PHILOSOPHY.md`: what we measure, what we don't, when to extend the set.
+1. A test set of 100+ cases, split into dev and locked.
+2. The runner and the scoring functions, with a judge you have calibrated.
+3. A CI job and a nightly job.
+4. A dashboard showing score by category over time.
+5. `EVALUATION_POLICY.md`: what you measure, what you do not, how a case gets added, and how the judge was validated.
 
-## Validation
+## Check yourself
 
-- [ ] Scoring runs reproducibly produce same score on same code.
-- [ ] CI blocks PR with regressing scoring.
-- [ ] Dashboard shows trend over weeks.
-- [ ] Alert fires on synthetic regression.
+- [ ] Running the same code twice gives scores that agree within the noise you measured.
+- [ ] You know how often your judge agrees with a human.
+- [ ] CI blocks a deliberately worse prompt.
+- [ ] A synthetic regression triggers the nightly alert.
 
 ## Common pitfalls
 
-- **LLM-as-judge bias** — Same model evaluating itself overscores. Use a different model for judging.
-- **Scoring set bias** — Built from easy cases; misses production weirdness. Mine from real logs.
-- **Pass rate as single number** — Hides per-category collapse. Track segments.
-- **Non-deterministic LLM responses** — Use temperature=0; even then, expect 1-2% variance.
+- **A judge that likes itself.** Use a different model for judging.
+- **A test set of easy cases.** Production is stranger than anything you invent. Mine real logs.
+- **One overall number.** It hides a category that has collapsed. Always break it down.
+- **Treating noise as signal.** A 1% change on 100 cases is within noise. Measure the spread before setting thresholds.
+- **Tuning on the locked set.** Once you fix things while looking at it, it is no longer a fair test.
+- **Never updating the set.** Add every real failure as a new case.

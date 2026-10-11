@@ -798,6 +798,10 @@ Because the update is folded into the original weights, the merged model runs at
 
 > **Checkpoint:** The fine-tuned model beats the base model on your held-out examples, ends its answers cleanly, and is deployed behind an endpoint.
 
+### Build It: Project 104
+
+Ready to do this yourself? [**Project 104: LLM Fine-Tuning**](../../projects/project-102-text-to-sql-finetuning/) walks you through fine-tuning a small model on a support-ticket-to-JSON task, one session per step above.
+
 ---
 
 ## Practical Exercise
