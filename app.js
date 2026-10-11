@@ -1784,6 +1784,137 @@ function highlightActiveFileInSidebar(filePath) {
 }
 
 // Load Markdown file and update UI view panels
+// ── Interactive Interview Practice ──
+// Turns "## Interview Practice" (bold-numbered question + <details> answer) into accordion
+// cards: write your own answer, reveal the model answer, self-rate, and track progress.
+function makeInterviewInteractive() {
+    const container = document.getElementById('markdown-content');
+    if (!container) return;
+    const h2 = Array.from(container.querySelectorAll('h2')).find(h => /interview practice/i.test(h.textContent));
+    if (!h2) return;
+
+    const items = [];
+    const originals = [];
+    for (let el = h2.nextElementSibling; el && el.tagName !== 'H2'; el = el.nextElementSibling) {
+        const num = el.tagName === 'P' ? el.firstElementChild : null;
+        if (num && num.tagName === 'STRONG' && /^\d+\.$/.test(num.textContent.trim())) {
+            num.remove();
+            items.push({ q: el, a: null });
+            originals.push(el);
+        } else if (el.tagName === 'DETAILS' && items.length && !items[items.length - 1].a) {
+            items[items.length - 1].a = el;
+            originals.push(el);
+        }
+    }
+    if (items.length === 0) return;
+
+    const storageKey = `interview_${currentFilePath}`;
+    let state = {};
+    try { state = JSON.parse(localStorage.getItem(storageKey)) || {}; } catch (e) { state = {}; }
+    const save = () => { try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (e) { /* storage blocked: progress just won't persist */ } };
+
+    const RATINGS = [['nailed', 'Nailed it'], ['partly', 'Partly'], ['missed', 'Missed it']];
+    const root = document.createElement('div');
+    root.className = 'ip';
+    root.innerHTML = `
+        <div class="ip-bar">
+            <div class="ip-progress"><span></span></div>
+            <span class="ip-count"></span>
+            <button type="button" class="ip-link" data-act="toggle-all">Expand all</button>
+            <button type="button" class="ip-link" data-act="reset">Reset</button>
+        </div>`;
+
+    items.forEach((item, i) => {
+        const s = state[i] || {};
+        const card = document.createElement('div');
+        card.className = 'ip-card';
+        card.innerHTML = `
+            <button type="button" class="ip-head" aria-expanded="false">
+                <span class="ip-num">${i + 1}</span>
+                <span class="ip-q"></span>
+                <span class="ip-plus" aria-hidden="true"></span>
+            </button>
+            <div class="ip-body"><div class="ip-body-inner">
+                <label class="ip-label">Try it first: write your answer (saved in this browser)</label>
+                <textarea class="ip-text" rows="4" placeholder="Outline your answer here before peeking..."></textarea>
+                <button type="button" class="ip-reveal">Reveal model answer</button>
+                <div class="ip-answer" hidden>
+                    <div class="ip-answer-body"></div>
+                    <div class="ip-rate"><span>How did you do?</span>${RATINGS.map(([k, label]) => `<button type="button" class="ip-rate-btn" data-rate="${k}">${label}</button>`).join('')}</div>
+                </div>
+            </div></div>`;
+        const qSpan = card.querySelector('.ip-q');
+        while (item.q.firstChild) qSpan.appendChild(item.q.firstChild);
+        qSpan.innerHTML = qSpan.innerHTML.trimStart();
+        const body = card.querySelector('.ip-answer-body');
+        if (item.a) {
+            Array.from(item.a.childNodes).forEach(n => { if (n.nodeName !== 'SUMMARY') body.appendChild(n); });
+        } else {
+            card.querySelector('.ip-reveal').remove();
+        }
+
+        const text = card.querySelector('.ip-text');
+        text.value = s.text || '';
+        text.addEventListener('input', () => { (state[i] = state[i] || {}).text = text.value; save(); });
+
+        const answer = card.querySelector('.ip-answer');
+        const reveal = card.querySelector('.ip-reveal');
+        const showAnswer = () => { answer.hidden = false; if (reveal) reveal.hidden = true; };
+        if (reveal) reveal.addEventListener('click', () => { showAnswer(); (state[i] = state[i] || {}).revealed = true; save(); });
+        if (s.revealed || s.rating) showAnswer();
+
+        const head = card.querySelector('.ip-head');
+        head.addEventListener('click', () => {
+            const open = !card.classList.contains('open');
+            card.classList.toggle('open', open);
+            head.setAttribute('aria-expanded', String(open));
+            syncToggleAll();
+        });
+
+        const applyRating = () => {
+            const r = (state[i] || {}).rating;
+            card.dataset.rating = r || '';
+            card.querySelectorAll('.ip-rate-btn').forEach(b => b.classList.toggle('active', b.dataset.rate === r));
+        };
+        card.querySelectorAll('.ip-rate-btn').forEach(b => b.addEventListener('click', () => {
+            (state[i] = state[i] || {}).rating = b.dataset.rate;
+            save(); applyRating(); updateProgress();
+        }));
+        applyRating();
+        root.appendChild(card);
+    });
+
+    const cards = () => Array.from(root.querySelectorAll('.ip-card'));
+    const toggleAllBtn = root.querySelector('[data-act="toggle-all"]');
+    function syncToggleAll() { toggleAllBtn.textContent = cards().every(c => c.classList.contains('open')) ? 'Collapse all' : 'Expand all'; }
+    function updateProgress() {
+        const done = Object.values(state).filter(v => v && v.rating).length;
+        root.querySelector('.ip-progress span').style.width = `${(done / items.length) * 100}%`;
+        root.querySelector('.ip-count').textContent = `${done} / ${items.length} practiced`;
+    }
+    toggleAllBtn.addEventListener('click', () => {
+        const open = !cards().every(c => c.classList.contains('open'));
+        cards().forEach(c => { c.classList.toggle('open', open); c.querySelector('.ip-head').setAttribute('aria-expanded', String(open)); });
+        syncToggleAll();
+    });
+    root.querySelector('[data-act="reset"]').addEventListener('click', () => {
+        if (!confirm('Clear your answers and ratings for this lesson?')) return;
+        state = {}; save();
+        cards().forEach(c => {
+            c.querySelector('.ip-text').value = '';
+            const ans = c.querySelector('.ip-answer'); ans.hidden = true;
+            const rv = c.querySelector('.ip-reveal'); if (rv) rv.hidden = false;
+            c.dataset.rating = '';
+            c.querySelectorAll('.ip-rate-btn').forEach(b => b.classList.remove('active'));
+        });
+        updateProgress();
+    });
+
+    h2.after(root);
+    originals.forEach(el => el.remove());
+    updateProgress();
+}
+
 // ── Interactive Quiz Engine ──
 // Detects quiz patterns in rendered markdown and makes them clickable with radio buttons
 function makeQuizInteractive() {
@@ -2438,6 +2569,7 @@ async function loadFile(filePath) {
 
             buildTOC();
             makeQuizInteractive();
+            makeInterviewInteractive();
 
             if (pendingReviseTour) {
                 pendingReviseTour = false;

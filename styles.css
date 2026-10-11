@@ -1716,3 +1716,46 @@
         .explore-track-btn:hover .explore-track-btn-arrow {
             transform: translateX(3px);
         }
+
+/* ── Interview Practice accordion ── */
+.ip { margin: 1.25rem 0 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.ip-bar { display: flex; align-items: center; gap: 0.9rem; font-size: 0.8rem; color: var(--color-on-surface-variant); }
+.ip-progress { flex: 1; height: 6px; border-radius: 999px; background: var(--color-surface-container-high); overflow: hidden; }
+.ip-progress span { display: block; height: 100%; width: 0; background: var(--color-primary); border-radius: inherit; transition: width 0.35s ease; }
+.ip-count { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ip-link { background: none; border: 0; padding: 0; cursor: pointer; font: inherit; color: var(--color-primary); }
+.ip-link:hover { text-decoration: underline; }
+.ip-card { border: 1px solid var(--color-outline-variant); border-radius: 14px; background: var(--color-surface-container-lowest); transition: border-color 0.2s, box-shadow 0.2s; }
+.ip-card:hover, .ip-card.open { border-color: var(--color-primary); }
+.ip-card.open { box-shadow: 0 6px 24px rgba(9, 76, 178, 0.08); }
+.ip-head { display: flex; align-items: flex-start; gap: 0.9rem; width: 100%; padding: 1rem 1.1rem; background: none; border: 0; cursor: pointer; text-align: left; font: inherit; color: var(--color-on-surface); line-height: 1.55; }
+.ip-num { flex: none; width: 1.7rem; height: 1.7rem; border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; font-weight: 700; background: var(--color-surface-container-high); color: var(--color-on-surface); transition: background 0.2s, color 0.2s; }
+.ip-card.open .ip-num { background: var(--color-primary); color: var(--color-on-primary); }
+.ip-card[data-rating="nailed"] .ip-num { background: #10b981; color: #fff; }
+.ip-card[data-rating="partly"] .ip-num { background: #f59e0b; color: #fff; }
+.ip-card[data-rating="missed"] .ip-num { background: var(--color-error); color: var(--color-on-error); }
+.ip-q { flex: 1; font-weight: 500; }
+.ip-plus { flex: none; position: relative; width: 14px; height: 14px; margin-top: 0.4rem; }
+.ip-plus::before, .ip-plus::after { content: ''; position: absolute; inset: 50% 0 auto 0; height: 2px; margin-top: -1px; background: var(--color-on-surface-variant); border-radius: 2px; transition: transform 0.25s ease; }
+.ip-plus::after { transform: rotate(90deg); }
+.ip-card.open .ip-plus::after { transform: rotate(0deg); }
+.ip-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+.ip-card.open .ip-body { grid-template-rows: 1fr; }
+.ip-body-inner { overflow: hidden; min-height: 0; padding: 0 1.1rem; }
+.ip-card.open .ip-body-inner { padding-bottom: 1.1rem; }
+.ip-label { display: block; margin-bottom: 0.4rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em; color: var(--color-on-surface-variant); }
+.ip-text { width: 100%; resize: vertical; padding: 0.7rem 0.85rem; border-radius: 10px; border: 1px solid var(--color-outline-variant); background: var(--color-surface); color: var(--color-on-surface); font: inherit; font-size: 0.92rem; }
+.ip-text:focus { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+.ip-reveal { margin-top: 0.7rem; padding: 0.5rem 1rem; border-radius: 999px; border: 0; cursor: pointer; font: inherit; font-size: 0.85rem; font-weight: 600; background: var(--color-primary); color: var(--color-on-primary); }
+.ip-reveal:hover { filter: brightness(1.1); }
+.ip-answer { margin-top: 0.9rem; padding: 0.9rem 1rem; border-left: 3px solid var(--color-primary); border-radius: 0 10px 10px 0; background: var(--color-surface-container-low); }
+.ip-answer[hidden], .ip-reveal[hidden] { display: none; }
+.ip-answer-body > :first-child { margin-top: 0; }
+.ip-answer-body > :last-child { margin-bottom: 0; }
+.ip-rate { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.9rem; padding-top: 0.8rem; border-top: 1px solid var(--color-outline-variant); font-size: 0.82rem; color: var(--color-on-surface-variant); }
+.ip-rate-btn { padding: 0.3rem 0.8rem; border-radius: 999px; cursor: pointer; font: inherit; font-size: 0.8rem; border: 1px solid var(--color-outline-variant); background: var(--color-surface-container-lowest); color: var(--color-on-surface); }
+.ip-rate-btn:hover { border-color: var(--color-primary); }
+.ip-rate-btn.active[data-rate="nailed"] { background: #10b981; border-color: #10b981; color: #fff; }
+.ip-rate-btn.active[data-rate="partly"] { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+.ip-rate-btn.active[data-rate="missed"] { background: var(--color-error); border-color: var(--color-error); color: var(--color-on-error); }
+@media (prefers-reduced-motion: reduce) { .ip-body, .ip-plus::before, .ip-plus::after, .ip-progress span { transition: none; } }
