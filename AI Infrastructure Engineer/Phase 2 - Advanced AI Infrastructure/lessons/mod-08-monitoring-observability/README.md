@@ -19,14 +19,10 @@ When something breaks in production at 2am, the difference between a five-minute
 
 | # | Lesson |
 |---|--------|
-| 01 | [Introduction to Observability](./01-introduction-observability.md) — the three pillars, OpenTelemetry |
-| 02 | [Prometheus Metrics](./02-prometheus-metrics.md) — architecture, metric types, PromQL, recording rules |
-| 03 | [Grafana Visualization](./03-grafana-visualization.md) — dashboard design, panels, variables, alerting |
-| 04 | [Logging: ELK & Loki](./04-logging-elk-loki.md) — centralized logging, structured logs, log queries |
-| 05 | [Distributed Tracing](./05-distributed-tracing.md) — Jaeger/Zipkin, instrumenting services, trace analysis |
-| 06 | [Alerting Strategies](./06-alerting-strategies.md) — AlertManager, on-call workflows, incident response |
-| 07 | [ML Model Observability](./07-ml-model-observability.md) — performance metrics, drift detection, rollbacks |
-| 08 | [Best Practices & Culture](./08-best-practices-culture.md) — SLIs/SLOs, error budgets, capacity planning |
+| 01 | [Prometheus Metrics](./01-prometheus-metrics.md) — architecture, metric types, PromQL, recording rules |
+| 02 | [Distributed Tracing](./02-distributed-tracing.md) — Jaeger/Zipkin, instrumenting services, trace analysis |
+| 03 | [ML Model Observability](./03-ml-model-observability.md) — performance metrics, drift detection, rollbacks |
+| 04 | [Best Practices & Culture](./04-best-practices-culture.md) — SLIs/SLOs, error budgets, capacity planning |
 
 ## Hands-on
 
@@ -34,7 +30,7 @@ Five labs in [`labs/`](./labs/): stand up Prometheus + Grafana, centralize logs 
 
 ## Assessment
 
-- **Quiz** — [`quizzes/module-quiz.md`](./quizzes/module-quiz.md), 25 questions
+- **Quiz** — [`quizzes/module-quiz.md`](./quizzes/module-quiz.md), 10 questions, 80% to pass
 - **Practical** — design an observability strategy for a given ML system
 - **Capstone** — implement the complete monitoring stack end to end
 

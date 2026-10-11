@@ -18,14 +18,11 @@ Clicking through a cloud console to build infrastructure doesn't scale, isn't re
 
 | # | Lesson |
 |---|--------|
-| 01 | [Introduction to IaC](./01-introduction-to-iac.md) — declarative vs. imperative, tool landscape |
-| 02 | [Terraform Fundamentals](./02-terraform-fundamentals.md) — HCL, providers, resources, your first project |
-| 03 | [Terraform State Management](./03-terraform-state-management.md) — remote backends, locking, workspaces |
-| 04 | [Building AI Infrastructure with Terraform](./04-building-ai-infrastructure-terraform.md) — GPU instances, EKS/GKE/AKS |
-| 05 | [Pulumi: Infrastructure as Software](./05-pulumi-infrastructure-as-software.md) — Python-based IaC |
-| 06 | [Advanced IaC Patterns](./06-advanced-iac-patterns.md) — modules, multi-env, multi-cloud |
-| 07 | [GitOps & IaC CI/CD](./07-gitops-iac-cicd.md) — PR workflows, automated plan/apply, policy as code |
-| 08 | [Security Best Practices](./08-security-best-practices.md) — secrets management, scanning, cost estimation |
+| 01 | [Terraform Fundamentals](./01-terraform-fundamentals.md) — HCL, providers, resources, your first project |
+| 02 | [Terraform State Management](./02-terraform-state-management.md) — remote backends, locking, workspaces |
+| 03 | [Building AI Infrastructure with Terraform](./03-building-ai-infrastructure-terraform.md) — GPU instances, EKS/GKE/AKS |
+| 04 | [GitOps & IaC CI/CD](./04-gitops-iac-cicd.md) — PR workflows, automated plan/apply, policy as code |
+| 05 | [Security Best Practices](./05-security-best-practices.md) — secrets management, scanning, cost estimation |
 
 ## Hands-on
 
@@ -33,7 +30,7 @@ Eight exercises in [`labs/`](./labs/) — from deploying a single EC2 instance u
 
 ## Assessment
 
-- **Quiz** — [`quizzes/module-quiz.md`](./quizzes/module-quiz.md), 25 questions
+- **Quiz** — [`quizzes/module-quiz.md`](./quizzes/module-quiz.md), 23 questions, 70% to pass
 - **Practical** — design and deploy a complete ML infrastructure stack (GPU training instance, K8s inference cluster, S3 storage, monitoring) entirely via Terraform with remote state
 
 ## Tooling

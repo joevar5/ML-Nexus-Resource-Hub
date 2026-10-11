@@ -7,38 +7,6 @@
 ---
 
 ## Question 1
-**Q:** What is the primary benefit of using Infrastructure as Code over manual infrastructure management?
-
-**Answer:** C) Infrastructure can be version controlled and reproduced consistently
-
-**Explanation:**
-The defining advantage of IaC is that infrastructure definitions live in source control alongside application code, enabling code review, diff history, rollbacks, and deterministic recreation of environments. Manual click-ops cannot guarantee consistent reproduction across regions, accounts, or environments, and there is no audit trail of who changed what.
-
-**Common Mistakes:**
-- Choosing A — initial deploys are often *slower* with IaC because of the upfront authoring effort; the win comes from repeatability over time.
-- Choosing D — IaC does not replace cloud providers; it codifies how you provision resources on them.
-
-**Related Material:** `lessons/mod-09-infrastructure-as-code/01-introduction-to-iac.md`
-
----
-
-## Question 2
-**Q:** Which statement best describes a declarative approach to IaC?
-
-**Answer:** B) You describe the desired end state and the tool figures out how to achieve it
-
-**Explanation:**
-Declarative tools like Terraform and Pulumi take a desired-state specification and reconcile reality to match it, computing the necessary create/update/delete operations. This contrasts with imperative scripts where you write the exact steps. Declarative approaches give you idempotency for free — running the same config twice converges to the same result.
-
-**Common Mistakes:**
-- Choosing A — step-by-step instructions describe an *imperative* approach, not declarative.
-- Choosing D — shell scripts that run commands sequentially are imperative procedural automation.
-
-**Related Material:** `lessons/mod-09-infrastructure-as-code/01-introduction-to-iac.md`
-
----
-
-## Question 3
 **Q:** What is the purpose of Terraform state?
 
 **Answer:** B) To track the current state of managed infrastructure
@@ -50,11 +18,11 @@ The state file is Terraform's source of truth mapping configuration blocks to re
 - Choosing A — state is not a credentials store; secrets there are a leakage risk, not a feature.
 - Choosing C — the `.tf` configuration files (not state) define what should exist.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/03-terraform-state-management.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-state-management.md`
 
 ---
 
-## Question 4
+## Question 2
 **Q:** Why should you use a remote state backend (like S3) instead of local state?
 
 **Answer:** B) It enables team collaboration and prevents concurrent modifications
@@ -66,11 +34,11 @@ A remote backend lets every team member and CI pipeline work against a single ca
 - Choosing A — remote backends usually add latency vs. local disk, not reduce it.
 - Choosing D — remote backends store state, but they do not automatically back up your underlying cloud resources.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/03-terraform-state-management.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-state-management.md`
 
 ---
 
-## Question 5
+## Question 3
 **Q:** How does Terraform determine the order in which to create resources?
 
 **Answer:** C) By analyzing implicit and explicit dependencies
@@ -82,11 +50,11 @@ Terraform builds a directed acyclic graph from references between resources (imp
 - Choosing A or B — Terraform ignores file ordering and resource names when choosing execution order.
 - Choosing D — Terraform never relies on random ordering with retries; it computes the correct order ahead of time.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-fundamentals.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/01-terraform-fundamentals.md`
 
 ---
 
-## Question 6
+## Question 4
 **Q:** What is the correct way to reference a variable named `instance_type` in a Terraform resource?
 
 **Answer:** B) `var.instance_type`
@@ -98,11 +66,11 @@ HCL exposes input variables through the `var.` namespace. You can use the refere
 - Choosing A — `${instance_type}` is missing the `var.` prefix; interpolation syntax is `${var.instance_type}`.
 - Choosing C — `variable` is the *block* keyword used to declare variables, not the access namespace.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-fundamentals.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/01-terraform-fundamentals.md`
 
 ---
 
-## Question 7
+## Question 5
 **Q:** When should you use `for_each` instead of `count` in Terraform?
 
 **Answer:** B) When you want to create resources from a map or set and need stable identifiers
@@ -118,7 +86,7 @@ HCL exposes input variables through the `var.` namespace. You can use the refere
 
 ---
 
-## Question 8
+## Question 6
 **Q:** Which Terraform resource meta-argument would you use to provision expensive GPU instances only in production?
 
 **Answer:** B) `count = var.environment == "prod" ? 3 : 0`
@@ -130,11 +98,11 @@ Combining `count` with a conditional expression lets you create N copies of a re
 - Choosing A — `prevent_destroy` only blocks deletion of already-created resources; it does not gate creation.
 - Choosing D — `for_each` on `var.gpu_instances` does not, on its own, restrict creation to production unless the input map is also environment-gated.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/04-building-ai-infrastructure-terraform.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/03-building-ai-infrastructure-terraform.md`
 
 ---
 
-## Question 9
+## Question 7
 **Q:** What does `terraform plan` do?
 
 **Answer:** B) Shows a preview of changes without making them
@@ -146,11 +114,11 @@ Combining `count` with a conditional expression lets you create N copies of a re
 - Choosing A — that is the job of `terraform apply`.
 - Choosing C or D — formatting is `terraform fmt`; initialization is `terraform init`.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-fundamentals.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/01-terraform-fundamentals.md`
 
 ---
 
-## Question 10
+## Question 8
 **Q:** What is the purpose of state locking with DynamoDB in an S3 backend?
 
 **Answer:** B) To prevent concurrent terraform operations that could corrupt state
@@ -162,11 +130,11 @@ DynamoDB acts as a distributed lock manager: before Terraform reads or writes th
 - Choosing A — encryption of state is configured separately via S3 server-side encryption or KMS, not via DynamoDB.
 - Choosing D — state file versioning is handled by S3 versioning, not DynamoDB.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/03-terraform-state-management.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-state-management.md`
 
 ---
 
-## Question 11
+## Question 9
 **Q:** What is a Terraform data source used for?
 
 **Answer:** B) To fetch information about existing resources
@@ -178,44 +146,11 @@ Data sources (`data` blocks) perform read-only queries against providers — for
 - Choosing A — `resource` blocks (not `data` blocks) create new infrastructure.
 - Choosing C — sensitive data should be stored in Secrets Manager, SSM Parameter Store, or Vault, not in data sources.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-fundamentals.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/01-terraform-fundamentals.md`
 
 ---
 
-## Question 12
-**Q:** What is the primary purpose of Terraform modules?
-
-**Answer:** B) To organize and reuse infrastructure code
-
-**Explanation:**
-Modules are reusable bundles of related resources exposed through inputs (variables) and outputs. They let you publish opinionated building blocks (e.g., a "GPU training cluster" module) and consume them across environments and teams without copy-paste. They are the Terraform analogue of functions or packages in a programming language.
-
-**Common Mistakes:**
-- Choosing A — modules do not measurably speed up Terraform execution; they change code organization.
-- Choosing C or D — encryption and state management are orthogonal backend concerns.
-
-**Related Material:** `lessons/mod-09-infrastructure-as-code/06-advanced-iac-patterns.md`
-
----
-
-## Question 13
-**Q:** What is the main difference between Pulumi and Terraform?
-
-**Answer:** B) Pulumi uses general-purpose programming languages, Terraform uses HCL
-
-**Explanation:**
-Pulumi expresses infrastructure in real programming languages (Python, TypeScript, Go, C#, Java), so you can use loops, classes, abstractions, and unit-testing frameworks natively. Terraform uses HCL, a purpose-built configuration language. Both are declarative under the hood and both support multi-cloud deployments and state management.
-
-**Common Mistakes:**
-- Choosing A — Terraform is cloud-agnostic and supports hundreds of providers, not just AWS.
-- Choosing C — Pulumi *does* support state management (via Pulumi Cloud or self-managed backends).
-- Choosing D — both tools present a declarative model to the user, regardless of host language.
-
-**Related Material:** `lessons/mod-09-infrastructure-as-code/05-pulumi-infrastructure-as-software.md`
-
----
-
-## Question 14
+## Question 10
 **Q:** Why are spot instances beneficial for ML training workloads in Terraform?
 
 **Answer:** B) They're up to 90% cheaper than on-demand instances
@@ -227,11 +162,11 @@ Spot instances utilize spare cloud capacity at deeply discounted prices, often 7
 - Choosing A or D — spot and on-demand share identical hardware and networking; performance is not better.
 - Choosing C — spot capacity can be reclaimed by the provider with as little as two minutes' notice; interruption is the trade-off.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/04-building-ai-infrastructure-terraform.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/03-building-ai-infrastructure-terraform.md`
 
 ---
 
-## Question 15
+## Question 11
 **Q:** How do you mark a Terraform output as sensitive to prevent it from being displayed in the CLI?
 
 **Answer:** B) `output "password" { value = var.password, sensitive = true }`
@@ -243,11 +178,11 @@ Setting `sensitive = true` on an output block causes Terraform to redact the val
 - Choosing A — without `sensitive = true`, the password is printed in plain text.
 - Choosing C or D — `hidden` and `encrypted` are not valid Terraform output arguments.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/08-security-best-practices.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/05-security-best-practices.md`
 
 ---
 
-## Question 16
+## Question 12
 **Q:** What is the purpose of Terraform workspaces?
 
 **Answer:** B) To manage multiple environments (dev, staging, prod) with the same configuration
@@ -263,7 +198,7 @@ Workspaces let a single configuration root maintain multiple isolated state file
 
 ---
 
-## Question 17
+## Question 13
 **Q:** What is a key principle of GitOps for infrastructure?
 
 **Answer:** B) Infrastructure changes go through Git pull requests and automated pipelines
@@ -275,11 +210,11 @@ GitOps treats the Git repository as the single source of truth for desired infra
 - Choosing A — direct console changes are precisely what GitOps prohibits; they cause configuration drift.
 - Choosing D — GitOps gates *who can merge*, not who can be on the team; anyone can propose changes via PR.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/07-gitops-iac-cicd.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/04-gitops-iac-cicd.md`
 
 ---
 
-## Question 18
+## Question 14
 **Q:** What does the `terraform fmt` command do?
 
 **Answer:** B) Formats code to canonical style
@@ -291,11 +226,11 @@ GitOps treats the Git repository as the single source of truth for desired infra
 - Choosing A — syntax validation is `terraform validate`.
 - Choosing C or D — plans come from `terraform plan`; initialization from `terraform init`.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-fundamentals.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/01-terraform-fundamentals.md`
 
 ---
 
-## Question 19
+## Question 15
 **Q:** Which lifecycle meta-argument prevents accidental destruction of critical resources?
 
 **Answer:** B) `prevent_destroy = true`
@@ -308,11 +243,11 @@ Inside a `lifecycle` block, `prevent_destroy = true` causes Terraform to error o
 - Choosing C — `ignore_changes` suppresses drift detection on specific attributes, unrelated to deletion.
 - Choosing D — `destroy = false` is not a valid lifecycle argument.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/08-security-best-practices.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/05-security-best-practices.md`
 
 ---
 
-## Question 20
+## Question 16
 **Q:** Why should ML training EC2 instances use IAM roles instead of hardcoded credentials?
 
 **Answer:** B) IAM roles provide temporary, automatically rotated credentials
@@ -324,11 +259,11 @@ Instance profiles deliver short-lived STS credentials to the EC2 instance metada
 - Choosing A or D — IAM roles do not change runtime performance or pricing.
 - Choosing C — AWS allows access keys on EC2; it just strongly recommends against them.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/08-security-best-practices.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/05-security-best-practices.md`
 
 ---
 
-## Question 21
+## Question 17
 **Q:** Terraform state files can contain sensitive data. What's the best practice?
 
 **Answer:** B) Use remote state with encryption (e.g., S3 with KMS)
@@ -341,11 +276,11 @@ Remote state on S3 with server-side encryption (SSE-KMS), bucket versioning, and
 - Choosing C — local-only state blocks collaboration and is easily lost.
 - Choosing D — emailing state circulates secrets uncontrollably and provides no locking.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/03-terraform-state-management.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-state-management.md`
 
 ---
 
-## Question 22
+## Question 18
 **Q:** What do tfsec and Checkov do in an IaC workflow?
 
 **Answer:** B) Scan infrastructure code for security issues and misconfigurations
@@ -358,11 +293,11 @@ tfsec and Checkov are static analysis tools that parse Terraform (and other IaC)
 - Choosing C — documentation is generated by tools like terraform-docs.
 - Choosing D — neither tool deploys infrastructure; they only analyze it.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/08-security-best-practices.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/05-security-best-practices.md`
 
 ---
 
-## Question 23
+## Question 19
 **Q:** Which Terraform resource would you use to auto-scale ML inference servers based on load?
 
 **Answer:** B) `aws_autoscaling_group`
@@ -375,11 +310,11 @@ An Auto Scaling Group manages a fleet of EC2 instances behind scaling policies t
 - Choosing C — Lambda auto-scales but is not appropriate for long-running GPU inference servers.
 - Choosing D — `aws_ecs_task` defines a single task; ECS scaling needs a service plus a scaling policy.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/04-building-ai-infrastructure-terraform.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/03-building-ai-infrastructure-terraform.md`
 
 ---
 
-## Question 24
+## Question 20
 **Q:** What does `terraform import` do?
 
 **Answer:** B) Brings existing infrastructure under Terraform management
@@ -396,7 +331,7 @@ An Auto Scaling Group manages a fleet of EC2 instances behind scaling policies t
 
 ---
 
-## Question 25
+## Question 21
 **Q:** Which tool can estimate the cost of infrastructure before applying Terraform changes?
 
 **Answer:** B) Infracost
@@ -409,28 +344,11 @@ Infracost parses Terraform plans and queries cloud pricing APIs to produce a dol
 - Choosing C — `terraform validate` checks syntax and internal consistency only.
 - Choosing D — tfsec scans for security misconfigurations, not cost.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/07-gitops-iac-cicd.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/04-gitops-iac-cicd.md`
 
 ---
 
-## Question 26
-**Q:** Scenario 1 — Multi-Environment ML Infrastructure. You need separate dev (1× t3.large), staging (2× p3.2xlarge), and prod (4× p3.8xlarge) environments sharing the same codebase. What's the best approach to manage these environments with Terraform?
-
-**Answer:** B) Use Terraform workspaces with variable files for each environment
-
-**Explanation:**
-A single configuration parameterized by an `environment` variable, combined with workspace-specific `.tfvars` (or separate backend directories per environment), keeps the code DRY while allowing per-environment instance counts and types. A map variable keyed by environment (`{dev = {...}, staging = {...}, prod = {...}}`) lets a single `aws_instance` block expand correctly per workspace. For stronger prod isolation, many teams use separate state backends per environment rather than workspaces alone — both are valid expressions of the same parameterization principle.
-
-**Common Mistakes:**
-- Choosing A — three copy-pasted projects guarantee drift; bug fixes have to be applied three times and inevitably diverge.
-- Choosing C — hardcoded values make per-environment differences impossible without editing source for every deploy.
-- Choosing D — mixing manual provisioning with Terraform causes state-vs-reality drift and defeats the point of IaC.
-
-**Related Material:** `lessons/mod-09-infrastructure-as-code/06-advanced-iac-patterns.md`
-
----
-
-## Question 27
+## Question 22
 **Q:** Scenario 2 — State File Corruption. Two engineers ran `terraform apply` simultaneously and the production GPU cluster state is now inconsistent with reality. What steps should you take to recover and prevent this in the future?
 
 **Answer:** Halt all Terraform operations, restore state from a prior S3 version, verify and refresh, then enforce state locking and pipeline-only applies going forward.
@@ -444,11 +362,11 @@ The immediate priority is to stop further writes, then recover state from S3 obj
 - Not enabling S3 versioning before the incident, leaving you with no prior state to restore.
 - Relying solely on team discipline instead of pipeline gates and automated locking.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/03-terraform-state-management.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/02-terraform-state-management.md`
 
 ---
 
-## Question 28
+## Question 23
 **Q:** Scenario 3 — Secret Management. An ML inference service on EC2 needs a database password, an external ML-API key, and S3 access. How should you securely manage these secrets in your Terraform configuration?
 
 **Answer:** Store the database password and API key in AWS Secrets Manager, use an IAM instance profile (not access keys) for S3 access, retrieve secrets at runtime via the instance role, and keep tfvars out of Git with encrypted remote state.
@@ -462,6 +380,6 @@ Secrets like passwords and API keys belong in a managed secret store (AWS Secret
 - Storing secrets only in plaintext environment variables on the instance with no rotation strategy.
 - Leaving the Terraform state file unencrypted — even if secrets are external, their values land in state when referenced.
 
-**Related Material:** `lessons/mod-09-infrastructure-as-code/08-security-best-practices.md`
+**Related Material:** `lessons/mod-09-infrastructure-as-code/05-security-best-practices.md`
 
 ---

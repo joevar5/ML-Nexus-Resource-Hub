@@ -1,54 +1,16 @@
 # Module 09: Infrastructure as Code - Quiz
 
-Test your understanding of Infrastructure as Code concepts, Terraform, Pulumi, and IaC best practices for AI/ML infrastructure.
+Test your understanding of Infrastructure as Code concepts, Terraform, state management, GitOps, and IaC security for AI/ML infrastructure for AI/ML infrastructure.
 
-**Time:** 45 minutes
-**Questions:** 25 multiple choice + 3 scenario-based questions
-**Passing Score:** 70% (20/28 correct)
+**Time:** 40 minutes
+**Questions:** 21 multiple choice + 2 scenario-based questions
+**Passing Score:** 70% (17/23 correct)
 
 ---
 
 ## Multiple Choice Questions
 
-### Question 1: IaC Fundamentals
-
-What is the primary benefit of using Infrastructure as Code over manual infrastructure management?
-
-A) It's faster to deploy initially
-B) It doesn't require learning new tools
-C) Infrastructure can be version controlled and reproduced consistently
-D) It eliminates the need for cloud providers
-
-<details>
-<summary>Answer</summary>
-
-**C) Infrastructure can be version controlled and reproduced consistently**
-
-Explanation: The main advantage of IaC is reproducibility and version control. While deployment speed can improve over time, the key benefit is treating infrastructure like code—enabling git workflows, code reviews, and consistent environments.
-</details>
-
----
-
-### Question 2: Declarative vs Imperative
-
-Which statement best describes a declarative approach to IaC?
-
-A) You specify step-by-step instructions to create resources
-B) You describe the desired end state and the tool figures out how to achieve it
-C) You manually run commands in sequence
-D) You use shell scripts to automate tasks
-
-<details>
-<summary>Answer</summary>
-
-**B) You describe the desired end state and the tool figures out how to achieve it**
-
-Explanation: Declarative IaC (like Terraform and Pulumi) focuses on describing WHAT you want, not HOW to create it. The tool handles the implementation details and ensures idempotency.
-</details>
-
----
-
-### Question 3: Terraform State
+### Question 1: Terraform State
 
 What is the purpose of Terraform state?
 
@@ -67,7 +29,7 @@ Explanation: Terraform state is a JSON file that maps your configuration to real
 
 ---
 
-### Question 4: Remote State Backend
+### Question 2: Remote State Backend
 
 Why should you use a remote state backend (like S3) instead of local state?
 
@@ -86,7 +48,7 @@ Explanation: Remote state backends enable multiple team members to work on the s
 
 ---
 
-### Question 5: Terraform Resource Dependencies
+### Question 3: Terraform Resource Dependencies
 
 How does Terraform determine the order in which to create resources?
 
@@ -105,7 +67,7 @@ Explanation: Terraform builds a dependency graph by analyzing resource reference
 
 ---
 
-### Question 6: HCL Variables
+### Question 4: HCL Variables
 
 What is the correct way to reference a variable named `instance_type` in a Terraform resource?
 
@@ -124,7 +86,7 @@ Explanation: In HCL, variables are referenced using the `var.` prefix followed b
 
 ---
 
-### Question 7: count vs for_each
+### Question 5: count vs for_each
 
 When should you use `for_each` instead of `count` in Terraform?
 
@@ -143,7 +105,7 @@ Explanation: `for_each` is preferred over `count` when you need resources to be 
 
 ---
 
-### Question 8: GPU Instance Provisioning
+### Question 6: GPU Instance Provisioning
 
 Which Terraform resource meta-argument would you use to provision expensive GPU instances only in production?
 
@@ -162,7 +124,7 @@ Explanation: Using a conditional expression with `count` allows you to create re
 
 ---
 
-### Question 9: Terraform Plan
+### Question 7: Terraform Plan
 
 What does `terraform plan` do?
 
@@ -181,7 +143,7 @@ Explanation: `terraform plan` generates an execution plan showing what actions T
 
 ---
 
-### Question 10: Terraform State Locking
+### Question 8: Terraform State Locking
 
 What is the purpose of state locking with DynamoDB in an S3 backend?
 
@@ -200,7 +162,7 @@ Explanation: State locking prevents multiple team members from running `terrafor
 
 ---
 
-### Question 11: Data Sources
+### Question 9: Data Sources
 
 What is a Terraform data source used for?
 
@@ -219,45 +181,7 @@ Explanation: Data sources allow Terraform to query existing infrastructure (like
 
 ---
 
-### Question 12: Terraform Modules
-
-What is the primary purpose of Terraform modules?
-
-A) To run Terraform faster
-B) To organize and reuse infrastructure code
-C) To encrypt sensitive data
-D) To manage state files
-
-<details>
-<summary>Answer</summary>
-
-**B) To organize and reuse infrastructure code**
-
-Explanation: Modules are containers for multiple resources that are used together. They enable code reusability, organization, and abstraction of complex infrastructure patterns.
-</details>
-
----
-
-### Question 13: Pulumi vs Terraform
-
-What is the main difference between Pulumi and Terraform?
-
-A) Pulumi is cloud-agnostic, Terraform is AWS-only
-B) Pulumi uses general-purpose programming languages, Terraform uses HCL
-C) Terraform supports state management, Pulumi doesn't
-D) Pulumi is imperative, Terraform is declarative
-
-<details>
-<summary>Answer</summary>
-
-**B) Pulumi uses general-purpose programming languages, Terraform uses HCL**
-
-Explanation: The key difference is that Pulumi allows you to use Python, TypeScript, Go, etc., while Terraform uses HCL (a domain-specific language). Both are declarative and multi-cloud.
-</details>
-
----
-
-### Question 14: Spot Instances for ML Training
+### Question 10: Spot Instances for ML Training
 
 Why are spot instances beneficial for ML training workloads in Terraform?
 
@@ -276,7 +200,7 @@ Explanation: Spot instances offer significant cost savings (up to 90% off) by us
 
 ---
 
-### Question 15: Sensitive Outputs
+### Question 11: Sensitive Outputs
 
 How do you mark a Terraform output as sensitive to prevent it from being displayed in the CLI?
 
@@ -295,7 +219,7 @@ Explanation: The `sensitive = true` argument prevents the output value from bein
 
 ---
 
-### Question 16: Terraform Workspaces
+### Question 12: Terraform Workspaces
 
 What is the purpose of Terraform workspaces?
 
@@ -314,7 +238,7 @@ Explanation: Workspaces allow you to use the same Terraform configuration for mu
 
 ---
 
-### Question 17: GitOps for Infrastructure
+### Question 13: GitOps for Infrastructure
 
 What is a key principle of GitOps for infrastructure?
 
@@ -333,7 +257,7 @@ Explanation: GitOps treats Git as the single source of truth. All infrastructure
 
 ---
 
-### Question 18: terraform fmt
+### Question 14: terraform fmt
 
 What does the `terraform fmt` command do?
 
@@ -352,7 +276,7 @@ Explanation: `terraform fmt` automatically formats Terraform configuration files
 
 ---
 
-### Question 19: Preventing Resource Destruction
+### Question 15: Preventing Resource Destruction
 
 Which lifecycle meta-argument prevents accidental destruction of critical resources?
 
@@ -371,7 +295,7 @@ Explanation: Setting `prevent_destroy = true` in the lifecycle block causes Terr
 
 ---
 
-### Question 20: IAM Roles for EC2
+### Question 16: IAM Roles for EC2
 
 Why should ML training EC2 instances use IAM roles instead of hardcoded credentials?
 
@@ -390,7 +314,7 @@ Explanation: IAM roles for EC2 (via instance profiles) provide temporary credent
 
 ---
 
-### Question 21: State File Security
+### Question 17: State File Security
 
 Terraform state files can contain sensitive data. What's the best practice?
 
@@ -409,7 +333,7 @@ Explanation: State files often contain sensitive information. Using remote state
 
 ---
 
-### Question 22: tfsec and Checkov
+### Question 18: tfsec and Checkov
 
 What do tfsec and Checkov do in an IaC workflow?
 
@@ -428,7 +352,7 @@ Explanation: tfsec and Checkov are security scanning tools that analyze Terrafor
 
 ---
 
-### Question 23: Auto-Scaling for Inference
+### Question 19: Auto-Scaling for Inference
 
 Which Terraform resource would you use to auto-scale ML inference servers based on load?
 
@@ -447,7 +371,7 @@ Explanation: Auto Scaling Groups automatically adjust the number of EC2 instance
 
 ---
 
-### Question 24: Terraform Import
+### Question 20: Terraform Import
 
 What does `terraform import` do?
 
@@ -466,7 +390,7 @@ Explanation: `terraform import` allows you to import existing cloud resources in
 
 ---
 
-### Question 25: Cost Optimization
+### Question 21: Cost Optimization
 
 Which tool can estimate the cost of infrastructure before applying Terraform changes?
 
@@ -487,81 +411,7 @@ Explanation: Infracost analyzes Terraform code and provides cost estimates befor
 
 ## Scenario-Based Questions
 
-### Scenario 1: Multi-Environment ML Infrastructure
-
-**Context:**
-You're building infrastructure for an ML training platform that needs separate dev, staging, and production environments. Each environment should have:
-- Dev: 1x t3.large instance
-- Staging: 2x p3.2xlarge GPU instances
-- Prod: 4x p3.8xlarge GPU instances
-
-All environments share the same codebase but need different configurations.
-
-**Question:**
-What's the best approach to manage these environments with Terraform?
-
-A) Create three separate Terraform projects with duplicated code
-B) Use Terraform workspaces with variable files for each environment
-C) Use a single configuration with hardcoded values for all environments
-D) Manually create resources for dev/staging, use Terraform only for prod
-
-**Your answer and explanation:**
-
-<details>
-<summary>Recommended Answer</summary>
-
-**B) Use Terraform workspaces with variable files for each environment**
-
-**Explanation:**
-The best practice is to use workspaces or separate directories with environment-specific `.tfvars` files:
-
-```hcl
-# variables.tf
-variable "environment" {
-  type = string
-}
-
-variable "instance_config" {
-  type = map(object({
-    count = number
-    type  = string
-  }))
-  default = {
-    dev = {
-      count = 1
-      type  = "t3.large"
-    }
-    staging = {
-      count = 2
-      type  = "p3.2xlarge"
-    }
-    prod = {
-      count = 4
-      type  = "p3.8xlarge"
-    }
-  }
-}
-
-# main.tf
-resource "aws_instance" "ml_cluster" {
-  count         = var.instance_config[var.environment].count
-  instance_type = var.instance_config[var.environment].type
-  # ...
-}
-```
-
-Then use workspace-specific tfvars:
-```bash
-terraform workspace new dev
-terraform apply -var="environment=dev"
-```
-
-This approach maintains DRY (Don't Repeat Yourself) principles while allowing environment-specific configurations.
-</details>
-
----
-
-### Scenario 2: State File Corruption
+### Scenario 1: State File Corruption
 
 **Context:**
 Your team is working on ML infrastructure with Terraform. Two engineers accidentally ran `terraform apply` simultaneously, and now your state file is corrupted. Your production GPU cluster state is inconsistent with reality.
@@ -642,7 +492,7 @@ What steps should you take to recover and prevent this in the future?
 
 ---
 
-### Scenario 3: Secret Management
+### Scenario 2: Secret Management
 
 **Context:**
 You need to deploy an ML inference service that requires:
@@ -794,69 +644,7 @@ How should you securely manage these secrets in your Terraform configuration?
 
 ---
 
-## Quiz Scoring Guide
+## Scoring Guide
 
-### Scoring Breakdown
-- **Multiple Choice (1-25)**: 1 point each = 25 points
-- **Scenario 1**: 1 point = 1 point
-- **Scenario 2**: 1 point = 1 point
-- **Scenario 3**: 1 point = 1 point
-
-**Total**: 28 points possible
-
-### Grading Scale
-- **25-28 points (89-100%)**: Excellent - Advanced IaC understanding
-- **20-24 points (71-86%)**: Good - Solid IaC fundamentals
-- **16-19 points (57-68%)**: Needs improvement - Review lessons
-- **Below 16 (< 57%)**: Insufficient - Restart module
-
-### Recommended Next Steps by Score
-
-**Excellent (89-100%)**
-- Proceed to Module 10: LLM Infrastructure
-- Consider advanced IaC topics (Terragrunt, CDK for Terraform)
-- Start implementing real projects
-
-**Good (71-86%)**
-- Review weaker areas from quiz
-- Complete all hands-on exercises
-- Proceed to Module 10
-
-**Needs Improvement (57-68%)**
-- Re-read lessons 3-8
-- Practice with hands-on exercises
-- Retake quiz before proceeding
-
-**Insufficient (< 57%)**
-- Restart module from Lesson 01
-- Work through all exercises
-- Seek additional resources or mentorship
-
----
-
-## Additional Practice
-
-### Hands-On Challenges
-
-1. **Challenge 1**: Create complete ML training infrastructure with Terraform
-   - 2x p3.2xlarge GPU instances
-   - S3 buckets for data and models
-   - Proper IAM roles and security groups
-   - Remote state with S3 + DynamoDB
-
-2. **Challenge 2**: Implement multi-environment setup
-   - Use workspaces or separate directories
-   - Different instance counts per environment
-   - Environment-specific tagging
-
-3. **Challenge 3**: Set up GitOps workflow
-   - GitHub Actions pipeline for terraform plan/apply
-   - Security scanning with tfsec
-   - Cost estimation with Infracost
-   - Require PR approvals
-
----
-
-**Congratulations on completing the Module 09 quiz!**
-
-Return to [Module README](../README.md) for additional resources and next steps.
+- 21 questions and 2 scenarios, 1 point each (23 points)
+- Passing score: 70% (17/23)

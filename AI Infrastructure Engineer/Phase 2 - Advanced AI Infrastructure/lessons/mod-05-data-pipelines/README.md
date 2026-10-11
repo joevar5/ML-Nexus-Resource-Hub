@@ -1,5 +1,7 @@
 # Module 05: Data Pipelines and Orchestration
 
+> Trimmed: Airflow, Spark, and Kafka are not used by the Phase 2 projects. Only data quality validation is kept.
+
 **Duration:** ~45 hours · **Difficulty:** Intermediate · **Prerequisites:** Modules 02–04, Python, SQL basics
 
 ## Overview
@@ -18,14 +20,7 @@ Models are only as good as the data reaching them, and getting data from "raw an
 
 | # | Lesson |
 |---|--------|
-| 01 | [Data Pipeline Architecture](./01-data-pipeline-architecture.md) — patterns, batch vs. streaming, design principles |
-| 02 | [Apache Airflow Fundamentals](./02-apache-airflow-fundamentals.md) — architecture, running on Kubernetes, your first DAG |
-| 03 | [Advanced Airflow for ML](./03-advanced-airflow-ml.md) — TaskFlow API, XComs, dynamic DAGs, ML operators |
-| 04 | [Data Versioning with DVC](./04-data-versioning-dvc.md) — tracking datasets/models, remote storage, data pipelines |
-| 05 | [Data Processing with Spark](./05-data-processing-spark.md) — PySpark, running on Kubernetes, optimization |
-| 06 | [Streaming Data with Kafka](./06-streaming-data-kafka.md) — producers/consumers, real-time feature engineering |
-| 07 | [Data Quality & Validation](./07-data-quality-validation.md) — Great Expectations, Pandera, drift detection |
-| 08 | [Pipeline Monitoring & Error Handling](./08-pipeline-monitoring-errors.md) — alerting, retries, SLA monitoring |
+| 01 | [Data Quality & Validation](./01-data-quality-validation.md) — Great Expectations, Pandera, drift detection |
 
 ## Hands-on
 
@@ -38,7 +33,6 @@ Full write-ups in [`labs/`](./labs/).
 
 ## Assessment
 
-- **Quiz** — [`quizzes/module-quiz.md`](./quizzes/module-quiz.md), 25 questions on Airflow, DVC, and Spark
 - **Practical** — build a production data pipeline with monitoring, submitted for review
 
 ## Tooling

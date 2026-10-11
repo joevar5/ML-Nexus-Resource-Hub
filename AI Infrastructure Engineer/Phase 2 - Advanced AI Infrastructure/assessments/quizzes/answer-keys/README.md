@@ -11,9 +11,6 @@ is planned but not yet authored.
 |---|---|---|
 | 101 Foundations | [module-quiz.md](../../../lessons/mod-101-foundations/quizzes/module-quiz.md) | _Planned_ |
 | 102 Cloud Computing | [module-quiz.md](../../../lessons/mod-02-cloud-computing/quizzes/module-quiz.md) | _Planned_ |
-| 103 Containerization | [module-quiz.md](../../../lessons/mod-03-containerization/quizzes/module-quiz.md) | _Planned_ |
-| 104 Kubernetes | [module-quiz.md](../../../lessons/mod-04-kubernetes/quizzes/module-quiz.md) | _Planned_ |
-| 105 Data Pipelines | [module-quiz.md](../../../lessons/mod-05-data-pipelines/quizzes/module-quiz.md) | _Planned_ |
 | 106 MLOps | [module-quiz.md](../../../lessons/mod-06-mlops/quizzes/module-quiz.md) | _Planned_ |
 | 107 GPU Computing | [module-quiz.md](../../../lessons/mod-07-gpu-computing/quizzes/module-quiz.md) | _Planned_ |
 | 108 Monitoring & Observability | [module-quiz.md](../../../lessons/mod-08-monitoring-observability/quizzes/module-quiz.md) | _Planned_ |

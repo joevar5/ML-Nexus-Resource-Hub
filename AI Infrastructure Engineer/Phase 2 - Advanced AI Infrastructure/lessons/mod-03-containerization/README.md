@@ -1,5 +1,7 @@
 # Module 03: Containerization with Docker
 
+> Trimmed: Phase 1 covers Docker basics, so only GPU Docker is kept here.
+
 **Duration:** 31 hours · **Difficulty:** Intermediate · **Prerequisites:** Module 02, Docker fundamentals (Phase 1)
 
 ## Overview
@@ -22,13 +24,7 @@ Docker fundamentals (containers vs. VMs, the daemon, your first container) are c
 
 | # | Lesson | Hours |
 |---|--------|-------|
-| 01 | [Dockerfiles for ML Apps](./01-dockerfile-ml-apps.md) — base images, installing PyTorch/TensorFlow, structuring an image | 5 |
-| 02 | [Image Optimization](./02-image-optimization.md) — multi-stage builds, layer caching, cutting image size 50–80% | 5 |
-| 03 | [Networking & Volumes](./03-docker-networking-volumes.md) — port mapping, container-to-container traffic, persistent storage | 5 |
-| 04 | [Docker Compose](./04-docker-compose.md) — orchestrating multi-service ML stacks | 5 |
-| 05 | [Container Registries](./05-container-registries.md) — Docker Hub, ECR, GCR, ACR, tagging strategy | 4 |
-| 06 | [GPU Support in Docker](./06-gpu-docker.md) — NVIDIA Container Toolkit, CUDA base images, multi-GPU containers | 5 |
-| 07 | [Production Best Practices](./07-production-best-practices.md) — security, health checks, graceful shutdown | 2 |
+| 01 | [GPU Support in Docker](./01-gpu-docker.md) — NVIDIA Container Toolkit, CUDA base images, multi-GPU containers | 5 |
 
 Each lesson has a hands-on exercise attached — don't skip them, this is a module you learn by doing, not reading.
 
@@ -44,7 +40,6 @@ Deeper, guided versions of these live in [`exercises/`](./exercises/) and [`labs
 
 ## Assessment
 
-- **Quiz** — [`quizzes/module-quiz.md`](./quizzes/module-quiz.md), 20 questions, 70% to pass
 - **Practical** — build a production-ready container: multi-stage Dockerfile, image under 500MB (CPU) or 2GB (GPU), non-root user, health check endpoint, and a README explaining your choices
 
 ## Before you start

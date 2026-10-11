@@ -1,5 +1,7 @@
 # Module 04: Kubernetes Fundamentals
 
+> Trimmed: Phase 1 covers Kubernetes basics. Only Helm, GPU scheduling, and monitoring and troubleshooting are kept (used by Project 105).
+
 **Duration:** 60 hours · **Difficulty:** Intermediate to Advanced · **Prerequisites:** Modules 02–03
 
 ## Overview
@@ -18,15 +20,9 @@ Docker gets one container running reliably. Kubernetes is what happens when you 
 
 | # | Lesson | Hours |
 |---|--------|-------|
-| 01 | [Kubernetes Introduction](./01-k8s-introduction.md) — containers vs. orchestration, local cluster, first deploy | 6 |
-| 02 | [Kubernetes Architecture](./02-k8s-architecture.md) — control plane, nodes, how scheduling works | 8 |
-| 03 | [Core Resources](./03-core-resources.md) — pods, multi-container patterns, namespaces, labels | 7 |
-| 04 | [Deployments & Services](./04-deployments-services.md) — rolling updates, canary, service discovery | 8 |
-| 05 | [Networking & Ingress](./05-networking-ingress.md) — CNI, network policies, TLS, ingress controllers | 7 |
-| 06 | [Storage & Persistence](./06-storage-persistence.md) — PVs/PVCs, StorageClasses, StatefulSets | 7 |
-| 07 | [Helm Package Manager](./07-helm-package-manager.md) — charts, values, templating | 6 |
-| 08 | [GPU Scheduling](./08-gpu-scheduling.md) — device plugins, GPU sharing, multi-GPU pods | 5 |
-| 09 | [Monitoring & Troubleshooting](./09-monitoring-troubleshooting.md) — metrics, logs, health probes, debugging | 6 |
+| 01 | [Helm Package Manager](./01-helm-package-manager.md) — charts, values, templating | 6 |
+| 02 | [GPU Scheduling](./02-gpu-scheduling.md) — device plugins, GPU sharing, multi-GPU pods | 5 |
+| 03 | [Monitoring & Troubleshooting](./03-monitoring-troubleshooting.md) — metrics, logs, health probes, debugging | 6 |
 
 ## Hands-on
 
@@ -48,7 +44,6 @@ Local cluster (minikube, kind, or Docker Desktop) is enough for everything excep
 
 ## Assessment
 
-- **Quiz** — [`quizzes/module-quiz.md`](./quizzes/module-quiz.md), 25 questions, 70% to pass
 - **Practical** — deploy a complete ML system with 3+ replicas, load-balanced service, TLS ingress, ConfigMaps/Secrets, persistent storage, resource limits, health checks, and HPA
 
 ## The mistakes everyone makes here
@@ -60,6 +55,6 @@ Local cluster (minikube, kind, or Docker Desktop) is enough for everything excep
 
 ## What's next
 
-Pass the quiz, ship the practical, then choose your direction: **Module 05 (Data Pipelines)** or **Module 06 (MLOps)** — both build directly on what you deployed here.
+Ship the practical, then choose your direction: **Module 05 (Data Pipelines)** or **Module 06 (MLOps)** — both build directly on what you deployed here.
 
 More reading in [`resources.md`](./resources.md).
