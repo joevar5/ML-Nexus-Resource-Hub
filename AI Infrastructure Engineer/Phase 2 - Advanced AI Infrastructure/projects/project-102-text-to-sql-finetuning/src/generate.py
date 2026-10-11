@@ -9,7 +9,7 @@ def make_generator(model_name: str, max_new_tokens: int = 128, adapter: str | No
     tok.padding_side = "left"  # decoder-only models must be padded on the left for batch generation
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16, device_map={"": 0})
+    model = AutoModelForCausalLM.from_pretrained(model_name, dtype=torch.float16, device_map={"": 0})
     if adapter:
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, adapter)

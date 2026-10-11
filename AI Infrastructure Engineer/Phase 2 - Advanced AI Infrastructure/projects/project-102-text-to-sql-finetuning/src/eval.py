@@ -53,6 +53,13 @@ def load_test(path: Path = TEST, limit: int | None = None) -> list[dict]:
     return rows[:limit] if limit else rows
 
 
+def write_report(report: dict, out: Path, tag: str) -> None:
+    """Save per-question results and the summary. `report` loses its per-question list."""
+    out.mkdir(parents=True, exist_ok=True)  # parents: `results/smoke` must work when `results` does not exist yet
+    (out / f"{tag}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in report.pop("results")))
+    (out / f"{tag}.summary.json").write_text(json.dumps(report, indent=2))
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True, help="Hugging Face model id, or 'reference' to check the loop with the right answers")
@@ -67,8 +74,5 @@ if __name__ == "__main__":
         from src.generate import make_generator  # needs torch and transformers (Kaggle)
         gen = make_generator(a.model)
     report = evaluate(rows, gen)
-    out = Path(a.out); out.mkdir(exist_ok=True)
-    tag = a.model.replace("/", "_")
-    (out / f"{tag}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in report.pop("results")))
-    (out / f"{tag}.summary.json").write_text(json.dumps(report, indent=2))
+    write_report(report, Path(a.out), a.model.replace("/", "_"))
     print(json.dumps(report, indent=2))

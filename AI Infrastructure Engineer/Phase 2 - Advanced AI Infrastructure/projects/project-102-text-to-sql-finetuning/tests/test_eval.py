@@ -1,4 +1,6 @@
-from src.eval import evaluate, failure_type
+import json
+
+from src.eval import evaluate, failure_type, write_report
 from src.prompt import build_prompt, extract_sql
 
 ROWS = [
@@ -49,3 +51,10 @@ def test_wrong_column_model_is_wrong_not_invalid():
 def test_batching_covers_every_row():
     rep = evaluate(ROWS * 5, lambda ps: ["SELECT name FROM emp" for _ in ps], batch_size=3)
     assert rep["n"] == 10
+
+
+def test_write_report_creates_nested_folders(tmp_path):
+    rep = evaluate(ROWS, lambda ps: ["SELECT name FROM emp" for _ in ps])
+    write_report(rep, tmp_path / "results" / "smoke", "m")
+    assert (tmp_path / "results" / "smoke" / "m.jsonl").exists()
+    assert json.loads((tmp_path / "results" / "smoke" / "m.summary.json").read_text())["n"] == 2
