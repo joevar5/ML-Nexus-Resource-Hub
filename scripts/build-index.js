@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const IGNORED_DIRS = ['.git', '.github', 'node_modules', 'scripts', 'venv', '.pytest_cache', '__pycache__'];
+const IGNORED_DIRS = ['.git', '.github', 'node_modules', 'scripts', 'venv', '.venv', '.pytest_cache', '__pycache__', 'data', 'results']; // data and results are generated outputs
 
 // Marker file name used to mark a folder as a "draft" (in-progress / not ready to publish).
 // Any directory that contains a file with this name will be skipped entirely by the indexer,
