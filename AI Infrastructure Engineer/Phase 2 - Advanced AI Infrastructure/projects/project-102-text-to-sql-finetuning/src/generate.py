@@ -1,4 +1,4 @@
-"""Turn a Hugging Face causal LM into a `generate(prompts) -> outputs` function. Needs torch and a GPU (Kaggle)."""
+"""Turn a Hugging Face causal LM into a `generate(prompts) -> outputs` function. Needs torch and a GPU (Colab)."""
 
 
 def make_generator(model_name: str, max_new_tokens: int = 128, adapter: str | None = None):

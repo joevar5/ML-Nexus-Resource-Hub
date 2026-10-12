@@ -25,11 +25,11 @@ Work one phase at a time, with a check at the end of each. Tick a box only when 
 | Phase | What you do | Done when | Where |
 | :--- | :--- | :--- | :--- |
 | 1. Data and scorer | Load the dataset, split it, write `run_sql` to run queries on SQLite | You can run a query and get rows or an error | Mac |
-| 2. Baseline | Make the untrained model write SQL for 200 held-out questions and score it | You have a baseline accuracy number | Kaggle (GPU) |
-| 3. Train | LoRA fine-tune the model, log runs to W&B | Loss falls and the adapter is saved | Kaggle |
-| 4. Evaluate and fix | Score the tuned model, group wrong answers by type, fix the biggest group | Accuracy beats baseline and you can say why it failed before | Kaggle |
+| 2. Baseline | Make the untrained model write SQL for 200 held-out questions and score it | You have a baseline accuracy number | Colab (GPU) |
+| 3. Train | LoRA fine-tune the model, log runs to W&B | Loss falls and the adapter is saved | Colab |
+| 4. Evaluate and fix | Score the tuned model, group wrong answers by type, fix the biggest group | Accuracy beats baseline and you can say why it failed before | Colab |
 | 5. Guardrails | Allow only a single `SELECT`, use a read-only database, add a timeout | `DROP` and `DELETE` are rejected | Mac |
-| 6. Publish and serve | Upload the adapter to Hugging Face, serve it with vLLM, write the README results | A `curl` returns valid SQL and your links are in the README | Kaggle |
+| 6. Publish and serve | Upload the adapter to Hugging Face, serve it with vLLM, write the README results | A `curl` returns valid SQL and your links are in the README | Colab |
 
 ## Progress
 
@@ -40,7 +40,7 @@ Work one phase at a time, with a check at the end of each. Tick a box only when 
 - [ ] **Phase 2:** baseline
   - [x] 2.1 `src/prompt.py`: one prompt format and an SQL extractor
   - [x] 2.2 `src/eval.py`: score a model on the 200 test questions
-  - [ ] 2.3 Pick a small Qwen coder model and run the baseline on Kaggle
+  - [ ] 2.3 Pick a small Qwen coder model and run the baseline on Colab
 - [ ] **Phase 3:** train
 - [ ] **Phase 4:** evaluate and fix
 - [ ] **Phase 5:** guardrails
@@ -101,8 +101,8 @@ Execution accuracy: baseline vs fine-tuned on held-out questions. *(fill in when
 
 | What | Link |
 | :--- | :--- |
-| Kaggle notebook | *(add)* |
+| Colab notebook | *(add)* |
 | Hugging Face model or dataset | *(add)* |
 | W&B project | *(add)* |
 
-Put Kaggle notebooks in `notebooks/` and keep real code in `src/`, with tests in `tests/`, as the earlier projects do.
+Put Colab notebooks in `notebooks/` and keep real code in `src/`, with tests in `tests/`, as the earlier projects do.

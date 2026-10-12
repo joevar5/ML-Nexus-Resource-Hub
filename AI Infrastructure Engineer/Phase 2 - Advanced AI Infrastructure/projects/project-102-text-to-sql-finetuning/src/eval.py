@@ -71,7 +71,7 @@ if __name__ == "__main__":
         lookup = {build_prompt(r["context"], r["question"]): r["answer"] for r in rows}
         gen = lambda prompts: [lookup[p] for p in prompts]
     else:
-        from src.generate import make_generator  # needs torch and transformers (Kaggle)
+        from src.generate import make_generator  # needs torch and transformers (Colab)
         gen = make_generator(a.model)
     report = evaluate(rows, gen)
     write_report(report, Path(a.out), a.model.replace("/", "_"))

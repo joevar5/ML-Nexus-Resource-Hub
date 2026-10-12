@@ -30,7 +30,7 @@ flowchart TD
     I --> J["10. Serve and publish<br/>vLLM, Hugging Face, W and B"]
 ```
 
-Steps 1 to 4 are **done** and run on the Mac. Steps 5 to 8 run on Kaggle's free GPU (planned, phases 2 to 4). Step 9 is planned (phase 5), and step 10 is planned (phase 6).
+Steps 1 to 4 are **done** and run on the Mac. Steps 5 to 8 run on Colab's free GPU (planned, phases 2 to 4). Step 9 is planned (phase 5), and step 10 is planned (phase 6).
 
 ---
 
@@ -64,7 +64,7 @@ Steps 1 to 4 are **done** and run on the Mac. Steps 5 to 8 run on Kaggle's free 
 
 **Decisions:**
 - **Remove duplicate questions before splitting.** *Why:* the same question in both sets is "leakage" and inflates the score.
-- **Fixed seed plus a manifest of checksums.** *Why:* the baseline run and the fine-tuned run must use the identical 200 questions, and Kaggle must prove it loaded identical data.
+- **Fixed seed plus a manifest of checksums.** *Why:* the baseline run and the fine-tuned run must use the identical 200 questions, and Colab must prove it loaded identical data.
 - **Only 200 test rows.** *Why:* enough to see a clear gain, small enough to score in minutes. *Trade-off:* small differences are noise.
 
 ### Step 4: The scorer (done)
@@ -114,7 +114,7 @@ flowchart LR
 - **One shared prompt format** for training, scoring and serving. *Why:* a model trained on one format and tested on another scores badly for the wrong reason.
 - **Learn from the SQL answer only, and end with a stop token.** *Why:* it teaches the output, and prevents the model that never stops generating.
 - **Log every run to Weights & Biases.** *Why:* it lets us say which run was best and why, and it is public proof of real training.
-- **Train on Kaggle.** *Why:* free GPU, and the notebook can be made public.
+- **Train on Colab.** *Why:* free GPU, and the notebook can be made public.
 
 ### Step 7: Evaluate (planned, phase 4)
 
@@ -154,7 +154,7 @@ flowchart LR
 
 **Decisions:**
 - **vLLM for serving.** *Why:* it is the standard high-throughput LLM server, and it can load a LoRA adapter.
-- **Serve inside Kaggle or Colab, or on a rented GPU for about an hour. No always-on endpoint.** *Why:* the goal is to learn and show, so the cost stays near zero. vLLM needs an NVIDIA GPU, which a Mac does not have.
+- **Serve inside Colab, or on a rented GPU for about an hour. No always-on endpoint.** *Why:* the goal is to learn and show, so the cost stays near zero. vLLM needs an NVIDIA GPU, which a Mac does not have.
 - **Hugging Face for the adapter, W and B for runs, GitHub for code.** *Why:* these are the places engineers look, and each link can be checked.
 
 ---
@@ -164,11 +164,11 @@ flowchart LR
 | Part | Runs on | Why there |
 |---|---|---|
 | Steps 1 to 4 (data, scorer) | Mac, CPU | No model is loaded, so no GPU is needed |
-| Steps 5 to 8 (baseline, train, evaluate, fix) | Kaggle, free T4 | Loading a model needs a GPU |
+| Steps 5 to 8 (baseline, train, evaluate, fix) | Colab, free T4 | Loading a model needs a GPU |
 | Step 9 (guard) | Mac, CPU | Only parses and runs SQL |
-| Step 10 (serve) | Kaggle, Colab, or a rented GPU | vLLM needs an NVIDIA GPU |
+| Step 10 (serve) | Colab or a rented GPU | vLLM needs an NVIDIA GPU |
 
-The repo is the source of truth. A Kaggle notebook only clones it and calls its scripts, so the same tested code runs everywhere.
+The repo is the source of truth. A Colab notebook only clones it and calls its scripts, so the same tested code runs everywhere.
 
 ---
 
@@ -185,7 +185,7 @@ The repo is the source of truth. A Kaggle notebook only clones it and calls its 
 | `src/guard.py` | The SQL safety check | planned (phase 5) |
 | `src/serve.py` | vLLM serving with the guard in front | planned (phase 6) |
 | `tests/` | Unit tests, later an accuracy regression test | partly done |
-| `notebooks/` | Thin Kaggle runners | planned |
+| `notebooks/` | Thin Colab runners | planned |
 
 Filenames for planned parts may change as we build.
 
@@ -197,7 +197,7 @@ Filenames for planned parts may change as we build.
 |---|---|
 | Pinned dataset version | Same data on every machine and date |
 | Fixed seeds | Same split, and comparable training runs |
-| Manifest with checksums | Proof that Kaggle used identical data |
+| Manifest with checksums | Proof that Colab used identical data |
 | Pinned `requirements.txt` | Same library versions |
 | Tests (`make test`) | Splitting and scoring behave as specified |
 | Accuracy regression test (planned) | Automated check that fails if the score drops |
@@ -207,7 +207,7 @@ Filenames for planned parts may change as we build.
 
 ## 6. Cost
 
-Everything costs nothing except an optional hour of rented GPU for the serving demo, a few dollars at most. The costs are Mac (free), Kaggle free T4 (free, weekly quota), Hugging Face (free), Weights and Biases (free tier).
+Everything costs nothing except an optional hour of rented GPU for the serving demo, a few dollars at most. The costs are Mac (free), Colab free T4 (free, availability and session length vary), Hugging Face (free), Weights and Biases (free tier).
 
 ---
 
