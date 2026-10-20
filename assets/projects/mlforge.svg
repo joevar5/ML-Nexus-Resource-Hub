@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" font-family="Helvetica, Arial, sans-serif" font-size="14">
+  <rect width="640" height="200" fill="#fff"/>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#333"/></marker></defs>
+  <g fill="#e8eefc" stroke="#2a4bb5" stroke-width="1.5">
+    <rect x="10" y="50" width="100" height="60" rx="8"/><rect x="140" y="50" width="100" height="60" rx="8"/>
+    <rect x="270" y="50" width="100" height="60" rx="8"/><rect x="400" y="50" width="100" height="60" rx="8"/>
+    <rect x="530" y="50" width="100" height="60" rx="8"/>
+  </g>
+  <g fill="#222" text-anchor="middle">
+    <text x="60" y="85">Notebook</text><text x="190" y="85">FastAPI</text><text x="320" y="85">Kubernetes</text>
+    <text x="450" y="85">Pipeline</text><text x="580" y="85">Monitoring</text>
+    <text x="320" y="170" fill="#555">Train, track, version, serve, watch</text>
+  </g>
+  <g stroke="#333" stroke-width="1.5" marker-end="url(#a)">
+    <path d="M110 80H138"/><path d="M240 80H268"/><path d="M370 80H398"/><path d="M500 80H528"/>
+  </g>
+  <path d="M580 112V140H60V112" fill="none" stroke="#999" stroke-dasharray="5 4" marker-end="url(#a)"/>
+</svg>

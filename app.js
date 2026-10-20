@@ -331,6 +331,8 @@ const categories = [
 const mlProjects = [
     {
         title: 'MLForge',
+        image: 'assets/projects/mlforge.svg',
+        imageAlt: 'Pipeline from notebook to FastAPI, Kubernetes, training pipeline and monitoring',
         description: 'Engineered a full MLOps lifecycle from notebook to production: a FastAPI model-serving API deployed on Kubernetes, a tracked and versioned training pipeline, and live monitoring — the same path real ML platform teams ship on.',
         icon: 'rocket_launch',
         status: 'Live',
@@ -347,6 +349,8 @@ const mlProjects = [
     },
     {
         title: 'Retrievo',
+        image: 'ML and GenAI System Design/GENAI SD/miscellaneous/rag_overall_system_design.png',
+        imageAlt: 'RAG system: document indexing, retrieval, then LLM generation',
         description: 'Architected an enterprise-grade RAG system for searching internal knowledge bases at scale — AI-driven document parsing and chunking, vector search, CLIP-powered multimodal retrieval, optional RAFT fine-tuning, and a custom 4-part eval suite to keep answers grounded and cited.',
         icon: 'find_in_page',
         status: 'Live',
@@ -355,6 +359,8 @@ const mlProjects = [
     },
     {
         title: 'GraphLink',
+        image: 'ML and GenAI System Design/MLSD/1. Recommendation & Personalization/miscellaneous/pymk_fof_tree.png',
+        imageAlt: 'A user, their friends, and friends of friends',
         description: 'Designed a graph-based friend-recommendation system for a billion-user social network — GNN-powered edge prediction over mutual-connection signals, feeding a two-stage candidate generation + ranking pipeline behind a LinkedIn-style "People You May Know."',
         icon: 'diversity_3',
         status: 'Live',
@@ -363,6 +369,8 @@ const mlProjects = [
     },
     {
         title: 'WatchNext',
+        image: 'ML and GenAI System Design/MLSD/1. Recommendation & Personalization/miscellaneous/video_recommendation_multi_stage_prediction_pipeline.png',
+        imageAlt: 'Two-stage pipeline: candidate generation then ranking',
         description: 'Built a two-stage recommendation pipeline — candidate retrieval + ranking — over a 10-billion-video catalog, engineered for a sub-200ms serving budget: the same core architecture behind YouTube\'s home-feed engine.',
         icon: 'smart_display',
         status: 'Live',
@@ -371,11 +379,23 @@ const mlProjects = [
     },
     {
         title: 'AutoDraft',
+        image: 'ML and GenAI System Design/GENAI SD/miscellaneous/gmail_smart_compose_suggested_words.png',
+        imageAlt: 'Email draft with an inline suggested completion',
         description: 'Implemented a decoder-only Transformer for real-time inline text generation, Gmail Smart Compose-style — trained on ~1 billion emails and tuned for imperceptible ~100ms latency with high-confidence-only, bias-checked suggestions.',
         icon: 'edit_note',
         status: 'Live',
         tags: ['genai'],
         link: 'ML and GenAI System Design/GENAI SD/Gmail Smart Compose.md'
+    },
+    {
+        title: 'SafeGuard',
+        image: 'ML and GenAI System Design/MLSD/4. Trust & Safety/miscellaneous/harmful_content_detection_heterogeneous_post_data.png',
+        imageAlt: 'A post split into its image, text and author signals',
+        description: 'Designed a proactive moderation system for a 500M-posts-a-day social platform — multimodal fusion of text, image and author signals, with a multi-task classifier that scores violence, nudity, self-harm and hate speech at once.',
+        icon: 'shield',
+        status: 'Live',
+        tags: ['classical-ml'],
+        link: 'ML and GenAI System Design/MLSD/4. Trust & Safety/Harmful Content Detection.md'
     }
 ];
 
@@ -1371,6 +1391,11 @@ function projectCardHtml(p, delay = 0, isSideProject = false) {
         journeyHtml = `<div class="flex items-start mb-6">${steps}</div>`;
     }
 
+    // Diagrams are white-background PNGs, so the panel stays white in dark mode too.
+    const imageHtml = p.image
+        ? `<div class="mb-4 h-56 rounded-xl overflow-hidden bg-white border border-outline-variant flex items-center justify-center p-2"><img src="${escapeHtml(encodeURI(p.image))}" alt="${escapeHtml(p.imageAlt || p.title)}" loading="lazy" class="max-h-full max-w-full object-contain"></div>`
+        : '';
+
     return `
         <div class="project-card projects-fade-item p-6 bg-surface-container-low rounded-2xl border ${p.featured ? 'border-primary/40' : 'border-outline-variant'} hover:border-primary transition-all duration-300 flex flex-col justify-between group text-left" data-tags="${p.tags.join(',')}" style="animation-delay: ${delay}s;">
             <div>
@@ -1382,6 +1407,7 @@ function projectCardHtml(p, delay = 0, isSideProject = false) {
                         <span class="material-symbols-outlined text-sm">${statusIcon}</span>
                     </span>
                 </div>
+                ${imageHtml}
                 <h3 class="text-lg font-headline font-bold mb-2">${escapeHtml(p.title)}</h3>
                 <p class="text-on-surface-variant text-sm leading-relaxed mb-4">${escapeHtml(p.description)}</p>
                 ${journeyHtml}

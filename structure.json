@@ -119,6 +119,22 @@
     ]
   },
   {
+    "name": ".serena",
+    "type": "directory",
+    "children": [
+      {
+        "name": "project.local.yml",
+        "type": "file",
+        "path": ".serena/project.local.yml"
+      },
+      {
+        "name": "project.yml",
+        "type": "file",
+        "path": ".serena/project.yml"
+      }
+    ]
+  },
+  {
     "name": "AI Infrastructure Engineer",
     "type": "directory",
     "children": [
@@ -4657,6 +4673,54 @@
                                     ]
                                   },
                                   {
+                                    "name": "certifi",
+                                    "type": "directory",
+                                    "children": [
+                                      {
+                                        "name": "tests",
+                                        "type": "directory",
+                                        "children": [
+                                          {
+                                            "name": "__init__.py",
+                                            "type": "file",
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/certifi/tests/__init__.py"
+                                          },
+                                          {
+                                            "name": "test_certify.py",
+                                            "type": "file",
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/certifi/tests/test_certify.py"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "name": "__init__.py",
+                                        "type": "file",
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/certifi/__init__.py"
+                                      },
+                                      {
+                                        "name": "__main__.py",
+                                        "type": "file",
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/certifi/__main__.py"
+                                      },
+                                      {
+                                        "name": "core.py",
+                                        "type": "file",
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/certifi/core.py"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "name": "certifi-2026.7.22.dist-info",
+                                    "type": "directory",
+                                    "children": [
+                                      {
+                                        "name": "top_level.txt",
+                                        "type": "file",
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/certifi-2026.7.22.dist-info/top_level.txt"
+                                      }
+                                    ]
+                                  },
+                                  {
                                     "name": "click",
                                     "type": "directory",
                                     "children": [
@@ -6770,7 +6834,7 @@
                                     ]
                                   },
                                   {
-                                    "name": "httpcore2",
+                                    "name": "httpcore",
                                     "type": "directory",
                                     "children": [
                                       {
@@ -6780,42 +6844,42 @@
                                           {
                                             "name": "__init__.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_async/__init__.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_async/__init__.py"
                                           },
                                           {
                                             "name": "connection_pool.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_async/connection_pool.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_async/connection_pool.py"
                                           },
                                           {
                                             "name": "connection.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_async/connection.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_async/connection.py"
                                           },
                                           {
                                             "name": "http_proxy.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_async/http_proxy.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_async/http_proxy.py"
                                           },
                                           {
                                             "name": "http2.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_async/http2.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_async/http2.py"
                                           },
                                           {
                                             "name": "http11.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_async/http11.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_async/http11.py"
                                           },
                                           {
                                             "name": "interfaces.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_async/interfaces.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_async/interfaces.py"
                                           },
                                           {
                                             "name": "socks_proxy.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_async/socks_proxy.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_async/socks_proxy.py"
                                           }
                                         ]
                                       },
@@ -6826,37 +6890,37 @@
                                           {
                                             "name": "__init__.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_backends/__init__.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_backends/__init__.py"
                                           },
                                           {
                                             "name": "anyio.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_backends/anyio.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_backends/anyio.py"
                                           },
                                           {
                                             "name": "auto.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_backends/auto.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_backends/auto.py"
                                           },
                                           {
                                             "name": "base.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_backends/base.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_backends/base.py"
                                           },
                                           {
                                             "name": "mock.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_backends/mock.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_backends/mock.py"
                                           },
                                           {
                                             "name": "sync.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_backends/sync.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_backends/sync.py"
                                           },
                                           {
                                             "name": "trio.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_backends/trio.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_backends/trio.py"
                                           }
                                         ]
                                       },
@@ -6867,89 +6931,89 @@
                                           {
                                             "name": "__init__.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_sync/__init__.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_sync/__init__.py"
                                           },
                                           {
                                             "name": "connection_pool.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_sync/connection_pool.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_sync/connection_pool.py"
                                           },
                                           {
                                             "name": "connection.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_sync/connection.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_sync/connection.py"
                                           },
                                           {
                                             "name": "http_proxy.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_sync/http_proxy.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_sync/http_proxy.py"
                                           },
                                           {
                                             "name": "http2.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_sync/http2.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_sync/http2.py"
                                           },
                                           {
                                             "name": "http11.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_sync/http11.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_sync/http11.py"
                                           },
                                           {
                                             "name": "interfaces.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_sync/interfaces.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_sync/interfaces.py"
                                           },
                                           {
                                             "name": "socks_proxy.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_sync/socks_proxy.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_sync/socks_proxy.py"
                                           }
                                         ]
                                       },
                                       {
                                         "name": "__init__.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/__init__.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/__init__.py"
                                       },
                                       {
                                         "name": "_api.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_api.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_api.py"
                                       },
                                       {
                                         "name": "_exceptions.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_exceptions.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_exceptions.py"
                                       },
                                       {
                                         "name": "_models.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_models.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_models.py"
                                       },
                                       {
                                         "name": "_ssl.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_ssl.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_ssl.py"
                                       },
                                       {
                                         "name": "_synchronization.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_synchronization.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_synchronization.py"
                                       },
                                       {
                                         "name": "_trace.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_trace.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_trace.py"
                                       },
                                       {
                                         "name": "_utils.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2/_utils.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore/_utils.py"
                                       }
                                     ]
                                   },
                                   {
-                                    "name": "httpcore2-2.13.1.dist-info",
+                                    "name": "httpcore-1.0.9.dist-info",
                                     "type": "directory",
                                     "children": [
                                       {
@@ -6959,14 +7023,14 @@
                                           {
                                             "name": "LICENSE",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore2-2.13.1.dist-info/licenses/LICENSE.md"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpcore-1.0.9.dist-info/licenses/LICENSE.md"
                                           }
                                         ]
                                       }
                                     ]
                                   },
                                   {
-                                    "name": "httpx2",
+                                    "name": "httpx",
                                     "type": "directory",
                                     "children": [
                                       {
@@ -6976,165 +7040,124 @@
                                           {
                                             "name": "__init__.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_transports/__init__.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_transports/__init__.py"
                                           },
                                           {
                                             "name": "asgi.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_transports/asgi.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_transports/asgi.py"
                                           },
                                           {
                                             "name": "base.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_transports/base.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_transports/base.py"
                                           },
                                           {
                                             "name": "default.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_transports/default.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_transports/default.py"
                                           },
                                           {
                                             "name": "mock.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_transports/mock.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_transports/mock.py"
                                           },
                                           {
                                             "name": "wsgi.py",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_transports/wsgi.py"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "name": "websockets",
-                                        "type": "directory",
-                                        "children": [
-                                          {
-                                            "name": "__init__.py",
-                                            "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/websockets/__init__.py"
-                                          },
-                                          {
-                                            "name": "_api.py",
-                                            "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/websockets/_api.py"
-                                          },
-                                          {
-                                            "name": "_exceptions.py",
-                                            "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/websockets/_exceptions.py"
-                                          },
-                                          {
-                                            "name": "_ping.py",
-                                            "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/websockets/_ping.py"
-                                          },
-                                          {
-                                            "name": "_transport.py",
-                                            "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/websockets/_transport.py"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_transports/wsgi.py"
                                           }
                                         ]
                                       },
                                       {
                                         "name": "__init__.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/__init__.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/__init__.py"
                                       },
                                       {
                                         "name": "__version__.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/__version__.py"
-                                      },
-                                      {
-                                        "name": "_alias.py",
-                                        "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_alias.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/__version__.py"
                                       },
                                       {
                                         "name": "_api.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_api.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_api.py"
                                       },
                                       {
                                         "name": "_auth.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_auth.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_auth.py"
                                       },
                                       {
                                         "name": "_client.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_client.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_client.py"
                                       },
                                       {
                                         "name": "_config.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_config.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_config.py"
                                       },
                                       {
                                         "name": "_content.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_content.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_content.py"
                                       },
                                       {
                                         "name": "_decoders.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_decoders.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_decoders.py"
                                       },
                                       {
                                         "name": "_exceptions.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_exceptions.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_exceptions.py"
                                       },
                                       {
                                         "name": "_main.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_main.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_main.py"
                                       },
                                       {
                                         "name": "_models.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_models.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_models.py"
                                       },
                                       {
                                         "name": "_multipart.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_multipart.py"
-                                      },
-                                      {
-                                        "name": "_sse.py",
-                                        "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_sse.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_multipart.py"
                                       },
                                       {
                                         "name": "_status_codes.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_status_codes.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_status_codes.py"
                                       },
                                       {
                                         "name": "_types.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_types.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_types.py"
                                       },
                                       {
                                         "name": "_urlparse.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_urlparse.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_urlparse.py"
                                       },
                                       {
                                         "name": "_urls.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_urls.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_urls.py"
                                       },
                                       {
                                         "name": "_utils.py",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2/_utils.py"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx/_utils.py"
                                       }
                                     ]
                                   },
                                   {
-                                    "name": "httpx2-2.13.1.dist-info",
+                                    "name": "httpx-0.28.1.dist-info",
                                     "type": "directory",
                                     "children": [
                                       {
@@ -7144,14 +7167,14 @@
                                           {
                                             "name": "LICENSE",
                                             "type": "file",
-                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2-2.13.1.dist-info/licenses/LICENSE.md"
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx-0.28.1.dist-info/licenses/LICENSE.md"
                                           }
                                         ]
                                       },
                                       {
                                         "name": "entry_points.txt",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx2-2.13.1.dist-info/entry_points.txt"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/httpx-0.28.1.dist-info/entry_points.txt"
                                       }
                                     ]
                                   },
@@ -7275,6 +7298,11 @@
                                             "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/cli/datasets.py"
                                           },
                                           {
+                                            "name": "deprecated_cli.py",
+                                            "type": "file",
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/cli/deprecated_cli.py"
+                                          },
+                                          {
                                             "name": "discussions.py",
                                             "type": "file",
                                             "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/cli/discussions.py"
@@ -7320,6 +7348,11 @@
                                             "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/cli/papers.py"
                                           },
                                           {
+                                            "name": "repo_files.py",
+                                            "type": "file",
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/cli/repo_files.py"
+                                          },
+                                          {
                                             "name": "repos.py",
                                             "type": "file",
                                             "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/cli/repos.py"
@@ -7343,6 +7376,11 @@
                                             "name": "system.py",
                                             "type": "file",
                                             "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/cli/system.py"
+                                          },
+                                          {
+                                            "name": "upload_large_folder.py",
+                                            "type": "file",
+                                            "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/cli/upload_large_folder.py"
                                           },
                                           {
                                             "name": "upload.py",
@@ -8060,6 +8098,11 @@
                                         "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/_tree_cache.py"
                                       },
                                       {
+                                        "name": "_upload_large_folder.py",
+                                        "type": "file",
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/_upload_large_folder.py"
+                                      },
+                                      {
                                         "name": "_upload_pipeline.py",
                                         "type": "file",
                                         "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub/_upload_pipeline.py"
@@ -8137,18 +8180,18 @@
                                     ]
                                   },
                                   {
-                                    "name": "huggingface_hub-2.2.0.dist-info",
+                                    "name": "huggingface_hub-1.33.0.dist-info",
                                     "type": "directory",
                                     "children": [
                                       {
                                         "name": "entry_points.txt",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub-2.2.0.dist-info/entry_points.txt"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub-1.33.0.dist-info/entry_points.txt"
                                       },
                                       {
                                         "name": "top_level.txt",
                                         "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub-2.2.0.dist-info/top_level.txt"
+                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/huggingface_hub-1.33.0.dist-info/top_level.txt"
                                       }
                                     ]
                                   },
@@ -24503,42 +24546,6 @@
                                     ]
                                   },
                                   {
-                                    "name": "truststore",
-                                    "type": "directory",
-                                    "children": [
-                                      {
-                                        "name": "__init__.py",
-                                        "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/truststore/__init__.py"
-                                      },
-                                      {
-                                        "name": "_api.py",
-                                        "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/truststore/_api.py"
-                                      },
-                                      {
-                                        "name": "_macos.py",
-                                        "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/truststore/_macos.py"
-                                      },
-                                      {
-                                        "name": "_openssl.py",
-                                        "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/truststore/_openssl.py"
-                                      },
-                                      {
-                                        "name": "_ssl_constants.py",
-                                        "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/truststore/_ssl_constants.py"
-                                      },
-                                      {
-                                        "name": "_windows.py",
-                                        "type": "file",
-                                        "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/projects/project-102-text-to-sql-finetuning/.venv/lib/python3.13/site-packages/truststore/_windows.py"
-                                      }
-                                    ]
-                                  },
-                                  {
                                     "name": "xxhash",
                                     "type": "directory",
                                     "children": [
@@ -25207,6 +25214,22 @@
                 "name": "Video Recommendation System System Design",
                 "type": "file",
                 "path": "ML and GenAI System Design/MLSD/1. Recommendation & Personalization/Video Recommendation System.md"
+              }
+            ]
+          },
+          {
+            "name": "4. Trust & Safety",
+            "type": "directory",
+            "children": [
+              {
+                "name": "Fraud Detection (Stripe) System Design",
+                "type": "file",
+                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Fraud Detection (Stripe).md"
+              },
+              {
+                "name": "Harmful Content Detection System Design",
+                "type": "file",
+                "path": "ML and GenAI System Design/MLSD/4. Trust & Safety/Harmful Content Detection.md"
               }
             ]
           },
