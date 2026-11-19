@@ -137,3 +137,31 @@ try {
     console.error('Error writing structure.json:', err);
     process.exit(1);
 }
+
+// llms.txt: a plain-text map of every lesson so learners can point ChatGPT (or any AI) at the whole curriculum.
+const RAW_BASE = 'https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/';
+function llmsSection(nodes, depth) {
+    return nodes.map(node => {
+        if (node.type === 'directory') {
+            if (node.name.startsWith('.')) return ''; // local tool folders, not lessons
+            const body = llmsSection(node.children, depth + 1);
+            return body.trim() ? `\n${'#'.repeat(Math.min(depth, 6))} ${node.name}\n` + body : '';
+        }
+        if (!node.path.endsWith('.md')) return '';
+        const url = RAW_BASE + node.path.split(path.sep).map(encodeURIComponent).join('/');
+        return `- [${node.name}](${url})\n`;
+    }).join('');
+}
+const llms = `# InferenceStack (ML-Nexus-Resource-Hub)
+
+> Hands-on curriculum for AI Infrastructure, MLOps, ML/GenAI system design and GenAI engineering. Every link below is the raw markdown of one lesson.
+
+Paste this file's URL into ChatGPT and ask it to build you a study plan, teach a lesson, or quiz you.
+` + llmsSection(structure, 2);
+try {
+    fs.writeFileSync(path.join(rootDir, 'llms.txt'), llms, 'utf8');
+    console.log(`Generated llms.txt (${llms.split('\n- [').length - 1} lessons).`);
+} catch (err) {
+    console.error('Error writing llms.txt:', err);
+    process.exit(1);
+}

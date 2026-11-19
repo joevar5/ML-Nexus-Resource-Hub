@@ -2,6 +2,37 @@ const WORKSPACE_PATH = '/Users/joelvarghese/.gemini/antigravity/scratch/ML-Nexus
 let filesTree = [];
 let flattenedFiles = [];
 let currentFilePath = '';
+
+// ── Study with ChatGPT ──
+// ChatGPT reads the lesson from its raw GitHub URL, so the prompt stays short enough for a ?q= link.
+const RAW_BASE = 'https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/';
+const TUTOR_RULES = 'Be interactive: go one step at a time, ask me something, and wait for my reply before moving on. Use simple English and practical examples. I am learning this for real-world use and interviews.';
+const CHATGPT_MODES = {
+    teach: 'Teach me this lesson. First give a 3-line overview and the list of key concepts. Then explain them one at a time, and after each one ask me a short question to check I understood. If I get it wrong, explain it another way.',
+    quiz: 'Quiz me on this lesson. Ask 8 questions one at a time, mixing multiple-choice, short-answer and "what happens if..." scenarios, getting harder as we go. After each answer, tell me if I was right and why. At the end give me a score and the topics I should review.',
+    interview: 'Act as a senior interviewer for an AI/ML infrastructure role. Interview me on this lesson: one question at a time, with follow-up questions based on my answers like a real interviewer. After 5 questions, rate each answer and show what a strong answer would include.',
+    practice: 'Give me one hands-on exercise based on this lesson that I can do on my laptop (code, commands or a small design). State the goal and what "done" looks like, but not the solution. Give hints only when I ask. When I paste my attempt, review it like a code reviewer.',
+    revise: 'Help me revise this lesson fast. Give me a one-page cheat sheet, then 10 flashcards. Show the flashcards one at a time: the question first, and the answer only after I reply.',
+    'sel-explain': 'Explain the selected text below in simple English: what it means, how it works internally, and a common misconception. Then ask me one question to check I understood.',
+    'sel-example': 'Give me a concrete, real-world example of the selected text below (code or a production scenario), then ask me to predict what happens in a slightly changed version.',
+    'sel-quiz': 'Quiz me on the selected text below: 3 questions, one at a time. Wait for my answer and tell me if I was right and why.',
+};
+
+function openChatGPT(mode, selection = '') {
+    const title = flattenedFiles.find(f => f.path === currentFilePath)?.name || currentFilePath;
+    const url = RAW_BASE + currentFilePath.split('/').map(encodeURIComponent).join('/');
+    const topics = [...document.querySelectorAll('#markdown-content h2')]
+        .slice(0, 15).map(h => h.textContent.trim()).join(' · ');
+
+    let prompt = `${CHATGPT_MODES[mode]}\n\nLesson: "${title}"\nRead the full lesson here first: ${url}`;
+    if (topics) prompt += `\nSections: ${topics}`;
+    // shortcut: selection capped at 2000 chars to keep the link under browser URL limits
+    if (selection) prompt += `\n\nSelected text:\n"""\n${selection.slice(0, 2000)}\n"""`;
+    prompt += `\n\n${TUTOR_RULES}`;
+
+    window.open(`https://chatgpt.com/?q=${encodeURIComponent(prompt)}`, '_blank', 'noopener');
+}
+
 let activeCategory = null;
 let stats = { lessons: '0', designs: '0', projects: '0' };
 let completedFiles = new Set(JSON.parse(localStorage.getItem('completed_files') || '[]'));
@@ -440,6 +471,12 @@ const mlCodingTools = [
         description: 'Solve Python agent-loop, tool-calling, memory, RAG, and eval problems used in real AI engineering interviews.',
         icon: 'smart_toy',
         link: 'https://www.agenticprep.io/'
+    },
+    {
+        title: 'Context Window',
+        description: 'AI engineer interview prep: 400+ practice questions (100+ coding), worked answers, and video lessons.',
+        icon: 'quiz',
+        link: 'https://www.contextwindowprep.com/'
     }
 ];
 
@@ -730,31 +767,17 @@ function setupEventListeners() {
         e.preventDefault();
     });
 
-    chatgptTooltip.addEventListener('click', () => {
-        if (!selectedText) return;
-
-        const structuredPrompt = `Help me learn the following topic in a structured way:
-
-${selectedText}
-
-Please:
-1. Explain it in simple English.
-2. Break it down step by step.
-3. Explain how it works internally.
-4. Clear common doubts and misconceptions.
-5. Provide practical examples.
-6. Highlight important concepts and key takeaways.
-7. Ask me a few questions to test my understanding.
-8. Suggest what I should learn next.
-
-Assume I am learning this for practical use and interview preparation.`;
-
-        const chatgptUrl = `https://chatgpt.com/?q=${encodeURIComponent(structuredPrompt)}`;
-        window.open(chatgptUrl, '_blank');
-
-        // Clear selection and hide tooltip
+    chatgptTooltip.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-mode]');
+        if (!btn || !selectedText) return;
+        openChatGPT(btn.dataset.mode, selectedText);
         window.getSelection().removeAllRanges();
         chatgptTooltip.classList.remove('visible');
+    });
+
+    document.getElementById('study-with-ai').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-mode]');
+        if (btn) openChatGPT(btn.dataset.mode);
     });
 
     // Handle page completion toggle button

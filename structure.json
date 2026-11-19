@@ -24885,6 +24885,1009 @@
             "path": "AI Infrastructure Engineer/Phase 2 - Advanced AI Infrastructure/phase-2-learning-plan.md"
           }
         ]
+      },
+      {
+        "name": "Phase 3 - LLM Inference & GPU Performance",
+        "type": "directory",
+        "children": [
+          {
+            "name": "modules",
+            "type": "directory",
+            "children": [
+              {
+                "name": "mod-001-gpu-fundamentals",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-01-cpu-gpu-comparison",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "check.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-01-cpu-gpu-comparison/check.py"
+                          },
+                          {
+                            "name": "Exercise 1 — When does the GPU actually help?",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-01-cpu-gpu-comparison/README.md"
+                          },
+                          {
+                            "name": "starter.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-01-cpu-gpu-comparison/starter.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-02-peak-throughput",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "check.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-02-peak-throughput/check.py"
+                          },
+                          {
+                            "name": "Exercise 2 — Peak throughput from a spec sheet",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-02-peak-throughput/README.md"
+                          },
+                          {
+                            "name": "starter.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-02-peak-throughput/starter.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-03-occupancy-calculator",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "check.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-03-occupancy-calculator/check.py"
+                          },
+                          {
+                            "name": "Exercise 3 — Build an occupancy calculator from scratch",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-03-occupancy-calculator/README.md"
+                          },
+                          {
+                            "name": "starter.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-03-occupancy-calculator/starter.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-04-roofline-analysis",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "check.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-04-roofline-analysis/check.py"
+                          },
+                          {
+                            "name": "Exercise 4 — Roofline analysis",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-04-roofline-analysis/README.md"
+                          },
+                          {
+                            "name": "starter.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-04-roofline-analysis/starter.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-05-warp-divergence-analyzer",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "check.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-05-warp-divergence-analyzer/check.py"
+                          },
+                          {
+                            "name": "Exercise 5 — Warp divergence analyzer",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-05-warp-divergence-analyzer/README.md"
+                          },
+                          {
+                            "name": "starter.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-05-warp-divergence-analyzer/starter.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "exercise-06-tensor-core-throughput",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "check.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-06-tensor-core-throughput/check.py"
+                          },
+                          {
+                            "name": "Exercise 6 — Tensor-core throughput prediction",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-06-tensor-core-throughput/README.md"
+                          },
+                          {
+                            "name": "starter.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-06-tensor-core-throughput/starter.py"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 1.1 — GPU Architecture Deep Dive",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/lecture-notes/01-gpu-architecture.md"
+                      },
+                      {
+                        "name": "Lecture 1.2 — CUDA Programming Model",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/lecture-notes/02-cuda-programming-model.md"
+                      },
+                      {
+                        "name": "Lecture 1.3 — CUDA Memory Hierarchy",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/lecture-notes/03-cuda-memory-hierarchy.md"
+                      },
+                      {
+                        "name": "Lecture 1.4 — Warps and Occupancy",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/lecture-notes/04-warps-and-occupancy.md"
+                      },
+                      {
+                        "name": "Lecture 1.5 — The Roofline Performance Model",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/lecture-notes/05-roofline-model.md"
+                      },
+                      {
+                        "name": "Lecture 1.6 — GPU Generations and Specs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/lecture-notes/06-gpu-generations.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 1 — GPU Fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/README.md"
+                  },
+                  {
+                    "name": "Module 1 — Resources",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/resources.md"
+                  },
+                  {
+                    "name": "Module 1 quiz — answer key",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/quiz-answers.md"
+                  },
+                  {
+                    "name": "Module 1 quiz — GPU fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/quiz.md"
+                  },
+                  {
+                    "name": "Source Digest — GPU Fundamentals",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-001-gpu-fundamentals/source-digest.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-002-cuda-programming",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Ex 01: Vector Add Kernel + Bandwidth Ceiling",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/exercises/exercise-01-vector-add.md"
+                      },
+                      {
+                        "name": "Ex 02: The SGEMM Ladder",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/exercises/exercise-02-tiled-matmul.md"
+                      },
+                      {
+                        "name": "Ex 03: Tree Reduction",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/exercises/exercise-03-reduction.md"
+                      },
+                      {
+                        "name": "Ex 04: Occupancy Tuning — Predict, Then Measure",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/exercises/exercise-04-occupancy-tuning.md"
+                      },
+                      {
+                        "name": "Ex 05: A Real PyTorch Extension with Autograd",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/exercises/exercise-05-pytorch-extension.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Kernels + Launch Configuration",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/lecture-notes/01-kernels-and-launch-config.md"
+                      },
+                      {
+                        "name": "Lecture 02: Memory Coalescing + Shared Memory",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/lecture-notes/02-memory-coalescing-shared-memory.md"
+                      },
+                      {
+                        "name": "Lecture 03: PyTorch C++ Extensions",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/lecture-notes/03-pytorch-c-extension.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 02: CUDA Programming",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/README.md"
+                  },
+                  {
+                    "name": "Module 02: CUDA Programming — Quiz",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/quiz.md"
+                  },
+                  {
+                    "name": "Quiz Answers — Module 02",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/quiz-answers.md"
+                  },
+                  {
+                    "name": "Resources — CUDA Programming",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/resources.md"
+                  },
+                  {
+                    "name": "Source Digest — CUDA Programming",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-002-cuda-programming/source-digest.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-003-performance-profiling",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Ex 01: nsys Trace of LLM Generation — Prefill vs Decode",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/exercises/exercise-01-nsys-trace.md"
+                      },
+                      {
+                        "name": "Ex 02: ncu on a Prefill GEMM vs a Decode GEMV",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/exercises/exercise-02-ncu-deep-dive.md"
+                      },
+                      {
+                        "name": "Ex 03: Find and Remove Launch Overhead in Decode",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/exercises/exercise-03-pytorch-profiler.md"
+                      },
+                      {
+                        "name": "Ex 04: Predict, Then Measure, Inference Memory",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/exercises/exercise-04-memory-snapshot.md"
+                      },
+                      {
+                        "name": "Ex 05: End-to-End — Double the Throughput of a Generation Script",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/exercises/exercise-05-end-to-end-optimization.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: nsys + Nsight Compute",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/lecture-notes/01-nsys-nsight.md"
+                      },
+                      {
+                        "name": "Lecture 02: Bottleneck Identification",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/lecture-notes/02-bottleneck-identification.md"
+                      },
+                      {
+                        "name": "Lecture 03: Memory Profiling",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/lecture-notes/03-memory-profiling.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 03 — Quiz Answers",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/quiz-answers.md"
+                  },
+                  {
+                    "name": "Module 03: Performance Profiling",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/README.md"
+                  },
+                  {
+                    "name": "Module 03: Performance Profiling — Quiz",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/quiz.md"
+                  },
+                  {
+                    "name": "Resources — Performance Profiling",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/resources.md"
+                  },
+                  {
+                    "name": "Source Digest — Performance Profiling",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-003-performance-profiling/source-digest.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-004-transformer-optimization",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-06-inference-arithmetic",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "check.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/exercises/exercise-06-inference-arithmetic/check.py"
+                          },
+                          {
+                            "name": "Ex 06: Inference Arithmetic (CPU-only, auto-graded)",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/exercises/exercise-06-inference-arithmetic/README.md"
+                          },
+                          {
+                            "name": "starter.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/exercises/exercise-06-inference-arithmetic/starter.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Ex 01: Measure What FlashAttention Buys You",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/exercises/exercise-01-flash-attention.md"
+                      },
+                      {
+                        "name": "Ex 02: torch.compile on a Decode Loop",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/exercises/exercise-02-torch-compile.md"
+                      },
+                      {
+                        "name": "Ex 03: vLLM Prefix Caching — TTFT Under a Shared System Prompt",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/exercises/exercise-03-vllm-prefix-caching.md"
+                      },
+                      {
+                        "name": "Ex 04: Speculative Decoding — When It Helps, When It Hurts",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/exercises/exercise-04-speculative-decoding.md"
+                      },
+                      {
+                        "name": "Ex 05: A Fused RMSNorm in Triton",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/exercises/exercise-05-write-triton-kernel.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Attention Optimization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/lecture-notes/01-attention-optimization.md"
+                      },
+                      {
+                        "name": "Lecture 02: Kernel Fusion",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/lecture-notes/02-kernel-fusion.md"
+                      },
+                      {
+                        "name": "Lecture 03: Speculative Decoding + Other Inference Tricks",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/lecture-notes/03-speculative-decoding.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 04 — Quiz",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/quiz.md"
+                  },
+                  {
+                    "name": "Module 04 — Quiz Answers",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/quiz-answers.md"
+                  },
+                  {
+                    "name": "Module 04: Transformer Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/README.md"
+                  },
+                  {
+                    "name": "Resources — Transformer Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/resources.md"
+                  },
+                  {
+                    "name": "Source Digest — Transformer Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-004-transformer-optimization/source-digest.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-005-model-compression",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "exercise-02-quantization-from-scratch",
+                        "type": "directory",
+                        "children": [
+                          {
+                            "name": "check.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/exercises/exercise-02-quantization-from-scratch/check.py"
+                          },
+                          {
+                            "name": "starter.py",
+                            "type": "file",
+                            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/exercises/exercise-02-quantization-from-scratch/starter.py"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Ex 01: AWQ Quantization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/exercises/exercise-01-awq-quantize.md"
+                      },
+                      {
+                        "name": "Ex 02: Int8 Static Quantization (PyTorch)",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/exercises/exercise-02-int8-static.md"
+                      },
+                      {
+                        "name": "Ex 03: 2:4 Sparsity",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/exercises/exercise-03-2-4-sparsity.md"
+                      },
+                      {
+                        "name": "Ex 04: LoRA Fine-Tune",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/exercises/exercise-04-lora-finetune.md"
+                      },
+                      {
+                        "name": "Ex 05: Distillation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/exercises/exercise-05-distillation.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Quantization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/lecture-notes/01-quantization.md"
+                      },
+                      {
+                        "name": "Lecture 02: Pruning + Distillation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/lecture-notes/02-pruning-distillation.md"
+                      },
+                      {
+                        "name": "Lecture 03: LoRA + Adapter Patterns",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/lecture-notes/03-lora-adapters.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 05 — Quiz",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/quiz.md"
+                  },
+                  {
+                    "name": "Module 05 — Quiz Answers",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/quiz-answers.md"
+                  },
+                  {
+                    "name": "Module 05: Model Compression",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/README.md"
+                  },
+                  {
+                    "name": "Resources — Model Compression",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/resources.md"
+                  },
+                  {
+                    "name": "Source Digest — Model Compression",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-005-model-compression/source-digest.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-006-distributed-inference",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Ex 01: Tensor-Parallel vLLM Deployment",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/exercises/exercise-01-tensor-parallel.md"
+                      },
+                      {
+                        "name": "Ex 02: Pipeline-Parallel for 70B+",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/exercises/exercise-02-pipeline-parallel.md"
+                      },
+                      {
+                        "name": "Ex 03: HPA on Custom Metric",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/exercises/exercise-03-custom-hpa-metric.md"
+                      },
+                      {
+                        "name": "Ex 04: Prefix-Aware Routing",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/exercises/exercise-04-prefix-aware-routing.md"
+                      },
+                      {
+                        "name": "Ex 05: Cold Start Mitigation",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/exercises/exercise-05-cold-start-mitigation.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Tensor + Pipeline Parallelism",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/lecture-notes/01-tensor-pipeline-parallel.md"
+                      },
+                      {
+                        "name": "Lecture 02: Multi-Replica Autoscaling",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/lecture-notes/02-multi-replica-autoscaling.md"
+                      },
+                      {
+                        "name": "Lecture 03: Load Balancing for LLM Inference",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/lecture-notes/03-load-balancing.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 06 — Quiz",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/quiz.md"
+                  },
+                  {
+                    "name": "Module 06 — Quiz Answers",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/quiz-answers.md"
+                  },
+                  {
+                    "name": "Module 06: Distributed Inference",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/README.md"
+                  },
+                  {
+                    "name": "Resources — Distributed Inference",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/resources.md"
+                  },
+                  {
+                    "name": "Source Digest — Distributed Inference",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-006-distributed-inference/source-digest.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-007-production-deployment",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Ex 01: Pick a Framework",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/exercises/exercise-01-pick-a-framework.md"
+                      },
+                      {
+                        "name": "Ex 02: Canary via Argo Rollouts",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/exercises/exercise-02-canary-deployment.md"
+                      },
+                      {
+                        "name": "Ex 03: Spot Instances with Resilience",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/exercises/exercise-03-spot-with-resilience.md"
+                      },
+                      {
+                        "name": "Ex 04: Multi-Tier Cost Routing",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/exercises/exercise-04-multi-tier-routing.md"
+                      },
+                      {
+                        "name": "Ex 05: End-to-End Production Deploy",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/exercises/exercise-05-end-to-end-deploy.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: Serving Frameworks",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/lecture-notes/01-serving-frameworks.md"
+                      },
+                      {
+                        "name": "Lecture 02: Deployment Patterns",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/lecture-notes/02-deployment-patterns.md"
+                      },
+                      {
+                        "name": "Lecture 03: Cost Optimization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/lecture-notes/03-cost-optimization.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 07 — Quiz",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/quiz.md"
+                  },
+                  {
+                    "name": "Module 07 — Quiz Answers",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/quiz-answers.md"
+                  },
+                  {
+                    "name": "Module 07: Production Deployment",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/README.md"
+                  },
+                  {
+                    "name": "Resources — Production Deployment",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/resources.md"
+                  },
+                  {
+                    "name": "Source Digest — Production Deployment",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-007-production-deployment/source-digest.md"
+                  }
+                ]
+              },
+              {
+                "name": "mod-008-advanced-topics",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "exercises",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Ex 01: CUDA Graphs",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/exercises/exercise-01-cuda-graphs.md"
+                      },
+                      {
+                        "name": "Ex 02: Stream Overlap",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/exercises/exercise-02-stream-overlap.md"
+                      },
+                      {
+                        "name": "Ex 03: NCCL Tests",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/exercises/exercise-03-nccl-tests.md"
+                      },
+                      {
+                        "name": "Ex 04: MIG Partition",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/exercises/exercise-04-mig-partition.md"
+                      },
+                      {
+                        "name": "Ex 05: FP8 Training with TE",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/exercises/exercise-05-fp8-training.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "lecture-notes",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Lecture 01: CUDA Graphs + Streams",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/lecture-notes/01-cuda-graphs-streams.md"
+                      },
+                      {
+                        "name": "Lecture 02: NVLink + InfiniBand + GPUDirect",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/lecture-notes/02-interconnect.md"
+                      },
+                      {
+                        "name": "Lecture 03: MIG + FP8",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/lecture-notes/03-mig-fp8.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Module 08 — Quiz",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/quiz.md"
+                  },
+                  {
+                    "name": "Module 08 — Quiz Answers",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/quiz-answers.md"
+                  },
+                  {
+                    "name": "Module 08: Advanced Topics",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/README.md"
+                  },
+                  {
+                    "name": "Resources — Advanced Topics",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/resources.md"
+                  },
+                  {
+                    "name": "Source Digest — Advanced Topics",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/mod-008-advanced-topics/source-digest.md"
+                  }
+                ]
+              },
+              {
+                "name": "Modules",
+                "type": "file",
+                "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/modules/README.md"
+              }
+            ]
+          },
+          {
+            "name": "projects",
+            "type": "directory",
+            "children": [
+              {
+                "name": "project-01-model-optimization",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "deliverables",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Deliverables — Production Model Optimization Pipeline",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-01-model-optimization/deliverables/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Architecture — Production Model Optimization Pipeline",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-01-model-optimization/architecture.md"
+                  },
+                  {
+                    "name": "Project 1: Production Model Optimization Pipeline",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-01-model-optimization/README.md"
+                  },
+                  {
+                    "name": "Requirements — Production Model Optimization Pipeline",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-01-model-optimization/requirements.md"
+                  },
+                  {
+                    "name": "Rubric — Production Model Optimization Pipeline",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-01-model-optimization/rubric.md"
+                  },
+                  {
+                    "name": "Step-by-Step Build Guide — Production Model Optimization Pipeline",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-01-model-optimization/STEP_BY_STEP.md"
+                  }
+                ]
+              },
+              {
+                "name": "project-02-gpu-optimization",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "deliverables",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Deliverables — Custom CUDA Kernels for Transformer Optimization",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-02-gpu-optimization/deliverables/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Architecture — Custom CUDA Kernels for Transformer Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-02-gpu-optimization/architecture.md"
+                  },
+                  {
+                    "name": "Project 2: Custom CUDA Kernels for Transformer Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-02-gpu-optimization/README.md"
+                  },
+                  {
+                    "name": "Requirements — Custom CUDA Kernels for Transformer Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-02-gpu-optimization/requirements.md"
+                  },
+                  {
+                    "name": "Rubric — Custom CUDA Kernels for Transformer Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-02-gpu-optimization/rubric.md"
+                  },
+                  {
+                    "name": "Step-by-Step Build Guide — Custom CUDA Kernels for Transformer Optimization",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-02-gpu-optimization/STEP_BY_STEP.md"
+                  }
+                ]
+              },
+              {
+                "name": "project-03-distributed-inference",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "deliverables",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "Deliverables — High-Performance LLM Inference System",
+                        "type": "file",
+                        "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-03-distributed-inference/deliverables/README.md"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Architecture — High-Performance LLM Inference System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-03-distributed-inference/architecture.md"
+                  },
+                  {
+                    "name": "Project 3: High-Performance LLM Inference System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-03-distributed-inference/README.md"
+                  },
+                  {
+                    "name": "Requirements — High-Performance LLM Inference System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-03-distributed-inference/requirements.md"
+                  },
+                  {
+                    "name": "Rubric — High-Performance LLM Inference System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-03-distributed-inference/rubric.md"
+                  },
+                  {
+                    "name": "Step-by-Step Build Guide — High-Performance LLM Inference System",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/project-03-distributed-inference/STEP_BY_STEP.md"
+                  }
+                ]
+              },
+              {
+                "name": "Projects",
+                "type": "file",
+                "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/projects/README.md"
+              }
+            ]
+          },
+          {
+            "name": "resources",
+            "type": "directory",
+            "children": [
+              {
+                "name": "reading-lists",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "Wafer GPU Performance Reading List",
+                    "type": "file",
+                    "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/resources/reading-lists/wafer-gpu-perf-reading-list.md"
+                  }
+                ]
+              },
+              {
+                "name": "Resources",
+                "type": "file",
+                "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/resources/README.md"
+              }
+            ]
+          },
+          {
+            "name": "Phase 3: LLM Inference & GPU Performance",
+            "type": "file",
+            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/phase-3-learning-plan.md"
+          },
+          {
+            "name": "The 25 Questions: Where Each Is Answered",
+            "type": "file",
+            "path": "AI Infrastructure Engineer/Phase 3 - LLM Inference & GPU Performance/25-questions.md"
+          }
+        ]
       }
     ]
   },

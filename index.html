@@ -152,10 +152,12 @@
     <div id="cursor-ring"></div>
 
     <!-- Ask ChatGPT Tooltip -->
-    <button id="chatgpt-tooltip">
-        <span class="material-symbols-outlined sparkle-icon">auto_awesome</span>
-        <span>Ask ChatGPT</span>
-    </button>
+    <div id="chatgpt-tooltip" role="toolbar" aria-label="Ask ChatGPT about the selected text">
+        <span class="material-symbols-outlined sparkle-icon" aria-hidden="true">auto_awesome</span>
+        <button type="button" data-mode="sel-explain">Explain</button>
+        <button type="button" data-mode="sel-example">Example</button>
+        <button type="button" data-mode="sel-quiz">Quiz me</button>
+    </div>
 
 
     <!-- TopNavBar -->
@@ -723,6 +725,24 @@
                 <div id="markdown-content" class="markdown-body">
                     <!-- Loaded dynamically -->
                 </div>
+
+                <!-- Study with ChatGPT: each button opens ChatGPT as an interactive tutor for this lesson -->
+                <section id="study-with-ai" aria-labelledby="study-with-ai-title">
+                    <div class="study-ai-head">
+                        <span class="material-symbols-outlined" aria-hidden="true">school</span>
+                        <div>
+                            <h3 id="study-with-ai-title">Study this lesson with ChatGPT</h3>
+                            <p>Pick a mode. ChatGPT opens with this lesson loaded and works through it with you, one step at a time.</p>
+                        </div>
+                    </div>
+                    <div class="study-ai-grid">
+                        <button type="button" data-mode="teach"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span><strong>Teach me</strong><small>Step by step, checks you understood</small></button>
+                        <button type="button" data-mode="quiz"><span class="material-symbols-outlined" aria-hidden="true">quiz</span><strong>Quiz me</strong><small>One question at a time, graded</small></button>
+                        <button type="button" data-mode="interview"><span class="material-symbols-outlined" aria-hidden="true">record_voice_over</span><strong>Mock interview</strong><small>Interviewer with follow-ups</small></button>
+                        <button type="button" data-mode="practice"><span class="material-symbols-outlined" aria-hidden="true">terminal</span><strong>Hands-on task</strong><small>An exercise, with hints and review</small></button>
+                        <button type="button" data-mode="revise"><span class="material-symbols-outlined" aria-hidden="true">style</span><strong>Quick revise</strong><small>Flashcards and a cheat sheet</small></button>
+                    </div>
+                </section>
 
                 <!-- Lesson Navigation & Done actions -->
                 <div class="mt-12 pt-6 border-t border-outline-variant/60 flex items-center justify-between flex-wrap gap-4"

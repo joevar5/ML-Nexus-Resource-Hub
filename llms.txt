@@ -1,0 +1,1026 @@
+# InferenceStack (ML-Nexus-Resource-Hub)
+
+> Hands-on curriculum for AI Infrastructure, MLOps, ML/GenAI system design and GenAI engineering. Every link below is the raw markdown of one lesson.
+
+Paste this file's URL into ChatGPT and ask it to build you a study plan, teach a lesson, or quiz you.
+
+## AI Infrastructure Engineer
+
+### Introduction
+- [AI Infrastructure Engineer Learning Repository](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Introduction/readme.md)
+
+### Phase 1 - Core AI Infrastructure & Foundations
+
+#### assessments
+
+##### practical-exams
+- [Final Practical Exam](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/assessments/practical-exams/final-practical.md)
+- [Midterm Practical Exam](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/assessments/practical-exams/midterm-practical.md)
+
+##### quizzes
+- [Prerequisites Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/assessments/quizzes/prerequisites-quiz.md)
+
+##### rubrics
+- [Project Assessment Rubrics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/assessments/rubrics/project-rubrics.md)
+- [Assessment Overview](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/assessments/README.md)
+
+#### lessons
+
+##### mod-001-python-fundamentals
+
+###### exercises
+- [Exercise 01: Python Environment Setup & Automation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-01-environment-setup.md)
+- [Exercise 02: Python Data Structures for ML Data](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-02-data-structures.md)
+- [Exercise 03: Reusable ML Utilities & Modules](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-03-functions-modules.md)
+- [Exercise 04: Reading and Writing ML Data Files](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-04-file-io.md)
+- [Exercise 05: Robust Exception Handling in ML Pipelines](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-05-error-handling.md)
+- [Exercise 06: Asynchronous Operations in ML Pipelines](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-06-async-programming.md)
+- [Exercise 07: Testing ML Code with Pytest](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/exercises/exercise-07-testing.md)
+
+###### lecture-notes
+- [Lecture 01: Python Environment & Dependency Management](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/lecture-notes/01-python-environment.md)
+- [Lecture 02: Advanced Python for Infrastructure - Type Hints, Logging, and Configuration](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/lecture-notes/02-advanced-python.md)
+- [Lecture 03: Python for DevOps Operations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/lecture-notes/03-python-devops.md)
+- [Lecture 04: Asynchronous Programming in Python](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/lecture-notes/04-async-programming.md)
+- [Lecture 05: Testing with pytest & Code Quality](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/lecture-notes/05-testing-code-quality.md)
+
+###### quizzes
+- [Module 001: Python Fundamentals for Infrastructure - Comprehensive Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/quizzes/module-001-quiz.md)
+- [Module 001: Python Fundamentals for AI Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-001-python-fundamentals/README.md)
+
+##### mod-002-linux-essentials
+
+###### exercises
+- [Exercise 01: Linux Navigation and File System Mastery](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/exercises/exercise-01-navigation.md)
+- [Exercise 02: File Permissions and Access Control for ML Teams](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/exercises/exercise-02-permissions.md)
+- [Exercise 03: Process Management for ML Training Jobs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/exercises/exercise-03-processes.md)
+- [Exercise 04: Bash Scripting for ML Deployment Automation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/exercises/exercise-04-scripting.md)
+- [Exercise 05: Package Management for ML Stack Installation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/exercises/exercise-05-package-mgmt.md)
+- [Exercise 06: Log File Analysis for ML Systems](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/exercises/exercise-06-logs.md)
+- [Exercise 07: Real-World Troubleshooting Scenarios](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/exercises/exercise-07-troubleshooting.md)
+- [Exercise 08: System Automation and Maintenance for ML Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/exercises/exercise-08-system-automation.md)
+
+###### lecture-notes
+- [Lecture 01: Introduction to Linux and Command Line](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/lecture-notes/01-intro-to-linux.md)
+- [Lecture 02: File System and Navigation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/lecture-notes/02-file-system-navigation.md)
+- [Lecture 03: Permissions and Security](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/lecture-notes/03-permissions-security.md)
+- [Lecture 04: System Administration Basics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/lecture-notes/04-system-administration.md)
+- [Lecture 05: Introduction to Shell Scripting](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/lecture-notes/05-intro-shell-scripting.md)
+- [Lecture 06: Advanced Shell Scripting](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/lecture-notes/06-advanced-shell-scripting.md)
+- [Lecture 07: Text Processing Tools](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/lecture-notes/07-text-processing.md)
+- [Lecture 08: Networking Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/lecture-notes/08-networking-fundamentals.md)
+
+###### quizzes
+- [Module 002: Linux Essentials - Comprehensive Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/quizzes/module-002-quiz.md)
+
+###### resources
+- [Linux Essentials - Recommended Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/resources/recommended-reading.md)
+- [Module 002: Linux Essentials for AI Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-002-linux-essentials/README.md)
+
+##### mod-003-git-version-control
+
+###### exercises
+- [Exercise 01: Creating Your First ML Project Repository](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/exercises/exercise-01-first-repo.md)
+- [Exercise 02: Working with Commits and History](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/exercises/exercise-02-commits-history.md)
+- [Exercise 03: Branching for Feature Development](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/exercises/exercise-03-branching.md)
+- [Exercise 04: Merging and Conflict Resolution](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/exercises/exercise-04-merging-conflicts.md)
+- [Exercise 05: Collaboration and Pull Requests](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/exercises/exercise-05-collaboration.md)
+- [Exercise 06: Git for ML Workflows - DVC and Model Versioning](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/exercises/exercise-06-ml-workflows.md)
+- [Exercise 07: Advanced Git Techniques](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/exercises/exercise-07-advanced.md)
+- [Exercise 08: Git LFS and Managing Large ML Projects](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/exercises/exercise-08-git-lfs-ml-projects.md)
+
+###### lecture-notes
+- [Lecture 01: Git Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/lecture-notes/01-git-fundamentals.md)
+- [Lecture 02: Branching and Merging](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/lecture-notes/02-branching-merging.md)
+- [Lecture 03: Collaboration with Git](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/lecture-notes/03-collaboration.md)
+- [Lecture 04: Advanced Git Techniques](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/lecture-notes/04-advanced-git.md)
+- [Lecture 05: Git for Large-Scale ML Projects](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/lecture-notes/05-git-for-ml-projects.md)
+
+###### quizzes
+- [Module 003: Git & Version Control - Comprehensive Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/quizzes/module-003-quiz.md)
+- [Module 003: Git and Version Control](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-003-git-version-control/README.md)
+
+##### mod-004-ml-basics
+
+###### exercises
+- [Exercise 01: PyTorch Model Inference](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/exercises/exercise-01-pytorch-inference.md)
+- [Exercise 02: TensorFlow Model Inference](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/exercises/exercise-02-tensorflow-inference.md)
+- [Exercise 03: Model Format Conversion with ONNX](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/exercises/exercise-03-model-conversion.md)
+- [Exercise 04: LLM Basics - Running Your First Language Model](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/exercises/exercise-04-llm-basics.md)
+- [Exercise 05: GPU Basics - Accelerating ML Inference](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/exercises/exercise-05-gpu-basics.md)
+
+###### lecture-notes
+- [Lecture 01: Machine Learning Overview for Infrastructure Engineers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/lecture-notes/01-ml-overview.md)
+- [Lecture 02: PyTorch Basics for Infrastructure Engineers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/lecture-notes/02-pytorch-basics.md)
+- [Lecture 03: TensorFlow Basics for Infrastructure Engineers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/lecture-notes/03-tensorflow-basics.md)
+- [Lecture 04: Model Formats and Deployment Preparation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/lecture-notes/04-model-formats.md)
+
+###### quizzes
+- [Module 004: ML Basics for Infrastructure - Comprehensive Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/quizzes/quiz-01-ml-basics.md)
+- [Module 004: Machine Learning Basics for Infrastructure Engineers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-004-ml-basics/README.md)
+
+##### mod-005-docker-containers
+
+###### exercises
+- [Exercise 01: Docker Container Operations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/exercises/exercise-01-container-operations.md)
+- [Exercise 02: Building Custom Docker Images](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/exercises/exercise-02-building-custom-images.md)
+- [Exercise 03: Docker Compose Applications](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/exercises/exercise-03-docker-compose.md)
+- [Exercise 04: Docker Networking Scenarios](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/exercises/exercise-04-networking-scenarios.md)
+- [Exercise 05: Docker Volume Management](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/exercises/exercise-05-volume-management.md)
+- [Exercise 06: Production Deployment Strategies](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/exercises/exercise-06-production-deployment.md)
+- [Exercise 07: Complete ML Application Containerization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/exercises/exercise-07-ml-containerization.md)
+- [Exercise 08: Production-Ready ML Docker Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/exercises/exercise-08-production-ml-deployment.md)
+
+###### lecture-notes
+- [Lecture 01: Docker Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/lecture-notes/01-docker-fundamentals.md)
+- [Lecture 02: Dockerfiles and Image Building](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/lecture-notes/02-dockerfiles-basics.md)
+- [Lecture 03: Docker Compose](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/lecture-notes/03-docker-compose.md)
+- [Lecture 04: Docker Networking and Volumes](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/lecture-notes/04-networking-volumes.md)
+- [Lecture 05: Docker Best Practices and Production Readiness](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/lecture-notes/05-best-practices.md)
+- [Lecture 06: Advanced Docker Topics for ML Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/lecture-notes/06-advanced-docker-topics.md)
+
+###### quizzes
+- [Module 005: Docker & Containerization - Comprehensive Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/quizzes/module-005-quiz.md)
+- [Module 005: Docker and Containers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-005-docker-containers/README.md)
+
+##### mod-006-kubernetes-intro
+
+###### exercises
+- [Exercise 01: First Kubernetes Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-01-first-deployment.md)
+- [Exercise 02: Create a Helm Chart](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-02-helm-chart.md)
+- [Exercise 03: Debugging Kubernetes Issues](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-03-debugging.md)
+- [Exercise 04: StatefulSets and Persistent Storage in Kubernetes](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-04-statefulsets-storage.md)
+- [Exercise 05: ConfigMaps, Secrets, and Configuration Management](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-05-configmaps-secrets.md)
+- [Exercise 06: Ingress and Load Balancing](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-06-ingress-load-balancing.md)
+- [Exercise 07: ML Workloads on Kubernetes](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/exercises/exercise-07-ml-workloads.md)
+
+###### lecture-notes
+- [Lecture 01: Kubernetes Architecture](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/lecture-notes/01-k8s-architecture.md)
+- [Lecture 02: Deploying Applications on Kubernetes](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/lecture-notes/02-deploying-apps.md)
+- [Lecture 03: Helm - Kubernetes Package Manager](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/lecture-notes/03-helm.md)
+- [Lecture 04: Kubernetes Operations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/lecture-notes/04-k8s-operations.md)
+
+###### quizzes
+- [Module 006: Kubernetes Introduction - Assessment Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/quizzes/module-006-quiz.md)
+
+###### resources
+- [Module 006: Recommended Reading and Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/resources/recommended-reading.md)
+- [Module 006: Kubernetes Introduction](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-006-kubernetes-intro/README.md)
+
+##### mod-007-apis-web-services
+
+###### exercises
+- [Exercise 01: Build a Basic REST API](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/exercises/exercise-01-basic-rest-api.md)
+- [Exercise 02: ML Model Serving API with Authentication](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/exercises/exercise-02-model-serving-api.md)
+- [Exercise 03: Rate Limiting and CORS Configuration](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/exercises/exercise-03-rate-limiting-cors.md)
+- [Exercise 04: Background Tasks and Async Operations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/exercises/exercise-04-background-tasks-async.md)
+- [Exercise 05: API Documentation and OpenAPI](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/exercises/exercise-05-api-documentation.md)
+- [Exercise 06: Building a Production-Ready ML API](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/exercises/exercise-06-production-ml-api.md)
+
+###### lecture-notes
+- [Lecture 01: API Fundamentals & REST](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/lecture-notes/01-api-fundamentals-rest.md)
+- [Lecture 02: FastAPI Framework](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/lecture-notes/02-fastapi-framework.md)
+- [Lecture 03: Authentication & Security for APIs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/lecture-notes/03-authentication-security.md)
+- [Lecture 04: Advanced API Patterns and Production Strategies](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/lecture-notes/04-advanced-api-patterns.md)
+- [Lecture 05: Flask Framework](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/lecture-notes/05-flask-framework.md)
+
+###### quizzes
+- [Module 007 Quiz: APIs & Web Services](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/quizzes/quiz-01-apis-web-services.md)
+- [Module 007: APIs and Web Services](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-007-apis-web-services/README.md)
+
+##### mod-008-databases-sql
+
+###### exercises
+- [Exercise 01: SQL Fundamentals & CRUD Operations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/exercises/exercise-01-sql-basics-crud.md)
+- [Exercise 02: Database Design for ML Model Registry](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/exercises/exercise-02-database-design-ml-registry.md)
+- [Exercise 03: Advanced SQL Joins & Analytical Queries](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/exercises/exercise-03-advanced-sql-joins.md)
+- [Exercise 04: SQLAlchemy ORM Integration](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/exercises/exercise-04-sqlalchemy-orm-integration.md)
+- [Exercise 05: Database Optimization & Indexing](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/exercises/exercise-05-optimization-indexing.md)
+
+###### lecture-notes
+- [Lecture 01: Database Fundamentals & SQL Basics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/lecture-notes/01-database-fundamentals-sql-basics.md)
+- [Lecture 02: Database Design & Normalization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/lecture-notes/02-database-design-normalization.md)
+- [Lecture 03: Advanced SQL & Query Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/lecture-notes/03-advanced-sql-query-optimization.md)
+- [Lecture 04: ORMs and Database Integration](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/lecture-notes/04-orms-database-integration.md)
+- [Lecture 05: Database Scaling and Performance for ML Workloads](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/lecture-notes/05-database-scaling-ml-workloads.md)
+- [Lecture 06: NoSQL Basics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/lecture-notes/06-nosql-basics.md)
+
+###### quizzes
+- [Module 008 Quiz: Databases & SQL](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/quizzes/quiz-01-databases-sql.md)
+- [Module 008: Databases and SQL](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-008-databases-sql/README.md)
+
+##### mod-009-monitoring-basics
+
+###### exercises
+- [Exercise 01: Observability Foundations Lab](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-01-observability-foundations-lab.md)
+- [Exercise 02: Prometheus Monitoring Stack Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-02-prometheus-stack.md)
+- [Exercise 03: Grafana Dashboards & Visualization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-03-grafana-dashboards.md)
+- [Exercise 04: Logging Pipeline Implementation with Loki](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-04-logging-pipeline.md)
+- [Exercise 05: Alerting & Incident Response Runbook for AI Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-05-alerting-incident-response.md)
+- [Exercise 06: Apache Airflow - Workflow Orchestration and Monitoring](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/exercises/exercise-06-airflow-workflow-monitoring.md)
+
+###### lecture-notes
+- [Lecture 01: Observability Fundamentals for AI Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/lecture-notes/lecture-01-observability-fundamentals.md)
+- [Lecture 02: Prometheus Metrics Pipeline for AI Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/lecture-notes/lecture-02-prometheus-metrics-pipeline.md)
+- [Lecture 03: Grafana Dashboards & Visualization for AI Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/lecture-notes/lecture-03-grafana-dashboards-visualization.md)
+- [Lecture 04: Logging, Alerting, and ML-Focused Monitoring Workflows](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/lecture-notes/lecture-04-logging-alerting-ml-monitoring.md)
+
+###### quizzes
+- [Module 009 Quiz: Monitoring & Observability](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/quizzes/quiz-01-monitoring-observability.md)
+- [Module 009: Monitoring and Observability Basics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-009-monitoring-basics/README.md)
+
+##### mod-010-cloud-platforms
+
+###### exercises
+- [Exercise 01: AWS Account Setup & IAM Best Practices](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-01-aws-account-iam.md)
+- [Exercise 02: Compute & Storage Foundations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-02-compute-storage.md)
+- [Exercise 03: Production VPC with Multi-Tier Security](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-03-networking-security.md)
+- [Exercise 04: Deploy Containerized ML Inference Service](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-04-containerized-deployment.md)
+- [Exercise 05: SageMaker ML Platform & Cost Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-05-sagemaker-cost-optimization.md)
+- [Exercise 06: Deploy Complete ML Infrastructure on AWS](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-06-ml-infrastructure-aws.md)
+- [Exercise 07: Infrastructure as Code with Terraform Basics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/exercises/exercise-07-terraform-basics.md)
+
+###### lecture-notes
+- [Lecture 01: Cloud Computing Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-01-cloud-fundamentals.md)
+- [Lecture 02: AWS Core Services for AI Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-02-aws-core-services.md)
+- [Lecture 03: AWS Networking and Security for AI Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-03-networking-security.md)
+- [Lecture 04: Deployment Patterns & ML Workloads on AWS](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-04-deployment-ml-workloads.md)
+- [Lecture 05: Multi-Cloud Strategies and Cost Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/lecture-notes/lecture-05-multicloud-cost-optimization.md)
+
+###### quizzes
+- [Module 010 Quiz: Cloud Platforms & AWS](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/quizzes/quiz-01-cloud-platforms.md)
+- [Module 010: Cloud Platforms Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/mod-010-cloud-platforms/README.md)
+- [Lessons](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/lessons/README.md)
+
+#### projects
+
+##### project-01-simple-model-api
+
+###### src
+- [Source Code Implementation Guide](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-01-simple-model-api/src/README.md)
+- [1.0: README - Simple Model API Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-01-simple-model-api/1.0-README.md)
+- [1.1: Detailed Requirements Specification](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-01-simple-model-api/1.1-requirements.md)
+- [1.2: High Level System Architecture](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-01-simple-model-api/1.2-architecture.md)
+
+##### project-02-kubernetes-serving
+
+###### helm
+
+###### model-api
+- [model-api Helm Chart](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-02-kubernetes-serving/helm/model-api/README.md)
+
+###### loadtest
+- [Load Testing — Project 02](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-02-kubernetes-serving/loadtest/README.md)
+- [2.0: README - Kubernetes Model Serving](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-02-kubernetes-serving/2.0-README.md)
+- [2.1: Kubernetes Serving Requirements](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-02-kubernetes-serving/2.1-requirements.md)
+- [2.2: Architecture Documentation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-02-kubernetes-serving/2.2-architecture.md)
+- [2.3: Step-by-Step Execution & Hosting Guide](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-02-kubernetes-serving/2.3-how-to-execute-this-solution-and-host-pods.md)
+
+##### project-03-ml-pipeline-tracking
+
+###### great_expectations
+- [Great Expectations Configuration — Project 03](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-03-ml-pipeline-tracking/great_expectations/README.md)
+- [3.0: README - ML Pipeline with Experiment Tracking](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-03-ml-pipeline-tracking/3.0-README.md)
+- [3.1: Project Requirements](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-03-ml-pipeline-tracking/3.1-requirements.md)
+- [3.2: Architecture Deep Dive](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-03-ml-pipeline-tracking/3.2-architecture.md)
+- [3.3: Step-by-Step Execution Guide](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-03-ml-pipeline-tracking/3.3-how-to-execute-this-solution-and-run-pipeline.md)
+
+##### project-04-monitoring-alerting
+
+###### runbooks
+- [Runbook: HighErrorRate](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/runbooks/high-error-rate.md)
+- [Runbook: LogIngestionLag](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/runbooks/log-ingestion-lag.md)
+- [Runbook: ModelDriftDetected](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/runbooks/model-drift.md)
+- [Runbook: SlowResponse](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/runbooks/slow-response.md)
+- [Runbook: TargetDown](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/runbooks/target-down.md)
+- [Runbooks](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/runbooks/README.md)
+- [4.0: README - Monitoring & Alerting System](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/4.0-README.md)
+- [4.1: Project Requirements](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/4.1-requirements.md)
+- [4.2: Architecture Deep Dive](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/4.2-architecture.md)
+- [4.3: Step-by-Step Execution Guide](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-04-monitoring-alerting/4.3-how-to-execute-this-solution.md)
+
+##### project-05-production-ml-capstone
+
+###### terraform
+- [Terraform — Project 05 Capstone](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-05-production-ml-capstone/terraform/README.md)
+
+###### velero
+- [Velero — Cluster Backup & Restore](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-05-production-ml-capstone/velero/README.md)
+- [5.0: Production-Ready ML System (Capstone)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-05-production-ml-capstone/5.0-README.md)
+- [5.1: Requirements Specification](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-05-production-ml-capstone/5.1-requirements.md)
+- [5.2: Architecture Documentation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-05-production-ml-capstone/5.2-architecture.md)
+- [5.3: Deployment & Recovery Guide](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/project-05-production-ml-capstone/5.3-how-to-execute-and-deploy.md)
+- [Projects](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/projects/README.md)
+
+#### resources
+
+##### cheat-sheets
+- [Docker Cheat Sheet](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/cheat-sheets/docker-cheat-sheet.md)
+- [Git Cheat Sheet](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/cheat-sheets/git-cheat-sheet.md)
+- [Kubernetes Cheat Sheet](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/cheat-sheets/kubernetes-cheat-sheet.md)
+- [Linux / Shell Cheat Sheet — AI Infrastructure Edition](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/cheat-sheets/linux-cheat-sheet.md)
+- [Prometheus + PromQL Cheat Sheet](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/cheat-sheets/prometheus-cheat-sheet.md)
+- [Python Cheat Sheet — AI Infrastructure Edition](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/cheat-sheets/python-cheat-sheet.md)
+- [SQL Cheat Sheet — PostgreSQL Focus](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/cheat-sheets/sql-cheat-sheet.md)
+
+##### reading-lists
+- [Beginner Learning Path](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/reading-lists/beginner-path.md)
+- [Reading List — Advanced Path](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/reading-lists/advanced-path.md)
+- [Reading List — Intermediate Path](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/reading-lists/intermediate-path.md)
+- [Development Tools Guide](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/tools.md)
+- [Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/resources/README.md)
+- [Phase 1 Learning Plan: Core AI Infrastructure & Foundations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%201%20-%20Core%20AI%20Infrastructure%20%26%20Foundations/phase-1-learning-plan.md)
+
+### Phase 2 - Advanced AI Infrastructure
+
+#### assessments
+
+##### coding-challenges
+- [Coding Challenge 01: Build a Model Serving API](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/coding-challenges/challenge-01-model-api.md)
+
+##### practical-exams
+- [Midterm Practical Exam: AI Infrastructure Engineer](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/practical-exams/midterm-practical-exam.md)
+
+##### quizzes
+
+###### answer-keys
+- [Module 02: Cloud Computing for ML — Answer Key](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/quizzes/answer-keys/module-02-answers.md)
+- [Module 06: MLOps — Answer Key](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/quizzes/answer-keys/module-06-answers.md)
+- [Module 07: GPU Computing — Answer Key](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/quizzes/answer-keys/module-07-answers.md)
+- [Module 08: Monitoring & Observability — Answer Key](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/quizzes/answer-keys/module-08-answers.md)
+- [Module 09: Infrastructure as Code — Answer Key](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/quizzes/answer-keys/module-09-answers.md)
+- [Module 10: LLM Infrastructure — Answer Key](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/quizzes/answer-keys/module-10-answers.md)
+- [Module 101: Foundations — Answer Key](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/quizzes/answer-keys/module-01-answers.md)
+- [Quiz Answer Keys](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/quizzes/answer-keys/README.md)
+
+##### rubrics
+- [Project Assessment Rubric](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/rubrics/project-assessment-rubric.md)
+- [Assessments](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/assessments/README.md)
+
+#### lessons
+
+##### mod-02-cloud-computing
+
+###### exercises
+
+###### exercise-01-multi-cloud-cost-analyzer
+- [Exercise 01: Multi-Cloud Cost Analyzer](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-01-multi-cloud-cost-analyzer/README.md)
+
+###### exercise-02-cloud-ml-infrastructure
+- [Exercise 02: Cloud ML Infrastructure Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-02-cloud-ml-infrastructure/README.md)
+
+###### exercise-03-disaster-recovery
+- [Exercise 03: Cloud Disaster Recovery System](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-03-disaster-recovery/README.md)
+
+###### exercise-04-cross-region-replication
+- [Exercise 04: Cross-Region Replication for ML Artifacts](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-04-cross-region-replication/README.md)
+
+###### exercise-05-cloud-networking-for-ml
+- [Exercise 05: Cloud Networking for ML Workloads](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-05-cloud-networking-for-ml/README.md)
+
+###### exercise-06-managed-ml-services-comparison
+- [Exercise 06: Managed ML Services Comparison](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-06-managed-ml-services-comparison/README.md)
+
+###### exercise-07-multi-account-security
+- [Exercise 07: Multi-Account / Multi-Project Security Architecture](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-07-multi-account-security/README.md)
+
+###### exercise-08-finops-automation
+- [Exercise 08: FinOps Automation for ML Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/exercises/exercise-08-finops-automation/README.md)
+- [Module 02 Exercises: Cloud Computing for ML](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/exercises/README.md)
+
+###### quizzes
+- [Module 02: Cloud Computing - Final Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/quizzes/final-quiz.md)
+- [Lesson 01: Cloud Architecture for ML](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/01-cloud-architecture.md)
+- [Lesson 02: AWS for ML Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/02-aws-ml-infrastructure.md)
+- [Lesson 03: Google Cloud Platform for ML Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/03-gcp-ml-infrastructure.md)
+- [Lesson 04: Azure for ML Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/04-azure-ml-infrastructure.md)
+- [Lesson 05: Cloud Storage for ML](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/05-cloud-storage.md)
+- [Lesson 06: Cloud Networking for ML](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/06-cloud-networking.md)
+- [Lesson 07: Managed ML Services Comparison](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/07-managed-ml-services.md)
+- [Lesson 08: Multi-Cloud & Cost Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/08-multi-cloud-cost-optimization.md)
+- [Module 02: Cloud Computing for ML Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/README.md)
+- [Resources: Cloud Computing for ML](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-02-cloud-computing/resources.md)
+
+##### mod-03-containerization
+
+###### exercises
+- [Exercise 02: GPU-Accelerated ML Container](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-03-containerization/exercises/exercise-01-gpu-container.md)
+- [Module 03 Exercises: Containerization with Docker](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-03-containerization/exercises/README.md)
+
+###### labs
+- [Lab 04: Run a GPU Container with PyTorch CUDA](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-03-containerization/labs/lab-01-gpu-docker.md)
+- [Module 03 — Labs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-03-containerization/labs/README.md)
+- [Lesson 01: GPU Support in Docker](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-03-containerization/01-gpu-docker.md)
+- [Module 03 Resources: Containerization with Docker](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-03-containerization/resources.md)
+- [Module 03: Containerization with Docker](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-03-containerization/README.md)
+
+##### mod-04-kubernetes
+
+###### exercises
+
+###### exercise-01-helm-chart-authoring
+- [Exercise 01: Author a Production-Grade Helm Chart](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-01-helm-chart-authoring/README.md)
+
+###### exercise-02-gpu-scheduling
+- [Exercise 02: GPU Scheduling Patterns](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-02-gpu-scheduling/README.md)
+
+###### exercise-03-monitoring-troubleshooting
+- [Exercise 03: Kubernetes Monitoring and Troubleshooting Mastery](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/exercises/exercise-03-monitoring-troubleshooting/README.md)
+- [Module 04: Kubernetes Exercises](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/exercises/README.md)
+
+###### labs
+- [Lab 05: Package an App with Helm](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/labs/lab-01-helm-chart.md)
+- [Lab 08: Debug a Broken Deployment from Scratch](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/labs/lab-02-debugging.md)
+- [Module 04 — Labs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/labs/README.md)
+- [Lesson 01: Helm Package Manager](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/01-helm-package-manager.md)
+- [Lesson 02: GPU Scheduling in Kubernetes](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/02-gpu-scheduling.md)
+- [Lesson 03: Monitoring and Troubleshooting Kubernetes](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/03-monitoring-troubleshooting.md)
+- [Module 04 Resources: Kubernetes Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/resources.md)
+- [Module 04: Kubernetes Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-04-kubernetes/README.md)
+
+##### mod-05-data-pipelines
+
+###### exercises
+
+###### exercise-01-data-quality-great-expectations
+- [Exercise 01: Data Quality Validation with Great Expectations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-05-data-pipelines/exercises/exercise-01-data-quality-great-expectations/README.md)
+- [Module 05: Data Pipelines Exercises](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-05-data-pipelines/exercises/README.md)
+
+###### labs
+- [Lab 06: Validate Data with Great Expectations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-05-data-pipelines/labs/lab-01-data-quality.md)
+- [Module 05 — Labs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-05-data-pipelines/labs/README.md)
+- [Lesson 01: Data Quality and Validation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-05-data-pipelines/01-data-quality-validation.md)
+- [Module 05: Data Pipelines - Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-05-data-pipelines/resources.md)
+- [Module 05: Data Pipelines and Orchestration](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-05-data-pipelines/README.md)
+
+##### mod-06-mlops
+
+###### exercises
+
+###### exercise-01-mlflow-tracking-deep-dive
+- [Exercise 01: MLflow Tracking Deep Dive](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/exercises/exercise-01-mlflow-tracking-deep-dive/README.md)
+
+###### exercise-02-model-registry-promotion
+- [Exercise 02: Model Registry and Promotion Workflow](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/exercises/exercise-02-model-registry-promotion/README.md)
+
+###### exercise-03-experiment-tracking-mlflow
+- [Exercise 03: Experiment Tracking and Model Registry with MLflow](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/exercises/exercise-03-experiment-tracking-mlflow/README.md)
+
+###### exercise-04-ci-cd-ml-pipelines
+- [Exercise 04: CI/CD for ML Pipelines](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/exercises/exercise-04-ci-cd-ml-pipelines/README.md)
+
+###### exercise-05-deployment-strategies
+- [Exercise 05: Model Deployment Strategies](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/exercises/exercise-05-deployment-strategies/README.md)
+- [Module 06: MLOps Exercises](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/exercises/README.md)
+
+###### labs
+- [Lab 01: MLflow Tracking Server End-to-End](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/labs/lab-01-mlflow-tracking.md)
+- [Lab 02: Model Registry and Stage Promotion](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/labs/lab-02-model-registry.md)
+- [Lab 04: CI/CD for Models with GitHub Actions](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/labs/lab-03-cicd-models.md)
+- [Lab 05: Canary Deployment with Argo Rollouts](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/labs/lab-04-canary-deployment.md)
+- [Module 06 — Labs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/labs/README.md)
+
+###### quizzes
+- [Module 06: MLOps & Experiment Tracking - Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/quizzes/module-quiz.md)
+- [Lesson 01: MLflow Experiment Tracking](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/01-mlflow-experiment-tracking.md)
+- [Lesson 02: Model Registry & Versioning](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/02-model-registry-versioning.md)
+- [Lesson 03: CI/CD for ML Models](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/03-cicd-ml-models.md)
+- [Lesson 04: Model Deployment Strategies](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/04-model-deployment-strategies.md)
+- [Module 06: MLOps & Experiment Tracking](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/README.md)
+- [Module 06: MLOps & Experiment Tracking - Learning Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-06-mlops/resources.md)
+
+##### mod-07-gpu-computing
+
+###### exercises
+
+###### exercise-01-gpu-introspection
+- [Exercise 01: GPU Introspection and First CUDA Op](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-01-gpu-introspection/README.md)
+
+###### exercise-02-cuda-kernel
+- [Exercise 02: Write Your First CUDA Kernel](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-02-cuda-kernel/README.md)
+
+###### exercise-03-pytorch-gpu-pipeline
+- [Exercise 03: End-to-End PyTorch GPU Pipeline](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-03-pytorch-gpu-pipeline/README.md)
+
+###### exercise-04-gpu-cluster-management
+- [Exercise 04: GPU Cluster Management and Scheduling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-04-gpu-cluster-management/README.md)
+
+###### exercise-05-gpu-performance-optimization
+- [Exercise 05: GPU Performance Optimization and Profiling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-05-gpu-performance-optimization/README.md)
+
+###### exercise-06-distributed-gpu-training
+- [Exercise 06: Distributed GPU Training at Scale](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-06-distributed-gpu-training/README.md)
+
+###### exercise-07-gpu-memory-profiling
+- [Exercise 07: GPU Memory Profiling and OOM Diagnosis](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-07-gpu-memory-profiling/README.md)
+
+###### exercise-08-mixed-precision
+- [Exercise 08: Mixed Precision Training Benchmarks](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-08-mixed-precision/README.md)
+
+###### exercise-09-inference-optimization
+- [Exercise 09: GPU Inference Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-09-inference-optimization/README.md)
+
+###### exercise-10-gpu-sharing-strategies
+- [Exercise 10: GPU Sharing Strategies (MIG, MPS, Time-Slicing)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-10-gpu-sharing-strategies/README.md)
+
+###### exercise-11-gpu-cost-optimization
+- [Exercise 11: GPU Cost Optimization Playbook](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/exercise-11-gpu-cost-optimization/README.md)
+- [Module 07: GPU Computing & Distributed Training - Hands-on Exercises](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/exercises/README.md)
+
+###### labs
+- [Lab 01: CUDA Hello-World and Device Introspection](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/labs/lab-01-cuda-hello-world.md)
+- [Lab 02: PyTorch GPU Inference and Benchmarking](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/labs/lab-02-pytorch-gpu-inference.md)
+- [Lab 03: Multi-GPU Training with DistributedDataParallel](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/labs/lab-03-multi-gpu-training.md)
+- [Lab 04: Run a GPU Pod on Kubernetes](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/labs/lab-04-gpu-cluster-on-k8s.md)
+- [Lab 05: Mixed-Precision Training with `torch.amp`](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/labs/lab-05-mixed-precision.md)
+- [Lab 06: GPU Memory Profiling and OOM Diagnosis](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/labs/lab-06-memory-profiling.md)
+- [Module 07 — Labs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/labs/README.md)
+
+###### quizzes
+- [Module 07: GPU Computing & Distributed Training - Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/quizzes/module-quiz.md)
+- [Lesson 01: Introduction to GPU Computing for AI](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/01-introduction-gpu-computing.md)
+- [Lesson 02: CUDA Programming Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/02-cuda-programming-fundamentals.md)
+- [Lesson 03: PyTorch GPU Acceleration](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/03-pytorch-gpu-acceleration.md)
+- [Lesson 04: Distributed Training Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/04-distributed-training-fundamentals.md)
+- [Lesson 05: Multi-GPU Training Strategies](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/05-multi-gpu-training-strategies.md)
+- [Lesson 06: Model and Pipeline Parallelism](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/06-model-pipeline-parallelism.md)
+- [Lesson 07: GPU Memory Management & Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/07-gpu-memory-management.md)
+- [Lesson 08: Advanced GPU Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/08-advanced-gpu-optimization.md)
+- [Module 07: GPU Computing & Distributed Training](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/README.md)
+- [Module 07: GPU Computing & Distributed Training - Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-07-gpu-computing/resources.md)
+
+##### mod-08-monitoring-observability
+
+###### exercises
+
+###### exercise-01-promql-deep-dive
+- [Exercise 01: PromQL Deep Dive](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-01-promql-deep-dive/README.md)
+
+###### exercise-02-distributed-tracing-otel
+- [Exercise 02: Distributed Tracing with OpenTelemetry](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-02-distributed-tracing-otel/README.md)
+
+###### exercise-03-ml-model-monitoring
+- [Exercise 03: ML Model Monitoring and Drift Detection](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-03-ml-model-monitoring/README.md)
+
+###### exercise-04-slo-and-error-budgets
+- [Exercise 04: SLI / SLO / Error Budget Implementation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/exercises/exercise-04-slo-and-error-budgets/README.md)
+- [Module 08: Monitoring and Observability Exercises](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/exercises/README.md)
+
+###### labs
+- [Lab 01: Instrument a Python Service with Prometheus](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/labs/lab-01-prometheus-instrumentation.md)
+- [Lab 04: Distributed Tracing with OpenTelemetry + Jaeger](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/labs/lab-02-distributed-tracing.md)
+- [Module 08 — Labs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/labs/README.md)
+
+###### quizzes
+- [Module 08: Monitoring & Observability - Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/quizzes/module-quiz.md)
+- [Lesson 01: Prometheus for Metrics Collection](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/01-prometheus-metrics.md)
+- [Lesson 02: Distributed Tracing with Jaeger and Tempo](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/02-distributed-tracing.md)
+- [Lesson 03: ML-Specific Monitoring and Model Observability](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/03-ml-model-observability.md)
+- [Lesson 04: Best Practices and Observability Culture](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/04-best-practices-culture.md)
+- [Module 08: Monitoring & Observability](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/README.md)
+- [Module 08: Monitoring & Observability - Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-08-monitoring-observability/resources.md)
+
+##### mod-09-infrastructure-as-code
+
+###### exercises
+
+###### exercise-01-terraform-ml-infrastructure
+- [Exercise 01: Production ML Infrastructure with Terraform](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-01-terraform-ml-infrastructure/README.md)
+
+###### exercise-02-state-management-at-scale
+- [Exercise 02: Terraform State Management at Scale](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-02-state-management-at-scale/README.md)
+
+###### exercise-03-gitops-argocd
+- [Exercise 03: GitOps with ArgoCD](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-03-gitops-argocd/README.md)
+
+###### exercise-04-secret-management
+- [Exercise 04: Secret Management Across IaC + Runtime](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-04-secret-management/README.md)
+
+###### exercise-05-policy-as-code
+- [Exercise 05: Policy as Code (OPA + Sentinel)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-05-policy-as-code/README.md)
+
+###### exercise-06-iac-for-ml-workloads
+- [Exercise 06: IaC for AI/ML Workloads](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/exercise-06-iac-for-ml-workloads/README.md)
+- [Module 09: Infrastructure as Code Exercises](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/exercises/README.md)
+
+###### labs
+- [Lab 01: Terraform AWS VPC](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-01-terraform-aws-vpc.md)
+- [Lab 02: Terraform EKS Cluster](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-02-terraform-eks.md)
+- [Lab 03: Remote State Backend with S3 + DynamoDB Locking](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-03-terraform-state-backend.md)
+- [Lab 05: IaC in CI/CD with PR-Based Plan](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-04-iac-cicd.md)
+- [Lab 06: Secret Management with Vault + Terraform](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-05-secret-management.md)
+- [Lab 07: Policy as Code with OPA Conftest](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/labs/lab-06-policy-as-code.md)
+- [Module 09 — Labs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/labs/README.md)
+
+###### quizzes
+- [Module 09: Infrastructure as Code - Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/quizzes/module-quiz.md)
+- [Lesson 01: Terraform Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/01-terraform-fundamentals.md)
+- [Lesson 02: Terraform State Management](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/02-terraform-state-management.md)
+- [Lesson 03: Building AI Infrastructure with Terraform](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/03-building-ai-infrastructure-terraform.md)
+- [Lesson 04: GitOps and IaC CI/CD](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/04-gitops-iac-cicd.md)
+- [Lesson 05: Security Best Practices for IaC](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/05-security-best-practices.md)
+- [Module 09: Infrastructure as Code - Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/resources.md)
+- [Module 09: Infrastructure as Code (IaC)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-09-infrastructure-as-code/README.md)
+
+##### mod-10-llm-infrastructure
+
+###### exercises
+
+###### exercise-01-production-llm-serving
+- [Exercise 01: Production LLM Serving Platform (vLLM + Kubernetes)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-01-production-llm-serving/README.md)
+
+###### exercise-02-production-rag-system
+- [Exercise 02: Production RAG System](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-02-production-rag-system/README.md)
+
+###### exercise-03-vllm-deep-dive
+- [Exercise 03: vLLM Deep Dive](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-03-vllm-deep-dive/README.md)
+
+###### exercise-04-vector-db-benchmarking
+- [Exercise 04: Vector Database Benchmarking](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-04-vector-db-benchmarking/README.md)
+
+###### exercise-05-finetuning-at-scale
+- [Exercise 05: Fine-Tuning at Scale (LoRA, QLoRA, Multi-GPU)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-05-finetuning-at-scale/README.md)
+
+###### exercise-06-inference-optimization-llm
+- [Exercise 06: LLM Inference Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-06-inference-optimization-llm/README.md)
+
+###### exercise-07-multi-tenant-llm-platform
+- [Exercise 07: Multi-Tenant LLM Platform](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-07-multi-tenant-llm-platform/README.md)
+
+###### exercise-08-llm-cost-routing
+- [Exercise 08: Cost-Aware LLM Routing](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-08-llm-cost-routing/README.md)
+
+###### exercise-09-llm-observability
+- [Exercise 09: LLM Observability](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-09-llm-observability/README.md)
+
+###### exercise-10-prompt-management
+- [Exercise 10: Prompt Management and Versioning](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-10-prompt-management/README.md)
+
+###### exercise-11-llm-guardrails
+- [Exercise 11: LLM Guardrails](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-11-llm-guardrails/README.md)
+
+###### exercise-12-llm-evaluation-harness
+- [Exercise 12: LLM Evaluation Harness](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-12-llm-evaluation-harness/README.md)
+
+###### exercise-13-semantic-caching
+- [Exercise 13: Semantic Caching for LLMs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-13-semantic-caching/README.md)
+
+###### exercise-14-hybrid-retrieval-reranking
+- [Exercise 14: Hybrid Retrieval and Reranking](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/exercise-14-hybrid-retrieval-reranking/README.md)
+- [Module 10: LLM Infrastructure Exercises](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/exercises/README.md)
+
+###### labs
+- [Lab 01: Deploy an LLM with vLLM](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-01-vllm-deployment.md)
+- [Lab 02: Build a RAG Pipeline End-to-End](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-02-rag-pipeline.md)
+- [Lab 03: Stand Up a Vector Database (Qdrant)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-03-vector-db-qdrant.md)
+- [Lab 04: LoRA Fine-Tune a Small Model](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-04-lora-finetune.md)
+- [Lab 05: Streaming Responses to Clients](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-05-streaming-responses.md)
+- [Lab 06: Cost Tracking and Budget Alerts](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-06-cost-monitoring.md)
+- [Lab 07: Prompt-Injection Defenses](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-07-prompt-injection-defense.md)
+- [Lab 08: Multi-Model Serving with Intelligent Routing](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/labs/lab-08-multi-model-serving.md)
+- [Module 10 — Labs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/labs/README.md)
+
+###### quizzes
+- [Module 10: LLM Infrastructure - Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/quizzes/module-quiz.md)
+- [Lesson 01: Introduction to LLM Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/01-introduction-llm-infrastructure.md)
+- [Lesson 02: vLLM Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/02-vllm-deployment.md)
+- [Lesson 03: RAG Systems (Retrieval-Augmented Generation)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/03-rag-systems.md)
+- [Lesson 04: Vector Databases](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/04-vector-databases.md)
+- [Lesson 05: LLM Fine-Tuning Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/05-llm-fine-tuning-infrastructure.md)
+- [Lesson 06: LLM Serving Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/06-llm-serving-optimization.md)
+- [Lesson 07: LLM Platform Architecture](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/07-llm-platform-architecture.md)
+- [Lesson 08: LLM Infrastructure for Agentic Systems](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/08-llm-infrastructure-for-agents.md)
+- [Lesson 09: Production LLM Best Practices](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/09-production-llm-best-practices.md)
+- [Lesson 10: Text-to-SQL and Evaluation by Execution](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/10-text-to-sql-and-execution-eval.md)
+- [Lesson 11: Autoscaling LLM Serving on Queue Depth (KEDA)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/11-autoscaling-on-queue-depth-keda.md)
+- [Lesson 12: Preference Tuning With DPO](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/12-preference-tuning-dpo.md)
+- [Module 10: LLM Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/README.md)
+- [Resources: LLM Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/lessons/mod-10-llm-infrastructure/resources.md)
+
+#### projects
+
+##### project-101-llm-serving-platform
+- [Project 101: LLM Serving Platform](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/projects/project-101-llm-serving-platform/README.md)
+
+##### project-102-text-to-sql-finetuning
+- [Architecture: Text-to-SQL Fine-Tuning](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/projects/project-102-text-to-sql-finetuning/ARCHITECTURE.md)
+- [Notes](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/projects/project-102-text-to-sql-finetuning/notes.md)
+- [Project 102: Text-to-SQL Fine-Tuning](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/projects/project-102-text-to-sql-finetuning/README.md)
+
+##### project-103-rag-vector-search
+- [Project 103: RAG and Vector Search Service](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/projects/project-103-rag-vector-search/README.md)
+
+##### project-104-llm-gateway-multitenant
+- [Project 104: LLM Gateway and Multi-Tenant Platform](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/projects/project-104-llm-gateway-multitenant/README.md)
+
+##### project-105-gpu-cluster-autoscaling
+- [Project 105: GPU Cluster and Autoscaling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/projects/project-105-gpu-cluster-autoscaling/README.md)
+
+##### project-106-text-to-sql-platform
+- [Project 106: Capstone, Text-to-SQL Platform](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/projects/project-106-text-to-sql-platform/README.md)
+- [Projects](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/projects/README.md)
+- [Phase 2 Learning Plan: Advanced AI Infrastructure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%202%20-%20Advanced%20AI%20Infrastructure/phase-2-learning-plan.md)
+
+### Phase 3 - LLM Inference & GPU Performance
+
+#### modules
+
+##### mod-001-gpu-fundamentals
+
+###### exercises
+
+###### exercise-01-cpu-gpu-comparison
+- [Exercise 1 — When does the GPU actually help?](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-01-cpu-gpu-comparison/README.md)
+
+###### exercise-02-peak-throughput
+- [Exercise 2 — Peak throughput from a spec sheet](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-02-peak-throughput/README.md)
+
+###### exercise-03-occupancy-calculator
+- [Exercise 3 — Build an occupancy calculator from scratch](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-03-occupancy-calculator/README.md)
+
+###### exercise-04-roofline-analysis
+- [Exercise 4 — Roofline analysis](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-04-roofline-analysis/README.md)
+
+###### exercise-05-warp-divergence-analyzer
+- [Exercise 5 — Warp divergence analyzer](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-05-warp-divergence-analyzer/README.md)
+
+###### exercise-06-tensor-core-throughput
+- [Exercise 6 — Tensor-core throughput prediction](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/exercises/exercise-06-tensor-core-throughput/README.md)
+
+###### lecture-notes
+- [Lecture 1.1 — GPU Architecture Deep Dive](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/lecture-notes/01-gpu-architecture.md)
+- [Lecture 1.2 — CUDA Programming Model](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/lecture-notes/02-cuda-programming-model.md)
+- [Lecture 1.3 — CUDA Memory Hierarchy](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/lecture-notes/03-cuda-memory-hierarchy.md)
+- [Lecture 1.4 — Warps and Occupancy](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/lecture-notes/04-warps-and-occupancy.md)
+- [Lecture 1.5 — The Roofline Performance Model](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/lecture-notes/05-roofline-model.md)
+- [Lecture 1.6 — GPU Generations and Specs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/lecture-notes/06-gpu-generations.md)
+- [Module 1 — GPU Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/README.md)
+- [Module 1 — Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/resources.md)
+- [Module 1 quiz — answer key](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/quiz-answers.md)
+- [Module 1 quiz — GPU fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/quiz.md)
+- [Source Digest — GPU Fundamentals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-001-gpu-fundamentals/source-digest.md)
+
+##### mod-002-cuda-programming
+
+###### exercises
+- [Ex 01: Vector Add Kernel + Bandwidth Ceiling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/exercises/exercise-01-vector-add.md)
+- [Ex 02: The SGEMM Ladder](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/exercises/exercise-02-tiled-matmul.md)
+- [Ex 03: Tree Reduction](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/exercises/exercise-03-reduction.md)
+- [Ex 04: Occupancy Tuning — Predict, Then Measure](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/exercises/exercise-04-occupancy-tuning.md)
+- [Ex 05: A Real PyTorch Extension with Autograd](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/exercises/exercise-05-pytorch-extension.md)
+
+###### lecture-notes
+- [Lecture 01: Kernels + Launch Configuration](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/lecture-notes/01-kernels-and-launch-config.md)
+- [Lecture 02: Memory Coalescing + Shared Memory](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/lecture-notes/02-memory-coalescing-shared-memory.md)
+- [Lecture 03: PyTorch C++ Extensions](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/lecture-notes/03-pytorch-c-extension.md)
+- [Module 02: CUDA Programming](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/README.md)
+- [Module 02: CUDA Programming — Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/quiz.md)
+- [Quiz Answers — Module 02](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/quiz-answers.md)
+- [Resources — CUDA Programming](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/resources.md)
+- [Source Digest — CUDA Programming](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-002-cuda-programming/source-digest.md)
+
+##### mod-003-performance-profiling
+
+###### exercises
+- [Ex 01: nsys Trace of LLM Generation — Prefill vs Decode](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/exercises/exercise-01-nsys-trace.md)
+- [Ex 02: ncu on a Prefill GEMM vs a Decode GEMV](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/exercises/exercise-02-ncu-deep-dive.md)
+- [Ex 03: Find and Remove Launch Overhead in Decode](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/exercises/exercise-03-pytorch-profiler.md)
+- [Ex 04: Predict, Then Measure, Inference Memory](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/exercises/exercise-04-memory-snapshot.md)
+- [Ex 05: End-to-End — Double the Throughput of a Generation Script](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/exercises/exercise-05-end-to-end-optimization.md)
+
+###### lecture-notes
+- [Lecture 01: nsys + Nsight Compute](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/lecture-notes/01-nsys-nsight.md)
+- [Lecture 02: Bottleneck Identification](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/lecture-notes/02-bottleneck-identification.md)
+- [Lecture 03: Memory Profiling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/lecture-notes/03-memory-profiling.md)
+- [Module 03 — Quiz Answers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/quiz-answers.md)
+- [Module 03: Performance Profiling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/README.md)
+- [Module 03: Performance Profiling — Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/quiz.md)
+- [Resources — Performance Profiling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/resources.md)
+- [Source Digest — Performance Profiling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-003-performance-profiling/source-digest.md)
+
+##### mod-004-transformer-optimization
+
+###### exercises
+
+###### exercise-06-inference-arithmetic
+- [Ex 06: Inference Arithmetic (CPU-only, auto-graded)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/exercises/exercise-06-inference-arithmetic/README.md)
+- [Ex 01: Measure What FlashAttention Buys You](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/exercises/exercise-01-flash-attention.md)
+- [Ex 02: torch.compile on a Decode Loop](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/exercises/exercise-02-torch-compile.md)
+- [Ex 03: vLLM Prefix Caching — TTFT Under a Shared System Prompt](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/exercises/exercise-03-vllm-prefix-caching.md)
+- [Ex 04: Speculative Decoding — When It Helps, When It Hurts](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/exercises/exercise-04-speculative-decoding.md)
+- [Ex 05: A Fused RMSNorm in Triton](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/exercises/exercise-05-write-triton-kernel.md)
+
+###### lecture-notes
+- [Lecture 01: Attention Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/lecture-notes/01-attention-optimization.md)
+- [Lecture 02: Kernel Fusion](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/lecture-notes/02-kernel-fusion.md)
+- [Lecture 03: Speculative Decoding + Other Inference Tricks](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/lecture-notes/03-speculative-decoding.md)
+- [Module 04 — Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/quiz.md)
+- [Module 04 — Quiz Answers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/quiz-answers.md)
+- [Module 04: Transformer Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/README.md)
+- [Resources — Transformer Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/resources.md)
+- [Source Digest — Transformer Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-004-transformer-optimization/source-digest.md)
+
+##### mod-005-model-compression
+
+###### exercises
+- [Ex 01: AWQ Quantization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/exercises/exercise-01-awq-quantize.md)
+- [Ex 02: Int8 Static Quantization (PyTorch)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/exercises/exercise-02-int8-static.md)
+- [Ex 03: 2:4 Sparsity](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/exercises/exercise-03-2-4-sparsity.md)
+- [Ex 04: LoRA Fine-Tune](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/exercises/exercise-04-lora-finetune.md)
+- [Ex 05: Distillation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/exercises/exercise-05-distillation.md)
+
+###### lecture-notes
+- [Lecture 01: Quantization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/lecture-notes/01-quantization.md)
+- [Lecture 02: Pruning + Distillation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/lecture-notes/02-pruning-distillation.md)
+- [Lecture 03: LoRA + Adapter Patterns](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/lecture-notes/03-lora-adapters.md)
+- [Module 05 — Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/quiz.md)
+- [Module 05 — Quiz Answers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/quiz-answers.md)
+- [Module 05: Model Compression](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/README.md)
+- [Resources — Model Compression](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/resources.md)
+- [Source Digest — Model Compression](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-005-model-compression/source-digest.md)
+
+##### mod-006-distributed-inference
+
+###### exercises
+- [Ex 01: Tensor-Parallel vLLM Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/exercises/exercise-01-tensor-parallel.md)
+- [Ex 02: Pipeline-Parallel for 70B+](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/exercises/exercise-02-pipeline-parallel.md)
+- [Ex 03: HPA on Custom Metric](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/exercises/exercise-03-custom-hpa-metric.md)
+- [Ex 04: Prefix-Aware Routing](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/exercises/exercise-04-prefix-aware-routing.md)
+- [Ex 05: Cold Start Mitigation](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/exercises/exercise-05-cold-start-mitigation.md)
+
+###### lecture-notes
+- [Lecture 01: Tensor + Pipeline Parallelism](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/lecture-notes/01-tensor-pipeline-parallel.md)
+- [Lecture 02: Multi-Replica Autoscaling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/lecture-notes/02-multi-replica-autoscaling.md)
+- [Lecture 03: Load Balancing for LLM Inference](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/lecture-notes/03-load-balancing.md)
+- [Module 06 — Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/quiz.md)
+- [Module 06 — Quiz Answers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/quiz-answers.md)
+- [Module 06: Distributed Inference](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/README.md)
+- [Resources — Distributed Inference](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/resources.md)
+- [Source Digest — Distributed Inference](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-006-distributed-inference/source-digest.md)
+
+##### mod-007-production-deployment
+
+###### exercises
+- [Ex 01: Pick a Framework](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/exercises/exercise-01-pick-a-framework.md)
+- [Ex 02: Canary via Argo Rollouts](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/exercises/exercise-02-canary-deployment.md)
+- [Ex 03: Spot Instances with Resilience](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/exercises/exercise-03-spot-with-resilience.md)
+- [Ex 04: Multi-Tier Cost Routing](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/exercises/exercise-04-multi-tier-routing.md)
+- [Ex 05: End-to-End Production Deploy](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/exercises/exercise-05-end-to-end-deploy.md)
+
+###### lecture-notes
+- [Lecture 01: Serving Frameworks](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/lecture-notes/01-serving-frameworks.md)
+- [Lecture 02: Deployment Patterns](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/lecture-notes/02-deployment-patterns.md)
+- [Lecture 03: Cost Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/lecture-notes/03-cost-optimization.md)
+- [Module 07 — Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/quiz.md)
+- [Module 07 — Quiz Answers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/quiz-answers.md)
+- [Module 07: Production Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/README.md)
+- [Resources — Production Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/resources.md)
+- [Source Digest — Production Deployment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-007-production-deployment/source-digest.md)
+
+##### mod-008-advanced-topics
+
+###### exercises
+- [Ex 01: CUDA Graphs](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/exercises/exercise-01-cuda-graphs.md)
+- [Ex 02: Stream Overlap](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/exercises/exercise-02-stream-overlap.md)
+- [Ex 03: NCCL Tests](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/exercises/exercise-03-nccl-tests.md)
+- [Ex 04: MIG Partition](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/exercises/exercise-04-mig-partition.md)
+- [Ex 05: FP8 Training with TE](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/exercises/exercise-05-fp8-training.md)
+
+###### lecture-notes
+- [Lecture 01: CUDA Graphs + Streams](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/lecture-notes/01-cuda-graphs-streams.md)
+- [Lecture 02: NVLink + InfiniBand + GPUDirect](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/lecture-notes/02-interconnect.md)
+- [Lecture 03: MIG + FP8](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/lecture-notes/03-mig-fp8.md)
+- [Module 08 — Quiz](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/quiz.md)
+- [Module 08 — Quiz Answers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/quiz-answers.md)
+- [Module 08: Advanced Topics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/README.md)
+- [Resources — Advanced Topics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/resources.md)
+- [Source Digest — Advanced Topics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/mod-008-advanced-topics/source-digest.md)
+- [Modules](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/modules/README.md)
+
+#### projects
+
+##### project-01-model-optimization
+
+###### deliverables
+- [Deliverables — Production Model Optimization Pipeline](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-01-model-optimization/deliverables/README.md)
+- [Architecture — Production Model Optimization Pipeline](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-01-model-optimization/architecture.md)
+- [Project 1: Production Model Optimization Pipeline](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-01-model-optimization/README.md)
+- [Requirements — Production Model Optimization Pipeline](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-01-model-optimization/requirements.md)
+- [Rubric — Production Model Optimization Pipeline](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-01-model-optimization/rubric.md)
+- [Step-by-Step Build Guide — Production Model Optimization Pipeline](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-01-model-optimization/STEP_BY_STEP.md)
+
+##### project-02-gpu-optimization
+
+###### deliverables
+- [Deliverables — Custom CUDA Kernels for Transformer Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-02-gpu-optimization/deliverables/README.md)
+- [Architecture — Custom CUDA Kernels for Transformer Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-02-gpu-optimization/architecture.md)
+- [Project 2: Custom CUDA Kernels for Transformer Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-02-gpu-optimization/README.md)
+- [Requirements — Custom CUDA Kernels for Transformer Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-02-gpu-optimization/requirements.md)
+- [Rubric — Custom CUDA Kernels for Transformer Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-02-gpu-optimization/rubric.md)
+- [Step-by-Step Build Guide — Custom CUDA Kernels for Transformer Optimization](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-02-gpu-optimization/STEP_BY_STEP.md)
+
+##### project-03-distributed-inference
+
+###### deliverables
+- [Deliverables — High-Performance LLM Inference System](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-03-distributed-inference/deliverables/README.md)
+- [Architecture — High-Performance LLM Inference System](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-03-distributed-inference/architecture.md)
+- [Project 3: High-Performance LLM Inference System](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-03-distributed-inference/README.md)
+- [Requirements — High-Performance LLM Inference System](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-03-distributed-inference/requirements.md)
+- [Rubric — High-Performance LLM Inference System](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-03-distributed-inference/rubric.md)
+- [Step-by-Step Build Guide — High-Performance LLM Inference System](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/project-03-distributed-inference/STEP_BY_STEP.md)
+- [Projects](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/projects/README.md)
+
+#### resources
+
+##### reading-lists
+- [Wafer GPU Performance Reading List](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/resources/reading-lists/wafer-gpu-perf-reading-list.md)
+- [Resources](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/resources/README.md)
+- [Phase 3: LLM Inference & GPU Performance](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/phase-3-learning-plan.md)
+- [The 25 Questions: Where Each Is Answered](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/AI%20Infrastructure%20Engineer/Phase%203%20-%20LLM%20Inference%20%26%20GPU%20Performance/25-questions.md)
+
+## Engineering Blog Dissections
+- [Engineering Blog Dissections](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/Engineering%20Blog%20Dissections/README.md)
+
+## GenAI Atlas
+
+### 1. LLM Foundations
+- [LLM Foundations](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/1.%20LLM%20Foundations/README.md)
+
+### 2. Fine-Tuning & Alignment
+- [Fine-Tuning & Alignment](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/2.%20Fine-Tuning%20%26%20Alignment/README.md)
+
+### 4. RAG & Retrieval
+- [RAG & Retrieval](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/4.%20RAG%20%26%20Retrieval/README.md)
+
+### 5. Prompt Engineering
+- [Prompt Engineering](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/5.%20Prompt%20Engineering/README.md)
+
+### 6. Model Landscape
+- [Model Landscape](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/6.%20Model%20Landscape/README.md)
+
+### 7. Evals & Observability
+- [Evals & Observability](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/7.%20Evals%20%26%20Observability/README.md)
+
+### Agents
+
+#### Phase 1 - Agent Foundations
+- [Day 1: What is an AI Agent?](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%201%20-%20Agent%20Foundations/01-what-is-an-ai-agent.md)
+- [Day 2: The Agent Loop](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%201%20-%20Agent%20Foundations/02-the-agent-loop.md)
+- [Day 3: Goals and Task Breakdown](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%201%20-%20Agent%20Foundations/03-goals-and-task-breakdown.md)
+- [Day 4: State and Context](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%201%20-%20Agent%20Foundations/04-state-and-context.md)
+- [Day 5: Agent Failure Modes](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%201%20-%20Agent%20Foundations/05-agent-failure-modes.md)
+
+#### Phase 2 - Tools and Execution
+- [Day 6: Tool Calling Basics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%202%20-%20Tools%20and%20Execution/06-tool-calling-basics.md)
+- [Day 7: Tool Schemas](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%202%20-%20Tools%20and%20Execution/07-tool-schemas.md)
+- [Day 8: Tool Error Handling](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%202%20-%20Tools%20and%20Execution/08-tool-error-handling.md)
+- [Day 9: Retries and Fallbacks](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%202%20-%20Tools%20and%20Execution/09-retries-and-fallbacks.md)
+- [Day 10: Structured Output](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%202%20-%20Tools%20and%20Execution/10-structured-output.md)
+- [Day 11: Multi-Step Tool Use](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%202%20-%20Tools%20and%20Execution/11-multi-step-tool-use.md)
+- [Day 12: Mini Project — Research Assistant](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%202%20-%20Tools%20and%20Execution/12-mini-project-research-assistant.md)
+
+#### Phase 3 - RAG, Memory, and Evals
+- [Day 13: RAG Basics](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%203%20-%20RAG%2C%20Memory%2C%20and%20Evals/13-rag-basics.md)
+- [Day 14: Chunking and Retrieval Quality](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%203%20-%20RAG%2C%20Memory%2C%20and%20Evals/14-chunking-and-retrieval-quality.md)
+- [Day 15: Citations and Grounded Answers](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%203%20-%20RAG%2C%20Memory%2C%20and%20Evals/15-citations-and-grounded-answers.md)
+- [Day 16: Memory in Agents](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%203%20-%20RAG%2C%20Memory%2C%20and%20Evals/16-memory-in-agents.md)
+- [Day 17: Short-Term vs. Long-Term Context](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%203%20-%20RAG%2C%20Memory%2C%20and%20Evals/17-short-term-vs-long-term-context.md)
+- [Day 18: Agent Evals](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%203%20-%20RAG%2C%20Memory%2C%20and%20Evals/18-agent-evals.md)
+- [Day 19: Scoring Agent Behavior](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%203%20-%20RAG%2C%20Memory%2C%20and%20Evals/19-scoring-agent-behavior.md)
+- [Day 20: Mini Project — Support Agent with RAG](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%203%20-%20RAG%2C%20Memory%2C%20and%20Evals/20-mini-project-support-agent-with-rag.md)
+
+#### Phase 4 - Production and Interview Practice
+- [Day 21: Guardrails](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/21-guardrails.md)
+- [Day 22: Human-in-the-Loop](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/22-human-in-the-loop.md)
+- [Day 23: Observability](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/23-observability.md)
+- [Day 24: Debugging Agents](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/24-debugging-agents.md)
+- [Day 25: Cost and Latency](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/25-cost-and-latency.md)
+- [Day 26: Agent Architecture](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/26-agent-architecture.md)
+- [Day 27: Interview Design Questions](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/27-interview-design-questions.md)
+- [Day 28: Mixed Hard Problem](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/28-mixed-hard-problem.md)
+- [Day 29: Capstone Project](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/29-capstone-project.md)
+- [Day 30: Final Review](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/Phase%204%20-%20Production%20and%20Interview%20Practice/30-final-review.md)
+- [Agents — 30-Day Agentic AI Interview Prep Path](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/Agents/README.md)
+- [GenAI Atlas](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/GenAI%20Atlas/README.md)
+
+## ML and GenAI System Design
+
+### GENAI SD
+- [GenAI System Design (GenAI SD)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/GENAI%20SD/README.md)
+- [Gmail Smart Compose System Design](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/GENAI%20SD/Gmail%20Smart%20Compose.md)
+- [Retrieval-Augmented Generation (RAG) System Design](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/GENAI%20SD/Retrieval-Augmented%20Generation.md)
+
+### MLSD
+
+#### 0. Foundations
+- [Enterprise Machine Learning and Large Language Model System Design Framework](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/MLSD/0.%20Foundations/ML%20System%20Design%20Framework.md)
+
+#### 1. Recommendation & Personalization
+- [People You May Know (PYMK) System Design](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/MLSD/1.%20Recommendation%20%26%20Personalization/People%20You%20May%20Know.md)
+- [Video Recommendation System System Design](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/MLSD/1.%20Recommendation%20%26%20Personalization/Video%20Recommendation%20System.md)
+
+#### 4. Trust & Safety
+- [Fraud Detection (Stripe) System Design](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/MLSD/4.%20Trust%20%26%20Safety/Fraud%20Detection%20(Stripe).md)
+- [Harmful Content Detection System Design](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/MLSD/4.%20Trust%20%26%20Safety/Harmful%20Content%20Detection.md)
+- [Machine Learning System Design (MLSD)](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/MLSD/README.md)
+- [ML & GenAI System Design Repository](https://raw.githubusercontent.com/joevar5/ML-Nexus-Resource-Hub/main/ML%20and%20GenAI%20System%20Design/README.md)
