@@ -152,8 +152,13 @@
     <div id="cursor-ring"></div>
 
     <!-- Ask ChatGPT Tooltip -->
+    <!-- ChatGPT logo, defined once and reused via <use href="#icon-chatgpt"> -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="icon-chatgpt" viewBox="0 0 24 24"><path fill="currentColor" d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></symbol>
+    </svg>
+
     <div id="chatgpt-tooltip" role="toolbar" aria-label="Ask ChatGPT about the selected text">
-        <span class="material-symbols-outlined sparkle-icon" aria-hidden="true">auto_awesome</span>
+        <svg class="gpt-icon" aria-hidden="true"><use href="#icon-chatgpt"/></svg>
         <button type="button" data-mode="sel-explain">Explain</button>
         <button type="button" data-mode="sel-example">Example</button>
         <button type="button" data-mode="sel-quiz">Quiz me</button>
@@ -390,17 +395,17 @@
                     <div class="rounded-2xl border border-outline-variant bg-surface overflow-hidden">
                         <div class="grid grid-cols-3 divide-x divide-outline-variant text-center">
                             <div class="px-2 py-lg">
-                                <div class="font-display text-2xl md:text-3xl font-bold text-primary">4</div>
+                                <div class="font-display text-2xl md:text-3xl font-bold text-primary tabular-nums">4</div>
                                 <div class="font-label text-[11px] md:text-xs text-on-surface-variant mt-1">Learning
                                     tracks</div>
                             </div>
                             <div class="px-2 py-lg">
-                                <div class="font-display text-2xl md:text-3xl font-bold text-primary">100%</div>
+                                <div class="font-display text-2xl md:text-3xl font-bold text-primary tabular-nums">100%</div>
                                 <div class="font-label text-[11px] md:text-xs text-on-surface-variant mt-1">
                                     Production-ready</div>
                             </div>
                             <div class="px-2 py-lg">
-                                <div class="font-display text-2xl md:text-3xl font-bold text-primary">Free</div>
+                                <div class="font-display text-2xl md:text-3xl font-bold text-primary tabular-nums">Free</div>
                                 <div class="font-label text-[11px] md:text-xs text-on-surface-variant mt-1">Forever,
                                     no paywalls</div>
                             </div>
@@ -725,24 +730,6 @@
                 <div id="markdown-content" class="markdown-body">
                     <!-- Loaded dynamically -->
                 </div>
-
-                <!-- Study with ChatGPT: each button opens ChatGPT as an interactive tutor for this lesson -->
-                <section id="study-with-ai" aria-labelledby="study-with-ai-title">
-                    <div class="study-ai-head">
-                        <span class="material-symbols-outlined" aria-hidden="true">school</span>
-                        <div>
-                            <h3 id="study-with-ai-title">Study this lesson with ChatGPT</h3>
-                            <p>Pick a mode. ChatGPT opens with this lesson loaded and works through it with you, one step at a time.</p>
-                        </div>
-                    </div>
-                    <div class="study-ai-grid">
-                        <button type="button" data-mode="teach"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span><strong>Teach me</strong><small>Step by step, checks you understood</small></button>
-                        <button type="button" data-mode="quiz"><span class="material-symbols-outlined" aria-hidden="true">quiz</span><strong>Quiz me</strong><small>One question at a time, graded</small></button>
-                        <button type="button" data-mode="interview"><span class="material-symbols-outlined" aria-hidden="true">record_voice_over</span><strong>Mock interview</strong><small>Interviewer with follow-ups</small></button>
-                        <button type="button" data-mode="practice"><span class="material-symbols-outlined" aria-hidden="true">terminal</span><strong>Hands-on task</strong><small>An exercise, with hints and review</small></button>
-                        <button type="button" data-mode="revise"><span class="material-symbols-outlined" aria-hidden="true">style</span><strong>Quick revise</strong><small>Flashcards and a cheat sheet</small></button>
-                    </div>
-                </section>
 
                 <!-- Lesson Navigation & Done actions -->
                 <div class="mt-12 pt-6 border-t border-outline-variant/60 flex items-center justify-between flex-wrap gap-4"
@@ -1266,11 +1253,28 @@
         <span class="material-symbols-outlined">arrow_upward</span>
     </button>
 
-    <!-- Quick Revise floating button: jumps to a Leitner-weighted lesson pick and starts a driver.js recap tour -->
-    <button id="quick-revise-btn" onclick="quickRevise()" class="quick-revise-fab hidden" aria-label="Quick Revise" title="Quick Revise">
-        <span class="material-symbols-outlined">bolt</span>
-        <span class="quick-revise-label">Quick Revise</span>
-    </button>
+    <!-- Study floating button: ChatGPT tutor modes for the open lesson, plus Quick Revise
+         (Leitner-weighted lesson pick + driver.js recap tour). Keeps id quick-revise-btn so
+         setQuickReviseVisible() still shows it only on reader pages. -->
+    <div id="quick-revise-btn" class="study-fab hidden">
+        <div id="study-menu" class="study-menu" role="menu" aria-labelledby="study-fab-toggle" hidden>
+            <div class="study-menu-head">
+                <svg class="gpt-icon" aria-hidden="true"><use href="#icon-chatgpt"/></svg>
+                <div><strong>Study this lesson</strong><span>Opens ChatGPT as your tutor</span></div>
+            </div>
+            <button type="button" role="menuitem" data-mode="teach"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span><span><strong>Teach me</strong><small>Step by step, checks you understood</small></span></button>
+            <button type="button" role="menuitem" data-mode="quiz"><span class="material-symbols-outlined" aria-hidden="true">quiz</span><span><strong>Quiz me</strong><small>One question at a time, graded</small></span></button>
+            <button type="button" role="menuitem" data-mode="interview"><span class="material-symbols-outlined" aria-hidden="true">record_voice_over</span><span><strong>Mock interview</strong><small>Interviewer with follow-ups</small></span></button>
+            <button type="button" role="menuitem" data-mode="practice"><span class="material-symbols-outlined" aria-hidden="true">terminal</span><span><strong>Hands-on task</strong><small>An exercise, with hints and review</small></span></button>
+            <button type="button" role="menuitem" data-mode="revise"><span class="material-symbols-outlined" aria-hidden="true">style</span><span><strong>Flashcards &amp; cheat sheet</strong><small>Fast recap of this lesson</small></span></button>
+            <div class="study-menu-sep" role="separator"></div>
+            <button type="button" role="menuitem" data-action="revise-next"><span class="material-symbols-outlined" aria-hidden="true">bolt</span><span><strong>Next lesson to review</strong><small>Quick Revise: picks what you're due for</small></span></button>
+        </div>
+        <button type="button" id="study-fab-toggle" class="study-fab-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="study-menu">
+            <svg class="gpt-icon" aria-hidden="true"><use href="#icon-chatgpt"/></svg>
+            <span>Study with ChatGPT</span>
+        </button>
+    </div>
 
     <!-- UI Logic and Rendering Script -->
     <script src="app.js" defer></script>

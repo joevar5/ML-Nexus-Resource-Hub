@@ -220,6 +220,16 @@ function setQuickReviseVisible(visible) {
     const btn = document.getElementById('quick-revise-btn');
     if (!btn) return;
     btn.classList.toggle('hidden', !visible);
+    if (!visible) setStudyMenuOpen(false);
+}
+
+function setStudyMenuOpen(open) {
+    const menu = document.getElementById('study-menu');
+    const toggle = document.getElementById('study-fab-toggle');
+    if (!menu || !toggle) return;
+    menu.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) menu.querySelector('[role="menuitem"]').focus();
 }
 
 // True for actual lesson + quiz content only — excludes exercises/labs/resources/projects/
@@ -775,9 +785,28 @@ function setupEventListeners() {
         chatgptTooltip.classList.remove('visible');
     });
 
-    document.getElementById('study-with-ai').addEventListener('click', (e) => {
-        const btn = e.target.closest('button[data-mode]');
-        if (btn) openChatGPT(btn.dataset.mode);
+    // Study floating button + menu
+    const studyToggle = document.getElementById('study-fab-toggle');
+    const studyMenu = document.getElementById('study-menu');
+    studyToggle.addEventListener('click', () => setStudyMenuOpen(studyMenu.hidden));
+    studyMenu.addEventListener('click', (e) => {
+        const item = e.target.closest('button[role="menuitem"]');
+        if (!item) return;
+        setStudyMenuOpen(false);
+        if (item.dataset.action === 'revise-next') quickRevise();
+        else openChatGPT(item.dataset.mode);
+    });
+    studyMenu.addEventListener('keydown', (e) => {
+        const items = [...studyMenu.querySelectorAll('[role="menuitem"]')];
+        const i = items.indexOf(document.activeElement);
+        if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !studyMenu.hidden) { setStudyMenuOpen(false); studyToggle.focus(); }
+    });
+    document.addEventListener('click', (e) => {
+        if (!studyMenu.hidden && !e.target.closest('#quick-revise-btn')) setStudyMenuOpen(false);
     });
 
     // Handle page completion toggle button
@@ -2889,17 +2918,17 @@ function handleSearch(query) {
 
     let mouseX = 0, mouseY = 0;
     let ringX = 0, ringY = 0;
-    let raf;
+    let raf, last = 0;
 
-    function lerp(a, b, t) { return a + (b - a) * t; }
-
-    function tick() {
-        // Dot snaps instantly
-        dot.style.transform = `translate(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%))`;
-        // Ring trails behind
-        ringX = lerp(ringX, mouseX, 0.12);
-        ringY = lerp(ringY, mouseY, 0.12);
-        ring.style.transform = `translate(calc(${ringX}px - 50%), calc(${ringY}px - 50%))`;
+    function tick(now) {
+        // Frame-rate independent follow: same feel at 60Hz and 120Hz, ~35% of the gap per 60fps frame
+        const dt = last ? Math.min(now - last, 64) : 16.7;
+        last = now;
+        const t = 1 - Math.pow(0.65, dt / 16.7);
+        ringX += (mouseX - ringX) * t;
+        ringY += (mouseY - ringY) * t;
+        dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+        ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
         raf = requestAnimationFrame(tick);
     }
 
@@ -2915,18 +2944,26 @@ function handleSearch(query) {
         return isHome || isAuthor || isProjects || isCoding;
     }
 
+    let active = false;
+
+    // Only touch <body> on state changes: re-adding the class every mousemove
+    // forced a style recalc of the whole page (the `* { cursor: none }` rule).
     function enableCursor() {
+        if (active) return;
+        active = true;
         document.body.classList.add('home-cursor-active');
         dot.style.opacity = '1';
         ring.style.opacity = '1';
-        if (!raf) raf = requestAnimationFrame(tick);
+        if (!raf) { ringX = mouseX; ringY = mouseY; raf = requestAnimationFrame(tick); }
     }
 
     function disableCursor() {
+        if (!active) return;
+        active = false;
         document.body.classList.remove('home-cursor-active');
         dot.style.opacity = '0';
         ring.style.opacity = '0';
-        if (raf) { cancelAnimationFrame(raf); raf = null; }
+        if (raf) { cancelAnimationFrame(raf); raf = null; last = 0; }
     }
 
     // Track mouse

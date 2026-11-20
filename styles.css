@@ -187,6 +187,7 @@
             filter: blur(100px);
             pointer-events: none;
             mix-blend-mode: normal;
+            will-change: transform; /* rasterize the blur once, then just move it */
         }
         html.dark .hero-orb {
             mix-blend-mode: screen;
@@ -283,6 +284,10 @@
             cursor: pointer;
             box-shadow: 0 6px 24px rgba(9,76,178,.30);
             transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .hero-cta-primary:active, .hero-cta-secondary:active, .explore-track-btn:active, .study-fab-btn:active {
+            transform: scale(0.97);
+            transition-duration: 0.1s;
         }
         .hero-cta-primary:hover {
             transform: translateY(-2px);
@@ -383,37 +388,103 @@
             transform: translateY(-2px);
         }
 
-        .quick-revise-fab {
+        /* ── Study floating button + menu ── */
+        .gpt-icon { width: 18px; height: 18px; flex-shrink: 0; }
+        .study-fab {
             position: fixed;
             bottom: 86px;
             right: 30px;
-            height: 46px;
-            padding: 0 18px 0 16px;
-            border-radius: 9999px;
-            background-color: var(--color-primary);
-            border: none;
-            color: var(--color-on-primary);
+            z-index: 40;
+        }
+        .study-fab.hidden { display: none !important; }
+        .study-fab-btn {
             display: flex;
             align-items: center;
             gap: 8px;
+            height: 44px;
+            padding: 0 16px 0 14px;
+            border-radius: 9999px;
+            /* Running border light: a rotating conic gradient shows only through the 1.5px transparent border */
+            border: 1.5px solid transparent;
+            background:
+                linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+                conic-gradient(from var(--fab-angle),
+                    var(--color-outline-variant) 0 62%,
+                    color-mix(in srgb, var(--color-primary) 40%, transparent) 74%,
+                    var(--color-primary) 86%,
+                    color-mix(in srgb, var(--color-primary) 40%, transparent) 94%,
+                    var(--color-outline-variant)) border-box;
+            animation: fab-border-run 3.2s linear infinite;
+            color: var(--color-on-surface);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            white-space: nowrap;
             cursor: pointer;
-            z-index: 40;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.12);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .quick-revise-fab:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        @property --fab-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+        @keyframes fab-border-run { to { --fab-angle: 360deg; } }
+        .study-fab-btn:hover,
+        .study-fab-btn[aria-expanded="true"] {
+            /* don't change animation-duration here: it makes the running light jump position */
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.18);
         }
-        .quick-revise-fab.hidden {
-            display: none !important;
+        @media (prefers-reduced-motion: reduce) { .study-fab-btn { animation: none; } }
+        .study-fab-btn:focus-visible,
+        .study-menu button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+        .study-menu {
+            position: absolute;
+            right: 0;
+            bottom: calc(100% + 10px);
+            width: 300px;
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid var(--color-outline-variant);
+            background: var(--color-surface);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 16px 40px rgba(0, 0, 0, 0.18);
+            transform-origin: bottom right;
+            animation: study-menu-in 0.18s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .quick-revise-label {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.01em;
-            white-space: nowrap;
+        .study-menu[hidden] { display: none; }
+        @keyframes study-menu-in { from { opacity: 0; transform: translateY(4px) scale(0.95); } }
+        @media (prefers-reduced-motion: reduce) { .study-menu { animation: none; } }
+        .study-menu-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 10px 12px;
+            margin-bottom: 4px;
+            border-bottom: 1px solid var(--color-outline-variant);
+            color: var(--color-on-surface);
+        }
+        .study-menu-head .gpt-icon { width: 22px; height: 22px; }
+        .study-menu-head strong { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; }
+        .study-menu-head span { display: block; font-size: 0.75rem; color: var(--color-on-surface-variant); }
+        .study-menu button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 9px 10px;
+            border-radius: 9px;
+            text-align: left;
+            color: var(--color-on-surface);
+            cursor: pointer;
+        }
+        .study-menu button:hover,
+        .study-menu button:focus-visible { background: var(--color-surface-container-high); }
+        .study-menu button > .material-symbols-outlined { font-size: 20px; color: var(--color-on-surface-variant); }
+        .study-menu button:hover > .material-symbols-outlined { color: var(--color-primary); }
+        .study-menu button strong { display: block; font-size: 0.85rem; font-weight: 600; }
+        .study-menu button small { display: block; font-size: 0.74rem; color: var(--color-on-surface-variant); }
+        .study-menu-sep { height: 1px; margin: 4px 6px; background: var(--color-outline-variant); }
+        @media (max-width: 640px) {
+            .study-fab { right: 16px; bottom: 80px; }
+            .study-menu { width: min(300px, calc(100vw - 32px)); }
         }
 
         .revise-status-badge {
@@ -771,12 +842,10 @@
         
         #about-author-link:not(.bg-primary-container) {
             border: 1px solid var(--color-primary);
-            animation: author-pulse-glow 2.5s infinite ease-in-out;
         }
 
         html.dark #about-author-link:not(.bg-primary-container) {
             border-color: var(--color-primary);
-            animation: author-pulse-glow-dark 2.5s infinite ease-in-out;
         }
 
         @keyframes author-pulse-glow-dark {
@@ -916,37 +985,7 @@
             color: var(--color-on-primary);
         }
 
-        /* ── Study with ChatGPT panel (end of every lesson) ── */
-        #study-with-ai {
-            margin-top: 3rem;
-            padding: 1.25rem;
-            border: 1px solid var(--color-outline-variant);
-            border-radius: 12px;
-            background: var(--color-surface-container-low);
-        }
-        #study-with-ai .study-ai-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 1rem; }
-        #study-with-ai .study-ai-head > .material-symbols-outlined { color: var(--color-primary); font-size: 28px; }
-        #study-with-ai h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--color-on-surface); margin: 0; }
-        #study-with-ai p { font-size: 0.875rem; color: var(--color-on-surface-variant); margin: 4px 0 0; }
-        #study-with-ai .study-ai-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
-        #study-with-ai .study-ai-grid button {
-            display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
-            padding: 12px; text-align: left;
-            border: 1px solid var(--color-outline-variant);
-            border-radius: 10px;
-            background: var(--color-surface);
-            color: var(--color-on-surface);
-            cursor: pointer;
-            transition: border-color 0.15s, transform 0.15s;
-        }
-        #study-with-ai .study-ai-grid button:hover,
-        #study-with-ai .study-ai-grid button:focus-visible { border-color: var(--color-primary); transform: translateY(-1px); }
-        #study-with-ai .study-ai-grid .material-symbols-outlined { color: var(--color-primary); margin-bottom: 4px; }
-        #study-with-ai .study-ai-grid strong { font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; }
-        #study-with-ai .study-ai-grid small { font-size: 0.75rem; color: var(--color-on-surface-variant); }
-        #chatgpt-tooltip .sparkle-icon {
-            font-size: 16px;
-        }
+        #chatgpt-tooltip .gpt-icon { width: 16px; height: 16px; }
 
         /* ── Premium Flip Cards ── */
         /* Both faces sit in one grid cell, so the card is as tall as its longer face at any
@@ -1549,9 +1588,10 @@
             pointer-events: auto;
             opacity: 0;
             transform: translateY(20px) scale(0.98);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: opacity 0.2s ease-in, transform 0.2s ease-in;
         }
         .toast.show {
+            transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1), transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
             opacity: 1;
             transform: translateY(0) scale(1);
         }
@@ -1669,21 +1709,6 @@
             overflow: hidden;
             transition: opacity 0.35s ease, transform 0.35s ease, box-shadow 0.3s ease;
         }
-        #projects-view .project-card::before,
-        #coding-view .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -60%;
-            width: 45%; height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.14), transparent);
-            transform: skewX(-20deg);
-            transition: left 0.7s ease;
-            pointer-events: none;
-        }
-        #projects-view .project-card:hover::before,
-        #coding-view .project-card:hover::before {
-            left: 130%;
-        }
         #projects-view .project-card:hover,
         #coding-view .project-card:hover {
             box-shadow: 0 12px 32px rgba(9,76,178,.14);
@@ -1796,3 +1821,6 @@
 .ip-rate-btn.active[data-rate="partly"] { background: #f59e0b; border-color: #f59e0b; color: #fff; }
 .ip-rate-btn.active[data-rate="missed"] { background: var(--color-error); border-color: var(--color-error); color: var(--color-on-error); }
 @media (prefers-reduced-motion: reduce) { .ip-body, .ip-plus::before, .ip-plus::after, .ip-progress span { transition: none; } }
+
+/* calm motion for everyone who asks for it */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
